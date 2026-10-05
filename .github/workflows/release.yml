@@ -1,0 +1,67 @@
+# A cada push na branch main que mude o atlas ou o lançador, gera o executável e publica uma release.
+# O Anatomia3D.exe já instalado consulta a última release ao abrir e se atualiza sozinho.
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'index.html'
+      - 'styles.css'
+      - 'dist/**'
+      - 'tools/launcher/**'
+      - 'tools/build_exe.py'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/release.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: windows-latest
+    env:
+      PYTHONIOENCODING: utf-8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Dependências
+        run: |
+          npm ci
+          pip install numpy
+
+      - name: Versão
+        id: ver
+        shell: pwsh
+        run: |
+          $p = (Get-Content package.json -Raw | ConvertFrom-Json).version.Split('.')
+          "version=$($p[0]).$($p[1]).${{ github.run_number }}" >> $env:GITHUB_OUTPUT
+
+      - name: Gerar executável e pacote
+        run: python tools/build_exe.py --version ${{ steps.ver.outputs.version }} --repo ${{ github.repository }}
+
+      - name: Publicar release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $v = "${{ steps.ver.outputs.version }}"
+          $msg = (git log -1 --pretty=%B) -join "`n"
+          $notes = "$msg`n`n---`nBaixe **Anatomia3D.exe** e abra. Quem já tem o programa recebe esta versão automaticamente ao abri-lo (com internet)."
+          gh release create "v$v" release/Anatomia3D.exe release/app.zip release/version.json --title "Anatomia 3D $v" --notes "$notes" --target "${{ github.sha }}" --latest

@@ -1,0 +1,56 @@
+import { MUSCLES } from './catalog-muscles.js';
+import { BONES, OTHER_STRUCTURES } from './catalog-bones.js';
+import { LIGAMENTS, FASCIAS, GLANDS, SKIN } from './catalog-other.js';
+import { BODY_MUSCLES } from './catalog-body-muscles.js';
+import { BODY_BONES } from './catalog-body-bones.js';
+
+/** Camadas, da mais superficial (depth 0) à mais profunda. */
+export const LAYERS = [
+  { id: 'pele', label: 'Pele', depth: 0, color: '#e6b59c' },
+  { id: 'fascia', label: 'Fáscias e aponeuroses', depth: 1, color: '#aebfd3' },
+  { id: 'mimica', label: 'Músculos da mímica', depth: 2, color: '#d9533f' },
+  { id: 'pescoco', label: 'Platisma e pescoço', depth: 2, color: '#b0654f' },
+  { id: 'sup', label: 'Músculos superficiais (tronco e membros)', depth: 2, color: '#d65a45' },
+  { id: 'mastigacao', label: 'Músculos da mastigação', depth: 3, color: '#a23b6c' },
+  { id: 'med', label: 'Músculos intermediários (tronco e membros)', depth: 3, color: '#b34663' },
+  { id: 'profundo', label: 'Planos profundos da cabeça', depth: 4, color: '#8c3350' },
+  { id: 'prof', label: 'Músculos profundos (tronco e membros)', depth: 4, color: '#8a3558' },
+  { id: 'orbita', label: 'Órbita e olho', depth: 4, color: '#e98a4a' },
+  { id: 'ligamento', label: 'Ligamentos', depth: 4, color: '#f1da8c' },
+  { id: 'glandula', label: 'Glândulas e língua', depth: 4, color: '#dba35a' },
+  { id: 'cartilagem', label: 'Cartilagens e discos', depth: 4, color: '#a9d0d6' },
+  { id: 'osso', label: 'Ossos e dentes', depth: 5, color: '#ece3cc' },
+];
+
+export const KIND_LABEL = {
+  musculo: 'Músculo',
+  osso: 'Osso',
+  ligamento: 'Ligamento',
+  fascia: 'Fáscia / aponeurose',
+  glandula: 'Glândula',
+  estrutura: 'Estrutura',
+};
+
+export const REGIONS = {
+  todos: 'Corpo',
+  cabeca: 'Cabeça e pescoço',
+  tronco: 'Tronco',
+  membro_sup: 'Membro superior',
+};
+
+const HEAD_ITEMS = [SKIN, ...FASCIAS, ...MUSCLES, ...LIGAMENTS, ...GLANDS, ...OTHER_STRUCTURES, ...BONES].map((i) => ({
+  region: i.id === 'pele' ? 'todos' : 'cabeca',
+  ...i,
+}));
+export const HEAD_IDS = new Set(HEAD_ITEMS.map((i) => i.id));
+export const BODY_ITEMS = [...BODY_MUSCLES, ...BODY_BONES];
+export const ITEMS = [...HEAD_ITEMS, ...BODY_ITEMS];
+
+// guarda contra identificadores duplicados
+{
+  const seen = new Set();
+  for (const i of ITEMS) {
+    if (seen.has(i.id)) throw new Error(`Identificador duplicado no catálogo: ${i.id}`);
+    seen.add(i.id);
+  }
+}
