@@ -125,7 +125,7 @@ export const BODY_MUSCLES = [
     acao: 'Eleva as costelas 2 a 5 (auxilia a inspiração).',
     origem: 'Ligamento nucal e processos espinhosos de C7 a T3.',
     insercao: 'Face externa das costelas 2 a 5, lateralmente aos ângulos.',
-    inervacao: 'Nervos intercostais (T1–T4).',
+    inervacao: 'Nervos intercostais (T2–T5).',
   }),
   bm('serratil_post_inf', 'Serrátil posterior inferior', 'M. serratus posterior inferior', 'med', 'tronco', P('serratil_post_inf'), {
     acao: 'Abaixa as costelas 9 a 12 e as fixa durante a ação do diafragma.',
@@ -392,7 +392,7 @@ export const BODY_MUSCLES = [
     acao: 'Flete o tronco, roda-o para o lado oposto e comprime o abdome; sustenta as vísceras.',
     origem: 'Faces externas das costelas 5 a 12, por digitações que se interpõem às do serrátil anterior e do latíssimo.',
     insercao: 'Lábio externo da crista ilíaca e, por aponeurose, linha alba, tubérculo púbico e ligamento inguinal.',
-    inervacao: 'Nervos intercostais (T7–T11), subcostal (T12), ílio-hipogástrico e ilioinguinal (L1).',
+    inervacao: 'Nervos toracoabdominais (ramos anteriores de T7–T11) e nervo subcostal (T12).',
     nota: 'Seu bordo inferior forma o ligamento inguinal. Fibras orientadas como “mãos nos bolsos”.',
   }),
   bm('obliquo_interno', 'Oblíquo interno do abdome', 'M. obliquus internus abdominis', 'med', 'tronco', {
@@ -405,7 +405,7 @@ export const BODY_MUSCLES = [
     acao: 'Flete o tronco, roda-o para o mesmo lado e comprime o abdome.',
     origem: 'Fáscia toracolombar, crista ilíaca (linha intermédia) e terço lateral do ligamento inguinal.',
     insercao: 'Margens inferiores das costelas 10 a 12, linha alba e crista púbica (tendão conjunto).',
-    inervacao: 'Nervos intercostais (T7–T11), subcostal, ílio-hipogástrico e ilioinguinal (L1).',
+    inervacao: 'Nervos toracoabdominais (T7–T11), subcostal (T12) e ramos de L1 (nervos ílio-hipogástrico e ilioinguinal).',
     nota: 'Fibras perpendiculares às do oblíquo externo — “mãos de bolsos para o peito”. Músculo não presente no banco BodyParts3D — modelado por código.',
   }),
   bm('transverso_abdome', 'Transverso do abdome', 'M. transversus abdominis', 'prof', 'tronco', {
@@ -418,7 +418,7 @@ export const BODY_MUSCLES = [
     acao: 'Comprime as vísceras abdominais e aumenta a pressão intra-abdominal; estabiliza a coluna lombopélvica.',
     origem: 'Face interna das cartilagens costais 7 a 12, fáscia toracolombar, crista ilíaca e terço lateral do ligamento inguinal.',
     insercao: 'Linha alba (por aponeurose) e crista púbica (tendão conjunto).',
-    inervacao: 'Nervos intercostais (T7–T11), subcostal, ílio-hipogástrico e ilioinguinal (L1).',
+    inervacao: 'Nervos toracoabdominais (T7–T11), subcostal (T12) e ramos de L1 (nervos ílio-hipogástrico e ilioinguinal).',
     nota: 'Camada mais profunda dos músculos largos do abdome; é um “espartilho natural”. Músculo não presente no banco BodyParts3D — modelado por código.',
   }),
   bm('reto_abdome', 'Reto do abdome', 'M. rectus abdominis', 'sup', 'tronco', {
@@ -431,7 +431,7 @@ export const BODY_MUSCLES = [
     acao: 'Flete o tronco (abdominais), comprime o abdome e estabiliza a pelve.',
     origem: 'Crista púbica e sínfise púbica.',
     insercao: 'Cartilagens costais 5 a 7 e processo xifoide.',
-    inervacao: 'Nervos intercostais (T7–T11) e subcostal (T12).',
+    inervacao: 'Nervos toracoabdominais (T7–T11) e nervo subcostal (T12).',
     nota: 'Três intersecções tendíneas formam o aspecto de “tanquinho”. Fica dentro da bainha do reto. Músculo não presente no banco BodyParts3D — modelado por código.',
   }),
   bm('piramidal', 'Piramidal', 'M. pyramidalis', 'sup', 'tronco', {
@@ -440,7 +440,7 @@ export const BODY_MUSCLES = [
     acao: 'Tensiona a linha alba.',
     origem: 'Ramo superior do púbis, anteriormente ao reto do abdome.',
     insercao: 'Linha alba.',
-    inervacao: 'Nervo subcostal (T12).',
+    inervacao: 'Nervo subcostal (T12); alguns autores descrevem também o ílio-hipogástrico (L1).',
     nota: 'Ausente em cerca de 20% das pessoas. Músculo não presente no banco BodyParts3D — modelado por código.',
   }),
   bm('quadrado_lombo', 'Quadrado do lombo', 'M. quadratus lumborum', 'prof', 'tronco', {
@@ -451,7 +451,7 @@ export const BODY_MUSCLES = [
     acao: 'Inclina lateralmente o tronco e fixa a 12ª costela durante a inspiração.',
     origem: 'Crista ilíaca e ligamento iliolombar.',
     insercao: 'Margem inferior da 12ª costela e ápices dos processos transversos de L1 a L4.',
-    inervacao: 'Ramos ventrais de T12 e L1–L3 (plexo lombar).',
+    inervacao: 'Ramos anteriores de T12 e L1–L4 (nervo subcostal e plexo lombar).',
     nota: 'Importante na lombalgia (“dor de rim” muscular). Músculo não presente no banco BodyParts3D — modelado por código.',
   }),
   bm('psoas_maior', 'Psoas maior', 'M. psoas major', 'prof', 'tronco', P('psoas_maior'), {
@@ -465,7 +465,7 @@ export const BODY_MUSCLES = [
     acao: 'Flete a coxa no quadril (com o psoas, forma o iliopsoas).',
     origem: 'Fossa ilíaca e asa do sacro.',
     insercao: 'Trocânter menor do fêmur, por tendão comum com o psoas maior.',
-    inervacao: 'Nervo femoral (L2–L3).',
+    inervacao: 'Nervo femoral (L2–L4).',
   }),
   bm('linha_alba', 'Linha alba', 'Linea alba', 'sup', 'tronco', P('linha_alba'), {
     acao: 'Faixa fibrosa mediana que une as aponeuroses dos músculos largos do abdome.',
@@ -552,7 +552,7 @@ export const BODY_MUSCLES = [
     acao: 'Aduz, estende e roda medialmente o braço.',
     origem: 'Ângulo inferior e margem lateral da escápula (face dorsal).',
     insercao: 'Crista do tubérculo menor do úmero (lábio medial do sulco intertubercular).',
-    inervacao: 'Nervo subescapular inferior (C6–C7).',
+    inervacao: 'Nervo subescapular inferior (C5–C6).',
     nota: '“Ajudante do latíssimo do dorso”.',
   }),
   bm('subescapular', 'Subescapular', 'M. subscapularis', 'prof', 'membro_sup', P('subescapular'), {

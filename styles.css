@@ -385,3 +385,17 @@ body:not(.body-ready) .needs-body { opacity: 0.38; pointer-events: none; }
   .toolbar { overflow-x: auto; justify-content: flex-start; scrollbar-width: none; }
   .body-status { top: 108px; }
 }
+
+/* ───── Ligações músculo ↔ nervo na ficha ───── */
+.links { padding: 11px 0 4px; border-top: 1px solid var(--line); }
+.links h3 { margin: 0 0 8px; font-size: 10.5px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-weight: 600; }
+.lchips { display: flex; flex-wrap: wrap; gap: 6px; }
+.lchip {
+  display: inline-flex; align-items: center; gap: 7px; padding: 5px 10px 5px 8px; border-radius: 10px; text-align: left;
+  border: 1px solid var(--line); background: var(--panel-2); font-size: 12.5px; line-height: 1.25; color: var(--text);
+}
+button.lchip:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent); }
+.lchip i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); flex: none; }
+.lchip small { display: block; color: var(--muted); font-size: 11px; }
+.lchip.sens { border-style: dashed; }
+.links-note { margin: 8px 0 0; color: var(--muted); font-size: 12px; }

@@ -6,7 +6,10 @@ import { loadAnatomy } from './anatomy.js';
 import { Surfaces, TORSO_PARTS } from './surfaces.js';
 import { buildProc, makeFiberTexture } from './proc.js';
 import { LM } from './landmarks.js';
-import { ITEMS as ALL_ITEMS, HEAD_IDS, BODY_ITEMS, LAYERS, KIND_LABEL, REGIONS } from './catalog.js';
+import { ITEMS as ALL_ITEMS, HEAD_IDS, BODY_ITEMS, NERVES, INNERVATION, LAYERS, KIND_LABEL, REGIONS, inRegion } from './catalog.js';
+import { NerveBuilder } from './nerve-geo.js';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { SKULL_PARTS } from './surfaces.js';
 
 const $ = (s) => document.querySelector(s);
 const stage = $('#stage');
@@ -28,6 +31,7 @@ const state = {
   collapsed: new Set(),
   region: 'cabeca',
   bodyReady: false,
+  nervesReady: false,
   search: '',
   quiz: null,
   /** Realces temporários do quiz: id → 'ok' | 'bad'. */
@@ -97,13 +101,14 @@ function makeMaterial(key, color) {
     case 'gland': return std({ color: '#dca35e', roughness: 0.6 });
     case 'tongue': return std({ color: '#c9606c', roughness: 0.55 });
     case 'cartilage': return std({ color: '#9fc3c9', roughness: 0.5 });
+    case 'nerve': return std({ color: '#f0cf55', roughness: 0.42, emissive: '#000000' });
     default: // músculo
       return std({ color, roughness: 0.5, map: fiberTex, bumpMap: fiberTex, bumpScale: 1.2 });
   }
 }
 
 /** Resolve disputas de profundidade entre superfícies quase coincidentes: camadas superficiais ganham. */
-const DEPTH_OFFSET = { fascia: -3, mimica: -2, sup: -2, pescoco: -1.5, med: -1.5, mastigacao: -1, ligamento: -1, prof: -0.5, osso: 0.5 };
+const DEPTH_OFFSET = { nervo: -2.5, fascia: -3, mimica: -2, sup: -2, pescoco: -1.5, med: -1.5, mastigacao: -1, ligamento: -1, prof: -0.5, osso: 0.5 };
 
 function jitter(hex, id) {
   const c = new THREE.Color(hex);
@@ -123,6 +128,7 @@ scene.add(modelRoot);
 const M = new Map();
 const lmCache = new Map();
 let bodyParts = null;
+let headParts = null;
 const FINGER = { 2: 'indicador', 3: 'medio', 4: 'anelar', 5: 'minimo' };
 
 /** Pontos de referência calculados a partir das malhas da mão (mão esquerda, x > 0). Ex.: hand.mc.3.head.palm */
@@ -260,11 +266,109 @@ function buildItems(parts, S, items) {
   }
 }
 
+/* ───────────────────────── Nervos ───────────────────────── */
+const PICK_MAT = new THREE.MeshBasicMaterial({ visible: false });
+
+/**
+ * Monta os nervos depois que cabeça e corpo existem: malhas reais (órbita) + trajetos procedurais e ramos até cada músculo.
+ * @param {Map} nerveParts malhas reais dos nervos
+ * @param {THREE.BufferGeometry[]} skins
+ */
+async function buildNerves(nerveParts, skins) {
+  const geoms = (id) => {
+    if (id === 'cranio') return SKULL_PARTS.filter((p) => headParts.has(p)).map((p) => headParts.get(p).geometry);
+    const m = M.get(id);
+    if (m) return m.meshes.map((x) => x.geometry);
+    const p = bodyParts?.get(id) ?? headParts.get(id) ?? nerveParts.get(id);
+    return p ? [p.geometry] : [];
+  };
+  // todos os ossos numa malha só (uma consulta por ponto, em vez de uma por osso)
+  const boneGeo = mergeGeometries([...M.values()].filter((m) => m.item.layer === 'osso').flatMap((m) => m.meshes.map((x) => {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', x.geometry.attributes.position);
+    const idx = x.geometry.index;
+    if (idx) g.setIndex(new THREE.BufferAttribute(new Uint32Array(idx.array), 1));
+    return g;
+  })));
+  const bones = [boneGeo];
+  const builder = new NerveBuilder({ geoms, skins, bones, lm });
+  if (window.__app) window.__app.nerveBuilder = builder;
+  const muscleGeoms = (id) => (M.has(id) ? M.get(id).meshes.map((x) => x.geometry) : []);
+  const layer = LAYER.nervo;
+  let n = 0;
+  for (const item of NERVES) {
+    if (++n % 4 === 0) await new Promise((r) => setTimeout(r, 0)); // não trava a interface
+    const color = jitter(item.color ?? layer.color, item.id);
+    const mat = makeMaterial('nerve');
+    mat.color.copy(color);
+    const po = DEPTH_OFFSET.nervo;
+    mat.polygonOffset = true;
+    mat.polygonOffsetFactor = po;
+    mat.polygonOffsetUnits = po * 2;
+    mat.userData.base = { opacity: mat.opacity, transparent: mat.transparent, depthWrite: mat.depthWrite };
+    mat.userData.baseColor = mat.color.clone();
+    const group = new THREE.Group();
+    group.name = item.id;
+    const meshes = [];
+    const pick = [];
+    const anchors = [];
+    const add = (geometry, pickGeo, an) => {
+      ensureBVH(geometry);
+      const mesh = new THREE.Mesh(geometry, mat);
+      mesh.userData.id = item.id;
+      group.add(mesh);
+      meshes.push(mesh);
+      if (pickGeo) {
+        ensureBVH(pickGeo);
+        const pm = new THREE.Mesh(pickGeo, PICK_MAT);
+        pm.userData.id = item.id;
+        group.add(pm);
+        pick.push(pm);
+      } else pick.push(mesh);
+      if (an) anchors.push(...an);
+    };
+    try {
+      for (const p of item.parts ?? []) {
+        const geo = nerveParts.get(p.id)?.geometry;
+        if (geo) add(geo, null, outerAnchors(geo));
+      }
+      if (item.paths?.length) {
+        for (const side of item.paired === false ? [1] : [1, -1]) {
+          const { geometry, pick: pg, anchors: an } = builder.build(item, side, muscleGeoms);
+          if (geometry) add(geometry, pg, item.parts?.length ? null : an);
+        }
+      }
+    } catch (err) {
+      console.error(`[nervos] ${item.id}:`, err);
+      continue;
+    }
+    if (!meshes.length) continue;
+    if (!anchors.length) anchors.push(...outerAnchors(meshes[0].geometry));
+    const box = new THREE.Box3();
+    meshes.forEach((mm) => {
+      if (!mm.geometry.boundingBox) mm.geometry.computeBoundingBox();
+      box.union(mm.geometry.boundingBox);
+    });
+    const sph = box.getBoundingSphere(new THREE.Sphere());
+    modelRoot.add(group);
+    M.set(item.id, { item, group, meshes, pick, mats: [mat], anchors, color, radius: sph.radius, center: sph.center });
+    ITEMS.push(item);
+  }
+}
+
+/** Estruturas ligadas à selecionada: músculo → seus nervos; nervo → músculos que inerva. */
+function relatedIds(id) {
+  const m = M.get(id);
+  if (!m) return [];
+  if (m.item.kind === 'nervo') return (m.item.ramos ?? []).map((r) => r.m);
+  return (INNERVATION.get(id) ?? []).map((r) => r.nervo);
+}
+
 /* ───────────────────────── Visibilidade e destaque ───────────────────────── */
 const isSkin = (m) => m.item.id === 'pele';
 
 function regionOk(item) {
-  return state.region === 'todos' || item.region === 'todos' || item.region === state.region;
+  return inRegion(item, state.region);
 }
 
 function itemVisible(m) {
@@ -285,11 +389,15 @@ function applyHighlight() {
   const sel = state.selected;
   const dimTo = state.quiz ? 0.09 : 0.16;
   const canHover = !state.quiz || state.quiz.mode === 'locate';
+  const related = new Set(sel && !state.quiz ? relatedIds(sel) : []);
+  // com um nervo em foco, os músculos dele ficam semitransparentes para o trajeto aparecer por dentro deles
+  const selNerve = !!sel && M.get(sel)?.item.kind === 'nervo';
   for (const m of M.values()) {
     const isSel = m.item.id === sel;
+    const isRel = related.has(m.item.id);
     const isHover = m.item.id === state.hover && canHover;
     const fb = state.flash.get(m.item.id);
-    const dim = !!sel && !isSel;
+    const dim = !!sel && !isSel && !isRel;
     m.mats.forEach((mat, mi) => {
       const b = mat.userData.base;
       let op = b.opacity;
@@ -304,11 +412,15 @@ function applyHighlight() {
         op = Math.min(op, dimTo);
         tr = true;
         dw = false;
+      } else if (isRel && selNerve) {
+        op = Math.min(op, 0.45);
+        tr = true;
+        dw = false;
       }
       if (mat.transparent !== tr || mat.depthWrite !== dw) { mat.transparent = tr; mat.depthWrite = dw; mat.needsUpdate = true; }
       mat.opacity = op;
       mat.color.copy(fb ? FLASH[fb] : mat.userData.baseColor);
-      mat.emissive.copy(fb ? FLASH[fb] : mat.userData.baseColor).multiplyScalar(fb ? 0.5 : isSel ? 0.42 : isHover ? (state.quiz ? 0.34 : 0.2) : 0);
+      mat.emissive.copy(fb ? FLASH[fb] : mat.userData.baseColor).multiplyScalar(fb ? 0.5 : isSel ? 0.42 : isHover ? (state.quiz ? 0.34 : 0.2) : isRel ? 0.18 : 0);
     });
     m.group.renderOrder = isSkin(m) ? 5 : 0;
   }
@@ -399,27 +511,58 @@ function select(id, { fly = true, panel = true } = {}) {
 const infoEl = $('#info');
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
+/** Chips das estruturas ligadas (nervo → músculos; músculo → nervos). */
+function linksHtml(item) {
+  const isNerve = item.kind === 'nervo';
+  const list = isNerve
+    ? (item.ramos ?? []).map((r) => ({ id: r.m, obs: r.obs, sens: r.sens }))
+    : (INNERVATION.get(item.id) ?? []).map((r) => ({ id: r.nervo, obs: r.obs, sens: r.sens }));
+  if (!list.length) return '';
+  const chip = (l) => {
+    const target = M.get(l.id);
+    const name = target ? target.item.name : ALL_ITEMS.find((i) => i.id === l.id)?.name ?? l.id;
+    const color = target ? target.color.getStyle() : LAYER.nervo.color;
+    const extra = [l.obs, l.sens ? 'sensitivo' : ''].filter(Boolean).join(' · ');
+    const tag = state.quiz || !target ? 'span' : 'button';
+    return `<${tag} class="lchip${l.sens ? ' sens' : ''}" data-go="${esc(l.id)}" style="--c:${color}"><i></i><span>${esc(name)}${extra ? `<small>${esc(extra)}</small>` : ''}</span></${tag}>`;
+  };
+  const title = isNerve ? 'Músculos e estruturas inervados' : 'Nervos (inervação)';
+  const pending = !isNerve && !state.nervesReady ? '<p class="links-note">Os nervos aparecem em instantes, quando terminarem de ser montados.</p>' : '';
+  return `<div class="links"><h3>${title}</h3><div class="lchips">${list.map(chip).join('')}</div>${pending}</div>`;
+}
+
 function showInfo(id) {
   const { item } = M.get(id);
   const layer = LAYER[item.layer];
+  const rel = relatedIds(id).filter((r) => M.has(r));
   $('#infoBody').innerHTML = `
     <span class="badge" style="--c:${layer.color}"><i></i>${esc(KIND_LABEL[item.kind] ?? 'Estrutura')} · ${esc(layer.label)}</span>
     <h2>${esc(item.name)}</h2>
     <p class="latin">${esc(item.latin)}</p>
     ${item.campos.map(([k, v], i) => `<div class="field${i === 0 ? ' act' : ''}"><h3>${esc(k)}</h3><p>${esc(v)}</p></div>`).join('')}
+    ${linksHtml(item)}
     ${item.nota ? `<div class="note"><b>Para lembrar</b>${esc(item.nota)}</div>` : ''}
     ${item.expressao ? `<div class="expr"><span>Expressão / função:</span><strong>${esc(item.expressao)}</strong></div>` : ''}
     ${state.quiz ? '' : `<div class="info-actions">
       <button class="btn" id="btnIso">Isolar</button>
+      ${rel.length ? `<button class="btn" id="btnIsoRel">${item.kind === 'nervo' ? 'Isolar com os músculos' : rel.length > 1 ? 'Isolar com os nervos' : 'Isolar com o nervo'}</button>` : ''}
       <button class="btn" id="btnHideThis">Ocultar</button>
     </div>`}`;
   if (!state.quiz) {
-    $('#btnIso').onclick = () => {
-      for (const m of M.values()) if (m.item.id !== id) state.hidden.add(m.item.id);
-      state.hidden.delete(id);
-      applyVisibility(); syncList();
+    // "isolar com…" mantém os ossos como referência de posição
+    const isolate = (keep, keepBones = false) => {
+      for (const m of M.values()) if (!keep.has(m.item.id) && !(keepBones && m.item.layer === 'osso')) state.hidden.add(m.item.id);
+      for (const k of keep) {
+        state.hidden.delete(k);
+        const km = M.get(k);
+        if (km) state.layers.add(km.item.layer);
+      }
+      syncLayers();
     };
+    $('#btnIso').onclick = () => isolate(new Set([id]));
+    if (rel.length) $('#btnIsoRel').onclick = () => isolate(new Set([id, ...rel]), true);
     $('#btnHideThis').onclick = () => { state.hidden.add(id); select(null, { fly: false }); applyVisibility(); syncList(); };
+    $('#infoBody').querySelectorAll('button.lchip').forEach((b) => b.addEventListener('click', () => select(b.dataset.go)));
   }
   infoEl.classList.add('open');
   document.body.classList.add('info-open');
@@ -608,7 +751,7 @@ function pick(ev) {
     if (!m.group.visible) continue;
     if (isSkin(m) && state.skin < (loc ? 0.9 : 0.5)) continue;
     if (loc && m.item.kind === 'fascia') continue;
-    targets.push(...m.meshes);
+    targets.push(...(m.pick ?? m.meshes)); // nervos finos têm uma malha de clique mais grossa e invisível
   }
   const hit = raycaster.intersectObjects(targets, false)[0];
   return hit ? hit.object.userData.id : null;
@@ -847,12 +990,12 @@ $('#quizExit').onclick = stopQuiz;
 
 /* ── Quiz 2: localizar (aparece o nome; clique na estrutura no modelo) ── */
 const MAX_TRIES = 3;
-const kindGroup = (i) => (i.kind === 'musculo' ? 'musculo' : i.kind === 'osso' ? 'osso' : 'outras');
+const kindGroup = (i) => (i.kind === 'musculo' || i.kind === 'osso' || i.kind === 'nervo' ? i.kind : 'outras');
 
 /** Estruturas que podem virar pergunta. Fáscias e ligamentos minúsculos (`label: false`) são ruins de clicar. */
 function locatePool({ region, kinds }) {
   return ITEMS.filter((i) => i.id !== 'pele' && i.kind !== 'fascia' && i.label !== false
-    && (region === 'todos' || i.region === region) && kinds.includes(kindGroup(i)));
+    && (region === 'todos' || (i.region !== 'todos' && inRegion(i, region))) && kinds.includes(kindGroup(i)));
 }
 
 function startLocate(opts, only = null) {
@@ -1098,7 +1241,7 @@ $('#locRestore').onclick = () => {
 /* ── Configuração ── */
 const SETUP_KEY = 'anatomia3d.quiz';
 const REGION_SHORT = { todos: 'Corpo', cabeca: 'Cabeça', tronco: 'Tronco', membro_sup: 'Braço' };
-const KIND_GROUPS = [['musculo', 'Músculos'], ['osso', 'Ossos'], ['outras', 'Ligamentos e outras']];
+const KIND_GROUPS = [['musculo', 'Músculos'], ['nervo', 'Nervos'], ['osso', 'Ossos'], ['outras', 'Ligamentos e outras']];
 const COUNT_OPTS = [10, 20, 30, 0]; // 0 = todas
 const setup = { mode: 'locate', region: 'cabeca', kinds: KIND_GROUPS.map((k) => k[0]), count: 10, latin: false };
 try {
@@ -1263,9 +1406,26 @@ function loadBody() {
       buildList();
       applyVisibility();
       syncList();
-      setBodyStatus(null);
       if (!setupEl.hidden) renderSetup();
       console.info('[carga] corpo', Math.round(performance.now() - t0), 'ms');
+      // nervos: montados em segundo plano, depois que cabeça e corpo já estão na tela
+      setBodyStatus('Montando os nervos…');
+      const t1 = performance.now();
+      try {
+        const nerveParts = window.__ANATOMY_NERVES ? await loadAnatomy(window.__ANATOMY_NERVES) : new Map();
+        await buildNerves(nerveParts, [parts.get('pele_corpo').geometry]);
+      } catch (err) {
+        console.error('[nervos]', err);
+      }
+      console.info('[carga] nervos', Math.round(performance.now() - t1), 'ms');
+      state.nervesReady = true;
+      buildList();
+      applyVisibility();
+      syncList();
+      if (state.selected && !M.has(state.selected)) select(null, { fly: false });
+      else if (state.selected && infoEl.classList.contains('open')) showInfo(state.selected);
+      if (!setupEl.hidden) renderSetup();
+      setBodyStatus(null);
     } catch (err) {
       console.error(err);
       setBodyStatus(`Erro ao montar o corpo: ${err.message}`, true);
@@ -1281,6 +1441,7 @@ async function init() {
   try {
     const t0 = performance.now();
     const parts = await loadAnatomy();
+    headParts = parts;
     const t1 = performance.now();
     const S = new Surfaces(parts);
     buildItems(parts, S, ALL_ITEMS.filter((i) => HEAD_IDS.has(i.id)));

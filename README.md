@@ -1,9 +1,10 @@
 # Anatomia 3D
 
-Atlas 3D interativo de **cabeça, tronco e membros superiores**, com pele, fáscias, músculos, ligamentos, glândulas,
-cartilagens, ossos e dentes em camadas. Cada estrutura tem nome em português e em latim e uma ficha: nos músculos,
-**ação, origem, inserção e inervação**; nos ossos, localização, articulações, estruturas e função; nos ligamentos,
-fixações e função. Membros inferiores ficam para uma próxima etapa.
+Atlas 3D interativo de **cabeça, tronco e membros superiores**, com pele, fáscias, músculos, **nervos**, ligamentos,
+glândulas, cartilagens, ossos e dentes em camadas. Cada estrutura tem nome em português e em latim e uma ficha: nos
+músculos, **ação, origem, inserção e inervação**; nos nervos, **origem, trajeto, ramos, sensibilidade, lesão e os músculos
+que inervam**; nos ossos, localização, articulações, estruturas e função; nos ligamentos, fixações e função.
+Membros inferiores ficam para uma próxima etapa.
 
 ## Como abrir
 
@@ -21,7 +22,7 @@ npm start       # opcional: servidor local em http://localhost:5173
 
 ## Executável para Windows (com atualização automática)
 
-**Download:** <https://github.com/KaueFirmo/3DBody/releases/latest/download/Anatomia3D.exe>
+**Download:** <https://github.com/KaueChristian/3DBody/releases/latest/download/Anatomia3D.exe>
 (este link sempre aponta para a versão mais nova).
 
 `Anatomia3D.exe` (≈ 8 MB) é um arquivo único, sem instalação: o atlas vai embutido e abre numa janela própria do
@@ -48,7 +49,7 @@ Use a branch **`dev`** para trabalhar sem publicar; quando estiver bom, junte na
 
 Para gerar o executável localmente: `npm run exe` (usa o compilador C# do próprio Windows; resultado em `release/`).
 
-## O que tem (216 estruturas, 154 delas músculos)
+## O que tem (271 estruturas: 154 músculos e 55 nervos)
 
 | Camada | Conteúdo |
 | --- | --- |
@@ -61,13 +62,44 @@ Para gerar o executável localmente: `npm run exe` (usa o compilador C# do próp
 | Músculos intermediários | peitoral menor, subclávio, serrátil anterior, rombóides, levantador da escápula, serráteis posteriores, esplênios, oblíquo interno, manguito rotador, braquial, flexor superficial, lumbricais… |
 | Músculos profundos (tronco e membros) | intercostais, transverso do tórax, diafragma, transverso do abdome, quadrado do lombo, psoas, ilíaco, eretores da espinha, semiespinais, multífido, rotadores, interespinais, intertransversários, suboccipitais, pré-vertebrais, assoalho pélvico, flexor profundo, pronador quadrado, interósseos |
 | Ligamentos | 10 da cabeça (temporomandibular, estilomandibular, palpebrais…), linha alba, retináculo dos flexores |
+| Nervos | 55 nervos ligados a **todos** os 154 músculos (veja abaixo) |
 | Glândulas e língua | parótida e ducto, submandibular, sublingual, língua |
 | Cartilagens e discos | nasais, orelha, costais, discos intervertebrais |
 | Ossos e dentes | crânio completo, mandíbula, hioide, coluna (atlas a sacro), costelas, esterno, quadril, clavícula, escápula, úmero, rádio, ulna, carpo, metacarpais, falanges, dentes |
 
 Recursos: **regiões** (corpo, cabeça, tronco, braço), controle de **dissecação** (da pele aos ossos), opacidade da pele,
 liga/desliga por camada ou por estrutura, busca, rótulos com linhas de chamada, câmera que enquadra a estrutura escolhida,
-vistas predefinidas e **modo quiz** (dois tipos, abaixo).
+vistas predefinidas, ligação **músculo ↔ nervo** e **modo quiz** (dois tipos, abaixo).
+
+## Nervos
+
+Cada músculo do atlas está ligado ao(s) nervo(s) que o inervam, e cada nervo chega de fato aos seus músculos no modelo
+(os ramos finais são gerados até a superfície de cada músculo).
+
+- Na ficha de um **músculo**, a seção *Nervos (inervação)* traz chips clicáveis para os nervos; na de um **nervo**, os
+  *músculos e estruturas inervados* (com observações como “ventre anterior”, “1º e 2º lumbricais” ou “sensitivo”).
+- Ao selecionar um nervo, os músculos dele ficam destacados e semitransparentes, para o trajeto aparecer por dentro deles;
+  ao selecionar um músculo, o nervo dele fica destacado. **Isolar com os músculos / com o nervo** mostra só o conjunto
+  (com os ossos de referência).
+- A camada **Nervos** liga e desliga todos; na dissecação eles aparecem até “Estruturas profundas”.
+- O quiz também pergunta nervos (opção *Nervos* em “O que praticar”).
+
+| Região | Nervos |
+| --- | --- |
+| Nervos cranianos | óptico (II), oculomotor (III), troclear (IV), trigêmeo (V) e gânglio trigeminal, oftálmico (V1), maxilar/infraorbital (V2), mandibular (V3: nervos pterigóideos, bucal, auriculotemporal), massetérico, temporais profundos, alveolar inferior/mentual, milo-hióideo, lingual, abducente (VI), facial (VII: tronco, auricular posterior, ramos temporais, zigomáticos, bucais, marginal da mandíbula e cervical), acessório (XI), hipoglosso (XII) |
+| Pescoço e dorso | plexo cervical (ramos musculares), alça cervical, frênico, suboccipital (C1), occipital maior (C2), ramos posteriores dos nervos espinais (C3–L5) |
+| Membro superior | plexo braquial (raízes, troncos, divisões, fascículos), dorsal da escápula, torácico longo, supraescapular, subclávio, peitorais lateral e medial, subescapulares superior e inferior, toracodorsal, axilar, musculocutâneo, radial, interósseo posterior, mediano, interósseo anterior, ulnar e ramo profundo do ulnar |
+| Tronco e pelve | intercostais (T1–T6), toracoabdominais (T7–T11), subcostal (T12), ílio-hipogástrico, ilioinguinal, plexo lombar (ramos musculares), femoral (parte pélvica), nervos do levantador do ânus/coccígeo, pudendo |
+
+Os textos seguem Moore, Dalley & Agur (*Anatomia orientada para a clínica*), *Gray's Anatomy*, Netter e a Terminologia
+Anatômica; onde as fontes divergem (ex.: segmentos medulares de alguns músculos), a ficha diz isso.
+
+**Geometria:** o BodyParts3D só tem nervos da órbita (óptico, oculomotor, troclear, oftálmico e ramos, gânglio ciliar) —
+esses usam as malhas reais. Os demais são **modelados por código** (`src/catalog-nerves.js` + `src/nerve-geo.js`):
+cada trajeto passa por pontos medidos no próprio modelo — forames da base do crânio, forames intervertebrais, sulcos das
+costelas, sulco do nervo radial, túnel do carpo, espaços entre músculos (“entre o flexor superficial e o profundo”) — e
+os ramos finais vão até a superfície de cada músculo inervado. São aproximações didáticas: a posição geral e as relações
+estão certas, mas espessuras e pequenos ramos são esquemáticos.
 
 ## Modo quiz
 
@@ -75,7 +107,7 @@ O botão **Modo quiz** abre uma janela para escolher o tipo de treino:
 
 - **Localizar** — aparece o *nome* de um músculo, osso, ligamento etc. e a pessoa precisa **clicar nele no modelo 3D**.
   Não há alternativas para eliminar. Configurações: região (corpo, cabeça, tronco, braço), o que praticar (músculos,
-  ossos, ligamentos e outras), número de perguntas (10, 20, 30 ou todas) e se mostra o nome em latim.
+  nervos, ossos, ligamentos e outras), número de perguntas (10, 20, 30 ou todas) e se mostra o nome em latim.
   - **3 tentativas** por pergunta. Acertar de primeira vale **1 ponto**; acertar com erro ou dica, **0,5**; esgotar as
     tentativas (ou pular) revela a resposta e vale 0. Clicar de novo na mesma estrutura errada não gasta tentativa.
   - **Dissecação e camadas** continuam disponíveis para chegar às estruturas profundas. O botão **Remover** (ou o
@@ -104,8 +136,8 @@ e “colados” sobre a pele e o esqueleto reais (`src/proc.js`), com posições
 - tronco: latíssimo do dorso, reto do abdome, piramidal, oblíquo interno, transverso do abdome, quadrado do lombo e multífido;
 - mão: lumbricais.
 
-São aproximações didáticas. Por causa da licença **Share-Alike**, os arquivos `dist/anatomy-data.js` e
-`dist/anatomy-body.js` (malhas derivadas) devem manter a atribuição acima e a mesma licença CC BY-SA ao serem redistribuídos.
+São aproximações didáticas. Por causa da licença **Share-Alike**, os arquivos `dist/anatomy-data.js`,
+`dist/anatomy-body.js` e `dist/anatomy-nerves.js` (malhas derivadas) devem manter a atribuição acima e a mesma licença CC BY-SA ao serem redistribuídos.
 
 ### Regenerar os dados
 
@@ -119,6 +151,8 @@ python fetch_parts.py     # cabeça: baixa os elementos usados (pasta obj/)
 python convert.py         # cabeça: converte e empacota → anatomy-data.js
 python fetch_body.py      # tronco e membros: baixa os elementos usados
 python convert_body.py    # tronco e membros: converte e empacota → anatomy-body.js
+python fetch_nerves.py    # nervos da órbita: baixa os elementos usados
+python convert_nerves.py  # nervos da órbita: converte e empacota → anatomy-nerves.js
 ```
 
 (`isa_element_parts.txt`, `zip_index.tsv` e `want.json` já estão em `tools/`; copie os `.js` gerados para `dist/`.)
@@ -128,6 +162,8 @@ python convert_body.py    # tronco e membros: converte e empacota → anatomy-bo
 | Arquivo | Função |
 | --- | --- |
 | `src/catalog*.js` | **Textos e geometria de cada estrutura** (edite aqui para corrigir ou acrescentar) |
+| `src/catalog-nerves.js` | Nervos: textos, trajetos e a lista de músculos de cada um (fonte da ligação músculo ↔ nervo) |
+| `src/nerve-geo.js` | Geometria dos nervos: resolve os pontos dos trajetos e gera os ramos até os músculos |
 | `src/landmarks.js` | Pontos de referência ósseos usados por músculos profundos e ligamentos |
 | `src/proc.js` | Geração das malhas procedurais (fita, lâmina, anel, tubo) |
 | `src/surfaces.js` | Projeção de pontos sobre a pele e o esqueleto (BVH) |

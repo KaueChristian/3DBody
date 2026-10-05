@@ -3,6 +3,7 @@ import { BONES, OTHER_STRUCTURES } from './catalog-bones.js';
 import { LIGAMENTS, FASCIAS, GLANDS, SKIN } from './catalog-other.js';
 import { BODY_MUSCLES } from './catalog-body-muscles.js';
 import { BODY_BONES } from './catalog-body-bones.js';
+import { NERVES } from './catalog-nerves.js';
 
 /** Camadas, da mais superficial (depth 0) à mais profunda. */
 export const LAYERS = [
@@ -16,6 +17,7 @@ export const LAYERS = [
   { id: 'profundo', label: 'Planos profundos da cabeça', depth: 4, color: '#8c3350' },
   { id: 'prof', label: 'Músculos profundos (tronco e membros)', depth: 4, color: '#8a3558' },
   { id: 'orbita', label: 'Órbita e olho', depth: 4, color: '#e98a4a' },
+  { id: 'nervo', label: 'Nervos', depth: 4, color: '#f2cf55' },
   { id: 'ligamento', label: 'Ligamentos', depth: 4, color: '#f1da8c' },
   { id: 'glandula', label: 'Glândulas e língua', depth: 4, color: '#dba35a' },
   { id: 'cartilagem', label: 'Cartilagens e discos', depth: 4, color: '#a9d0d6' },
@@ -24,6 +26,7 @@ export const LAYERS = [
 
 export const KIND_LABEL = {
   musculo: 'Músculo',
+  nervo: 'Nervo',
   osso: 'Osso',
   ligamento: 'Ligamento',
   fascia: 'Fáscia / aponeurose',
@@ -38,19 +41,41 @@ export const REGIONS = {
   membro_sup: 'Membro superior',
 };
 
+/** A estrutura pertence à região? (`region` pode ser uma lista, como nos nervos que cruzam regiões.) */
+export function inRegion(item, region) {
+  if (region === 'todos' || item.region === 'todos') return true;
+  return Array.isArray(item.region) ? item.region.includes(region) : item.region === region;
+}
+
 const HEAD_ITEMS = [SKIN, ...FASCIAS, ...MUSCLES, ...LIGAMENTS, ...GLANDS, ...OTHER_STRUCTURES, ...BONES].map((i) => ({
   region: i.id === 'pele' ? 'todos' : 'cabeca',
   ...i,
 }));
 export const HEAD_IDS = new Set(HEAD_ITEMS.map((i) => i.id));
 export const BODY_ITEMS = [...BODY_MUSCLES, ...BODY_BONES];
-export const ITEMS = [...HEAD_ITEMS, ...BODY_ITEMS];
+export { NERVES };
+export const ITEMS = [...HEAD_ITEMS, ...BODY_ITEMS, ...NERVES];
 
-// guarda contra identificadores duplicados
+/**
+ * Inervação: estrutura → nervos que a inervam (derivado de `ramos` de cada nervo).
+ * @type {Map<string, {nervo: string, obs?: string, sens?: boolean}[]>}
+ */
+export const INNERVATION = new Map();
+for (const n of NERVES) {
+  for (const r of n.ramos ?? []) {
+    if (!INNERVATION.has(r.m)) INNERVATION.set(r.m, []);
+    INNERVATION.get(r.m).push({ nervo: n.id, obs: r.obs, sens: r.sens });
+  }
+}
+
+// guardas: identificadores únicos, ramos apontando para estruturas existentes e todo músculo com nervo
 {
   const seen = new Set();
   for (const i of ITEMS) {
     if (seen.has(i.id)) throw new Error(`Identificador duplicado no catálogo: ${i.id}`);
     seen.add(i.id);
   }
+  for (const id of INNERVATION.keys()) if (!seen.has(id)) throw new Error(`Nervo aponta para estrutura inexistente: ${id}`);
+  const semNervo = ITEMS.filter((i) => i.kind === 'musculo' && !INNERVATION.has(i.id)).map((i) => i.id);
+  if (semNervo.length) throw new Error(`Músculos sem nervo no catálogo: ${semNervo.join(', ')}`);
 }

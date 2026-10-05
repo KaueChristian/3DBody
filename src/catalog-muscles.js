@@ -375,7 +375,7 @@ export const MUSCLES = [
     acao: 'Eleva a pálpebra superior (abre o olho).',
     origem: 'Asa menor do esfenoide, acima do canal óptico.',
     insercao: 'Aponeurose que se fixa à placa tarsal superior e à pele da pálpebra.',
-    inervacao: 'Nervo oculomotor (III). Fibras lisas do músculo tarsal superior (de Müller): simpático.',
+    inervacao: 'Ramo superior do nervo oculomotor (III). As fibras lisas do músculo tarsal superior (de Müller) recebem inervação simpática.',
     nota: 'Lesão do III par ou do simpático causa ptose palpebral.',
   }),
   mus('reto_sup', 'Reto superior', 'M. rectus superior', 'orbita', { parts: [{ id: 'reto_sup', mat: 'muscle' }] }, {

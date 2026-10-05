@@ -5,7 +5,7 @@
   "description": "Anatomia 3D: atlas interativo de cabeça, tronco e membros superiores (músculos, nervos, ossos, ligamentos)",
   "repository": {
     "type": "git",
-    "url": "https://github.com/KaueFirmo/3DBody.git"
+    "url": "https://github.com/KaueChristian/3DBody.git"
   },
   "main": "dist/app.js",
   "scripts": {
