@@ -1,0 +1,51 @@
+name: Deploy Web (GitHub Pages)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'styles.css'
+      - 'dist/**'
+      - 'assets/**'
+      - 'manifest.webmanifest'
+      - 'sw.js'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Montar artefato web
+        run: |
+          mkdir -p _site
+          cp index.html styles.css manifest.webmanifest sw.js _site/
+          cp -r dist _site/dist
+          if [ -d assets ]; then cp -r assets _site/assets; fi
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Enviar pacote do Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+
+      - name: Publicar no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

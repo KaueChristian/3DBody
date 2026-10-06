@@ -46,6 +46,9 @@ jobs:
           npm ci
           pip install numpy
 
+      - name: Testes de verificação
+        run: npm test
+
       - name: Versão
         id: ver
         shell: pwsh

@@ -4,3 +4,5 @@ release/
 tools/obj/
 *.npz
 *.log
+__pycache__/
+
