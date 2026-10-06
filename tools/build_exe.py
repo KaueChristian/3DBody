@@ -25,8 +25,12 @@ import numpy as np
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 BUILD = os.path.join(ROOT, "build")
 RELEASE = os.path.join(ROOT, "release")
-FILES = ["index.html", "styles.css", "dist/version.js", "dist/app.js", "dist/anatomy-data.js",
-         "dist/anatomy-nerves.js", "dist/anatomy-body.js"]
+FILES = [
+    "index.html", "styles.css", "manifest.webmanifest", "sw.js",
+    "assets/icon-192.png", "assets/icon-512.png",
+    "dist/version.js", "dist/app.js", "dist/anatomy-data.js",
+    "dist/anatomy-nerves.js", "dist/anatomy-body.js",
+]
 LAUNCHER = os.path.join(ROOT, "tools", "launcher", "Launcher.cs")
 CSC = os.path.join(os.environ.get("WINDIR", r"C:\Windows"), r"Microsoft.NET\Framework64\v4.0.30319\csc.exe")
 DEFAULT_REPO = "KaueChristian/3DBody"

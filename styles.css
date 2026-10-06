@@ -27,7 +27,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 button { font: inherit; color: inherit; cursor: pointer; }
-button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button:focus-visible, input:focus-visible, [tabindex="0"]:focus-visible, .item:focus-visible, .mode-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 #app { display: grid; grid-template-columns: var(--sidebar-w) 1fr; height: 100%; height: 100dvh; }
 
@@ -173,6 +173,17 @@ body.quiz-locate .toolbar button[data-region] { pointer-events: none; }
 .info .close:hover { background: var(--panel-2); color: var(--text); }
 .badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 11.5px; background: color-mix(in srgb, var(--c) 18%, transparent); color: color-mix(in srgb, var(--c) 40%, #fff); }
 .badge i { width: 7px; height: 7px; border-radius: 50%; background: var(--c); }
+.info-badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 4px; }
+.geom-badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 500; }
+.geom-badge.real { background: rgba(76, 195, 138, 0.15); color: #5ce3a1; border: 1px solid rgba(76, 195, 138, 0.32); }
+.geom-badge.proc { background: rgba(242, 207, 85, 0.15); color: #fad766; border: 1px solid rgba(242, 207, 85, 0.32); }
+.sources { margin-top: 10px; padding: 10px 14px; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--line); font-size: 12.5px; }
+.sources b { display: block; font-size: 10.5px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 4px; }
+.sources ul { margin: 0; padding-left: 18px; color: var(--muted); }
+.sources li { margin-bottom: 3px; }
+.sources li:last-child { margin-bottom: 0; }
+.kbadge { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 5px; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--line); color: var(--muted); font-size: 11px; font-weight: 600; margin-right: 8px; flex: none; }
+.item:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; background: var(--panel-2); }
 .info h2 { margin: 12px 28px 2px 0; font-family: var(--serif); font-size: 24px; line-height: 1.15; font-weight: 600; }
 .info .latin { margin: 0 0 16px; color: var(--muted); font-style: italic; }
 .field { padding: 11px 0; border-top: 1px solid var(--line); }
@@ -399,3 +410,101 @@ button.lchip:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent)
 .lchip small { display: block; color: var(--muted); font-size: 11px; }
 .lchip.sens { border-style: dashed; }
 .links-note { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+
+/* ───── Ferramentas de Estudo (Fase F1) ───── */
+.study-card { width: min(640px, 100%); }
+.tab-bar { display: flex; gap: 6px; border-bottom: 1px solid var(--line); margin-bottom: 18px; padding-bottom: 8px; overflow-x: auto; }
+.tab-btn { padding: 7px 14px; border-radius: 9px; border: 1px solid transparent; background: none; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; }
+.tab-btn:hover { color: var(--text); background: rgba(255, 255, 255, 0.04); }
+.tab-btn.on { color: #fff; background: var(--panel-2); border-color: var(--line); }
+
+.tab-pane[hidden] { display: none; }
+
+/* Tours */
+.tours-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 600px) { .tours-grid { grid-template-columns: 1fr; } }
+.tour-card { text-align: left; padding: 14px; border-radius: 12px; background: var(--panel-2); border: 1px solid var(--line); cursor: pointer; transition: border-color 0.15s; }
+.tour-card:hover { border-color: var(--accent); }
+.tour-card h4 { margin: 0 0 4px; font-size: 14.5px; font-weight: 600; color: #fff; }
+.tour-card p { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.35; }
+.tour-card span { display: inline-block; margin-top: 8px; font-size: 11px; color: var(--accent); font-weight: 600; }
+
+.tour-box {
+  position: absolute; left: 16px; bottom: 24px; z-index: 8; width: min(380px, calc(100% - 32px));
+  padding: 16px; background: rgba(18, 21, 28, 0.94); border: 1px solid var(--line); border-radius: var(--radius);
+  backdrop-filter: blur(12px); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+.tour-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.tour-badge { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); }
+.tour-box .close { width: 28px; height: 28px; border-radius: 8px; border: 0; background: none; color: var(--muted); font-size: 20px; line-height: 1; cursor: pointer; }
+.tour-box .close:hover { background: var(--panel-2); color: var(--text); }
+.tour-title { margin: 0 0 6px; font-size: 16px; font-weight: 600; color: #fff; }
+.tour-text { margin: 0 0 14px; font-size: 13px; color: #cbd1de; line-height: 1.45; }
+.tour-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+/* Planos de Corte */
+.clip-ctrl { display: flex; flex-direction: column; gap: 14px; padding: 4px 0; }
+.clip-slider-box { display: flex; flex-direction: column; gap: 10px; padding: 14px; background: var(--panel-2); border-radius: 12px; border: 1px solid var(--line); }
+.clip-slider-box input[type="range"] { width: 100%; accent-color: var(--accent); }
+.clip-actions { display: flex; gap: 8px; }
+
+/* Vistas e Backup */
+.backup-box, .saved-views-box { padding: 14px; background: var(--panel-2); border-radius: 12px; border: 1px solid var(--line); margin-bottom: 12px; }
+.backup-box h3, .saved-views-box h3 { margin: 0 0 6px; font-size: 14px; font-weight: 600; }
+.backup-box p { margin: 0 0 12px; font-size: 12px; color: var(--muted); }
+.save-view-input { display: flex; gap: 8px; margin-bottom: 12px; }
+.save-view-input input { flex: 1; padding: 8px 12px; border-radius: 9px; border: 1px solid var(--line); background: var(--panel); color: #fff; font: inherit; outline: none; }
+.save-view-input input:focus { border-color: var(--accent); }
+.saved-views-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; max-height: 160px; overflow-y: auto; }
+.saved-view-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; }
+.saved-view-item span { font-size: 13px; font-weight: 500; cursor: pointer; flex: 1; }
+.saved-view-item span:hover { color: var(--accent); }
+.saved-view-item button { border: 0; background: none; color: var(--muted); cursor: pointer; padding: 4px; font-size: 14px; }
+.saved-view-item button:hover { color: var(--bad); }
+
+/* Anotações e Favoritos na Ficha */
+.card-study-ext { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+.card-ext-actions { display: flex; gap: 8px; margin-bottom: 10px; }
+.btn-fav.active { color: #f5d442; border-color: rgba(245, 212, 66, 0.4); background: rgba(245, 212, 66, 0.1); }
+.btn-fav .star { font-size: 14px; line-height: 1; }
+.note-box { display: flex; flex-direction: column; gap: 5px; }
+.note-box label b { font-size: 10.5px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+.note-box textarea {
+  width: 100%; min-height: 70px; padding: 8px 10px; border-radius: 9px;
+  background: var(--panel-2); border: 1px solid var(--line); color: var(--text);
+  font: inherit; font-size: 12.5px; resize: vertical; outline: none;
+}
+.note-box textarea:focus { border-color: var(--accent); }
+.item.fav::after { content: '★'; color: #f5d442; font-size: 12px; margin-left: auto; padding-right: 6px; }
+
+/* Toast */
+.toast {
+  position: absolute; top: 70px; left: 50%; transform: translateX(-50%); z-index: 20;
+  padding: 8px 18px; border-radius: 999px; background: rgba(18, 21, 28, 0.94);
+  border: 1px solid var(--accent); color: #fff; font-size: 13px; font-weight: 500;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); pointer-events: none;
+  animation: fadeInOut 2.5s ease forwards;
+}
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, -10px); }
+  15% { opacity: 1; transform: translate(-50%, 0); }
+  80% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -10px); }
+}
+
+/* @media print para impressão de ficha */
+@media print {
+  body { background: #fff !important; color: #000 !important; }
+  #sidebar, .toolbar, .controls, #stage canvas, #labels, .hint, .modal, .toast, .tour-box { display: none !important; }
+  #info {
+    position: static !important; width: 100% !important; max-width: 100% !important;
+    transform: none !important; background: #fff !important; color: #000 !important;
+    border: none !important; box-shadow: none !important; padding: 0 !important;
+  }
+  #info .close, #info .info-actions, .card-ext-actions { display: none !important; }
+  .badge { border: 1px solid #ccc !important; color: #000 !important; background: none !important; }
+  .note { background: #f5f5f5 !important; border: 1px solid #ddd !important; color: #000 !important; }
+  .note b { color: #333 !important; }
+  .field { border-color: #ddd !important; }
+  .field h3 { color: #555 !important; }
+}

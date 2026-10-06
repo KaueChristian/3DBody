@@ -1,6 +1,6 @@
 {
   "name": "3dbody",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "description": "Anatomia 3D: atlas interativo de cabeça, tronco e membros superiores (músculos, nervos, ossos, ligamentos)",
   "repository": {
@@ -11,6 +11,9 @@
   "scripts": {
     "build": "esbuild src/main.js --bundle --minify --format=iife --target=es2020 --outfile=dist/app.js",
     "watch": "esbuild src/main.js --bundle --format=iife --target=es2020 --sourcemap --outfile=dist/app.js --watch",
+    "test": "node tests/test_catalog.js && node tests/smoke_test.js",
+    "test:catalog": "node tests/test_catalog.js",
+    "test:smoke": "node tests/smoke_test.js",
     "start": "python -m http.server 5173",
     "exe": "python tools/build_exe.py"
   },

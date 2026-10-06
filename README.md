@@ -17,6 +17,7 @@ Para editar o código:
 npm install
 npm run watch   # recompila ao salvar
 npm run build   # gera dist/app.js minificado
+npm test        # valida integridade do catálogo e executa teste de fumaça no navegador
 npm start       # opcional: servidor local em http://localhost:5173
 ```
 
@@ -108,6 +109,7 @@ O botão **Modo quiz** abre uma janela para escolher o tipo de treino:
 - **Localizar** — aparece o *nome* de um músculo, osso, ligamento etc. e a pessoa precisa **clicar nele no modelo 3D**.
   Não há alternativas para eliminar. Configurações: região (corpo, cabeça, tronco, braço), o que praticar (músculos,
   nervos, ossos, ligamentos e outras), número de perguntas (10, 20, 30 ou todas) e se mostra o nome em latim.
+  - **Filtros inteligentes**: pratique com *Todos*, apenas *⭐ Favoritos*, *🔁 Revisão de Hoje (SM-2)* ou *🎯 Pontos Fracos*.
   - **3 tentativas** por pergunta. Acertar de primeira vale **1 ponto**; acertar com erro ou dica, **0,5**; esgotar as
     tentativas (ou pular) revela a resposta e vale 0. Clicar de novo na mesma estrutura errada não gasta tentativa.
   - **Dissecação e camadas** continuam disponíveis para chegar às estruturas profundas. O botão **Remover** (ou o
@@ -117,8 +119,25 @@ O botão **Modo quiz** abre uma janela para escolher o tipo de treino:
   - Ao final: pontuação, tempo, acertos de primeira, com ajuda e erradas, lista **“Para revisar”** e o botão
     **Treinar só essas**. A pele e as fáscias translúcidas não atrapalham o clique.
 - **Escolher o nome** — a estrutura aparece destacada e a pessoa escolhe o nome entre 4 alternativas (sem fim).
+- **Quiz Teórico** — perguntas conceituais de fixação: inervação motora (músculo ↔ nervo), ação funcional, inserções e correlações clínicas.
 
-Nos dois tipos os nomes da lista e os rótulos ficam escondidos durante a pergunta. A última configuração é lembrada no navegador.
+Nos tipos de quiz visual os nomes da lista e os rótulos ficam escondidos durante a pergunta. A última configuração é lembrada no navegador. O progresso alimenta o algoritmo de repetição espaçada SuperMemo-2 (SM-2).
+
+## Ferramentas de estudo (versão 2.1)
+
+O botão **📚 Estudo** na barra de ferramentas abre um painel com recursos para fixação e dissecação avançada:
+
+- **Tours guiados didáticos**: 6 roteiros passo a passo com posicionamento automático de câmera, controle de camadas e explicações clínicas integradas:
+  1. *Manguito Rotador* (ombro)
+  2. *Plexo Braquial* (raízes a nervos terminais)
+  3. *Nervo Radial e Extensão* (trajeto espiral ao antebraço)
+  4. *Músculos da Mastigação e Nervo Mandibular (V3)*
+  5. *Nervo Facial (VII) e Mímica Facial*
+  6. *Parede Abdominal e Inervação Segmentar*
+- **Planos de corte anatômico**: planos interativos sagital (X), coronal (Z) e axial (Y) com controle deslizante contínuo e botão para inverter a direção do corte.
+- **Coloração temática**: visualize as estruturas coloridas por camada padrão, por **nervo inervador** (músculos com a mesma inervação recebem cores idênticas), por **região corporal** ou por **grupo muscular funcional**.
+- **Favoritos, anotações e backup JSON**: adicione estruturas aos favoritos com um clique (⭐), registre observações de estudo diretamente na ficha técnica e exporte/importe todos os dados em arquivo `.json`.
+- **Captura e compartilhamento**: exportação direta da vista 3D em PNG (📷) e links com estado completo da cena codificado na URL (🔗 `#hash`). Impressão formatada das fichas anatômicas com suporte a `@media print` (🖨).
 
 ## De onde vêm os modelos
 
@@ -171,6 +190,10 @@ python convert_nerves.py  # nervos da órbita: converte e empacota → anatomy-n
 | `src/main.js` | Cena, interface, rótulos e quiz |
 | `tools/` | Pipeline de dados (Python) e do executável (`build_exe.py`, `launcher/Launcher.cs`) |
 | `.github/workflows/release.yml` | Gera e publica a release a cada push na `main` |
+| `tests/` | Testes automatizados: integridade do catálogo (`test_catalog.js`) e fumaça no navegador (`smoke_test.js`) |
+| `docs/` | Auditoria de conteúdo (`revisao-conteudo.md`), desempenho (`desempenho.md`) e concorrentes (`concorrentes.md`) |
+| `project_context.md` | Roteiro: mapa do que atlas de anatomia costumam ter e a ordem de desenvolvimento por fases |
+| `agents.md` | Guia para agentes de código e colaboradores: convenções, verificação, regras de conteúdo e de publicação |
 
 ### Acrescentar uma estrutura procedural
 

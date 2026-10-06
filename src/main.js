@@ -10,6 +10,10 @@ import { ITEMS as ALL_ITEMS, HEAD_IDS, BODY_ITEMS, NERVES, INNERVATION, LAYERS, 
 import { NerveBuilder } from './nerve-geo.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { SKULL_PARTS } from './surfaces.js';
+import { StudyController } from './study/ui.js';
+import { userData } from './study/storage.js';
+
+let studyController = null;
 
 const $ = (s) => document.querySelector(s);
 const stage = $('#stage');
@@ -531,17 +535,38 @@ function linksHtml(item) {
   return `<div class="links"><h3>${title}</h3><div class="lchips">${list.map(chip).join('')}</div>${pending}</div>`;
 }
 
+function geomBadge(item) {
+  const hasParts = Array.isArray(item.parts) && item.parts.length > 0;
+  const hasPaths = Array.isArray(item.paths) && item.paths.length > 0;
+  if (hasParts && hasPaths) {
+    return '<span class="geom-badge real" title="Malha anatômica do BodyParts3D com ramos medidos no modelo">Malha real (BodyParts3D) + ramos</span>';
+  }
+  if (hasParts) {
+    return '<span class="geom-badge real" title="Origem geométrica: BodyParts3D (CC BY-SA 2.1 JP)">Malha real (BodyParts3D)</span>';
+  }
+  return '<span class="geom-badge proc" title="Geometria modelada por código sobre referências anatômicas">Modelada por código (aproximada)</span>';
+}
+
+function sourcesHtml(item) {
+  if (!item.fontes || !item.fontes.length) return '';
+  return `<div class="sources"><b>Fontes</b><ul>${item.fontes.map((f) => `<li>${esc(f)}</li>`).join('')}</ul></div>`;
+}
+
 function showInfo(id) {
   const { item } = M.get(id);
   const layer = LAYER[item.layer];
   const rel = relatedIds(id).filter((r) => M.has(r));
   $('#infoBody').innerHTML = `
-    <span class="badge" style="--c:${layer.color}"><i></i>${esc(KIND_LABEL[item.kind] ?? 'Estrutura')} · ${esc(layer.label)}</span>
+    <div class="info-badges">
+      <span class="badge" style="--c:${layer.color}"><i></i>${esc(KIND_LABEL[item.kind] ?? 'Estrutura')} · ${esc(layer.label)}</span>
+      ${geomBadge(item)}
+    </div>
     <h2>${esc(item.name)}</h2>
     <p class="latin">${esc(item.latin)}</p>
     ${item.campos.map(([k, v], i) => `<div class="field${i === 0 ? ' act' : ''}"><h3>${esc(k)}</h3><p>${esc(v)}</p></div>`).join('')}
     ${linksHtml(item)}
     ${item.nota ? `<div class="note"><b>Para lembrar</b>${esc(item.nota)}</div>` : ''}
+    ${sourcesHtml(item)}
     ${item.expressao ? `<div class="expr"><span>Expressão / função:</span><strong>${esc(item.expressao)}</strong></div>` : ''}
     ${state.quiz ? '' : `<div class="info-actions">
       <button class="btn" id="btnIso">Isolar</button>
@@ -563,6 +588,7 @@ function showInfo(id) {
     if (rel.length) $('#btnIsoRel').onclick = () => isolate(new Set([id, ...rel]), true);
     $('#btnHideThis').onclick = () => { state.hidden.add(id); select(null, { fly: false }); applyVisibility(); syncList(); };
     $('#infoBody').querySelectorAll('button.lchip').forEach((b) => b.addEventListener('click', () => select(b.dataset.go)));
+    studyController?.renderCardExtensions(id, $('#infoBody'));
   }
   infoEl.classList.add('open');
   document.body.classList.add('info-open');
@@ -603,12 +629,32 @@ function buildList() {
     for (const item of items) {
       const li = document.createElement('li');
       li.className = 'item';
+      li.tabIndex = 0;
+      li.setAttribute('role', 'button');
+      li.setAttribute('aria-label', `${item.name} (${item.latin})`);
       li.style.setProperty('--c', M.get(item.id).color.getStyle());
       li.innerHTML = `<span class="dot"></span><span class="txt"><span class="nm">${esc(item.name)}</span><span class="lt">${esc(item.latin)}</span></span><button class="eye" title="Mostrar/ocultar" aria-label="Mostrar ou ocultar ${esc(item.name)}"></button>`;
       li.addEventListener('click', (e) => {
         if (e.target.closest('.eye')) return;
         select(state.selected === item.id ? null : item.id);
         document.body.classList.remove('list-open');
+      });
+      li.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          select(state.selected === item.id ? null : item.id);
+          document.body.classList.remove('list-open');
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          const listItems = Array.from(listEl.querySelectorAll('.item:not([hidden])'));
+          const idx = listItems.indexOf(li);
+          if (idx >= 0 && listItems[idx + 1]) listItems[idx + 1].focus();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          const listItems = Array.from(listEl.querySelectorAll('.item:not([hidden])'));
+          const idx = listItems.indexOf(li);
+          if (idx > 0 && listItems[idx - 1]) listItems[idx - 1].focus();
+        }
       });
       li.querySelector('.eye').addEventListener('click', () => {
         if (state.hidden.has(item.id)) state.hidden.delete(item.id); else state.hidden.add(item.id);
@@ -643,6 +689,7 @@ function syncList() {
       li.hidden = !match;
       if (match) n++;
       li.classList.toggle('active', state.selected === item.id);
+      li.classList.toggle('fav', userData.isFavorite(item.id));
       const off = state.hidden.has(item.id) || !state.layers.has(layer.id);
       li.classList.toggle('off', off);
       li.querySelector('.eye').innerHTML = state.hidden.has(item.id) ? EYE_OFF : EYE_ON;
@@ -727,10 +774,37 @@ document.querySelectorAll('.toolbar button[data-region]').forEach((b) => b.addEv
   if (state.quiz?.mode !== 'locate') setRegion(b.dataset.region);
 }));
 window.addEventListener('keydown', (e) => {
-  if (e.key !== 'Escape') return;
-  if (!setupEl.hidden) { closeSetup(); return; }
-  document.body.classList.remove('list-open');
-  if (!state.quiz) select(null, { fly: false });
+  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+  if (e.key === 'Escape') {
+    if (!setupEl.hidden) { closeSetup(); return; }
+    if (state.quiz) { stopQuiz(); return; }
+    document.body.classList.remove('list-open');
+    if (!state.quiz) select(null, { fly: false });
+    return;
+  }
+  if (state.quiz) {
+    if (state.quiz.mode === 'choice') {
+      const q = state.quiz;
+      if (['1', '2', '3', '4'].includes(e.key) && !q.answered) {
+        const btn = $('#quizOptions')?.querySelectorAll('button')?.[parseInt(e.key, 10) - 1];
+        if (btn) btn.click();
+      } else if (e.key === 'Enter' && q.answered) {
+        const nextBtn = $('#quizNext');
+        if (nextBtn) nextBtn.click();
+      }
+    } else if (state.quiz.mode === 'locate') {
+      if (e.key === 'd' || e.key === 'D') {
+        const b = $('#locHint');
+        if (b && !b.disabled && !b.hidden) b.click();
+      } else if (e.key === 'p' || e.key === 'P') {
+        const b = $('#locSkip');
+        if (b && !b.disabled && !b.hidden) b.click();
+      } else if (e.key === 'r' || e.key === 'R') {
+        const b = $('#locPeel');
+        if (b && !b.disabled && !b.hidden) b.click();
+      }
+    }
+  }
 });
 
 /* ───────────────────────── Picking ───────────────────────── */
@@ -926,6 +1000,9 @@ function stopQuiz() {
   quizEl.hidden = true;
   locEl.hidden = true;
   resultEl.hidden = true;
+  const tq = $('#textQuiz');
+  if (tq) tq.hidden = true;
+  studyController?.stopTextQuiz();
   if (baseline) {
     const b = baseline;
     baseline = null;
@@ -962,7 +1039,7 @@ function nextQuestion() {
   const kind = M.get(id).item.kind;
   const same = pool.filter((p) => p !== id && M.get(p).item.kind === kind);
   const options = shuffle([id, ...shuffle(same).slice(0, 3)]);
-  $('#quizOptions').innerHTML = options.map((o) => `<button data-id="${o}">${esc(M.get(o).item.name)}</button>`).join('');
+  $('#quizOptions').innerHTML = options.map((o, idx) => `<button data-id="${o}"><span class="kbadge" aria-hidden="true">${idx + 1}</span>${esc(M.get(o).item.name)}</button>`).join('');
   $('#quizFeedback').innerHTML = '';
   $('#quizScore').textContent = `${q.score}/${q.total}`;
   select(id, { fly: true, panel: false });
@@ -975,6 +1052,7 @@ function answer(chosen) {
   q.total++;
   const ok = chosen === q.current;
   if (ok) q.score++;
+  userData.recordQuizResult(q.current, ok ? 5 : 1);
   $('#quizOptions').querySelectorAll('button').forEach((b) => {
     b.disabled = true;
     if (b.dataset.id === q.current) b.classList.add('right');
@@ -993,9 +1071,19 @@ const MAX_TRIES = 3;
 const kindGroup = (i) => (i.kind === 'musculo' || i.kind === 'osso' || i.kind === 'nervo' ? i.kind : 'outras');
 
 /** Estruturas que podem virar pergunta. Fáscias e ligamentos minúsculos (`label: false`) são ruins de clicar. */
-function locatePool({ region, kinds }) {
-  return ITEMS.filter((i) => i.id !== 'pele' && i.kind !== 'fascia' && i.label !== false
+function locatePool({ region, kinds, smart = 'all' }) {
+  let pool = ITEMS.filter((i) => i.id !== 'pele' && i.kind !== 'fascia' && i.label !== false
     && (region === 'todos' || (i.region !== 'todos' && inRegion(i, region))) && kinds.includes(kindGroup(i)));
+  if (smart === 'fav') {
+    pool = pool.filter((i) => userData.isFavorite(i.id));
+  } else if (smart === 'due' && studyController) {
+    const dueSet = new Set(studyController.getDueIds());
+    pool = pool.filter((i) => dueSet.has(i.id));
+  } else if (smart === 'weak' && studyController) {
+    const weakSet = new Set(studyController.getWeakIds());
+    pool = pool.filter((i) => weakSet.has(i.id));
+  }
+  return pool;
 }
 
 function startLocate(opts, only = null) {
@@ -1117,6 +1205,7 @@ function locateCorrect() {
   const assisted = c.tries > 0 || c.hint > 0;
   const pts = assisted ? 0.5 : 1;
   endQuestion(pts);
+  userData.recordQuizResult(c.id, assisted ? 3 : 5);
   state.flash.set(c.id, 'ok');
   applyHighlight();
   const { item } = M.get(c.id);
@@ -1127,6 +1216,7 @@ function locateCorrect() {
 function locateFail(skipped, clicked = null) {
   const c = state.quiz.cur;
   endQuestion(0);
+  userData.recordQuizResult(c.id, 1);
   state.flash.clear();
   select(c.id, { fly: true, panel: false });
   const { item } = M.get(c.id);
@@ -1243,16 +1333,17 @@ const SETUP_KEY = 'anatomia3d.quiz';
 const REGION_SHORT = { todos: 'Corpo', cabeca: 'Cabeça', tronco: 'Tronco', membro_sup: 'Braço' };
 const KIND_GROUPS = [['musculo', 'Músculos'], ['nervo', 'Nervos'], ['osso', 'Ossos'], ['outras', 'Ligamentos e outras']];
 const COUNT_OPTS = [10, 20, 30, 0]; // 0 = todas
-const setup = { mode: 'locate', region: 'cabeca', kinds: KIND_GROUPS.map((k) => k[0]), count: 10, latin: false };
+const setup = { mode: 'locate', region: 'cabeca', kinds: KIND_GROUPS.map((k) => k[0]), count: 10, latin: false, smart: 'all' };
 try {
   const s = JSON.parse(localStorage.getItem(SETUP_KEY) ?? '{}');
-  if (s.mode === 'locate' || s.mode === 'choice') setup.mode = s.mode;
+  if (s.mode === 'locate' || s.mode === 'choice' || s.mode === 'text') setup.mode = s.mode;
   if (Array.isArray(s.kinds)) {
     const k = s.kinds.filter((x) => KIND_GROUPS.some((g) => g[0] === x));
     if (k.length) setup.kinds = k;
   }
   if (COUNT_OPTS.includes(s.count)) setup.count = s.count;
   setup.latin = !!s.latin;
+  if (s.smart) setup.smart = s.smart;
 } catch { /* sem armazenamento: usa o padrão */ }
 
 function fillButtons(sel, entries) {
@@ -1264,14 +1355,17 @@ fillButtons('#qsCount', COUNT_OPTS.map((n) => [n, n || 'Todas']));
 
 function renderSetup() {
   document.querySelectorAll('#qsModes .mode-card').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.mode === setup.mode)));
-  $('#qsLocate').hidden = setup.mode !== 'locate';
+  $('#qsLocate').hidden = setup.mode === 'choice';
+  $('#qsSmartSeg')?.querySelectorAll('button').forEach((b) => {
+    b.classList.toggle('on', b.dataset.smart === (setup.smart || 'all'));
+  });
   if (!state.bodyReady && setup.region !== 'cabeca') setup.region = 'cabeca';
   $('#qsRegion').querySelectorAll('button').forEach((b) => {
     b.disabled = b.dataset.v !== 'cabeca' && !state.bodyReady;
     b.setAttribute('aria-pressed', String(b.dataset.v === setup.region));
   });
   $('#qsKinds').querySelectorAll('button').forEach((b) => {
-    const n = locatePool({ region: setup.region, kinds: [b.dataset.v] }).length;
+    const n = locatePool({ region: setup.region, kinds: [b.dataset.v], smart: setup.smart }).length;
     b.disabled = !n;
     b.querySelector('small').textContent = n;
     b.setAttribute('aria-pressed', String(n > 0 && setup.kinds.includes(b.dataset.v)));
@@ -1281,6 +1375,7 @@ function renderSetup() {
   const pool = locatePool(setup).length;
   const n = setup.count ? Math.min(setup.count, pool) : pool;
   if (setup.mode === 'choice') $('#qsInfo').textContent = 'Perguntas sem fim, na região que você está vendo.';
+  else if (setup.mode === 'text') $('#qsInfo').textContent = 'Quiz conceitual: inervação, ação motora e correlações clínicas.';
   else $('#qsInfo').textContent = pool ? `${n} pergunta${n === 1 ? '' : 's'} · ${pool} estruturas possíveis` : 'Nenhuma estrutura com esses filtros.';
   $('#qsStart').disabled = setup.mode === 'locate' && !pool;
 }
@@ -1308,6 +1403,10 @@ $('#qsKinds').addEventListener('click', (e) => {
   setup.kinds = setup.kinds.includes(k) ? setup.kinds.filter((x) => x !== k) : [...setup.kinds, k];
   renderSetup();
 });
+$('#qsSmartSeg')?.addEventListener('click', (e) => {
+  const b = e.target.closest('button');
+  if (b) { setup.smart = b.dataset.smart; renderSetup(); }
+});
 $('#qsCount').addEventListener('click', (e) => {
   const b = e.target.closest('button');
   if (b) { setup.count = Number(b.dataset.v); renderSetup(); }
@@ -1316,10 +1415,11 @@ $('#qsLatin').addEventListener('change', (e) => { setup.latin = e.target.checked
 $('#qsClose').onclick = closeSetup;
 setupEl.addEventListener('click', (e) => { if (e.target === setupEl) closeSetup(); });
 $('#qsStart').onclick = () => {
-  try { localStorage.setItem(SETUP_KEY, JSON.stringify({ mode: setup.mode, kinds: setup.kinds, count: setup.count, latin: setup.latin })); } catch { /* ignora */ }
+  try { localStorage.setItem(SETUP_KEY, JSON.stringify({ mode: setup.mode, kinds: setup.kinds, count: setup.count, latin: setup.latin, smart: setup.smart })); } catch { /* ignora */ }
   closeSetup();
   if (setup.mode === 'choice') startChoice();
-  else startLocate({ region: setup.region, kinds: [...setup.kinds], count: setup.count, latin: setup.latin });
+  else if (setup.mode === 'text') studyController?.startTextQuiz(setup);
+  else startLocate({ region: setup.region, kinds: [...setup.kinds], count: setup.count, latin: setup.latin, smart: setup.smart });
 };
 btnQuiz.onclick = () => (state.quiz ? stopQuiz() : openSetup());
 
@@ -1397,9 +1497,12 @@ function loadBody() {
     try {
       const t0 = performance.now();
       const parts = await loadAnatomy(window.__ANATOMY_BODY);
+      perf.bodyDataMs = Math.round(performance.now() - t0);
       bodyParts = parts;
+      const tBuild = performance.now();
       const S2 = new Surfaces(parts, { skin: 'pele_corpo', bones: TORSO_PARTS });
       buildItems(parts, S2, BODY_ITEMS);
+      perf.bodyStructuresMs = Math.round(performance.now() - tBuild);
       swapSkin(parts);
       state.bodyReady = true;
       document.body.classList.add('body-ready');
@@ -1407,7 +1510,7 @@ function loadBody() {
       applyVisibility();
       syncList();
       if (!setupEl.hidden) renderSetup();
-      console.info('[carga] corpo', Math.round(performance.now() - t0), 'ms');
+      console.info('[carga] corpo', perf.bodyStructuresMs, 'ms');
       // nervos: montados em segundo plano, depois que cabeça e corpo já estão na tela
       setBodyStatus('Montando os nervos…');
       const t1 = performance.now();
@@ -1417,7 +1520,9 @@ function loadBody() {
       } catch (err) {
         console.error('[nervos]', err);
       }
-      console.info('[carga] nervos', Math.round(performance.now() - t1), 'ms');
+      perf.nervesMs = Math.round(performance.now() - t1);
+      perf.totalReadyMs = Math.round(performance.now() - perf.start);
+      console.info('[carga] nervos', perf.nervesMs, 'ms · total', perf.totalReadyMs, 'ms');
       state.nervesReady = true;
       buildList();
       applyVisibility();
@@ -1437,15 +1542,28 @@ function loadBody() {
 /* ───────────────────────── Início ───────────────────────── */
 $('#appVersion').textContent = window.__APP_VERSION && window.__APP_VERSION !== 'dev' ? `versão ${window.__APP_VERSION}` : '';
 
+const perf = {
+  start: performance.now(),
+  dataMs: 0,
+  headStructuresMs: 0,
+  ttfiMs: 0,
+  bodyDataMs: 0,
+  bodyStructuresMs: 0,
+  nervesMs: 0,
+  totalReadyMs: 0,
+};
+
 async function init() {
   try {
     const t0 = performance.now();
     const parts = await loadAnatomy();
     headParts = parts;
     const t1 = performance.now();
+    perf.dataMs = Math.round(t1 - t0);
     const S = new Surfaces(parts);
     buildItems(parts, S, ALL_ITEMS.filter((i) => HEAD_IDS.has(i.id)));
-    console.info('[carga] dados', Math.round(t1 - t0), 'ms · estruturas', Math.round(performance.now() - t1), 'ms');
+    perf.headStructuresMs = Math.round(performance.now() - t1);
+    console.info('[carga] dados', perf.dataMs, 'ms · estruturas', perf.headStructuresMs, 'ms');
     buildList();
     renderChips();
     setDissect(1);
@@ -1456,9 +1574,13 @@ async function init() {
     controls.target.copy(goal.target);
     goal = null;
     frame();
+    perf.ttfiMs = Math.round(performance.now() - perf.start);
     $('#loading').classList.add('done');
     const jump = () => { if (goal) { camera.position.copy(goal.pos); controls.target.copy(goal.target); goal = null; controls.update(); } };
-    window.__app = { state, M, select, camera, controls, viewPreset, flyTo, renderer, scene, THREE, setDissect, setRegion, S, jump, startLocate, locateClick, locateHint, locatePool, openSetup, setup };
+    studyController = new StudyController({
+      state, M, select, camera, controls, viewPreset, flyTo, renderer, scene, THREE, setDissect, setRegion, S, jump, startLocate, locateClick, locateHint, locatePool, openSetup, setup, perf, ITEMS, INNERVATION, syncList
+    });
+    window.__app = { state, M, select, camera, controls, viewPreset, flyTo, renderer, scene, THREE, setDissect, setRegion, S, jump, startLocate, locateClick, locateHint, locatePool, openSetup, setup, perf, studyController, userData };
     setTimeout(loadBody, 250);
   } catch (err) {
     console.error(err);

@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Anatomia 3D</title>
   <meta name="description" content="Atlas 3D interativo de anatomia: cabeça, tronco e membros superiores, com músculos, nervos, ossos, ligamentos, fáscias e glândulas em camadas." />
+  <meta name="theme-color" content="#161922" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
+  <link rel="apple-touch-icon" href="assets/icon-192.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -75,6 +81,9 @@
           <input type="range" id="optSkin" min="0" max="100" value="14" />
           <output id="skinVal">14%</output>
         </label>
+        <button id="btnStudy" class="btn" title="Ferramentas de Estudo (Tours, Cortes, Cores, Backup)">📚 Estudo</button>
+        <button id="btnCapture" class="btn" title="Exportar imagem do modelo em PNG">📷</button>
+        <button id="btnShareLink" class="btn" title="Copiar link da vista atual">🔗</button>
         <button id="btnQuiz" class="primary">Modo quiz</button>
       </div>
 
@@ -136,10 +145,24 @@
               <b>Escolher o nome</b>
               <span>A estrutura aparece destacada e você escolhe o nome certo entre 4 opções.</span>
             </button>
+            <button type="button" class="mode-card" role="radio" data-mode="text">
+              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 7h8M8 11h8M8 15h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+              <b>Quiz Teórico</b>
+              <span>Perguntas conceituais de inervação, ação motora, inserção e aplicações clínicas.</span>
+            </button>
           </div>
           <div id="qsLocate">
             <div class="opt"><h3>Região</h3><div id="qsRegion" class="opt-seg"></div></div>
             <div class="opt"><h3>O que praticar</h3><div id="qsKinds" class="opt-seg"></div></div>
+            <div class="opt" id="qsFilterBox">
+              <h3>Filtros Inteligentes</h3>
+              <div class="opt-seg" id="qsSmartSeg">
+                <button type="button" data-smart="all" class="on">Todos</button>
+                <button type="button" data-smart="fav">⭐ Favoritos</button>
+                <button type="button" data-smart="due">🔁 Revisão de Hoje (SM-2)</button>
+                <button type="button" data-smart="weak">🎯 Pontos Fracos</button>
+              </div>
+            </div>
             <div class="opt"><h3>Perguntas</h3><div id="qsCount" class="opt-seg"></div></div>
             <label class="switch opt-switch"><input type="checkbox" id="qsLatin" /><span></span>Mostrar também o nome em latim</label>
             <p class="qs-tip">São 3 tentativas por pergunta: acertar de primeira vale 1 ponto; com erro ou dica, 0,5. Use a <b>dissecação</b> para tirar camadas e o <b>botão direito</b> (ou “Remover”) para ocultar o que estiver no caminho.</p>
@@ -175,6 +198,107 @@
         </div>
       </div>
 
+      <!-- Quiz: teórico (texto) -->
+      <section id="textQuiz" class="quiz text-quiz" hidden aria-live="polite">
+        <div class="quiz-head">
+          <strong id="tqPrompt">Pergunta teórica</strong>
+          <span id="tqScore">0/0</span>
+          <button id="tqExit" class="link">sair</button>
+        </div>
+        <div id="tqOptions" class="quiz-options"></div>
+        <div id="tqFeedback" class="quiz-feedback"></div>
+      </section>
+
+      <!-- Modal: Ferramentas de Estudo (F1) -->
+      <div id="studyModal" class="modal" hidden>
+        <div class="modal-card study-card" role="dialog" aria-modal="true" aria-labelledby="studyTitle">
+          <button id="studyClose" class="close" aria-label="Fechar">×</button>
+          <h2 id="studyTitle">Ferramentas de Estudo</h2>
+          <p class="modal-sub">Tours guiados, planos de corte, paletas de cores e backup de anotações.</p>
+
+          <div class="tab-bar" role="tablist">
+            <button type="button" class="tab-btn on" data-tab="tours" role="tab" aria-selected="true">Tours Guiados</button>
+            <button type="button" class="tab-btn" data-tab="clipping" role="tab" aria-selected="false">Planos de Corte</button>
+            <button type="button" class="tab-btn" data-tab="coloring" role="tab" aria-selected="false">Coloração</button>
+            <button type="button" class="tab-btn" data-tab="lists" role="tab" aria-selected="false">Vistas & Backup</button>
+          </div>
+
+          <!-- Aba 1: Tours -->
+          <div id="tabTours" class="tab-pane on">
+            <div id="toursList" class="tours-grid"></div>
+          </div>
+
+          <!-- Aba 2: Planos de Corte -->
+          <div id="tabClipping" class="tab-pane" hidden>
+            <div class="clip-ctrl">
+              <label><b>Eixo de Corte Anatômico:</b></label>
+              <div class="opt-seg" id="clipAxisSeg">
+                <button type="button" data-axis="none" class="on">Nenhum</button>
+                <button type="button" data-axis="sagittal">Sagital (X)</button>
+                <button type="button" data-axis="coronal">Coronal (Z)</button>
+                <button type="button" data-axis="axial">Axial (Y)</button>
+              </div>
+              <div class="clip-slider-box" id="clipSliderBox" hidden>
+                <label for="clipSlider">Posição do corte:</label>
+                <input type="range" id="clipSlider" min="-1" max="1" step="0.02" value="0">
+                <div class="clip-actions">
+                  <button type="button" id="clipInvert" class="btn">Inverter Direção</button>
+                  <button type="button" id="clipReset" class="btn">Desativar Corte</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Aba 3: Coloração -->
+          <div id="tabColoring" class="tab-pane" hidden>
+            <p class="opt-desc">Escolha como as cores das estruturas são exibidas no modelo 3D:</p>
+            <div class="mode-cards" id="colorModes">
+              <button type="button" class="mode-card on" data-color="camada">
+                <b>Por Camada (Padrão)</b>
+                <span>Diferenciação anatômica por profundidade da dissecação.</span>
+              </button>
+              <button type="button" data-color="nervo" class="mode-card">
+                <b>Por Nervo Inervador</b>
+                <span>Músculos inervados pelo mesmo nervo compartilham a mesma cor.</span>
+              </button>
+              <button type="button" data-color="regiao" class="mode-card">
+                <b>Por Região Corporal</b>
+                <span>Cores distintas para Cabeça, Tronco e Membros Superiores.</span>
+              </button>
+              <button type="button" data-color="grupo" class="mode-card">
+                <b>Por Grupo / Compartimento</b>
+                <span>Destaque funcional (Mímica, Mastigação, Manguito, Braço, Flexores...).</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Aba 4: Vistas & Backup -->
+          <div id="tabLists" class="tab-pane" hidden>
+            <div class="backup-box">
+              <h3>Backup de Dados do Estudante</h3>
+              <p>Exporte seus favoritos, anotações e progresso de repetição para arquivo JSON ou restaure em outro aparelho.</p>
+              <div class="modal-actions">
+                <button type="button" id="btnExportJson" class="btn">⬇ Exportar Dados (JSON)</button>
+                <label class="btn" style="cursor:pointer">
+                  ⬆ Importar Backup (JSON)
+                  <input type="file" id="fileImportJson" accept=".json" hidden>
+                </label>
+              </div>
+            </div>
+            <div class="saved-views-box">
+              <h3>Vistas Salvas</h3>
+              <div class="save-view-input">
+                <input id="newViewName" type="text" placeholder="Nome da vista (ex: Manguito rotador posterior)...">
+                <button type="button" id="btnSaveCurrentView" class="primary">Salvar Vista Atual</button>
+              </div>
+              <ul id="savedViewsList" class="saved-views-list"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="toast" class="toast" hidden aria-live="polite"></div>
+
       <!-- Painel de informações -->
       <aside id="info" class="info" aria-live="polite" aria-label="Detalhes da estrutura">
         <button id="infoClose" class="close" aria-label="Fechar">×</button>
@@ -189,5 +313,14 @@
   <script src="dist/anatomy-data.js"></script>
   <script src="dist/anatomy-nerves.js"></script>
   <script src="dist/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function (err) {
+          console.warn('[SW] Falha ao registrar ServiceWorker:', err);
+        });
+      });
+    }
+  </script>
 </body>
 </html>
