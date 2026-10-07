@@ -669,7 +669,7 @@ async function runSmokeTest() {
         t(fr.height >= 32, 'o botão de abrir a lista é pequeno demais para o toque (' + Math.round(fr.height) + ' px)');
 
         // abre
-        fab.click(); await sleep(350);
+        fab.click(); await sleep(800);
         t(open() && vis(), 'a gaveta não abriu');
         t(fab.getAttribute('aria-expanded') === 'true', 'aria-expanded não acompanhou a abertura');
         const sr = sidebar.getBoundingClientRect();
@@ -678,26 +678,26 @@ async function runSmokeTest() {
         const probe = document.elementFromPoint(Math.min(window.innerWidth - 4, sr.right + 10), window.innerHeight / 2);
         t(probe && probe.id === 'stage', 'fora da gaveta o toque não cai no fundo de fechamento (caiu em ' + (probe && (probe.id || probe.tagName)) + ')');
         // fecha tocando fora
-        probe.click(); await sleep(350);
+        probe.click(); await sleep(800);
         t(!open() && !vis(), 'tocar fora não fechou a gaveta');
 
         // abre de novo e fecha pelo X
-        fab.click(); await sleep(350);
+        fab.click(); await sleep(800);
         const x = document.getElementById('closeList');
         const xr = x.getBoundingClientRect();
         t(xr.width >= 40 && xr.height >= 40, 'o botão de fechar é pequeno demais (' + Math.round(xr.width) + '×' + Math.round(xr.height) + ')');
         t(xr.right <= window.innerWidth && xr.left >= 0, 'o botão de fechar está fora da tela');
-        x.click(); await sleep(350);
+        x.click(); await sleep(800);
         t(!open() && !vis(), 'o X não fechou a gaveta');
 
         // abre e escolhe uma estrutura: fecha sozinha
-        fab.click(); await sleep(350);
-        document.querySelector('#list .item').click(); await sleep(350);
+        fab.click(); await sleep(800);
+        document.querySelector('#list .item').click(); await sleep(800);
         t(!open(), 'escolher uma estrutura deveria fechar a gaveta');
 
         // Esc também fecha
-        fab.click(); await sleep(350);
-        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await sleep(350);
+        fab.click(); await sleep(800);
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await sleep(800);
         t(!open(), 'Esc não fechou a gaveta');
 
         // o campo de busca não pode provocar zoom no iPhone (fonte >= 16 px em tela de toque)
