@@ -15,6 +15,8 @@ const STATIC_ASSETS = [
   './dist/anatomy-body.js',
   './assets/icon-192.png',
   './assets/icon-512.png',
+  './assets/icon-maskable-512.png',
+  './assets/favicon.svg',
 ];
 
 self.addEventListener('install', (event) => {

@@ -27,7 +27,7 @@ BUILD = os.path.join(ROOT, "build")
 RELEASE = os.path.join(ROOT, "release")
 FILES = [
     "index.html", "styles.css", "manifest.webmanifest", "sw.js",
-    "assets/icon-192.png", "assets/icon-512.png",
+    "assets/icon-192.png", "assets/icon-512.png", "assets/icon-maskable-512.png", "assets/favicon.svg",
     "dist/version.js", "dist/app.js", "dist/anatomy-data.js",
     "dist/anatomy-nerves.js", "dist/anatomy-body.js",
 ]
@@ -48,36 +48,47 @@ def png(rgba):
             + chunk(b"IDAT", zlib.compress(raw, 9)) + chunk(b"IEND", b""))
 
 
-def draw_icon(n=768):
-    """Quadrado arredondado coral com uma caveira estilizada."""
+def draw_icon(n=768, maskable=False):
+    """Logo Body3D: um B feito de um osso minimalista e duas curvas (que também formam um 3), sobre azul-marinho.
+
+    Geometria no sistema do logo (grade 96x96, a mesma de assets/favicon.svg). `maskable`: fundo sem cantos
+    arredondados e marca menor, para caber na zona segura dos ícones adaptativos do Android.
+    """
     y, x = np.mgrid[0:n, 0:n].astype(np.float64)
     u, v = x / n, y / n
-    # fundo: quadrado arredondado com degradê
-    r = 0.2
-    dx = np.maximum(np.abs(u - 0.5) - (0.5 - r), 0)
-    dy = np.maximum(np.abs(v - 0.5) - (0.5 - r), 0)
-    bg = (dx * dx + dy * dy) <= r * r
-    t = (u + v) / 2
-    col = np.zeros((n, n, 3))
-    c0, c1 = np.array([255, 120, 96]), np.array([190, 50, 70])
-    for k in range(3):
-        col[..., k] = c0[k] * (1 - t) + c1[k] * t
+    if maskable:
+        bg = np.ones((n, n), dtype=bool)
+        k = 0.56
+    else:
+        r = 0.22
+        dx = np.maximum(np.abs(u - 0.5) - (0.5 - r), 0)
+        dy = np.maximum(np.abs(v - 0.5) - (0.5 - r), 0)
+        bg = (dx * dx + dy * dy) <= r * r
+        k = 0.6875
+    # pixel -> coordenadas do logo (o grupo do SVG é deslocado em (7, -1))
+    mx = ((u - 0.5) / k + 0.5) * 96 - 7
+    my = ((v - 0.5) / k + 0.5) * 96 + 1
+
+    def disc(cx, cy, rad):
+        return (mx - cx) ** 2 + (my - cy) ** 2 <= rad * rad
+
+    def box(x0, x1, y0, y1):
+        return (mx >= x0) & (mx <= x1) & (my >= y0) & (my <= y1)
+
+    def bowl(cx, cy, rad, x_from):
+        """Meia coroa circular (traço de 12) à direita de cx, mais as duas barras horizontais que a fecham."""
+        d2 = (mx - cx) ** 2 + (my - cy) ** 2
+        ring = (d2 >= (rad - 6) ** 2) & (d2 <= (rad + 6) ** 2) & (mx >= cx)
+        return ring | box(x_from, cx, cy - rad - 6, cy - rad + 6) | box(x_from, cx, cy + rad - 6, cy + rad + 6)
+
+    bone = box(12, 20, 11, 87) | disc(12, 11, 5.5) | disc(20, 11, 5.5) | disc(12, 87, 5.5) | disc(20, 87, 5.5)
+    bowls = bowl(50, 31, 17, 30) | bowl(52, 66, 18, 30)
+
     img = np.zeros((n, n, 4))
-    img[..., :3] = col
+    img[..., :3] = [11, 18, 32]
     img[..., 3] = bg * 255
-
-    def ell(cx, cy, rx, ry):
-        return ((u - cx) / rx) ** 2 + ((v - cy) / ry) ** 2 <= 1
-
-    bone = ell(0.5, 0.43, 0.25, 0.25) | ((np.abs(u - 0.5) < 0.15) & (v > 0.5) & (v < 0.78))
-    bone &= bg
-    img[bone, :3] = [250, 244, 232]
-    dark = ell(0.405, 0.46, 0.065, 0.075) | ell(0.595, 0.46, 0.065, 0.075)
-    nose = (np.abs(u - 0.5) < (v - 0.55) * 0.35) & (v > 0.55) & (v < 0.64)
-    teeth_gap = (np.abs(u - 0.5) < 0.004) & (v > 0.68) & (v < 0.78)
-    teeth_line = (np.abs(v - 0.68) < 0.004) & (np.abs(u - 0.5) < 0.15)
-    for m in (dark, nose, teeth_gap, teeth_line):
-        img[m & bone, :3] = [120, 40, 55]
+    img[bone & bg, :3] = [45, 212, 191]
+    img[bowls & bg, :3] = [242, 244, 247]
     return img.astype(np.uint8)
 
 

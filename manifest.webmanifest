@@ -1,25 +1,31 @@
 {
-  "name": "Anatomia 3D — Atlas Interativo",
-  "short_name": "Anatomia 3D",
+  "name": "Body3D — Atlas de Anatomia 3D",
+  "short_name": "Body3D",
   "description": "Atlas 3D interativo de anatomia humana: cabeça, tronco e membros superiores com dissecação em camadas e quiz.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#0f1117",
-  "theme_color": "#161922",
+  "background_color": "#0B1220",
+  "theme_color": "#0B1220",
   "icons": [
     {
       "src": "assets/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "assets/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

@@ -9,8 +9,6 @@ def main():
     assets_dir = os.path.join(ROOT, "assets")
     os.makedirs(assets_dir, exist_ok=True)
 
-    base = draw_icon(768)
-
     # 512x512
     # Para 512, reamostramos ou desenhamos em 512
     img512 = draw_icon(512)
@@ -23,6 +21,11 @@ def main():
     with open(os.path.join(assets_dir, "icon-192.png"), "wb") as f:
         f.write(png(img192))
     print("Gerado assets/icon-192.png")
+
+    # ícone "maskable" (fundo cheio e marca na zona segura) para os launchers adaptativos do Android
+    with open(os.path.join(assets_dir, "icon-maskable-512.png"), "wb") as f:
+        f.write(png(draw_icon(512, maskable=True)))
+    print("Gerado assets/icon-maskable-512.png")
 
 if __name__ == "__main__":
     main()

@@ -285,7 +285,7 @@ export class UserDataManager {
     const raw = isObj(parsed?.data) ? parsed.data : parsed;
     const known = ['favorites', 'notes', 'progress', 'savedViews', 'customLists', 'sessions'];
     if (!isObj(raw) || !known.some((k) => k in raw)) {
-      return { success: false, error: 'o arquivo não parece um backup do Anatomia 3D.' };
+      return { success: false, error: 'o arquivo não parece um backup do Body3D.' };
     }
     const inc = sanitize(raw);
     if (!merge) this.assign(sanitize({}));
