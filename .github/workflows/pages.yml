@@ -37,6 +37,11 @@ jobs:
           cp index.html styles.css manifest.webmanifest sw.js _site/
           cp -r dist _site/dist
           if [ -d assets ]; then cp -r assets _site/assets; fi
+          # versão visível no rodapé e cache do service worker novo a cada deploy (senão o PWA fica preso na versão velha)
+          V="$(node -p "require('./package.json').version.split('.').slice(0,2).join('.')").${{ github.run_number }}"
+          echo "window.__APP_VERSION = \"$V\";" > _site/dist/version.js
+          sed -i "s/const CACHE_NAME = '[^']*';/const CACHE_NAME = 'anatomia3d-v$V';/" _site/sw.js
+          grep -q "anatomia3d-v$V" _site/sw.js
 
       - name: Configurar Pages
         uses: actions/configure-pages@v5

@@ -21,6 +21,11 @@ npm test        # integridade do catálogo + testes das ferramentas de estudo + 
 npm start       # opcional: servidor local em http://localhost:5173
 ```
 
+## No celular (Android, HarmonyOS e outros)
+
+O caminho é o **site/PWA** (GitHub Pages), aberto no navegador do aparelho e instalável na tela inicial; não há app nativo.
+Decisão, o que falta e como publicar: [`docs/publicacao-web.md`](docs/publicacao-web.md).
+
 ## Executável para Windows (com atualização automática)
 
 **Download:** <https://github.com/KaueChristian/3DBody/releases/latest/download/Anatomia3D.exe>
@@ -212,7 +217,7 @@ python convert_nerves.py  # nervos da órbita: converte e empacota → anatomy-n
 | `tools/` | Pipeline de dados (Python) e do executável (`build_exe.py`, `launcher/Launcher.cs`) |
 | `.github/workflows/release.yml` | Gera e publica a release a cada push na `main` |
 | `tests/` | Testes: integridade do catálogo, dos tours e dos grupos (`test_catalog.js`), lógica das ferramentas de estudo (`test_study.js`) e fumaça no navegador (`smoke_test.js`; `SMOKE_FILE=1` abre por `file://`) |
-| `docs/` | Auditoria de conteúdo (`revisao-conteudo.md`), desempenho (`desempenho.md`) e concorrentes (`concorrentes.md`) |
+| `docs/` | Auditoria de conteúdo (`revisao-conteudo.md`), desempenho (`desempenho.md`), concorrentes (`concorrentes.md`) e publicação como site/celular (`publicacao-web.md`) |
 | `project_context.md` | Roteiro: mapa do que atlas de anatomia costumam ter e a ordem de desenvolvimento por fases |
 | `agents.md` | Guia para agentes de código e colaboradores: convenções, verificação, regras de conteúdo e de publicação |
 
