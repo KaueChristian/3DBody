@@ -647,10 +647,14 @@ async function runSmokeTest() {
     // 5b. Celular e tablet: a gaveta da lista precisa abrir E fechar (iPhone 11 = 414×896 é o mínimo; tablets até ~11,5")
     console.log('Testando a gaveta lateral em celular e tablet...');
     const drawerCheck = async (fn, label) => run(fn, label);
+    // sem transições: o estado aberto/fechado é o que importa, e o Chrome sem janela nem sempre anima (no Windows a
+    // gaveta ficava parada no meio da transição e o teste oscilava)
+    await evaluate("(() => { const st = document.createElement('style'); st.id = 'testNoAnim'; st.textContent = '*,*::after{transition:none!important;animation:none!important}'; document.head.appendChild(st); })()");
     const viewports = [
       ['iPhone 11 em pé (414×896)', { width: 414, height: 896, mobile: true }],
       ['iPhone 11 deitado (896×414)', { width: 896, height: 414, mobile: true }],
       ['tablet 11" em pé (834×1194)', { width: 834, height: 1194, mobile: true }],
+      ['tablet 2200×1440 em pé (720×1100)', { width: 720, height: 1100, mobile: true }],
     ];
     for (const [name, vp] of viewports) {
       await send('Emulation.setDeviceMetricsOverride', { ...vp, deviceScaleFactor: 2 });
@@ -662,7 +666,7 @@ async function runSmokeTest() {
         const sidebar = document.getElementById('sidebar');
         const open = () => document.body.classList.contains('list-open');
         const vis = () => { const r = sidebar.getBoundingClientRect(); return r.right > 40 && getComputedStyle(sidebar).visibility !== 'hidden'; };
-        t(!open() && !vis(), 'a gaveta deveria começar fechada');
+        t(!open() && !vis(), 'a gaveta deveria começar fechada (right ' + Math.round(sidebar.getBoundingClientRect().right) + ', ' + getComputedStyle(sidebar).visibility + ', ' + getComputedStyle(sidebar).transform + ', ' + innerWidth + ')');
         t(document.documentElement.scrollWidth <= window.innerWidth, 'a página tem rolagem horizontal');
         const fab = document.getElementById('openList');
         t(fab.getBoundingClientRect().width > 0, 'o botão de abrir a lista não aparece');
@@ -708,8 +712,93 @@ async function runSmokeTest() {
         t(document.getElementById('getApp').hidden || getComputedStyle(document.getElementById('getApp')).display === 'none', 'o botão do .exe apareceu no celular');
         return f;
       }, name);
+
+      // arrastar o dedo começando sobre os chips rola a gaveta (antes só a <ul> rolava, e no toque os chips ocupam
+      // a maior parte da altura: o gesto não fazia nada)
+      await send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });
+      const pt = await evaluate(`(async () => {
+        document.getElementById('openList').click(); await new Promise((r) => setTimeout(r, 800));
+        document.querySelector('#sidebar .side-scroll').scrollTop = 0; // a seleção anterior rolou a lista até o item
+        await new Promise((r) => setTimeout(r, 100));
+        const r = document.getElementById('chips').getBoundingClientRect();
+        const y = Math.round(Math.min(r.top + r.height / 2, innerHeight - 30));
+        return { x: Math.round(r.left + r.width / 2), y, dy: Math.min(300, y - 20) };
+      })()`);
+      await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: pt.x, y: pt.y }] });
+      for (let i = 1; i <= 12; i++) {
+        await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: pt.x, y: pt.y - (pt.dy * i) / 12 }] });
+        await new Promise((r) => setTimeout(r, 16));
+      }
+      await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+      const scrolled = await evaluate(`(async () => {
+        await new Promise((r) => setTimeout(r, 400));
+        const s = document.querySelector('#sidebar .side-scroll'); const v = s.scrollTop; s.scrollTop = 0;
+        const open = document.body.classList.contains('list-open');
+        document.getElementById('closeList').click(); await new Promise((r) => setTimeout(r, 800));
+        return { v, open };
+      })()`);
+      await send('Emulation.setTouchEmulationEnabled', { enabled: false });
+      if (!(scrolled.v > 40)) throw new Error(`${name}: arrastar o dedo sobre os chips não rolou a gaveta (scrollTop ${scrolled.v})`);
+      if (!scrolled.open) throw new Error(`${name}: rolar a gaveta na vertical a fechou`);
+      console.log(`  ✔ ${name}: a gaveta rola arrastando o dedo sobre os chips`);
     }
+
+    // 5c. Nada do palco se sobrepõe nem sai da tela em celular e tablet, em pé e deitado, com e sem a ficha aberta
+    //     (tablet 2200×1440 a 229 ppi ≈ 1100×720 em CSS; com as barras do navegador, ~1100×600 e ~720×1000)
+    const layouts = [
+      ['iPhone 11 em pé', { width: 414, height: 715 }], ['iPhone 11 deitado', { width: 896, height: 414 }],
+      ['celular 16:9 deitado', { width: 667, height: 375 }], ['tablet 11" em pé', { width: 834, height: 1194 }],
+      ['tablet 11" deitado', { width: 1194, height: 834 }], ['tablet 2200×1440 em pé', { width: 720, height: 1000 }],
+      ['tablet 2200×1440 deitado', { width: 1100, height: 600 }], ['tablet 2200×1440 a 1,5x deitado', { width: 1467, height: 830 }],
+      ['tablet 2200×1440 a 1,5x em pé', { width: 960, height: 1340 }],
+    ];
+    await send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 }); // tablets e celulares são de toque: alvos maiores
+    for (const [name, vp] of layouts) {
+      await send('Emulation.setDeviceMetricsOverride', { ...vp, mobile: true, deviceScaleFactor: 2 });
+      await new Promise((r) => setTimeout(r, 600));
+      await run(async () => {
+        const f = [];
+        const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+        const A = window.__app;
+        const sels = ['#openList', '.toolbar', '#bodyStatus', '#controls', '.hint', '#info.open', '.color-legend', '.floating-chip'];
+        const check = (estado) => {
+          const W = innerWidth, H = innerHeight;
+          const boxes = [];
+          for (const s of sels) {
+            const el = document.querySelector(s);
+            if (!el || el.hidden) continue;
+            const cs = getComputedStyle(el);
+            if (cs.display === 'none' || cs.visibility === 'hidden') continue;
+            const r = el.getBoundingClientRect();
+            if (r.width && r.height) boxes.push([s, r]);
+          }
+          for (const [s, r] of boxes) {
+            if (r.left < -1 || r.top < -1 || r.right > W + 1 || r.bottom > H + 1) f.push(`${estado}: ${s} sai da tela`);
+          }
+          for (let i = 0; i < boxes.length; i++) {
+            for (let j = i + 1; j < boxes.length; j++) {
+              const [a, P] = boxes[i], [b, Q] = boxes[j];
+              const ox = Math.min(P.right, Q.right) - Math.max(P.left, Q.left), oy = Math.min(P.bottom, Q.bottom) - Math.max(P.top, Q.top);
+              if (ox > 1 && oy > 1) f.push(`${estado}: ${a} sobrepõe ${b} (${Math.round(ox)}×${Math.round(oy)} px)`);
+            }
+          }
+          if (document.documentElement.scrollWidth > W) f.push(`${estado}: a página rola na horizontal`);
+        };
+        A.select(null, { fly: false }); await sleep(200);
+        check('sem seleção');
+        A.select('masseter', { fly: false }); await sleep(300);
+        check('com a ficha aberta');
+        const sc = A.studyController;
+        A.select(null, { fly: false });
+        sc.coloring.setMode('grupo'); sc.syncColorUi(); sc.clipping.setAxis('sagittal'); sc.syncClipUi(); sc.updateLegend(); await sleep(200);
+        check('com legenda e corte');
+        sc.coloring.setMode('camada'); sc.syncColorUi(); sc.resetClip(); sc.updateLegend();
+        return f;
+      }, `layout sem sobreposição: ${name} (${vp.width}×${vp.height})`);
+    }
+    await send('Emulation.setTouchEmulationEnabled', { enabled: false });
     await send('Emulation.clearDeviceMetricsOverride');
+    await evaluate("document.getElementById('testNoAnim')?.remove()");
     await run(async () => {
       const f = [];
       const side = document.getElementById('sidebar').getBoundingClientRect();
