@@ -17,7 +17,7 @@ Para editar o código:
 npm install
 npm run watch   # recompila ao salvar
 npm run build   # gera dist/app.js minificado
-npm test        # valida integridade do catálogo e executa teste de fumaça no navegador
+npm test        # integridade do catálogo + testes das ferramentas de estudo + fumaça no navegador (Chrome/Edge)
 npm start       # opcional: servidor local em http://localhost:5173
 ```
 
@@ -104,40 +104,60 @@ estão certas, mas espessuras e pequenos ramos são esquemáticos.
 
 ## Modo quiz
 
-O botão **Modo quiz** abre uma janela para escolher o tipo de treino:
+O botão **Modo quiz** abre uma janela para escolher o tipo de treino. Em todos os tipos há o filtro **Quais estruturas**
+(*Todas*, *⭐ Favoritas*, *🔁 Revisão de hoje*, *🎯 Pontos fracos*, *🆕 Ainda não estudadas* ou uma de *Minhas listas*), com a
+quantidade de estruturas de cada opção; opções sem nada ficam desabilitadas.
 
 - **Localizar** — aparece o *nome* de um músculo, osso, ligamento etc. e a pessoa precisa **clicar nele no modelo 3D**.
   Não há alternativas para eliminar. Configurações: região (corpo, cabeça, tronco, braço), o que praticar (músculos,
   nervos, ossos, ligamentos e outras), número de perguntas (10, 20, 30 ou todas) e se mostra o nome em latim.
-  - **Filtros inteligentes**: pratique com *Todos*, apenas *⭐ Favoritos*, *🔁 Revisão de Hoje (SM-2)* ou *🎯 Pontos Fracos*.
   - **3 tentativas** por pergunta. Acertar de primeira vale **1 ponto**; acertar com erro ou dica, **0,5**; esgotar as
     tentativas (ou pular) revela a resposta e vale 0. Clicar de novo na mesma estrutura errada não gasta tentativa.
   - **Dissecação e camadas** continuam disponíveis para chegar às estruturas profundas. O botão **Remover** (ou o
-    **botão direito** do mouse) oculta o que estiver no caminho; **Restaurar** traz tudo de volta.
+    **botão direito** do mouse) oculta o que estiver no caminho; **Restaurar** traz tudo de volta. Com um **plano de corte**
+    ativo, o clique ignora o que foi cortado.
   - **Dica**: a 1ª mostra a camada em que a estrutura está (e deixa visíveis só ela e as mais profundas); a 2ª gira o
     modelo para o lado em que ela aparece. Qualquer dica limita a pergunta a 0,5 ponto.
   - Ao final: pontuação, tempo, acertos de primeira, com ajuda e erradas, lista **“Para revisar”** e o botão
     **Treinar só essas**. A pele e as fáscias translúcidas não atrapalham o clique.
-- **Escolher o nome** — a estrutura aparece destacada e a pessoa escolhe o nome entre 4 alternativas (sem fim).
-- **Quiz Teórico** — perguntas conceituais de fixação: inervação motora (músculo ↔ nervo), ação funcional, inserções e correlações clínicas.
+- **Escolher o nome** — a estrutura aparece destacada e a pessoa escolhe o nome entre 4 alternativas, sem fim e sem
+  repetir estrutura até acabar as do filtro. Atalhos: **1–4** respondem, **Enter** avança.
+- **Quiz teórico** — perguntas de texto geradas a partir das fichas, com 4 alternativas e **uma só correta**
+  (as erradas nunca são nervos/músculos que também seriam resposta). Para **músculos**: qual nervo o inerva, qual tem esta
+  ação / origem / inserção, a que músculo se refere uma observação. Para **nervos**: qual destes músculos ele inerva, a lesão
+  de qual nervo causa um quadro, qual nervo cuida de uma sensibilidade. Enunciados que citariam o nome da resposta são
+  descartados. Respeita região, tipos (só músculos e nervos), quantidade e filtro; no fim mostra o resultado e **Treinar só as erradas**.
 
-Nos tipos de quiz visual os nomes da lista e os rótulos ficam escondidos durante a pergunta. A última configuração é lembrada no navegador. O progresso alimenta o algoritmo de repetição espaçada SuperMemo-2 (SM-2).
+Durante o quiz os nomes da lista e os rótulos ficam escondidos, a coloração temática é suspensa e a região fica fixa.
+A última configuração é lembrada no navegador. **Toda resposta** (nos três tipos) alimenta o progresso por estrutura e a
+**repetição espaçada** (SM-2 simplificado); cada rodada entra no histórico.
 
 ## Ferramentas de estudo (versão 2.1)
 
-O botão **📚 Estudo** na barra de ferramentas abre um painel com recursos para fixação e dissecação avançada:
+O botão **📚 Estudo** abre um painel com abas. Tudo funciona offline e os dados do estudante ficam só no navegador
+(`localStorage`), com exportação e importação em JSON.
 
-- **Tours guiados didáticos**: 6 roteiros passo a passo com posicionamento automático de câmera, controle de camadas e explicações clínicas integradas:
-  1. *Manguito Rotador* (ombro)
-  2. *Plexo Braquial* (raízes a nervos terminais)
-  3. *Nervo Radial e Extensão* (trajeto espiral ao antebraço)
-  4. *Músculos da Mastigação e Nervo Mandibular (V3)*
-  5. *Nervo Facial (VII) e Mímica Facial*
-  6. *Parede Abdominal e Inervação Segmentar*
-- **Planos de corte anatômico**: planos interativos sagital (X), coronal (Z) e axial (Y) com controle deslizante contínuo e botão para inverter a direção do corte.
-- **Coloração temática**: visualize as estruturas coloridas por camada padrão, por **nervo inervador** (músculos com a mesma inervação recebem cores idênticas), por **região corporal** ou por **grupo muscular funcional**.
-- **Favoritos, anotações e backup JSON**: adicione estruturas aos favoritos com um clique (⭐), registre observações de estudo diretamente na ficha técnica e exporte/importe todos os dados em arquivo `.json`.
-- **Captura e compartilhamento**: exportação direta da vista 3D em PNG (📷) e links com estado completo da cena codificado na URL (🔗 `#hash`). Impressão formatada das fichas anatômicas com suporte a `@media print` (🖨).
+- **Tours** — 6 roteiros com 24 passos (manguito rotador, plexo braquial, nervo radial, mastigação e V3, nervo facial e
+  mímica, parede abdominal). Cada passo escolhe região, dissecação e a estrutura em destaque; a câmera enquadra a estrutura
+  (cópia esquerda) pelo lado indicado. Setas ← → navegam, **Esc** sai. Os textos dos tours são resumos didáticos que ainda
+  **não passaram** pela revisão de fontes (`docs/revisao-conteudo.md` cobre as fichas): confira nas referências antes de citar.
+- **Progresso** — estruturas estudadas, precisão geral, revisões que vencem hoje (e amanhã/7 dias), pontos fracos, estruturas
+  bem fixadas e ainda não estudadas, lista de **onde você mais erra** (com as últimas respostas) e o **histórico** das últimas
+  rodadas. Botões levam direto ao quiz com o filtro certo. *Ponto fraco* = errou a última vez **ou** acertou menos de 70%
+  das últimas 5 respostas; ao voltar a acertar, sai da lista.
+- **Listas** — listas de estudo próprias (“Prova de membro superior”): adicione pelo nome, pela seleção atual ou pelos
+  favoritos e treine só com ela em qualquer tipo de quiz.
+- **Corte** — plano **sagital**, **coronal** ou **axial** com controle deslizante (o curso vem do tamanho do modelo) e
+  botão para inverter o lado. Esconde um dos lados do plano; as malhas são cascas, então o corte mostra o interior delas,
+  sem desenhar a superfície da fatia. Um aviso na tela lembra que há corte ativo.
+- **Cores** — por camada (padrão), por **nervo que inerva** (nervo principal do músculo), por **região** ou por **grupo /
+  compartimento** (18 grupos definidos músculo a músculo em `src/study/groups.js`). A cor sobrevive a seleção e hover e há
+  legenda na tela.
+- **Vistas e backup** — uma *vista* guarda região, dissecação, camadas, estruturas ocultas, opacidade da pele, rótulos,
+  câmera, corte, coloração e seleção; o mesmo estado vai no `#hash` da URL. O backup JSON leva favoritos, anotações,
+  progresso, listas, vistas e histórico (a importação valida o arquivo e descarta o que não reconhece).
+- **Na ficha**: ★ favoritar, 🖨 imprimir e anotações pessoais (texto puro). **Na barra**: 📷 exporta PNG da vista e 🔗 copia o
+  link da vista (em `file://` o link só abre neste computador; para compartilhar, use a versão web).
 
 ## De onde vêm os modelos
 
@@ -187,10 +207,11 @@ python convert_nerves.py  # nervos da órbita: converte e empacota → anatomy-n
 | `src/proc.js` | Geração das malhas procedurais (fita, lâmina, anel, tubo) |
 | `src/surfaces.js` | Projeção de pontos sobre a pele e o esqueleto (BVH) |
 | `src/anatomy.js` | Carrega e descompacta as malhas reais |
-| `src/main.js` | Cena, interface, rótulos e quiz |
+| `src/main.js` | Cena, interface, rótulos e quizzes de localizar e de escolher o nome |
+| `src/study/` | Ferramentas de estudo: `ui.js` (controlador e modal), `storage.js`, `sm2.js`, `views.js`, `clipping.js`, `coloring.js` + `groups.js`, `tours.js`, `text-quiz.js` + `text-quiz-ui.js`, `lists-ui.js`, `progress-ui.js`, `export.js` |
 | `tools/` | Pipeline de dados (Python) e do executável (`build_exe.py`, `launcher/Launcher.cs`) |
 | `.github/workflows/release.yml` | Gera e publica a release a cada push na `main` |
-| `tests/` | Testes automatizados: integridade do catálogo (`test_catalog.js`) e fumaça no navegador (`smoke_test.js`) |
+| `tests/` | Testes: integridade do catálogo, dos tours e dos grupos (`test_catalog.js`), lógica das ferramentas de estudo (`test_study.js`) e fumaça no navegador (`smoke_test.js`; `SMOKE_FILE=1` abre por `file://`) |
 | `docs/` | Auditoria de conteúdo (`revisao-conteudo.md`), desempenho (`desempenho.md`) e concorrentes (`concorrentes.md`) |
 | `project_context.md` | Roteiro: mapa do que atlas de anatomia costumam ter e a ordem de desenvolvimento por fases |
 | `agents.md` | Guia para agentes de código e colaboradores: convenções, verificação, regras de conteúdo e de publicação |

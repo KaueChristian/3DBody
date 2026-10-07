@@ -1,117 +1,129 @@
 /**
- * Modos de coloração temática do modelo 3D (F1.7).
- * Alterna as cores das estruturas por: Camada, Nervo inervador, Região ou Grupo funcional.
+ * Modos de coloração do modelo 3D (F1.7): por camada (padrão), nervo que inerva, região ou grupo funcional.
+ *
+ * O gerenciador não mexe nos materiais: monta um mapa `id → cor` que o `applyHighlight` do main.js usa no lugar da cor
+ * base. Assim a cor sobrevive a hover, seleção e dissecação. Também gera os itens da legenda.
  */
 import * as THREE from 'three';
+import { GROUPS, MUSCLE_GROUP, GROUP_LABEL, groupColor } from './groups.js';
 
-// Paleta por região
-const REGION_COLORS = {
-  cabeca: new THREE.Color('#4d88e6'),
-  tronco: new THREE.Color('#42b883'),
-  membro_sup: new THREE.Color('#e68a3e'),
-  todos: new THREE.Color('#9c7be6'),
-};
+const REGION_ORDER = ['cabeca', 'tronco', 'membro_sup'];
+const REGION_COLORS = { cabeca: '#4d88e6', tronco: '#42b883', membro_sup: '#e68a3e', varias: '#9c7be6' };
 
-// Paleta por grupos musculares funcionais
-const GROUP_COLORS = {
-  mimica: new THREE.Color('#e05a47'),
-  mastigacao: new THREE.Color('#a43a6d'),
-  pescoco: new THREE.Color('#b3624c'),
-  torax: new THREE.Color('#d45643'),
-  dorso: new THREE.Color('#7a3d8f'),
-  ombro: new THREE.Color('#e5833c'),
-  braco_ant: new THREE.Color('#389cd4'),
-  braco_post: new THREE.Color('#2e7bb0'),
-  antibraco_flex: new THREE.Color('#3ea877'),
-  antibraco_ext: new THREE.Color('#84b83b'),
-  mao: new THREE.Color('#e6a83e'),
-  abdome: new THREE.Color('#b54f67'),
-  profundo: new THREE.Color('#8c3b52'),
-};
+export const MODES = [
+  ['camada', 'Por camada (padrão)'],
+  ['nervo', 'Por nervo que inerva'],
+  ['regiao', 'Por região do corpo'],
+  ['grupo', 'Por grupo / compartimento'],
+];
 
-function hashColor(str, s = 0.65, l = 0.55) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  const h = Math.abs(hash % 360) / 360;
-  return new THREE.Color().setHSL(h, s, l);
-}
-
-function getGroupKey(item) {
-  const id = item.id;
-  if (['frontal', 'orbicular_olho', 'nasal', 'orbicular_boca', 'zigomatico_maior', 'bucinador', 'platisma', 'risorio'].some((k) => id.includes(k))) return 'mimica';
-  if (['masseter', 'temporal', 'pterigoideo'].some((k) => id.includes(k))) return 'mastigacao';
-  if (id.includes('peitoral') || id.includes('subclavio') || id.includes('intercostal')) return 'torax';
-  if (id.includes('trapezio') || id.includes('dorsal') || id.includes('romboid') || id.includes('esplenio') || id.includes('eretor')) return 'dorso';
-  if (id.includes('deltoide') || id.includes('supraespinhal') || id.includes('infraespinhal') || id.includes('redondo') || id.includes('subescapular')) return 'ombro';
-  if (id.includes('biceps_braquial') || id.includes('braquial') || id.includes('coracobraquial')) return 'braco_ant';
-  if (id.includes('triceps')) return 'braco_post';
-  if (id.includes('flexor') || id.includes('pronador') || id.includes('palmar')) return 'antibraco_flex';
-  if (id.includes('extensor') || id.includes('supinador') || id.includes('braquiorradial')) return 'antibraco_ext';
-  if (id.includes('obliquo') || id.includes('transverso_abd') || id.includes('reto_abd') || id.includes('piramidal')) return 'abdome';
-  if (id.includes('interosseo') || id.includes('lumbrical') || id.includes('tenar') || id.includes('hipotenar')) return 'mao';
-  return 'profundo';
+/** Matiz espaçada pelo ângulo áureo; luminosidade alternada para nervos vizinhos na lista não se confundirem. */
+function nerveColor(index) {
+  const hue = (index * 137.508) % 360;
+  const light = [56, 66, 47][index % 3];
+  return `hsl(${hue.toFixed(0)}, 64%, ${light}%)`;
 }
 
 export class ColoringManager {
   /**
-   * @param {Map<string, object>} structuresMap - Mapa M de estruturas
-   * @param {Map<string, Array<{nervo: string}>>} innervationMap - Mapa INNERVATION
+   * @param {object} app
+   * @param {Map<string, any>} app.M estruturas construídas
+   * @param {Map<string, object>} app.catalog todas as entradas do catálogo, por id
+   * @param {Map<string, Array<{nervo: string}>>} app.INNERVATION
+   * @param {Array<object>} app.LAYERS
+   * @param {(item: object, region: string) => boolean} app.inRegion
+   * @param {object} app.state
+   * @param {(map: Map<string, THREE.Color> | null) => void} app.setColorOverrides
    */
-  constructor(structuresMap, innervationMap) {
-    this.M = structuresMap;
-    this.INNERVATION = innervationMap;
-    this.mode = 'camada'; // 'camada' | 'nervo' | 'regiao' | 'grupo'
-    this.nerveColors = new Map();
+  constructor(app) {
+    this.app = app;
+    this.mode = 'camada';
+    this.overrides = new Map();
+    this.legendEntries = [];
+    this.onChange = null; // ouvinte: legenda e botões
   }
 
   setMode(mode) {
+    if (!MODES.some(([m]) => m === mode)) mode = 'camada';
     this.mode = mode;
     this.apply();
   }
 
-  getNerveColor(nerveId) {
-    if (!this.nerveColors.has(nerveId)) {
-      this.nerveColors.set(nerveId, hashColor(nerveId));
+  /** Recalcula o mapa de cores (chamar de novo quando o corpo e os nervos terminarem de carregar). */
+  apply() {
+    const { M, INNERVATION } = this.app;
+    this.overrides = new Map();
+    const counts = new Map(); // chave da legenda → { color, label, n }
+    const add = (key, color, label, id) => {
+      let e = counts.get(key);
+      if (!e) counts.set(key, (e = { key, color, label, ids: [] }));
+      e.ids.push(id);
+    };
+
+    if (this.mode !== 'camada') {
+      const nerveIndex = this.mode === 'nervo' ? this.nerveIndex() : null;
+      for (const [id, m] of M) {
+        const item = m.item;
+        if (id === 'pele') continue;
+        if (this.mode === 'nervo') {
+          if (item.kind !== 'musculo') continue;
+          const first = INNERVATION.get(id)?.[0]?.nervo;
+          const nerve = first && this.app.catalog.get(first);
+          if (!nerve) continue;
+          const color = nerveColor(nerveIndex.get(first));
+          this.overrides.set(id, new THREE.Color(color));
+          add(first, color, nerve.name, id);
+        } else if (this.mode === 'regiao') {
+          const regs = Array.isArray(item.region) ? item.region : [item.region];
+          const key = regs.length === 1 && REGION_COLORS[regs[0]] ? regs[0] : 'varias';
+          const color = REGION_COLORS[key];
+          this.overrides.set(id, new THREE.Color(color));
+          add(key, color, key === 'varias' ? 'Mais de uma região' : this.regionLabel(key), id);
+        } else if (this.mode === 'grupo') {
+          if (item.kind !== 'musculo') continue;
+          const g = MUSCLE_GROUP.get(id);
+          if (!g) continue;
+          const color = groupColor(g);
+          this.overrides.set(id, new THREE.Color(color));
+          add(g, color, GROUP_LABEL.get(g), id);
+        }
+      }
     }
-    return this.nerveColors.get(nerveId);
+    this.legendEntries = this.sortLegend([...counts.values()]);
+    this.app.setColorOverrides(this.overrides.size ? this.overrides : null);
+    this.onChange?.(this);
   }
 
-  apply() {
-    for (const [id, m] of this.M.entries()) {
-      const item = m.item;
-      let targetColor = m.color; // cor padrão original
+  regionLabel(key) {
+    return { cabeca: 'Cabeça e pescoço', tronco: 'Tronco', membro_sup: 'Membro superior' }[key] ?? key;
+  }
 
-      if (this.mode === 'camada') {
-        targetColor = m.color;
-      } else if (this.mode === 'nervo') {
-        if (item.kind === 'musculo') {
-          const nerves = this.INNERVATION.get(id);
-          if (nerves && nerves.length > 0) {
-            targetColor = this.getNerveColor(nerves[0].nervo);
-          }
-        } else if (item.kind === 'nervo') {
-          targetColor = new THREE.Color('#f5d442');
-        } else if (item.kind === 'osso') {
-          targetColor = new THREE.Color('#c9c0aa');
-        }
-      } else if (this.mode === 'regiao') {
-        const reg = Array.isArray(item.region) ? item.region[0] : item.region;
-        if (REGION_COLORS[reg]) {
-          targetColor = REGION_COLORS[reg];
-        }
-      } else if (this.mode === 'grupo') {
-        if (item.kind === 'musculo') {
-          const groupKey = getGroupKey(item);
-          targetColor = GROUP_COLORS[groupKey] || m.color;
-        }
-      }
-
-      // Atualiza os materiais das malhas
-      for (const mesh of m.meshes) {
-        if (mesh.material && mesh.material.color) {
-          mesh.material.color.copy(targetColor);
-        }
-      }
+  /** Índice estável de cada nervo que inerva ao menos um músculo (ordem do mapa `INNERVATION`, que é fixa). */
+  nerveIndex() {
+    const idx = new Map();
+    for (const links of this.app.INNERVATION.values()) {
+      const n = links[0]?.nervo;
+      if (n && !idx.has(n)) idx.set(n, idx.size);
     }
+    return idx;
+  }
+
+  sortLegend(entries) {
+    if (this.mode === 'regiao') {
+      const order = [...REGION_ORDER, 'varias'];
+      return entries.sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key));
+    }
+    if (this.mode === 'grupo') {
+      return entries.sort((a, b) => GROUPS.findIndex((g) => g.id === a.key) - GROUPS.findIndex((g) => g.id === b.key));
+    }
+    return entries.sort((a, b) => b.ids.length - a.ids.length || a.label.localeCompare(b.label, 'pt-BR'));
+  }
+
+  /** Itens da legenda restritos ao que existe na região mostrada (com a contagem). */
+  legend(region = 'todos') {
+    const { M, inRegion } = this.app;
+    return this.legendEntries
+      .map((e) => ({ ...e, n: e.ids.filter((id) => M.has(id) && inRegion(M.get(id).item, region)).length }))
+      .filter((e) => e.n > 0);
   }
 }

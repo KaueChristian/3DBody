@@ -24,6 +24,14 @@ export const LAYERS = [
   { id: 'osso', label: 'Ossos e dentes', depth: 5, color: '#ece3cc' },
 ];
 
+/**
+ * Camadas visíveis em cada nível de dissecação (0 = pele opaca … 6 = só ossos). Fonte única: a interface, o
+ * estado salvo na URL e os testes usam esta mesma fórmula.
+ */
+export function layersForDissect(v) {
+  return LAYERS.filter((l) => (v === 0 ? true : v === 1 ? l.id !== 'fascia' : l.depth >= v - 1)).map((l) => l.id);
+}
+
 export const KIND_LABEL = {
   musculo: 'Músculo',
   nervo: 'Nervo',

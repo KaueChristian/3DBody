@@ -116,8 +116,11 @@ async function runSmokeTest() {
   console.log(`Usando navegador: ${browserPath}`);
 
   const { server, port } = await startServer();
-  const url = `http://127.0.0.1:${port}/index.html`;
-  console.log(`Servidor local ativo em: ${url}`);
+  // SMOKE_FILE=1 abre o index.html por file:// (como no duplo clique do usuário) em vez de usar o servidor
+  const url = process.env.SMOKE_FILE
+    ? require('url').pathToFileURL(path.resolve(__dirname, '..', 'index.html')).href
+    : `http://127.0.0.1:${port}/index.html`;
+  console.log(`${process.env.SMOKE_FILE ? 'Abrindo por file://' : 'Servidor local ativo em'}: ${url}`);
 
   const debugPort = 9333 + Math.floor(Math.random() * 500);
   const browserProc = spawn(browserPath, [
@@ -320,64 +323,325 @@ async function runSmokeTest() {
     }
     console.log('✔ Saída do Quiz executada com sucesso.');
 
-    // 5. Testar Ferramentas de Estudo (F1.1 a F1.10)
+    // 5. Ferramentas de estudo (F1): dirigidas pela interface, não só pela API
     console.log('Testando Ferramentas de Estudo (F1)...');
-    const studyTestRes = await evaluate(`
-      (() => {
-        const app = window.__app;
-        if (!app.studyController || !app.userData) {
-          return { ok: false, error: 'studyController ou userData não encontrados em window.__app' };
-        }
 
-        // Testar Favoritos e Anotações
-        app.userData.toggleFavorite('frontal');
-        const isFav = app.userData.isFavorite('frontal');
-        app.userData.setNote('frontal', 'Teste de anotação');
-        const note = app.userData.getNote('frontal');
+    // As funções abaixo são serializadas e executadas dentro da página (sem acesso às variáveis deste arquivo).
+    const run = async (fn, label) => {
+      const failures = await evaluate(`(${fn.toString()})()`);
+      if (!Array.isArray(failures)) throw new Error(`${label}: resposta inesperada ${JSON.stringify(failures)}`);
+      if (failures.length) throw new Error(`${label}:\n    - ${failures.join('\n    - ')}`);
+      console.log(`  ✔ ${label}`);
+    };
 
-        // Testar SM-2
-        const prog = app.userData.recordQuizResult('frontal', 5);
-
-        // Testar Exportação e Importação JSON
-        const json = app.userData.exportJson();
-        const importRes = app.userData.importJson(json);
-
-        // Testar Planos de Corte
-        app.studyController.clipping.setAxis('sagittal');
-        const clipOk = app.renderer.clippingPlanes.length === 1;
-        app.studyController.clipping.reset();
-
-        // Testar Coloração
-        app.studyController.coloring.setMode('regiao');
-        app.studyController.coloring.setMode('camada');
-
-        // Testar Modal de Estudo
-        document.getElementById('btnStudy').click();
-        const modalOpen = !document.getElementById('studyModal').hasAttribute('hidden');
-        document.getElementById('studyClose').click();
-        const modalClosed = document.getElementById('studyModal').hasAttribute('hidden');
-
-        // Testar Tour
-        app.studyController.startTour('manguito');
-        const tourActive = app.studyController.activeTour !== null;
-        app.studyController.stopTour();
-
-        // Testar Quiz Teórico (Texto)
-        app.studyController.startTextQuiz({ region: 'cabeca', kinds: ['musculo'], count: 5 });
-        const textQuizActive = app.studyController.textQuizState !== null && !document.getElementById('textQuiz').hasAttribute('hidden');
-        app.studyController.stopTextQuiz();
-        const textQuizStopped = document.getElementById('textQuiz').hasAttribute('hidden');
-
-        return {
-          ok: isFav && note === 'Teste de anotação' && prog.reps === 1 && importRes.success && clipOk && modalOpen && modalClosed && tourActive && textQuizActive && textQuizStopped
-        };
-      })()
-    `);
-
-    if (!studyTestRes || !studyTestRes.ok) {
-      throw new Error(`Falha nos testes de Ferramentas de Estudo (F1): ${JSON.stringify(studyTestRes)}`);
+    // o corpo e os nervos carregam em segundo plano; vários testes abaixo dependem deles
+    for (let i = 0; i < 160; i++) {
+      if (await evaluate('Boolean(window.__app.state.nervesReady)')) break;
+      await new Promise((r) => setTimeout(r, 250));
     }
-    console.log('✔ Ferramentas de Estudo (F1.1-F1.10) validadas com sucesso no navegador.');
+
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
+      t(app.studyController && app.userData, 'studyController ou userData ausentes em window.__app');
+      document.getElementById('btnStudy').click();
+      t(!document.getElementById('studyModal').hidden, 'o modal de estudo não abriu');
+      const cards = [...document.querySelectorAll('.tour-card')];
+      t(cards.length === 6, `esperava 6 tours, veio ${cards.length}`);
+      for (const c of cards) {
+        t(!/undefined|null|NaN/.test(c.innerText), `cartão de tour com texto quebrado: ${c.innerText.slice(0, 60)}`);
+        t((c.querySelector('.tour-desc')?.innerText.length ?? 0) > 20, 'cartão de tour sem descrição');
+      }
+      for (const tab of document.querySelectorAll('#studyModal .tab-btn')) {
+        tab.click();
+        const pane = document.querySelector('#studyModal .tab-pane[data-pane="' + tab.dataset.tab + '"]');
+        t(pane && !pane.hidden, 'aba "' + tab.dataset.tab + '" não abriu seu painel');
+        t(document.querySelectorAll('#studyModal .tab-pane:not([hidden])').length === 1, 'mais de um painel visível ao abrir "' + tab.dataset.tab + '"');
+        t(pane && /\S/.test(pane.innerText), 'painel "' + tab.dataset.tab + '" vazio');
+        t(!/undefined|NaN/.test(pane?.innerText ?? ''), 'painel "' + tab.dataset.tab + '" com texto quebrado');
+      }
+      document.getElementById('studyClose').click();
+      t(document.getElementById('studyModal').hidden, 'o modal de estudo não fechou');
+      return f;
+    }, 'modal, abas e cartões dos tours');
+
+    await run(async () => {
+      const f = [];
+      const app = window.__app;
+      const sc = app.studyController;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      for (const id of ['manguito', 'plexo_braquial', 'nervo_radial', 'mastigacao_v3', 'facial_mimica', 'parede_abdominal']) {
+        sc.startTour(id);
+        const n = sc.activeTour.steps.length;
+        for (let i = 0; i < n; i++) {
+          await sleep(30);
+          app.jump();
+          app.controls.update();
+          const step = sc.activeTour.steps[i];
+          const where = id + ' passo ' + (i + 1);
+          if (step.highlight) {
+            if (app.state.selected !== step.highlight) f.push(where + ': destacou "' + app.state.selected + '" em vez de "' + step.highlight + '"');
+            const m = app.M.get(step.highlight);
+            const near = Math.min(...m.anchors.map((a) => a.pos.distanceTo(app.controls.target)));
+            if (!(near < 2.5)) f.push(where + ': a câmera está a ' + near.toFixed(1) + ' da estrutura (não enquadrou)');
+          }
+          if (document.getElementById('tourBox').hidden) f.push(where + ': painel do tour escondido');
+          if (i < n - 1) sc.tourStep(1);
+        }
+        sc.stopTour();
+      }
+      if (!document.getElementById('tourBox').hidden) f.push('o painel do tour continua aberto depois de sair');
+      return f;
+    }, 'os 24 passos dos 6 tours destacam e enquadram a estrutura');
+
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
+      const ud = app.userData;
+      const sc = app.studyController;
+      ud.setNote('frontal', 'Teste de anotação');
+      ud.toggleFavorite('frontal');
+      t(ud.isFavorite('frontal') && ud.getNote('frontal') === 'Teste de anotação', 'favorito/anotação não gravaram');
+
+      // progresso: um ponto fraco claro e outro que se recuperou
+      ud.recordQuizResult('masseter', 1);
+      ud.recordQuizResult('temporal', 1);
+      for (let i = 0; i < 4; i++) ud.recordQuizResult('temporal', 5);
+      ud.recordSession({ mode: 'locate', region: 'cabeca', smart: 'all', score: 7, total: 10, ms: 60000 });
+      sc.openModal('progress');
+      const text = document.getElementById('progressPanel').innerText;
+      t(/Onde você mais erra/i.test(text), 'painel de progresso sem a lista de pontos fracos');
+      t(/Masseter/.test(text), 'o masseter (errou na última) deveria aparecer como ponto fraco');
+      t(!/Temporal/.test(document.querySelector('.weak-list')?.innerText ?? ''), 'o temporal (1 erro e 4 acertos) não deveria ser ponto fraco');
+      t(/Últimas rodadas/i.test(text) && /7\/10/.test(text), 'histórico de rodadas ausente');
+      t(!/undefined|NaN/.test(text), 'painel de progresso com texto quebrado');
+      sc.closeModal();
+      const weak = sc.smartSet('weak');
+      t(weak.has('masseter') && !weak.has('temporal'), 'o filtro "pontos fracos" ficou inconsistente com o painel');
+      return f;
+    }, 'favoritos, anotações, progresso e pontos fracos');
+
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
+      const sc = app.studyController;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      const key = (k) => window.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true }));
+
+      // criar uma lista pela interface
+      sc.openModal('lists');
+      document.getElementById('newListName').value = 'Mastigação';
+      document.getElementById('btnCreateList').click();
+      let card = document.querySelector('.list-card');
+      t(card, 'a lista não foi criada');
+      for (const nome of ['Masseter', 'temporal', 'Pterigóideo medial']) {
+        card = document.querySelector('.list-card');
+        card.querySelector('.list-add input').value = nome;
+        card.querySelector('[data-act="add-name"]').click();
+      }
+      const list = app.userData.getCustomLists()[0];
+      t(list && list.ids.length === 3, 'a lista deveria ter 3 estruturas, tem ' + (list && list.ids.length));
+      const ids = new Set(list.ids);
+
+      // "Estudar esta lista" abre a configuração já com o filtro
+      document.querySelector('.list-card [data-act="study"]').click();
+      t(!document.getElementById('quizSetup').hidden && app.setup.smart === 'list:' + list.id, 'estudar a lista não abriu a configuração filtrada');
+      const select = document.getElementById('qsListSel');
+      t(!select.hidden && select.value === 'list:' + list.id, 'o seletor de listas não mostra a lista escolhida');
+      document.getElementById('quizSetup').hidden = true;
+
+      for (const mode of ['locate', 'choice', 'text']) {
+        app.setup.mode = mode;
+        app.setup.smart = 'list:' + list.id;
+        app.setup.count = 0;
+        app.setRegion('cabeca', { fly: false }); // openSetup() parte da região em foco
+        app.openSetup();
+        t(!document.getElementById('qsStart').disabled, mode + ': botão Começar desabilitado com a lista');
+        document.getElementById('qsStart').click();
+        await sleep(150);
+        const q = app.state.quiz;
+        t(q && q.mode === mode, mode + ': o quiz não iniciou');
+        if (!q) continue;
+        if (mode === 'locate') t(q.ids.length === 3 && q.ids.every((id) => ids.has(id)), 'localizar: perguntas fora da lista ' + q.ids.join(','));
+        if (mode === 'choice') {
+          for (let i = 0; i < 6; i++) {
+            if (!ids.has(app.state.quiz.current)) f.push('escolher: perguntou "' + app.state.quiz.current + '", que não está na lista');
+            key('1');
+            await sleep(30);
+            key('Enter');
+            await sleep(30);
+          }
+          t(app.state.quiz.total === 6, 'escolher: o atalho 1 + Enter não respondeu as 6 perguntas (' + app.state.quiz.total + ')');
+        }
+        if (mode === 'text') {
+          t(q.pool.every((i) => ids.has(i.id)), 'teórico: pool fora da lista');
+          t(q.limit === 3, 'teórico: limite de perguntas deveria ser 3, é ' + q.limit);
+          for (let i = 0; i < 3; i++) {
+            const opts = document.querySelectorAll('#tqOptions button');
+            t(opts.length === 4, 'teórico: ' + opts.length + ' alternativas');
+            key('1');
+            await sleep(30);
+            key('Enter');
+            await sleep(30);
+          }
+          t(app.state.quiz.finished, 'teórico: não terminou depois de 3 respostas');
+          t(/Fim do quiz/.test(document.getElementById('tqPrompt').innerText), 'teórico: sem tela de resultado');
+          t(app.state.selected === null, 'teórico: estrutura ficou selecionada no resultado');
+        }
+        // durante o quiz os nomes das estruturas não podem aparecer no modelo
+        await sleep(120);
+        const visibleLabels = [...document.querySelectorAll('.lbl')].filter((e) => e.style.display !== 'none').length;
+        t(visibleLabels === 0, mode + ': ' + visibleLabels + ' rótulo(s) visível(is) durante o quiz');
+        app.stopQuiz();
+        await sleep(60);
+        t(app.state.quiz === null, mode + ': não saiu do quiz');
+      }
+      const modes = app.userData.getSessions().map((s) => s.mode);
+      t(['choice', 'text'].every((m) => modes.includes(m)), 'o histórico deveria ter sessões de escolha e teórico, tem: ' + modes.join(','));
+      return f;
+    }, 'listas na interface, filtro nos 3 quizzes, atalhos, rótulos ocultos e histórico');
+
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
+      const sc = app.studyController;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      app.setRegion('cabeca', { fly: false });
+      app.setDissect(3);
+
+      // cores: precisam sobreviver a seleção e hover
+      sc.coloring.setMode('grupo');
+      const want = sc.coloring.overrides.get('masseter');
+      t(want, 'coloração por grupo não definiu cor para o masseter');
+      const mat = app.M.get('masseter').mats[0];
+      app.select('masseter', { fly: false, panel: false });
+      t(mat.color.equals(want), 'a cor do grupo sumiu quando o masseter foi selecionado');
+      app.select(null, { fly: false });
+      app.state.hover = 'masseter';
+      app.applyHighlight();
+      t(mat.color.equals(want), 'a cor do grupo sumiu com o mouse em cima');
+      app.state.hover = null;
+      await sleep(350);
+      const legend = document.getElementById('colorLegend');
+      t(!legend.hidden && legend.querySelectorAll('li').length >= 3, 'legenda não apareceu');
+      for (const mode of ['nervo', 'regiao']) {
+        sc.coloring.setMode(mode);
+        t(sc.coloring.overrides.size > 20, 'modo ' + mode + ': poucas estruturas coloridas (' + sc.coloring.overrides.size + ')');
+      }
+      sc.coloring.setMode('camada');
+      app.applyHighlight();
+      await sleep(350);
+      t(legend.hidden, 'a legenda deveria sumir no modo padrão');
+      t(mat.color.equals(mat.userData.baseColor), 'a cor original não voltou no modo padrão');
+
+      // corte
+      sc.clipping.setAxis('axial');
+      sc.clipping.setOffset(0);
+      sc.syncClipUi();
+      t(app.renderer.clippingPlanes.length === 1, 'o plano de corte não foi registrado');
+      t(!document.getElementById('clipChip').hidden, 'o aviso de corte ativo não apareceu');
+      sc.resetClip();
+      t(app.renderer.clippingPlanes.length === 0 && document.getElementById('clipChip').hidden, 'o corte não desativou');
+      return f;
+    }, 'coloração (sobrevive à seleção, legenda) e plano de corte');
+
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
+      const sc = app.studyController;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+      // uma vista com bastante coisa
+      app.setRegion('tronco', { fly: false });
+      app.setDissect(3);
+      app.state.layers.delete('nervo');
+      app.state.hidden.add('grande_dorsal');
+      app.setSkin(0.5);
+      app.syncLayers();
+      sc.clipping.setAxis('axial');
+      sc.clipping.setOffset(0.3);
+      sc.coloring.setMode('regiao');
+      app.select('trapezio_desc', { fly: false, panel: false });
+      const hash = sc.currentHash();
+      t(/sel=trapezio_desc/.test(hash) && /clip=axial/.test(hash) && /col=regiao/.test(hash) && /ly=/.test(hash) && /hid=grande_dorsal/.test(hash), 'o hash não guarda tudo: ' + hash);
+
+      // salva com um nome malicioso e uma anotação maliciosa
+      const evil = '<img src=x onerror="window.__xss=1">';
+      app.userData.saveView(evil, hash);
+      app.userData.setNote('masseter', '</textarea><img src=x onerror="window.__xss=2">');
+
+      // bagunça tudo e restaura pela interface
+      app.select(null, { fly: false });
+      app.setRegion('cabeca', { fly: false });
+      app.setDissect(1);
+      sc.resetClip();
+      sc.coloring.setMode('camada');
+      app.state.hidden.clear();
+      app.syncLayers();
+      sc.openModal('backup');
+      t(!document.querySelector('#savedViewsList img'), 'nome de vista com HTML foi interpretado como HTML');
+      const btn = [...document.querySelectorAll('#savedViewsList [data-act="apply"]')].pop();
+      btn.click();
+      await sleep(400);
+      const s = app.state;
+      t(s.region === 'tronco' && s.dissect === 3, 'região/dissecação não voltaram');
+      t(!s.layers.has('nervo'), 'a camada de nervos desligada não voltou');
+      t(s.hidden.has('grande_dorsal'), 'a estrutura oculta não voltou');
+      t(Math.abs(s.skin - 0.5) < 0.01, 'a opacidade da pele não voltou');
+      t(sc.clipping.serialize() === 'axial,0.3,0', 'o corte não voltou: ' + sc.clipping.serialize());
+      t(sc.coloring.mode === 'regiao', 'a coloração não voltou');
+      t(s.selected === 'trapezio_desc', 'a seleção não voltou');
+
+      // o link copiado precisa ser um endereço de verdade, inclusive em file:// (onde "origin" vale "null")
+      const url = sc.shareUrl();
+      t(url.startsWith(window.location.protocol) && !/^null/.test(url), 'link de compartilhamento quebrado: ' + url.slice(0, 40));
+      t(url.includes('#sel=trapezio_desc'), 'o link não leva a vista: ' + url.slice(-60));
+
+      // uma vista "padrão" (dissecação 1, pele 14%) restaurada sobre outra não pode herdar o estado anterior
+      app.setDissect(4);
+      app.setSkin(0.9);
+      app.state.hidden.add('masseter');
+      app.syncLayers();
+      app.userData.saveView('padrão', '');
+      document.querySelector('#studyModal .tab-btn[data-tab="backup"]').click();
+      [...document.querySelectorAll('#savedViewsList [data-act="apply"]')].pop().click();
+      await sleep(300);
+      t(app.state.dissect === 1 && app.state.region === 'cabeca' && Math.abs(app.state.skin - 0.14) < 0.01 && app.state.hidden.size === 0 && sc.coloring.mode === 'camada' && sc.clipping.serialize() === '',
+        'a vista padrão não zerou o estado: dis=' + app.state.dissect + ' reg=' + app.state.region + ' skin=' + app.state.skin);
+
+      // a anotação é texto puro
+      app.select('masseter', { fly: false });
+      const area = document.getElementById('structureNote');
+      t(area && area.value.startsWith('</textarea>'), 'a anotação não apareceu inteira como texto');
+      t(!document.querySelector('#infoBody img'), 'anotação com HTML foi interpretada como HTML');
+      t(!window.__xss, 'um script de anotação ou de nome de vista foi executado');
+      sc.closeModal();
+      sc.resetClip();
+      sc.coloring.setMode('camada');
+      return f;
+    }, 'vista na URL (camadas, corte, cores), vistas salvas e proteção contra HTML injetado');
+
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
+      const ud = app.userData;
+      const json = ud.exportJson();
+      const copy = JSON.parse(json);
+      t(copy.format === 'anatomia3d-userdata' && copy.data.customLists.length === 1, 'exportação sem as listas');
+      const before = ud.getFavorites().length;
+      const res = ud.importJson(json);
+      t(res.success && ud.getFavorites().length === before, 'reimportar o próprio backup mudou os dados');
+      t(!ud.importJson('{"x":1}').success, 'aceitou um arquivo que não é backup');
+      return f;
+    }, 'exportar e importar o backup');
+
+    console.log('✔ Ferramentas de Estudo validadas no navegador.');
 
     // 6. Verificar ausência de erros no console
     if (consoleErrors.length > 0) {

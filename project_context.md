@@ -85,9 +85,9 @@ geral desses produtos, sem pesquisa nova; vale reconferir na F0.
 | B2 | Mostrar, ocultar e **isolar** estruturas | ★★★ | ✅ |
 | B3 | Rótulos com linhas de chamada; câmera que enquadra a seleção | ★★★ | ✅ |
 | B4 | Vistas predefinidas e opacidade da pele | ★★ | ✅ |
-| B5 | Salvar/compartilhar uma vista (câmera + camadas + seleção) | ★★ | ⬜ |
-| B6 | **Plano de corte** (sagital, coronal, axial) | ★★ | ⬜ |
-| B7 | Colorir por sistema, nervo que inerva, ação ou grupo | ★★ | 🟡 só por camada |
+| B5 | Salvar/compartilhar uma vista (câmera + camadas + seleção) | ★★ | ✅ vistas salvas e link com `#hash` (região, dissecação, camadas, câmera, corte, cores, seleção) |
+| B6 | **Plano de corte** (sagital, coronal, axial) | ★★ | 🟡 plano sagital/coronal/axial ✅; a fatia não é “tampada” (as malhas são cascas) |
+| B7 | Colorir por sistema, nervo que inerva, ação ou grupo | ★★ | ✅ por camada, nervo, região e grupo (18 grupos), com legenda |
 | B8 | **Origem e inserção marcadas no osso** | ★★★ | ⬜ |
 | B9 | Animação de movimento / de ação muscular | ★★★ | ⬜ |
 | B10 | Vista explodida; medidas (distância/ângulo) | ★ | ⬜ |
@@ -116,13 +116,13 @@ geral desses produtos, sem pesquisa nova; vale reconferir na F0.
 | --- | --- | --- | --- |
 | D1 | Quiz “escolha o nome” | ★★★ | ✅ |
 | D2 | Quiz “localize no modelo 3D” (3 tentativas, dica, revisão) | ★★ | ✅ |
-| D3 | Quiz de **texto**: inervação, ação, origem/inserção | ★★★ | ⬜ |
-| D4 | Flashcards com **repetição espaçada** | ★★★ | ⬜ |
-| D5 | Progresso e estatísticas por estrutura | ★★ | 🟡 só “Para revisar” na rodada |
-| D6 | Favoritos e anotações pessoais | ★★ | ⬜ |
-| D7 | Listas de estudo personalizadas (“prova de MMSS”) | ★★ | ⬜ |
-| D8 | **Tours / aulas guiadas** | ★★ | ⬜ |
-| D9 | Exportar imagem da vista, imprimir ficha | ★★ | ⬜ |
+| D3 | Quiz de **texto**: inervação, ação, origem/inserção | ★★★ | ✅ músculos (nervo, ação, origem, inserção, nota) e nervos (músculos, lesão, sensibilidade) |
+| D4 | Flashcards com **repetição espaçada** | ★★★ | 🟡 repetição espaçada (SM-2) agenda as estruturas dos quizzes; ainda não há flashcards |
+| D5 | Progresso e estatísticas por estrutura | ★★ | ✅ painel de progresso: precisão, pontos fracos, revisões e histórico de rodadas |
+| D6 | Favoritos e anotações pessoais | ★★ | ✅ favoritos e anotações por estrutura |
+| D7 | Listas de estudo personalizadas (“prova de MMSS”) | ★★ | ✅ listas próprias que alimentam os três quizzes |
+| D8 | **Tours / aulas guiadas** | ★★ | 🟡 6 tours (24 passos); textos ainda sem revisão de fontes |
+| D9 | Exportar imagem da vista, imprimir ficha | ★★ | ✅ PNG da vista e impressão da ficha |
 | D10 | Modo professor: criar e compartilhar quizzes/tours | ★ | ⬜ |
 
 ### E. Clínica e função
@@ -146,7 +146,7 @@ geral desses produtos, sem pesquisa nova; vale reconferir na F0.
 | F4 | Acessibilidade: teclado, leitor de tela, contraste, daltonismo | ★★★ | 🟡 |
 | F5 | Interface em mais de um idioma (EN/ES) | ★★ | ⬜ |
 | F6 | Contas, sincronização, modo turma | ★ | ⬜ (exige backend; ver §9) |
-| F7 | Testes automatizados e CI de verificação antes da release | ★★★ (interno) | 🟡 guardas do catálogo; sem CI de teste |
+| F7 | Testes automatizados e CI de verificação antes da release | ★★★ (interno) | ✅ `npm test`: catálogo, ferramentas de estudo e fumaça no navegador (por http e por `file://`); a CI roda `npm test` |
 
 ## 5. Viabilidade dos dados (o que dá para tirar do BodyParts3D)
 
@@ -221,16 +221,24 @@ Objetivo: transformar o atlas em ferramenta de estudo contínuo, sem depender de
 
 - [x] **F1.1** Estado da vista na URL (`#hash`) + botão “copiar link”; vistas nomeadas salvas no navegador. **M** ✅
 - [x] **F1.2** Favoritos e anotações por estrutura; exportar/importar tudo em JSON. **M** ✅
-- [x] **F1.3** Progresso por estrutura (acertos, erros, última vez) e botão “Treinar pontos fracos”. **M** ✅
+- [x] **F1.3** Progresso por estrutura (acertos, erros, última vez), painel de progresso e “Treinar pontos fracos”. **M** ✅ (painel desde 2026-10-07)
 - [x] **F1.4** Repetição espaçada (SM-2 simplificado): “Revisão de hoje”. **M** ✅
-- [x] **F1.5** Quizzes de texto a partir de campos já existentes: músculo → nervo, nervo → músculos, ação, origem/inserção, nota clínica. **M** ✅
+- [x] **F1.5** Quizzes de texto a partir de campos já existentes: músculo → nervo, nervo → músculos, ação, origem, inserção, nota; nervos por lesão e sensibilidade. **M** ✅ (completo desde 2026-10-07)
 - [x] **F1.6** Plano de corte sagital/coronal/axial com controle deslizante e inversão. **M** ✅
 - [x] **F1.7** Colorir por: camada · nervo que inerva · região · grupo/compartimento. **P** ✅
 - [x] **F1.8** Tours guiados didáticos: manguito rotador; plexo braquial; nervo radial; mastigação e V3; nervo facial e mímica; parede abdominal. **G** ✅
 - [x] **F1.9** Exportar PNG da vista; imprimir ficha (CSS de impressão). **P** ✅
-- [x] **F1.10** Listas de estudo personalizadas que alimentam o quiz com filtros inteligentes. **M** ✅
+- [x] **F1.10** Listas de estudo personalizadas que alimentam o quiz com filtros inteligentes. **M** ✅ (interface das listas só desde 2026-10-07)
 
 **Saída:** tudo funciona offline; dados do usuário exportáveis e restauráveis; nenhuma dependência nova de rede. ✅ Concluído.
+
+> **Correções de 2026-10-07 (ainda dentro da 2.1):** a primeira entrega marcou a fase como concluída com defeitos que o teste de
+> fumaça não pegava (ele só chamava a API). Foram corrigidos e agora cobertos por teste de interface: cartões dos tours com
+> “undefined”; câmeras dos tours apontando para a altura da cabeça e 6 ids de estrutura inexistentes; coloração apagada ao passar o
+> mouse; quiz teórico mostrando a resposta (rótulo) e com respostas ambíguas; listas de estudo sem interface; filtros inteligentes
+> só no “Localizar”; regra de ponto fraco que nunca expirava; link copiado quebrado em `file://`; HTML injetável por nome de vista,
+> anotação ou backup importado; clique que ignorava o plano de corte. Novos: painel de progresso com histórico, filtro “ainda não
+> estudadas”, perguntas “nervo → músculos”, “origem”, “lesão” e “sensibilidade”, estado completo na URL e nas vistas.
 
 ---
 
@@ -415,7 +423,7 @@ visível e mantém o retorno do usuário frequente. Cada lote = um ciclo `dev` �
 | --- | --- | --- | --- | --- |
 | 2.0 (nervos + atualização automática) | 55 nervos, 154 vínculos, exe auto-atualizável | — | — | referência: um grande lote contínuo |
 | 2.0.x (Fase F0 — Alicerce) | F0.1 a F0.10 concluídos (testes, CI, web, PWA, a11y, docs) | ~1 dia | M | Alicerce 100% verde; zero quebras |
-| 2.1.0 (Fase F1 — Ferramentas de estudo) | F1.1 a F1.10 concluídos (views/hash, favoritos/notas, SM-2, quiz teórico, clipping, cores, 6 tours, export, listas) | ~1 dia | G | 100% offline; modularizado em src/study/*; testes de fumaça e catálogo verdes |
+| 2.1.0 (Fase F1 — Ferramentas de estudo) | F1.1 a F1.10 (views/hash, favoritos/notas, SM-2, quiz teórico, clipping, cores, 6 tours, export, listas) | ~1 dia + ~1 dia de correções | G | 100% offline; modularizado em src/study/*. A 1ª entrega passou nos testes mas tinha defeitos de interface (ver correções em F1): teste que só chama a API não basta; o de fumaça agora dirige a interface |
 | *(próximo: F2 — Fechar músculos e nervos das regiões atuais)* | | | | |
 
 Use a coluna “Observações” para anotar o que atrasou (ex.: geometria de nervo que cai dentro do osso, ajuste de decimação).
@@ -436,6 +444,10 @@ Use a coluna “Observações” para anotar o que atrasou (ex.: geometria de ne
 8. **`main.js` com ~1 500 linhas.** Features novas (F1) devem sair em módulos (`src/study/*`, `src/tours/*`), não inflar o arquivo.
 9. **Conferência de fatos anatômicos.** Número de músculos, segmentos medulares e nomenclatura variam entre fontes; toda
    divergência vai para a ficha. A revisão da F0.4 existe para isso.
+10. **Service worker e HTML.** `sw.js` serve do cache e atualiza em segundo plano; uma atualização que mude o `index.html` e o
+    `dist/app.js` ao mesmo tempo pode, se um dos dois falhar ao baixar, deixar a versão web com HTML novo e script velho (ou o contrário).
+    Avaliar `skipWaiting` + aviso de recarregar, ou versionar o `CACHE_NAME` por release, antes da próxima mudança grande de interface.
+11. **Textos dos tours** sem revisão de fontes; o plano de corte não desenha a superfície da fatia (as malhas são cascas).
 
 ## 10. Registro de decisões e andamento
 
@@ -446,6 +458,7 @@ Use a coluna “Observações” para anotar o que atrasou (ex.: geometria de ne
 | 2026-10-05 | Pendência de ordem a confirmar com o responsável pelo projeto: vasos (F5) antes ou depois de vísceras (F6)? Padrão adotado: vasos antes. |
 | 2026-10-06 | **Fase F0 (Alicerce) concluída integralmente (F0.1 a F0.10)**: `npm test` implementado com validação em memória do catálogo (F0.1) e teste de fumaça headless via CDP com zero erros de console (F0.2); CI configurado no GitHub Actions em `dev`/PRs e verificação antes de release (F0.3); auditoria bibliográfica de todas as 209 estruturas em `docs/revisao-conteudo.md` e suporte a `fontes` na ficha (F0.4); distinção visual entre malha real do BodyParts3D e modelada por código (F0.5); workflow para GitHub Pages (F0.6); suporte a PWA com `manifest.webmanifest`, `sw.js` offline e ícones (F0.7); acessibilidade ampliada com teclado na lista/quiz, foco visível e toque (F0.8); linha de base de desempenho documentada em `docs/desempenho.md` e medições em `window.__app.perf` (F0.9); mapa competitivo atualizado em `docs/concorrentes.md` (F0.10). |
 | 2026-10-06 | **Fase F1 (Ferramentas de Estudo — v2.1.0) concluída integralmente (F1.1 a F1.10)**: Arquitetura modular isolada em `src/study/` preservando a manutenibilidade do `main.js`. Estado em URL hash e compartilhamento (F1.1); favoritos, notas e exportação/importação JSON (F1.2); rastreamento de progresso e treino de pontos fracos (F1.3); repetição espaçada SM-2 para revisão diária (F1.4); quiz teórico com perguntas conceituais de inervação, ação motora e correlações clínicas (F1.5); planos de corte anatômico sagital, coronal e axial com slider e inversão (F1.6); modos de coloração por camada, nervo inervador, região e grupo muscular funcional (F1.7); 6 tours guiados didáticos passo a passo com câmera e dissecação automáticas (F1.8); exportação de captura em PNG e layout de impressão de fichas (F1.9); listas de estudo customizadas integradas ao quiz via filtros inteligentes (F1.10). `smoke_test.js` ampliado cobrindo todas as ferramentas com 100% de sucesso e zero erros no console. |
+| 2026-10-07 | **Correções da F1** (sem publicar; `dev`): tours (cartões, ids, câmera por vista + enquadramento da estrutura, textos), coloração (cor via `applyHighlight`, legenda, grupos explícitos em `groups.js`), quiz teórico como modo de quiz de verdade (rótulos ocultos, respostas únicas, 8 tipos de pergunta, quantidade e filtro), filtros inteligentes nos 3 quizzes (+ “ainda não estudadas” e listas), interface das listas, painel de progresso com histórico, regra de ponto fraco pela janela das últimas 5 respostas, hash e vistas com camadas/ocultos/corte/cores/rótulos, link correto em `file://`, escape de HTML e validação do backup importado, clique respeitando o corte. Testes: `test_catalog.js` (tours e grupos), novo `test_study.js` (≈ 10 700 verificações) e `smoke_test.js` dirigindo a interface (também com `SMOKE_FILE=1`). Contagem correta dos tours: **24 passos** (o registro de 2026-10-06 dizia 22). |
 
 ## 11. Referências
 

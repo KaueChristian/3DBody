@@ -5,6 +5,21 @@
 const esbuild = require('esbuild');
 const path = require('path');
 
+/** Empacota e executa um módulo ES de src/ (sem navegador) e devolve os exports. */
+function loadModule(rel) {
+  const result = esbuild.buildSync({
+    entryPoints: [path.resolve(__dirname, rel)],
+    bundle: true,
+    format: 'cjs',
+    platform: 'node',
+    write: false,
+    logLevel: 'error',
+  });
+  const mod = { exports: {} };
+  new Function('module', 'exports', result.outputFiles[0].text)(mod, mod.exports);
+  return mod.exports;
+}
+
 function runTests() {
   console.log('--- Iniciando testes de integridade do catálogo ---');
   const failures = [];
@@ -145,7 +160,46 @@ function runTests() {
     }
   }
 
-  // 7. Contagens por tipo
+  // 7. Ferramentas de estudo que dependem do catálogo: tours e grupos musculares
+  const { TOURS, TOUR_VIEWS } = loadModule('../src/study/tours.js');
+  const { GROUPS, MUSCLE_GROUP } = loadModule('../src/study/groups.js');
+  const tourIds = new Set();
+  for (const tour of TOURS) {
+    if (tourIds.has(tour.id)) logFail(`Tour com id duplicado: "${tour.id}".`);
+    tourIds.add(tour.id);
+    for (const f of ['title', 'subtitle', 'description']) {
+      if (!tour[f] || !String(tour[f]).trim()) logFail(`Tour "${tour.id}" sem ${f}.`);
+    }
+    if (!REGIONS[tour.region]) logFail(`Tour "${tour.id}" com região inexistente: "${tour.region}".`);
+    if (!tour.steps?.length) logFail(`Tour "${tour.id}" sem passos.`);
+    (tour.steps ?? []).forEach((st, i) => {
+      const at = `Tour "${tour.id}", passo ${i + 1}`;
+      if (!st.title || !st.text) logFail(`${at}: sem título ou texto.`);
+      if (st.highlight && !itemMap.has(st.highlight)) logFail(`${at}: destaca estrutura inexistente "${st.highlight}".`);
+      if (!TOUR_VIEWS.includes(st.view)) logFail(`${at}: vista inválida "${st.view}".`);
+      if (!Number.isInteger(st.dissect) || st.dissect < 0 || st.dissect > 6) logFail(`${at}: dissecação inválida "${st.dissect}".`);
+      if (!REGIONS[st.region]) logFail(`${at}: região inexistente "${st.region}".`);
+      if (st.highlight && itemMap.has(st.highlight)) {
+        const it = itemMap.get(st.highlight);
+        const regs = Array.isArray(it.region) ? it.region : [it.region];
+        if (!regs.includes(st.region) && !regs.includes('todos')) logFail(`${at}: "${st.highlight}" não pertence à região "${st.region}".`);
+      }
+    });
+  }
+  const groupIds = new Set(GROUPS.map((g) => g.id));
+  for (const m of muscles) {
+    const g = MUSCLE_GROUP.get(m.id);
+    if (!g) logFail(`Músculo "${m.id}" sem grupo em src/study/groups.js (usado na coloração por grupo).`);
+    else if (!groupIds.has(g)) logFail(`Músculo "${m.id}" aponta para grupo inexistente "${g}".`);
+  }
+  for (const id of MUSCLE_GROUP.keys()) {
+    if (!itemMap.has(id) || itemMap.get(id).kind !== 'musculo') logFail(`src/study/groups.js lista "${id}", que não é um músculo do catálogo.`);
+  }
+  for (const g of groupIds) {
+    if (![...MUSCLE_GROUP.values()].includes(g)) logFail(`Grupo "${g}" não tem nenhum músculo.`);
+  }
+
+  // 8. Contagens por tipo
   const counts = {};
   for (const item of ITEMS) {
     counts[item.kind] = (counts[item.kind] || 0) + 1;

@@ -148,24 +148,22 @@
             <button type="button" class="mode-card" role="radio" data-mode="text">
               <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 7h8M8 11h8M8 15h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
               <b>Quiz Teórico</b>
-              <span>Perguntas conceituais de inervação, ação motora, inserção e aplicações clínicas.</span>
+              <span>Perguntas de texto: nervo de cada músculo, ação, origem, inserção, lesões e sensibilidade dos nervos.</span>
             </button>
           </div>
+          <div class="opt" id="qsFilterBox">
+            <h3>Quais estruturas</h3>
+            <div class="opt-seg" id="qsSmartSeg" role="group" aria-label="Filtro das estruturas"></div>
+            <select id="qsListSel" class="list-select" aria-label="Usar uma das minhas listas de estudo" hidden></select>
+          </div>
           <div id="qsLocate">
-            <div class="opt"><h3>Região</h3><div id="qsRegion" class="opt-seg"></div></div>
-            <div class="opt"><h3>O que praticar</h3><div id="qsKinds" class="opt-seg"></div></div>
-            <div class="opt" id="qsFilterBox">
-              <h3>Filtros Inteligentes</h3>
-              <div class="opt-seg" id="qsSmartSeg">
-                <button type="button" data-smart="all" class="on">Todos</button>
-                <button type="button" data-smart="fav">⭐ Favoritos</button>
-                <button type="button" data-smart="due">🔁 Revisão de Hoje (SM-2)</button>
-                <button type="button" data-smart="weak">🎯 Pontos Fracos</button>
-              </div>
-            </div>
-            <div class="opt"><h3>Perguntas</h3><div id="qsCount" class="opt-seg"></div></div>
-            <label class="switch opt-switch"><input type="checkbox" id="qsLatin" /><span></span>Mostrar também o nome em latim</label>
-            <p class="qs-tip">São 3 tentativas por pergunta: acertar de primeira vale 1 ponto; com erro ou dica, 0,5. Use a <b>dissecação</b> para tirar camadas e o <b>botão direito</b> (ou “Remover”) para ocultar o que estiver no caminho.</p>
+            <div class="opt" id="qsRegionBox"><h3>Região</h3><div id="qsRegion" class="opt-seg"></div></div>
+            <div class="opt" id="qsKindsBox"><h3>O que praticar</h3><div id="qsKinds" class="opt-seg"></div></div>
+            <div class="opt" id="qsCountBox"><h3>Perguntas</h3><div id="qsCount" class="opt-seg"></div></div>
+            <label class="switch opt-switch" id="qsLatinRow"><input type="checkbox" id="qsLatin" /><span></span>Mostrar também o nome em latim</label>
+            <p class="qs-tip" id="qsTipLocate">São 3 tentativas por pergunta: acertar de primeira vale 1 ponto; com erro ou dica, 0,5. Use a <b>dissecação</b> para tirar camadas e o <b>botão direito</b> (ou “Remover”) para ocultar o que estiver no caminho.</p>
+            <p class="qs-tip" id="qsTipText">Perguntas de texto sobre músculos (nervo, ação, origem, inserção, observações) e nervos (músculos inervados, lesão, sensibilidade). Atalhos: <b>1–4</b> respondem e <b>Enter</b> avança.</p>
+            <p class="qs-tip" id="qsTipChoice">A estrutura aparece destacada e você escolhe o nome entre 4 opções. Atalhos: <b>1–4</b> respondem e <b>Enter</b> avança.</p>
           </div>
           <div class="modal-actions">
             <span id="qsInfo" class="qs-info"></span>
@@ -213,85 +211,87 @@
       <div id="studyModal" class="modal" hidden>
         <div class="modal-card study-card" role="dialog" aria-modal="true" aria-labelledby="studyTitle">
           <button id="studyClose" class="close" aria-label="Fechar">×</button>
-          <h2 id="studyTitle">Ferramentas de Estudo</h2>
-          <p class="modal-sub">Tours guiados, planos de corte, paletas de cores e backup de anotações.</p>
+          <h2 id="studyTitle">Ferramentas de estudo</h2>
+          <p class="modal-sub">Progresso, listas, tours guiados, plano de corte, cores e backup dos seus dados.</p>
 
-          <div class="tab-bar" role="tablist">
-            <button type="button" class="tab-btn on" data-tab="tours" role="tab" aria-selected="true">Tours Guiados</button>
-            <button type="button" class="tab-btn" data-tab="clipping" role="tab" aria-selected="false">Planos de Corte</button>
-            <button type="button" class="tab-btn" data-tab="coloring" role="tab" aria-selected="false">Coloração</button>
-            <button type="button" class="tab-btn" data-tab="lists" role="tab" aria-selected="false">Vistas & Backup</button>
+          <div class="tab-bar" role="tablist" aria-label="Ferramentas de estudo">
+            <button type="button" class="tab-btn on" data-tab="tours" role="tab" aria-selected="true">Tours</button>
+            <button type="button" class="tab-btn" data-tab="progress" role="tab" aria-selected="false" tabindex="-1">Progresso</button>
+            <button type="button" class="tab-btn" data-tab="lists" role="tab" aria-selected="false" tabindex="-1">Listas</button>
+            <button type="button" class="tab-btn" data-tab="clipping" role="tab" aria-selected="false" tabindex="-1">Corte</button>
+            <button type="button" class="tab-btn" data-tab="coloring" role="tab" aria-selected="false" tabindex="-1">Cores</button>
+            <button type="button" class="tab-btn" data-tab="backup" role="tab" aria-selected="false" tabindex="-1">Vistas e backup</button>
           </div>
 
-          <!-- Aba 1: Tours -->
-          <div id="tabTours" class="tab-pane on">
+          <!-- Tours -->
+          <div class="tab-pane on" data-pane="tours" role="tabpanel">
             <div id="toursList" class="tours-grid"></div>
           </div>
 
-          <!-- Aba 2: Planos de Corte -->
-          <div id="tabClipping" class="tab-pane" hidden>
+          <!-- Progresso -->
+          <div class="tab-pane" data-pane="progress" role="tabpanel" hidden>
+            <div id="progressPanel"></div>
+          </div>
+
+          <!-- Listas de estudo -->
+          <div class="tab-pane" data-pane="lists" role="tabpanel" hidden>
+            <p class="opt-desc">Monte listas como “Prova de membro superior” e treine só com elas: no Modo quiz, escolha a lista em <b>Quais estruturas</b>.</p>
+            <div class="save-view-input">
+              <input id="newListName" type="text" maxlength="80" placeholder="Nome da nova lista…" aria-label="Nome da nova lista">
+              <button type="button" id="btnCreateList" class="primary">Criar lista</button>
+            </div>
+            <div id="listsPanel"></div>
+          </div>
+
+          <!-- Plano de corte -->
+          <div class="tab-pane" data-pane="clipping" role="tabpanel" hidden>
             <div class="clip-ctrl">
-              <label><b>Eixo de Corte Anatômico:</b></label>
-              <div class="opt-seg" id="clipAxisSeg">
-                <button type="button" data-axis="none" class="on">Nenhum</button>
-                <button type="button" data-axis="sagittal">Sagital (X)</button>
-                <button type="button" data-axis="coronal">Coronal (Z)</button>
-                <button type="button" data-axis="axial">Axial (Y)</button>
+              <p class="opt-desc">O plano esconde um dos lados do corpo. <b>Sagital</b> separa esquerda e direita, <b>coronal</b> separa frente e costas e <b>axial</b> separa cima e baixo (como nas fatias de TC e RM). O que estiver cortado não pode ser selecionado.</p>
+              <div class="opt-seg" id="clipAxisSeg" role="group" aria-label="Eixo do corte">
+                <button type="button" data-axis="none" class="on" aria-pressed="true">Sem corte</button>
+                <button type="button" data-axis="sagittal" aria-pressed="false">Sagital</button>
+                <button type="button" data-axis="coronal" aria-pressed="false">Coronal</button>
+                <button type="button" data-axis="axial" aria-pressed="false">Axial</button>
               </div>
               <div class="clip-slider-box" id="clipSliderBox" hidden>
-                <label for="clipSlider">Posição do corte:</label>
-                <input type="range" id="clipSlider" min="-1" max="1" step="0.02" value="0">
+                <label for="clipSlider">Posição do corte</label>
+                <input type="range" id="clipSlider" min="-1" max="1" step="0.01" value="0">
                 <div class="clip-actions">
-                  <button type="button" id="clipInvert" class="btn">Inverter Direção</button>
-                  <button type="button" id="clipReset" class="btn">Desativar Corte</button>
+                  <button type="button" id="clipInvert" class="btn" aria-pressed="false">Inverter o lado</button>
+                  <button type="button" id="clipReset" class="btn">Desativar corte</button>
                 </div>
+                <p class="forecast">A malha é uma casca: o corte mostra o interior dela, sem desenhar a superfície da fatia.</p>
               </div>
             </div>
           </div>
 
-          <!-- Aba 3: Coloração -->
-          <div id="tabColoring" class="tab-pane" hidden>
-            <p class="opt-desc">Escolha como as cores das estruturas são exibidas no modelo 3D:</p>
-            <div class="mode-cards" id="colorModes">
-              <button type="button" class="mode-card on" data-color="camada">
-                <b>Por Camada (Padrão)</b>
-                <span>Diferenciação anatômica por profundidade da dissecação.</span>
-              </button>
-              <button type="button" data-color="nervo" class="mode-card">
-                <b>Por Nervo Inervador</b>
-                <span>Músculos inervados pelo mesmo nervo compartilham a mesma cor.</span>
-              </button>
-              <button type="button" data-color="regiao" class="mode-card">
-                <b>Por Região Corporal</b>
-                <span>Cores distintas para Cabeça, Tronco e Membros Superiores.</span>
-              </button>
-              <button type="button" data-color="grupo" class="mode-card">
-                <b>Por Grupo / Compartimento</b>
-                <span>Destaque funcional (Mímica, Mastigação, Manguito, Braço, Flexores...).</span>
-              </button>
-            </div>
+          <!-- Coloração -->
+          <div class="tab-pane" data-pane="coloring" role="tabpanel" hidden>
+            <p class="opt-desc">Escolha como as estruturas são coloridas no modelo. A legenda aparece no canto da tela.</p>
+            <div class="mode-cards" id="colorModes" role="radiogroup" aria-label="Modo de coloração"></div>
           </div>
 
-          <!-- Aba 4: Vistas & Backup -->
-          <div id="tabLists" class="tab-pane" hidden>
-            <div class="backup-box">
-              <h3>Backup de Dados do Estudante</h3>
-              <p>Exporte seus favoritos, anotações e progresso de repetição para arquivo JSON ou restaure em outro aparelho.</p>
-              <div class="modal-actions">
-                <button type="button" id="btnExportJson" class="btn">⬇ Exportar Dados (JSON)</button>
-                <label class="btn" style="cursor:pointer">
-                  ⬆ Importar Backup (JSON)
-                  <input type="file" id="fileImportJson" accept=".json" hidden>
-                </label>
-              </div>
-            </div>
+          <!-- Vistas e backup -->
+          <div class="tab-pane" data-pane="backup" role="tabpanel" hidden>
             <div class="saved-views-box">
-              <h3>Vistas Salvas</h3>
+              <h3>Vistas salvas</h3>
+              <p class="opt-desc">Uma vista guarda a região, a dissecação, as camadas, a câmera, o corte, a coloração e a estrutura selecionada.</p>
               <div class="save-view-input">
-                <input id="newViewName" type="text" placeholder="Nome da vista (ex: Manguito rotador posterior)...">
-                <button type="button" id="btnSaveCurrentView" class="primary">Salvar Vista Atual</button>
+                <input id="newViewName" type="text" maxlength="80" placeholder="Nome da vista (ex.: Manguito rotador, vista posterior)" aria-label="Nome da vista">
+                <button type="button" id="btnSaveCurrentView" class="primary">Salvar vista atual</button>
               </div>
               <ul id="savedViewsList" class="saved-views-list"></ul>
+            </div>
+            <div class="backup-box">
+              <h3>Backup dos seus dados</h3>
+              <p>Favoritos, anotações, progresso, listas, vistas e histórico ficam só neste navegador. Exporte para guardar ou levar a outro aparelho.</p>
+              <div class="modal-actions">
+                <button type="button" id="btnExportJson" class="btn">⬇ Exportar (JSON)</button>
+                <label class="btn" style="cursor:pointer">
+                  ⬆ Importar backup
+                  <input type="file" id="fileImportJson" accept=".json,application/json" hidden>
+                </label>
+              </div>
             </div>
           </div>
         </div>

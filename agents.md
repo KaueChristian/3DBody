@@ -32,7 +32,10 @@ npm start            # opcional: servidor local em http://localhost:5173 (index.
 npm run exe          # build completo local: release/Anatomia3D.exe, app.zip e version.json
 ```
 
-Ainda **não existe** `npm test` (item F0.1 do roteiro); até lá use a receita da §6.
+`npm test` roda, em ordem: `tests/test_catalog.js` (catálogo, tours e grupos musculares), `tests/test_study.js` (lógica das
+ferramentas de estudo, sem navegador) e `tests/smoke_test.js` (Chrome/Edge sem janela, dirigindo a interface; com
+`SMOKE_FILE=1` abre o `index.html` por `file://`). Cada um também roda sozinho: `npm run test:catalog`, `test:study`,
+`test:smoke`. A CI roda `npm test`. Antes de terminar mudanças em `src/`, rode `npm run build` e depois `npm test`.
 
 Dados (raramente necessário; baixa ~60 MB e regenera arquivos grandes — só com motivo):
 `python tools/fetch_*.py` → `python tools/convert_*.py` (ver README, “Regenerar os dados”).
@@ -50,7 +53,8 @@ Dados (raramente necessário; baixa ~60 MB e regenera arquivos grandes — só c
 | `src/nerve-geo.js` | `NerveBuilder`: resolve pontos, gera tubos e ramos até os músculos | |
 | `src/proc.js`, `surfaces.js`, `landmarks.js` | Geometria procedural, projeção na pele/osso (BVH), pontos de referência | |
 | `src/anatomy.js` | Descompacta as malhas de `dist/anatomy-*.js` | |
-| `src/main.js` | Cena, interface, rótulos, quiz (≈ 1 500 linhas) | **Não aumente**: extraia módulos novos |
+| `src/main.js` | Cena, interface, rótulos, quizzes de localizar e de escolher o nome (≈ 1 700 linhas) | **Não aumente**: extraia módulos novos |
+| `src/study/*.js` | Ferramentas de estudo (modal, progresso, listas, tours, corte, cores, quiz teórico, backup); `groups.js` mapeia cada músculo a um grupo | O `main.js` só expõe uma interface (`api`) ao `StudyController`; veja §8 |
 | `index.html`, `styles.css` | Página e estilos | A ordem dos `<script>` importa |
 | `dist/` | **Versionado.** `app.js` (build) e pacotes de dados `anatomy-*.js` | Ver §9 |
 | `tools/*.py` | Pipeline de dados do BodyParts3D (`body_parts.py` define as peças do corpo por nome de conceito) | Gera arquivos de MB |
@@ -148,7 +152,8 @@ Este é um material de estudo: **um fato errado prejudica quem estuda**. Por iss
    estrutura procedural”).
 2. Crie a entrada no catálogo da região, com `campos` completos e fonte.
 3. Acrescente-o em `ramos` do(s) nervo(s) que o inervam em `catalog-nerves.js` (sem isso a carga falha).
-4. `npm run build`, verificação §6.1 e §6.2 (a ficha mostra o chip do nervo; o nervo chega ao músculo).
+4. Escolha o grupo dele em `src/study/groups.js` (usado na coloração por grupo; o `npm run test:catalog` falha se faltar).
+5. `npm run build`, `npm test`, verificação §6.1 e §6.2 (a ficha mostra o chip do nervo; o nervo chega ao músculo).
 
 **Acrescentar um nervo**
 1. Crie com `nervo(...)`; defina `paths` com pontos **medidos no modelo** (use `window.__app.nerveBuilder` para testar
@@ -168,6 +173,9 @@ Este é um material de estudo: **um fato errado prejudica quem estuda**. Por iss
 2. Tem de funcionar **offline e por `file://`**: sem CDN, sem `fetch` de arquivo local, sem módulos ES em tempo de execução.
 3. Leitura/escrita de `localStorage` sempre em `try/catch` e com a interface funcionando se falhar.
 4. Teclado e `aria-*` desde o começo; teste em largura de celular.
+5. Tudo que vem de fora (backup importado, hash da URL, nomes digitados) entra no HTML escapado (`esc` de `src/study/util.js`) ou por
+   `textContent`/`.value`, nunca em `innerHTML` cru; o importador valida tipos e tamanhos (`sanitize` em `storage.js`).
+6. Se o estado afeta a vista (camadas, corte, cores…), ele precisa ir e voltar pelo hash (`views.js`); o que não está no hash vale o padrão.
 
 ## 9. Git, releases e limites de autonomia
 

@@ -508,3 +508,117 @@ button.lchip:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent)
   .field { border-color: #ddd !important; }
   .field h3 { color: #555 !important; }
 }
+
+/* ───── Ferramentas de estudo: ajustes (correções da F1) ───── */
+body.quiz-choice .chips, body.quiz-text .chips { filter: blur(6px); pointer-events: none; user-select: none; }
+body.quiz-text .toolbar button[data-region] { pointer-events: none; }
+.opt-seg button.on { color: var(--text); border-color: var(--accent); background: var(--accent-soft); }
+.mode-card.on { border-color: var(--accent); background: var(--accent-soft); }
+.opt-desc { margin: 0 0 12px; color: var(--muted); font-size: 12.5px; line-height: 1.45; }
+.opt-desc b { color: #cfd4e2; font-weight: 600; }
+.list-select { margin-top: 8px; padding: 7px 10px; border-radius: 9px; border: 1px solid var(--line); background: var(--panel-2); color: var(--text); font: inherit; font-size: 12.5px; max-width: 100%; }
+.list-select[hidden] { display: none; }
+.empty-view { color: var(--muted); font-size: 12.5px; list-style: none; padding: 6px 2px; }
+.forecast { margin: 8px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+.forecast b { color: var(--text); }
+.btn:disabled, .primary:disabled { opacity: 0.45; cursor: default; }
+.btn.danger:hover { border-color: var(--bad); color: var(--bad); }
+.tq-missed { grid-column: 1 / -1; margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+.tq-missed b { color: var(--text); }
+.text-quiz .quiz-feedback { flex-wrap: wrap; justify-content: flex-end; }
+
+/* Tours */
+.tour-card { display: flex; flex-direction: column; gap: 6px; cursor: default; }
+.tour-card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.tour-card-head h4 { margin: 0; }
+.tour-steps-count { font-size: 11px; color: var(--accent); font-weight: 600; white-space: nowrap; }
+.tour-card .tour-sub { color: #cbd1de; font-size: 12.5px; }
+.tour-card .tour-desc { flex: 1; }
+.tour-card .btn-start-tour { align-self: flex-start; margin-top: 6px; padding: 6px 12px; font-size: 12.5px; }
+
+/* Vistas salvas */
+.saved-view-item .view-info { display: flex; flex-direction: column; min-width: 0; }
+.saved-view-item .view-info strong { font-size: 13px; font-weight: 600; overflow-wrap: anywhere; }
+.saved-view-item .view-info small { color: var(--muted); font-size: 11px; }
+.saved-view-item .view-actions { display: flex; gap: 6px; flex: none; }
+.saved-view-item .btn { padding: 4px 10px; font-size: 12px; color: var(--text); }
+.saved-views-list { max-height: 220px; }
+
+/* Listas de estudo */
+.list-card { padding: 12px 14px; margin-bottom: 10px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; }
+.list-card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+.list-card-head h4 { margin: 0; font-size: 14.5px; font-weight: 600; overflow-wrap: anywhere; }
+.list-card-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.list-card-actions .btn, .list-card-actions .primary { padding: 5px 10px; font-size: 12px; }
+.list-add { display: flex; gap: 6px; margin-bottom: 10px; }
+.list-add input { flex: 1; min-width: 0; padding: 7px 10px; border-radius: 9px; border: 1px solid var(--line); background: var(--panel); color: var(--text); font: inherit; font-size: 12.5px; outline: none; }
+.list-add input:focus { border-color: var(--accent); }
+.list-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; max-height: 150px; overflow-y: auto; }
+.list-chip { display: inline-flex; align-items: stretch; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); overflow: hidden; }
+.list-chip button { border: 0; background: none; color: var(--text); font-size: 12px; padding: 4px 9px; }
+.list-chip .chip-go:hover { color: var(--accent); }
+.list-chip .chip-x { color: var(--muted); padding: 4px 8px 4px 4px; }
+.list-chip .chip-x:hover { color: var(--bad); }
+
+/* Progresso */
+.stat-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.tile { padding: 10px 12px; border-radius: 12px; background: var(--panel-2); border: 1px solid var(--line); }
+.tile b { display: block; font-family: var(--serif); font-size: 26px; font-weight: 600; line-height: 1.1; }
+.tile b small { font-size: 13px; color: var(--muted); font-weight: 500; }
+.tile span { color: var(--muted); font-size: 11.5px; line-height: 1.3; }
+.tile.warn b { color: #f5b942; }
+.tile.bad b { color: var(--bad); }
+.tile.good b { color: var(--ok); }
+.progress-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+.sub { margin: 16px 0 6px; font-size: 10.5px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-weight: 600; }
+.weak-list, .session-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.weak-list li { display: flex; align-items: center; gap: 10px; padding: 6px 10px; border-radius: 9px; background: var(--panel-2); border: 1px solid var(--line); }
+.weak-name { flex: 1; min-width: 0; text-align: left; border: 0; background: none; color: var(--text); font-size: 13px; padding: 0; }
+.weak-name small { display: block; color: var(--muted); font-size: 11px; }
+.weak-name:not(:disabled):hover { color: var(--accent); }
+.trail { display: inline-flex; gap: 2px; font-style: normal; }
+.trail i { font-style: normal; font-size: 12px; width: 15px; text-align: center; }
+.trail i.ok { color: var(--ok); }
+.trail i.half { color: #f5b942; }
+.trail i.miss { color: var(--bad); }
+.perf { width: 38px; text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; }
+.session-list li { display: grid; grid-template-columns: 82px 1fr 70px 82px; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+.session-list .what { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.session-list .bar { height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+.session-list .bar i { display: block; height: 100%; background: var(--accent); }
+.session-list .res { text-align: right; font-variant-numeric: tabular-nums; color: var(--text); }
+.empty-progress { text-align: center; padding: 18px 8px; color: var(--muted); }
+.empty-progress p { margin: 0 0 10px; line-height: 1.5; }
+.empty-progress b { color: var(--text); }
+@media (max-width: 600px) {
+  .stat-tiles { grid-template-columns: 1fr 1fr; }
+  .session-list li { grid-template-columns: 1fr 60px 76px; }
+  .session-list .when { grid-column: 1 / -1; }
+}
+
+/* Legenda de cores e chip do corte */
+.color-legend {
+  position: absolute; right: 16px; bottom: 90px; z-index: 6; width: min(300px, calc(100% - 32px)); max-height: 46%; overflow-y: auto;
+  padding: 10px 12px; background: rgba(18, 21, 28, 0.92); border: 1px solid var(--line); border-radius: var(--radius); backdrop-filter: blur(10px);
+  scrollbar-width: thin; scrollbar-color: #2b3140 transparent;
+}
+.color-legend[hidden] { display: none; }
+.legend-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 12px; }
+.color-legend ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; }
+.color-legend li { display: flex; align-items: center; gap: 8px; font-size: 11.5px; line-height: 1.3; }
+.color-legend li i { width: 11px; height: 11px; border-radius: 3px; flex: none; }
+.color-legend li span { flex: 1; }
+.color-legend li small { color: var(--muted); font-variant-numeric: tabular-nums; }
+.floating-chip {
+  position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 6; padding: 6px 14px; border-radius: 999px;
+  background: rgba(18, 21, 28, 0.92); border: 1px solid var(--accent); color: var(--text); font-size: 12.5px; backdrop-filter: blur(8px);
+}
+.floating-chip[hidden] { display: none; }
+body.info-open .color-legend { right: 410px; } /* a ficha ocupa os 380px da direita */
+@media (max-width: 860px) {
+  .color-legend { right: 10px; bottom: 150px; max-height: 30%; }
+  body.info-open .color-legend, body.info-open .floating-chip { display: none; }
+}
+@media print {
+  .color-legend, .floating-chip { display: none !important; }
+}

@@ -1,13 +1,19 @@
 /**
  * Tours guiados didáticos passo a passo (F1.8).
- * Lote inicial de 6 tours anatômicos com câmera, camadas e explicações clínicas integradas.
+ *
+ * Cada passo define região, nível de dissecação, a estrutura em destaque (`highlight`, um id do catálogo) e o lado de
+ * onde olhar (`view`: front | back | left | right | three). A câmera é enquadrada sozinha na estrutura; sem
+ * `highlight`, mostra a região inteira. Os ids e as vistas são conferidos por `npm run test:catalog`.
  */
+export const TOUR_VIEWS = ['front', 'back', 'left', 'right', 'three'];
+
 
 export const TOURS = [
   {
     id: 'manguito',
     title: 'Manguito Rotador',
     subtitle: 'Estabilidade dinâmica e mobilidade do ombro',
+    description: 'Os quatro músculos que mantêm a cabeça do úmero na cavidade glenoidal: origem, inserção, ação e nervo de cada um.',
     region: 'membro_sup',
     steps: [
       {
@@ -15,24 +21,23 @@ export const TOURS = [
         text: 'O manguito rotador é formado por quatro músculos que abraçam a cabeça do úmero, estabilizando-a na cavidade glenoidal da escápula: supraespinhal, infraespinhal, redondo menor e subescapular.',
         dissect: 2,
         region: 'membro_sup',
-        highlight: 'deltoide',
-        cam: { pos: [2.5, 0.4, 5.2], target: [1.2, -0.6, 0.2] },
+        view: 'three',
       },
       {
         title: 'Músculo Supraespinhal',
-        text: 'Origina-se na fossa supraespinhal da escápula e insere-se na faceta superior do tubérculo maior do úmero. Inicia a abdução do braço (primeiros 15°) e é o tendão mais acometido por tendinites e rupturas por compressão no arco coracoacromial.',
+        text: 'Origina-se na fossa supraespinhal da escápula e insere-se na faceta superior do tubérculo maior do úmero. Inicia a abdução do braço e colabora com o deltoide durante o movimento (a descrição clássica fala nos primeiros 15°, mas ele atua em toda a amplitude). Seu tendão é o mais acometido por tendinopatias e rupturas, em geral por compressão sob o arco coracoacromial.',
         dissect: 3,
         region: 'membro_sup',
-        highlight: 'supraespinhal',
-        cam: { pos: [2.0, 0.6, 4.0], target: [1.3, -0.5, 0.0] },
+        highlight: 'supraespinal',
+        view: 'back',
       },
       {
         title: 'Músculo Infraespinhal',
         text: 'Ocupa a fossa infraespinhal e fixa-se na faceta média do tubérculo maior. É o principal rotador lateral do braço. Inervado pelo nervo supraescapular (C5, C6).',
         dissect: 3,
         region: 'membro_sup',
-        highlight: 'infraespinhal',
-        cam: { pos: [1.6, 0.2, -4.5], target: [1.3, -0.6, 0.0] },
+        highlight: 'infraespinal',
+        view: 'back',
       },
       {
         title: 'Músculo Redondo Menor',
@@ -40,7 +45,7 @@ export const TOURS = [
         dissect: 3,
         region: 'membro_sup',
         highlight: 'redondo_menor',
-        cam: { pos: [2.0, -0.2, -4.0], target: [1.3, -0.7, 0.0] },
+        view: 'back',
       },
       {
         title: 'Músculo Subescapular',
@@ -48,7 +53,7 @@ export const TOURS = [
         dissect: 4,
         region: 'membro_sup',
         highlight: 'subescapular',
-        cam: { pos: [1.8, 0.1, 4.2], target: [1.2, -0.8, 0.1] },
+        view: 'front',
       },
     ],
   },
@@ -56,6 +61,7 @@ export const TOURS = [
     id: 'plexo_braquial',
     title: 'Plexo Braquial',
     subtitle: 'Origem e distribuição da inervação do membro superior',
+    description: 'Das raízes C5–T1 aos cinco nervos terminais que inervam o membro superior.',
     region: 'membro_sup',
     steps: [
       {
@@ -63,8 +69,8 @@ export const TOURS = [
         text: 'O plexo braquial é formado pelos ramos ventrais dos nervos espinais C5 a T1. Emerge no pescoço entre os músculos escalenos anterior e médio (trígono interescalênico).',
         dissect: 4,
         region: 'membro_sup',
-        highlight: 'n_musculocutaneo',
-        cam: { pos: [1.8, -0.1, 4.5], target: [0.8, -1.2, 0.2] },
+        highlight: 'n_plexo_braquial',
+        view: 'front',
       },
       {
         title: 'Troncos e Fascículos',
@@ -72,15 +78,15 @@ export const TOURS = [
         dissect: 4,
         region: 'membro_sup',
         highlight: 'n_mediano',
-        cam: { pos: [2.0, -0.5, 4.0], target: [1.2, -1.5, 0.3] },
+        view: 'front',
       },
       {
         title: 'Ramos Terminais Principais',
-        text: 'Origina os cinco grandes nervos terminais: Musculocutâneo (flexores do braço), Axilar (deltoide e redondo menor), Radial (extensores do membro), Mediano (flexores do antebraço e eminência tenar) e Ulnar (intrínsecos da mão).',
+        text: 'Origina os cinco grandes nervos terminais: Musculocutâneo (flexores do braço), Axilar (deltoide e redondo menor), Radial (extensores do membro), Mediano (maioria dos flexores do antebraço e eminência tenar) e Ulnar (flexor ulnar do carpo, metade medial do flexor profundo dos dedos e a maioria dos intrínsecos da mão).',
         dissect: 4,
         region: 'membro_sup',
         highlight: 'n_radial',
-        cam: { pos: [2.2, -1.0, 4.5], target: [1.4, -2.0, 0.2] },
+        view: 'front',
       },
     ],
   },
@@ -88,6 +94,7 @@ export const TOURS = [
     id: 'nervo_radial',
     title: 'Nervo Radial e Extensores',
     subtitle: 'Trajeto no sulco espiral e controle da extensão',
+    description: 'Trajeto do nervo radial, músculos que ele inerva e o quadro clínico da queda do punho.',
     region: 'membro_sup',
     steps: [
       {
@@ -96,7 +103,7 @@ export const TOURS = [
         dissect: 4,
         region: 'membro_sup',
         highlight: 'n_radial',
-        cam: { pos: [1.8, -0.5, -4.5], target: [1.5, -1.8, 0.0] },
+        view: 'back',
       },
       {
         title: 'Tríceps Braquial',
@@ -104,7 +111,7 @@ export const TOURS = [
         dissect: 3,
         region: 'membro_sup',
         highlight: 'triceps_lateral',
-        cam: { pos: [2.2, -1.0, -3.8], target: [1.6, -1.9, 0.0] },
+        view: 'back',
       },
       {
         title: 'Divisão no Antebraço: Ramos Profundo e Superficial',
@@ -112,15 +119,15 @@ export const TOURS = [
         dissect: 4,
         region: 'membro_sup',
         highlight: 'braquiorradial',
-        cam: { pos: [2.4, -1.8, 3.2], target: [1.8, -2.5, 0.2] },
+        view: 'front',
       },
       {
         title: 'Correlação Clínica: "Queda do Punho"',
         text: 'Fraturas da diáfise umeral ou compressão prolongada do nervo radial ("paralisia de sábado à noite") causam paralisia dos extensores do punho e dos dedos, resultando na mão caída.',
         dissect: 3,
         region: 'membro_sup',
-        highlight: 'extensor_radial_longo',
-        cam: { pos: [2.5, -2.2, 2.5], target: [2.0, -2.8, 0.1] },
+        highlight: 'ecrl',
+        view: 'left',
       },
     ],
   },
@@ -128,6 +135,7 @@ export const TOURS = [
     id: 'mastigacao_v3',
     title: 'Músculos da Mastigação e Nervo V3',
     subtitle: 'Controle motor da mandíbula pelo trigêmeo',
+    description: 'Masseter, temporal e pterigóideos: o que cada um faz e como o ramo mandibular os inerva.',
     region: 'cabeca',
     steps: [
       {
@@ -136,7 +144,7 @@ export const TOURS = [
         dissect: 4,
         region: 'cabeca',
         highlight: 'n_mandibular',
-        cam: { pos: [1.8, -0.2, 3.0], target: [0.3, -0.6, 0.2] },
+        view: 'left',
       },
       {
         title: 'Músculo Masseter',
@@ -144,7 +152,7 @@ export const TOURS = [
         dissect: 3,
         region: 'cabeca',
         highlight: 'masseter',
-        cam: { pos: [2.0, -0.3, 2.5], target: [0.4, -0.6, 0.3] },
+        view: 'left',
       },
       {
         title: 'Músculo Temporal',
@@ -152,7 +160,7 @@ export const TOURS = [
         dissect: 3,
         region: 'cabeca',
         highlight: 'temporal',
-        cam: { pos: [2.2, 0.2, 1.8], target: [0.3, -0.3, 0.1] },
+        view: 'left',
       },
       {
         title: 'Pterigóideos Medial e Lateral',
@@ -160,7 +168,7 @@ export const TOURS = [
         dissect: 4,
         region: 'cabeca',
         highlight: 'pterigoideo_lateral',
-        cam: { pos: [1.6, -0.4, 2.2], target: [0.3, -0.6, 0.2] },
+        view: 'left',
       },
     ],
   },
@@ -168,6 +176,7 @@ export const TOURS = [
     id: 'facial_mimica',
     title: 'Nervo Facial (VII) e Mímica',
     subtitle: 'Expressão facial e ramos através da parótida',
+    description: 'Do forame estilomastoideo aos músculos da mímica, e o que acontece na paralisia de Bell.',
     region: 'cabeca',
     steps: [
       {
@@ -176,7 +185,7 @@ export const TOURS = [
         dissect: 4,
         region: 'cabeca',
         highlight: 'n_facial',
-        cam: { pos: [2.0, -0.3, 1.5], target: [0.3, -0.5, 0.0] },
+        view: 'left',
       },
       {
         title: 'Cinco Grupos de Ramos Motores',
@@ -184,7 +193,7 @@ export const TOURS = [
         dissect: 3,
         region: 'cabeca',
         highlight: 'platisma',
-        cam: { pos: [1.9, -0.4, 2.8], target: [0.2, -0.7, 0.3] },
+        view: 'three',
       },
       {
         title: 'Esfíncteres da Face: Olho e Boca',
@@ -192,7 +201,7 @@ export const TOURS = [
         dissect: 2,
         region: 'cabeca',
         highlight: 'orbicular_olho',
-        cam: { pos: [1.5, 0.0, 3.5], target: [0.0, -0.4, 0.5] },
+        view: 'front',
       },
       {
         title: 'Correlação Clínica: Paralisia de Bell',
@@ -200,7 +209,7 @@ export const TOURS = [
         dissect: 2,
         region: 'cabeca',
         highlight: 'frontal',
-        cam: { pos: [1.6, 0.3, 3.2], target: [0.0, -0.2, 0.4] },
+        view: 'front',
       },
     ],
   },
@@ -208,6 +217,7 @@ export const TOURS = [
     id: 'parede_abdominal',
     title: 'Parede Abdominal e Inervação',
     subtitle: 'Camadas musculares, aponeuroses e nervos tóraco-abdominais',
+    description: 'Os músculos da parede ântero-lateral do abdome, do mais superficial ao mais profundo.',
     region: 'tronco',
     steps: [
       {
@@ -216,31 +226,31 @@ export const TOURS = [
         dissect: 2,
         region: 'tronco',
         highlight: 'obliquo_externo',
-        cam: { pos: [2.2, -1.8, 4.5], target: [0.4, -2.6, 0.2] },
+        view: 'front',
       },
       {
         title: 'Músculo Oblíquo Interno',
-        text: 'Camada intermediária com fibras perpendiculares ao oblíquo externo (subindo ânpero-superiormente). Aumenta a pressão intra-abdominal e flete/gira o tronco.',
+        text: 'Camada intermediária com fibras perpendiculares ao oblíquo externo (subindo ântero-superiormente). Aumenta a pressão intra-abdominal e flete/gira o tronco.',
         dissect: 3,
         region: 'tronco',
         highlight: 'obliquo_interno',
-        cam: { pos: [2.0, -2.0, 4.2], target: [0.4, -2.8, 0.2] },
+        view: 'front',
       },
       {
         title: 'Transverso do Abdome',
         text: 'A camada profunda da parede ântero-lateral, com fibras horizontais como uma cinta natural. Crucial para a estabilização lombar e sustentação das vísceras abdominais.',
         dissect: 4,
         region: 'tronco',
-        highlight: 'transverso_abd',
-        cam: { pos: [1.8, -2.2, 3.8], target: [0.3, -2.9, 0.2] },
+        highlight: 'transverso_abdome',
+        view: 'front',
       },
       {
         title: 'Reto do Abdome e Linha Alba',
         text: 'Músculo vertical poligástrico anterior dividido por 3–4 interseções tendíneas e envolto pela bainha dos retos. Inervado pelos nervos intercostais inferiores (T7–T12).',
         dissect: 2,
         region: 'tronco',
-        highlight: 'reto_abd',
-        cam: { pos: [1.5, -2.0, 4.8], target: [0.0, -2.7, 0.4] },
+        highlight: 'reto_abdome',
+        view: 'front',
       },
     ],
   },

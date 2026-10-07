@@ -6,7 +6,7 @@ import { loadAnatomy } from './anatomy.js';
 import { Surfaces, TORSO_PARTS } from './surfaces.js';
 import { buildProc, makeFiberTexture } from './proc.js';
 import { LM } from './landmarks.js';
-import { ITEMS as ALL_ITEMS, HEAD_IDS, BODY_ITEMS, NERVES, INNERVATION, LAYERS, KIND_LABEL, REGIONS, inRegion } from './catalog.js';
+import { ITEMS as ALL_ITEMS, HEAD_IDS, BODY_ITEMS, NERVES, INNERVATION, LAYERS, KIND_LABEL, REGIONS, inRegion, layersForDissect } from './catalog.js';
 import { NerveBuilder } from './nerve-geo.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { SKULL_PARTS } from './surfaces.js';
@@ -385,6 +385,14 @@ function itemVisible(m) {
 function applyVisibility() {
   for (const m of M.values()) m.group.visible = itemVisible(m);
   applyHighlight();
+  studyController?.onViewChanged();
+}
+
+/** Cores escolhidas pelo modo de coloração (id → THREE.Color); `null` = cor própria de cada material. */
+let colorOverrides = null;
+function setColorOverrides(map) {
+  colorOverrides = map;
+  applyHighlight();
 }
 
 const FLASH = { ok: new THREE.Color('#34d17f'), bad: new THREE.Color('#ff4a5c') };
@@ -423,8 +431,9 @@ function applyHighlight() {
       }
       if (mat.transparent !== tr || mat.depthWrite !== dw) { mat.transparent = tr; mat.depthWrite = dw; mat.needsUpdate = true; }
       mat.opacity = op;
-      mat.color.copy(fb ? FLASH[fb] : mat.userData.baseColor);
-      mat.emissive.copy(fb ? FLASH[fb] : mat.userData.baseColor).multiplyScalar(fb ? 0.5 : isSel ? 0.42 : isHover ? (state.quiz ? 0.34 : 0.2) : isRel ? 0.18 : 0);
+      const base = colorOverrides?.get(m.item.id) ?? mat.userData.baseColor;
+      mat.color.copy(fb ? FLASH[fb] : base);
+      mat.emissive.copy(fb ? FLASH[fb] : base).multiplyScalar(fb ? 0.5 : isSel ? 0.42 : isHover ? (state.quiz ? 0.34 : 0.2) : isRel ? 0.18 : 0);
     });
     m.group.renderOrder = isSkin(m) ? 5 : 0;
   }
@@ -475,14 +484,19 @@ function setRegion(r, { fly = true } = {}) {
   if (fly) viewPreset(currentView);
 }
 
-/** `wide`: vira a câmera para o lado da estrutura, mas sem chegar perto (usado nas dicas do quiz). */
-function focusItem(id, wide = false) {
+/**
+ * `wide`: vira a câmera para o lado da estrutura, mas sem chegar perto (usado nas dicas do quiz).
+ * `side`: 1 ou -1 restringe o enquadramento à cópia esquerda (x > 0) ou direita da estrutura, quando ela existe.
+ */
+function focusItem(id, wide = false, side = 0) {
   const m = M.get(id);
   if (!m || !m.anchors.length) return;
   const cam = camera.position.clone().sub(controls.target).normalize();
-  let best = m.anchors[0];
+  const sided = side ? m.anchors.filter((a) => a.pos.x * side > 0) : [];
+  const anchors = sided.length ? sided : m.anchors;
+  let best = anchors[0];
   let bestDot = -9;
-  for (const a of m.anchors) {
+  for (const a of anchors) {
     const d = a.normal.dot(cam) + 0.25 * Math.sign(a.pos.x || 1) * Math.sign(cam.x || 1);
     if (d > bestDot) { bestDot = d; best = a; }
   }
@@ -509,6 +523,7 @@ function select(id, { fly = true, panel = true } = {}) {
     if (fly) focusItem(id);
     if (panel) showInfo(id); else hideInfo();
   } else hideInfo();
+  studyController?.onViewChanged();
 }
 
 /* ───────────────────────── Painel de informações ───────────────────────── */
@@ -744,9 +759,7 @@ function setSkin(v) {
 
 function setDissect(v) {
   state.dissect = v;
-  state.layers = new Set(
-    LAYERS.filter((l) => (v === 0 ? true : v === 1 ? l.id !== 'fascia' : l.depth >= v - 1)).map((l) => l.id),
-  );
+  state.layers = new Set(layersForDissect(v));
   if (v === 0) setSkin(1);
   else if (v === 1) setSkin(0.14);
   $('#dissect').value = v;
@@ -774,6 +787,7 @@ document.querySelectorAll('.toolbar button[data-region]').forEach((b) => b.addEv
   if (state.quiz?.mode !== 'locate') setRegion(b.dataset.region);
 }));
 window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && studyController?.handleEscape()) return;
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
   if (e.key === 'Escape') {
     if (!setupEl.hidden) { closeSetup(); return; }
@@ -783,13 +797,14 @@ window.addEventListener('keydown', (e) => {
     return;
   }
   if (state.quiz) {
-    if (state.quiz.mode === 'choice') {
+    if (state.quiz.mode === 'choice' || state.quiz.mode === 'text') {
       const q = state.quiz;
-      if (['1', '2', '3', '4'].includes(e.key) && !q.answered) {
-        const btn = $('#quizOptions')?.querySelectorAll('button')?.[parseInt(e.key, 10) - 1];
+      const text = q.mode === 'text';
+      if (['1', '2', '3', '4'].includes(e.key) && !q.answered && !q.finished) {
+        const btn = $(text ? '#tqOptions' : '#quizOptions')?.querySelectorAll('button')?.[parseInt(e.key, 10) - 1];
         if (btn) btn.click();
       } else if (e.key === 'Enter' && q.answered) {
-        const nextBtn = $('#quizNext');
+        const nextBtn = $(text ? '#tqNext' : '#quizNext');
         if (nextBtn) nextBtn.click();
       }
     } else if (state.quiz.mode === 'locate') {
@@ -826,6 +841,14 @@ function pick(ev) {
     if (isSkin(m) && state.skin < (loc ? 0.9 : 0.5)) continue;
     if (loc && m.item.kind === 'fascia') continue;
     targets.push(...(m.pick ?? m.meshes)); // nervos finos têm uma malha de clique mais grossa e invisível
+  }
+  const clip = studyController?.clipping;
+  if (clip?.active) {
+    // com corte ativo, o primeiro acerto de cada malha pode estar na parte cortada: pede todos e descarta os invisíveis
+    raycaster.firstHitOnly = false;
+    const hits = raycaster.intersectObjects(targets, false).filter((h) => !clip.isClipped(h.point));
+    raycaster.firstHitOnly = true;
+    return hits[0] ? hits[0].object.userData.id : null;
   }
   const hit = raycaster.intersectObjects(targets, false)[0];
   return hit ? hit.object.userData.id : null;
@@ -982,27 +1005,38 @@ function enterQuiz(quiz) {
   state.quiz = quiz;
   state.flash.clear();
   state.hidden.clear();
-  document.body.classList.remove('quiz-choice', 'quiz-locate');
+  setColorOverrides(null); // cores temáticas atrapalhariam o quiz (e a legenda some); voltam ao sair
+  document.body.classList.remove('quiz-choice', 'quiz-locate', 'quiz-text');
   document.body.classList.add('quiz-on', `quiz-${quiz.mode}`);
   btnQuiz.classList.add('on');
   btnQuiz.textContent = 'Sair do quiz';
   hideInfo();
 }
 
+/** Grava a rodada atual (uma vez só) no histórico de progresso. */
+function recordSession() {
+  const q = state.quiz;
+  if (!q || q.recorded) return;
+  let rec = null;
+  if (q.mode === 'choice') rec = { mode: 'choice', region: state.region, score: q.score, total: q.total };
+  else if (q.mode === 'text') rec = { mode: 'text', region: q.setup.region, smart: q.setup.smart, score: q.score, total: q.total, ms: performance.now() - q.t0 };
+  else if (q.mode === 'locate') rec = { mode: 'locate', region: q.opts.region, smart: q.opts.smart, score: q.results.reduce((s, r) => s + r.pts, 0), total: q.results.length, ms: q.time };
+  if (rec && rec.total) { q.recorded = true; userData.recordSession(rec); }
+}
+
 function stopQuiz() {
+  recordSession();
   clearInterval(tick);
   tick = null;
   state.quiz = null;
   state.flash.clear();
-  document.body.classList.remove('quiz-on', 'quiz-choice', 'quiz-locate');
+  document.body.classList.remove('quiz-on', 'quiz-choice', 'quiz-locate', 'quiz-text');
   btnQuiz.classList.remove('on');
   btnQuiz.textContent = 'Modo quiz';
   quizEl.hidden = true;
   locEl.hidden = true;
   resultEl.hidden = true;
-  const tq = $('#textQuiz');
-  if (tq) tq.hidden = true;
-  studyController?.stopTextQuiz();
+  studyController?.textQuiz.onQuizStopped();
   if (baseline) {
     const b = baseline;
     baseline = null;
@@ -1017,23 +1051,42 @@ function stopQuiz() {
   select(null, { fly: false });
   syncLayers();
   viewPreset('three');
+  studyController?.coloring.apply();
+  studyController?.onViewChanged();
+}
+
+/** Todas as camadas menos a pele: o que o quiz de escolha e o teórico mostram. */
+function showAllLayersForQuiz() {
+  state.layers = new Set(LAYERS.filter((l) => l.id !== 'pele').map((l) => l.id));
+  syncLayers();
 }
 
 /* ── Quiz 1: múltipla escolha (a estrutura aparece destacada) ── */
-function startChoice() {
-  enterQuiz({ mode: 'choice', score: 0, total: 0, answered: false, current: null });
+/** Estruturas da região em foco que o quiz de escolha pode perguntar (respeita o filtro inteligente). */
+function choicePool(smart = 'all') {
+  const allow = studyController?.smartSet(smart);
+  return ITEMS.filter((i) => i.id !== 'pele' && i.kind !== 'fascia' && regionOk(i) && (!allow || allow.has(i.id))).map((i) => i.id);
+}
+function startChoice(smart = 'all') {
+  const targets = choicePool(smart);
+  if (!targets.length) return false;
+  enterQuiz({ mode: 'choice', score: 0, total: 0, answered: false, current: null, smart, queue: shuffle(targets), recorded: false });
   locEl.hidden = true;
   resultEl.hidden = true;
   quizEl.hidden = false;
-  state.layers = new Set(LAYERS.filter((l) => l.id !== 'pele').map((l) => l.id));
-  syncLayers();
+  showAllLayersForQuiz();
   nextQuestion();
+  return true;
 }
 function nextQuestion() {
   const q = state.quiz;
   const pool = ITEMS.filter((i) => i.id !== 'pele' && i.kind !== 'fascia' && regionOk(i)).map((i) => i.id);
-  let id;
-  do { id = pool[Math.floor(Math.random() * pool.length)]; } while (id === q.current && pool.length > 1);
+  // a fila pode ter ficado velha se a pessoa trocou de região no meio do quiz
+  const targets = new Set(choicePool(q.smart));
+  if (!targets.size) { studyController?.toast('Nenhuma estrutura do filtro escolhido nesta região.'); stopQuiz(); return; }
+  q.queue = q.queue.filter((x) => targets.has(x));
+  if (!q.queue.length) q.queue = shuffle([...targets]); // acabaram as estruturas: embaralha de novo
+  const id = q.queue.shift();
   q.current = id;
   q.answered = false;
   const kind = M.get(id).item.kind;
@@ -1074,15 +1127,8 @@ const kindGroup = (i) => (i.kind === 'musculo' || i.kind === 'osso' || i.kind ==
 function locatePool({ region, kinds, smart = 'all' }) {
   let pool = ITEMS.filter((i) => i.id !== 'pele' && i.kind !== 'fascia' && i.label !== false
     && (region === 'todos' || (i.region !== 'todos' && inRegion(i, region))) && kinds.includes(kindGroup(i)));
-  if (smart === 'fav') {
-    pool = pool.filter((i) => userData.isFavorite(i.id));
-  } else if (smart === 'due' && studyController) {
-    const dueSet = new Set(studyController.getDueIds());
-    pool = pool.filter((i) => dueSet.has(i.id));
-  } else if (smart === 'weak' && studyController) {
-    const weakSet = new Set(studyController.getWeakIds());
-    pool = pool.filter((i) => weakSet.has(i.id));
-  }
+  const allow = studyController?.smartSet(smart);
+  if (allow) pool = pool.filter((i) => allow.has(i.id));
   return pool;
 }
 
@@ -1275,6 +1321,7 @@ function locateHint() {
 function finishLocate() {
   const q = state.quiz;
   q.finished = true;
+  recordSession();
   clearInterval(tick);
   tick = null;
   state.flash.clear();
@@ -1343,8 +1390,10 @@ try {
   }
   if (COUNT_OPTS.includes(s.count)) setup.count = s.count;
   setup.latin = !!s.latin;
-  if (s.smart) setup.smart = s.smart;
+  if (typeof s.smart === 'string' && /^(all|fav|due|weak|new|list:.+)$/.test(s.smart)) setup.smart = s.smart;
 } catch { /* sem armazenamento: usa o padrão */ }
+
+const SMART_OPTS = [['all', 'Todas'], ['fav', '⭐ Favoritas'], ['due', '🔁 Revisão de hoje'], ['weak', '🎯 Pontos fracos'], ['new', '🆕 Ainda não estudadas']];
 
 function fillButtons(sel, entries) {
   $(sel).innerHTML = entries.map(([v, label]) => `<button type="button" data-v="${v}">${label}</button>`).join('');
@@ -1352,36 +1401,70 @@ function fillButtons(sel, entries) {
 fillButtons('#qsRegion', Object.entries(REGION_SHORT));
 fillButtons('#qsKinds', KIND_GROUPS.map(([k, label]) => [k, `${label} <small></small>`]));
 fillButtons('#qsCount', COUNT_OPTS.map((n) => [n, n || 'Todas']));
+$('#qsSmartSeg').innerHTML = SMART_OPTS.map(([v, label]) => `<button type="button" data-smart="${v}">${label} <small></small></button>`).join('');
+
+/** Quantas estruturas o quiz do tipo `mode` teria com as opções `o`. */
+function poolSize(mode, o) {
+  if (mode === 'choice') return choicePool(o.smart).length;
+  if (mode === 'text') return studyController ? studyController.textQuiz.poolFor(o).length : 0;
+  return locatePool(o).length;
+}
 
 function renderSetup() {
-  document.querySelectorAll('#qsModes .mode-card').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.mode === setup.mode)));
-  $('#qsLocate').hidden = setup.mode === 'choice';
-  $('#qsSmartSeg')?.querySelectorAll('button').forEach((b) => {
-    b.classList.toggle('on', b.dataset.smart === (setup.smart || 'all'));
-  });
+  const mode = setup.mode;
+  document.querySelectorAll('#qsModes .mode-card').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.mode === mode)));
+  $('#qsKindsBox').hidden = mode === 'choice';
+  $('#qsCountBox').hidden = mode === 'choice';
+  $('#qsLatinRow').hidden = mode !== 'locate';
+  $('#qsTipLocate').hidden = mode !== 'locate';
+  $('#qsTipText').hidden = mode !== 'text';
+  $('#qsTipChoice').hidden = mode !== 'choice';
+
   if (!state.bodyReady && setup.region !== 'cabeca') setup.region = 'cabeca';
+  if (setup.smart.startsWith('list:') && !userData.getList(setup.smart.slice(5))) setup.smart = 'all';
   $('#qsRegion').querySelectorAll('button').forEach((b) => {
     b.disabled = b.dataset.v !== 'cabeca' && !state.bodyReady;
     b.setAttribute('aria-pressed', String(b.dataset.v === setup.region));
   });
   $('#qsKinds').querySelectorAll('button').forEach((b) => {
-    const n = locatePool({ region: setup.region, kinds: [b.dataset.v], smart: setup.smart }).length;
+    const k = b.dataset.v;
+    const usable = mode !== 'text' || k === 'musculo' || k === 'nervo'; // o quiz teórico só tem texto de músculos e nervos
+    const n = usable ? poolSize(mode, { ...setup, kinds: [k] }) : 0;
     b.disabled = !n;
-    b.querySelector('small').textContent = n;
-    b.setAttribute('aria-pressed', String(n > 0 && setup.kinds.includes(b.dataset.v)));
+    b.querySelector('small').textContent = usable ? n : '—';
+    b.setAttribute('aria-pressed', String(n > 0 && setup.kinds.includes(k)));
   });
   $('#qsCount').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.v) === setup.count)));
   $('#qsLatin').checked = setup.latin;
-  const pool = locatePool(setup).length;
+
+  $('#qsSmartSeg').querySelectorAll('button').forEach((b) => {
+    const n = poolSize(mode, { ...setup, smart: b.dataset.smart });
+    b.querySelector('small').textContent = n;
+    b.disabled = b.dataset.smart !== 'all' && !n;
+    b.setAttribute('aria-pressed', String(b.dataset.smart === setup.smart));
+  });
+  const sel = $('#qsListSel');
+  const lists = userData.getCustomLists();
+  sel.hidden = !lists.length;
+  sel.innerHTML = '<option value="">Minhas listas…</option>' + lists.map((l) => `<option value="list:${esc(l.id)}">${esc(l.name)} (${poolSize(mode, { ...setup, smart: `list:${l.id}` })})</option>`).join('');
+  sel.value = setup.smart.startsWith('list:') ? setup.smart : '';
+
+  const pool = poolSize(mode, setup);
   const n = setup.count ? Math.min(setup.count, pool) : pool;
-  if (setup.mode === 'choice') $('#qsInfo').textContent = 'Perguntas sem fim, na região que você está vendo.';
-  else if (setup.mode === 'text') $('#qsInfo').textContent = 'Quiz conceitual: inervação, ação motora e correlações clínicas.';
-  else $('#qsInfo').textContent = pool ? `${n} pergunta${n === 1 ? '' : 's'} · ${pool} estruturas possíveis` : 'Nenhuma estrutura com esses filtros.';
-  $('#qsStart').disabled = setup.mode === 'locate' && !pool;
+  if (!pool) $('#qsInfo').textContent = 'Nenhuma estrutura com esses filtros.';
+  else if (mode === 'choice') $('#qsInfo').textContent = `${pool} estruturas possíveis · perguntas sem fim`;
+  else $('#qsInfo').textContent = `${n} pergunta${n === 1 ? '' : 's'} · ${pool} estruturas possíveis`;
+  $('#qsStart').disabled = !pool;
 }
 
-function openSetup() {
+/** @param {{ smart?: string }} [preset] filtro já escolhido (vem dos painéis de progresso e de listas) */
+function openSetup(preset) {
   setup.region = state.region;
+  if (preset?.smart) {
+    setup.smart = preset.smart;
+    // se nada da região em foco entra no filtro (ex.: ponto fraco no tronco), amplia para o corpo todo
+    if (!poolSize(setup.mode, setup) && state.bodyReady) setup.region = 'todos';
+  }
   renderSetup();
   setupEl.hidden = false;
   $('#qsStart').focus();
@@ -1403,9 +1486,13 @@ $('#qsKinds').addEventListener('click', (e) => {
   setup.kinds = setup.kinds.includes(k) ? setup.kinds.filter((x) => x !== k) : [...setup.kinds, k];
   renderSetup();
 });
-$('#qsSmartSeg')?.addEventListener('click', (e) => {
+$('#qsSmartSeg').addEventListener('click', (e) => {
   const b = e.target.closest('button');
-  if (b) { setup.smart = b.dataset.smart; renderSetup(); }
+  if (b && !b.disabled) { setup.smart = b.dataset.smart; renderSetup(); }
+});
+$('#qsListSel').addEventListener('change', (e) => {
+  setup.smart = e.target.value || 'all';
+  renderSetup();
 });
 $('#qsCount').addEventListener('click', (e) => {
   const b = e.target.closest('button');
@@ -1417,9 +1504,14 @@ setupEl.addEventListener('click', (e) => { if (e.target === setupEl) closeSetup(
 $('#qsStart').onclick = () => {
   try { localStorage.setItem(SETUP_KEY, JSON.stringify({ mode: setup.mode, kinds: setup.kinds, count: setup.count, latin: setup.latin, smart: setup.smart })); } catch { /* ignora */ }
   closeSetup();
-  if (setup.mode === 'choice') startChoice();
-  else if (setup.mode === 'text') studyController?.startTextQuiz(setup);
-  else startLocate({ region: setup.region, kinds: [...setup.kinds], count: setup.count, latin: setup.latin, smart: setup.smart });
+  if (setup.mode === 'choice') {
+    setRegion(setup.region, { fly: false });
+    startChoice(setup.smart);
+  } else if (setup.mode === 'text') {
+    studyController?.textQuiz.start({ region: setup.region, kinds: [...setup.kinds], count: setup.count, smart: setup.smart });
+  } else {
+    startLocate({ region: setup.region, kinds: [...setup.kinds], count: setup.count, latin: setup.latin, smart: setup.smart });
+  }
 };
 btnQuiz.onclick = () => (state.quiz ? stopQuiz() : openSetup());
 
@@ -1509,6 +1601,7 @@ function loadBody() {
       buildList();
       applyVisibility();
       syncList();
+      studyController?.onModelUpdated();
       if (!setupEl.hidden) renderSetup();
       console.info('[carga] corpo', perf.bodyStructuresMs, 'ms');
       // nervos: montados em segundo plano, depois que cabeça e corpo já estão na tela
@@ -1529,6 +1622,7 @@ function loadBody() {
       syncList();
       if (state.selected && !M.has(state.selected)) select(null, { fly: false });
       else if (state.selected && infoEl.classList.contains('open')) showInfo(state.selected);
+      studyController?.onModelUpdated();
       if (!setupEl.hidden) renderSetup();
       setBodyStatus(null);
     } catch (err) {
@@ -1577,10 +1671,18 @@ async function init() {
     perf.ttfiMs = Math.round(performance.now() - perf.start);
     $('#loading').classList.add('done');
     const jump = () => { if (goal) { camera.position.copy(goal.pos); controls.target.copy(goal.target); goal = null; controls.update(); } };
-    studyController = new StudyController({
-      state, M, select, camera, controls, viewPreset, flyTo, renderer, scene, THREE, setDissect, setRegion, S, jump, startLocate, locateClick, locateHint, locatePool, openSetup, setup, perf, ITEMS, INNERVATION, syncList
-    });
-    window.__app = { state, M, select, camera, controls, viewPreset, flyTo, renderer, scene, THREE, setDissect, setRegion, S, jump, startLocate, locateClick, locateHint, locatePool, openSetup, setup, perf, studyController, userData };
+    const api = {
+      state, M, ITEMS, INNERVATION, LAYERS, inRegion, perf, setup, S, THREE,
+      catalogItems: ALL_ITEMS,
+      catalog: new Map(ALL_ITEMS.map((i) => [i.id, i])),
+      camera, controls, renderer, scene, jump, flyTo, viewPreset,
+      select, focusItem, setRegion, setDissect, setSkin, syncLayers, syncList, setColorOverrides, applyHighlight,
+      startLocate, locateClick, locateHint, locatePool, openSetup,
+      enterQuiz, stopQuiz, recordSession, showAllLayersForQuiz,
+      getModelBox: () => new THREE.Box3().setFromObject(modelRoot),
+    };
+    studyController = new StudyController(api);
+    window.__app = { ...api, studyController, userData };
     setTimeout(loadBody, 250);
   } catch (err) {
     console.error(err);
