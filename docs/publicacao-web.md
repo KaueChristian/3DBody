@@ -29,6 +29,15 @@ Revisitar só se as medições em aparelhos reais (abaixo) mostrarem que o WebGL
 - `pages.yml` agora grava a versão (`major.minor.<execução>`) em `dist/version.js` e **versiona o cache do service worker**
   (`CACHE_NAME`) a cada deploy. Antes o nome era fixo, e o cache antigo só era trocado por acaso.
 
+## Situação (2026-10-07)
+- Site publicado em **https://body3d.app** (também `https://kauechristian.github.io/3DBody/`). O Pages usa *Source: GitHub Actions* e o
+  domínio fica guardado nas configurações do Pages (não precisa de arquivo `CNAME`).
+- Domínio `body3d.app` registrado na Name.com (primeiro ano gratuito pelo GitHub Student Developer Pack; **renovação ≈ US$ 26,99/ano**,
+  com renovação automática no cartão salvo: decidir se mantém). DNS: 4 registros `A` do domínio raiz (`185.199.108–111.153`) e `CNAME`
+  `www` → `kauechristian.github.io`; o `www` redireciona para o domínio raiz. Certificado HTTPS emitido pelo GitHub.
+- O nome Body3D ainda é provisório: se mudar, o domínio perde o sentido.
+- Para republicar o site sem gerar release: `gh workflow run pages.yml --ref main` (o push na `main` também gera a release do `.exe`).
+
 ## O que ainda falta (passos manuais e pendências)
 1. **Ativar o Pages** (uma vez): no GitHub, *Settings → Pages → Build and deployment → Source: GitHub Actions*.
 2. **Disparar o deploy.** O workflow roda em push na `main` (e `workflow_dispatch`). **Atenção:** o push na `main` também

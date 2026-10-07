@@ -29,7 +29,7 @@ npm start       # opcional: servidor local em http://localhost:5173
 
 ## No celular (Android, HarmonyOS e outros)
 
-O caminho é o **site/PWA** (GitHub Pages), aberto no navegador do aparelho e instalável na tela inicial; não há app nativo.
+O caminho é o **site/PWA** em **<https://body3d.app>** (GitHub Pages), aberto no navegador do aparelho e instalável na tela inicial; não há app nativo.
 Decisão, o que falta e como publicar: [`docs/publicacao-web.md`](docs/publicacao-web.md).
 
 ## Executável para Windows (com atualização automática)
