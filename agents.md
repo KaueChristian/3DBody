@@ -22,7 +22,7 @@ Ferramentas de dados em Python (numpy); lançador do Windows em C# (.NET Framewo
 
 ## 3. Comandos
 
-Windows 11; shell padrão PowerShell, com Git Bash disponível. Node 20+, Python 3.12 com `numpy`.
+Windows 11; shell padrão PowerShell, com Git Bash disponível. Node 22+, Python 3.12 com `numpy`.
 
 ```bash
 npm install          # uma vez
