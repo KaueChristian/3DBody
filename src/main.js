@@ -12,6 +12,7 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 import { SKULL_PARTS } from './surfaces.js';
 import { StudyController } from './study/ui.js';
 import { userData } from './study/storage.js';
+import { showDesktopDownload } from './get-app.js';
 
 let studyController = null;
 
@@ -652,13 +653,13 @@ function buildList() {
       li.addEventListener('click', (e) => {
         if (e.target.closest('.eye')) return;
         select(state.selected === item.id ? null : item.id);
-        document.body.classList.remove('list-open');
+        setList(false);
       });
       li.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           select(state.selected === item.id ? null : item.id);
-          document.body.classList.remove('list-open');
+          setList(false);
         } else if (e.key === 'ArrowDown') {
           e.preventDefault();
           const listItems = Array.from(listEl.querySelectorAll('.item:not([hidden])'));
@@ -772,7 +773,24 @@ function setDissect(v) {
 $('#search').addEventListener('input', (e) => { state.search = e.target.value; syncList(); });
 $('#showAll').onclick = () => { state.hidden.clear(); state.layers = new Set(LAYERS.map((l) => l.id)); syncLayers(); };
 $('#hideAll').onclick = () => { state.layers.clear(); select(null, { fly: false }); syncLayers(); };
-$('#openList').onclick = () => document.body.classList.toggle('list-open');
+/** Abre/fecha a gaveta lateral (celular e tablet em pé). */
+function setList(open) {
+  document.body.classList.toggle('list-open', open);
+  $('#openList').setAttribute('aria-expanded', String(open));
+}
+$('#openList').onclick = () => setList(!document.body.classList.contains('list-open'));
+$('#closeList').onclick = () => setList(false);
+// tocar no fundo escurecido (que é o próprio palco) ou arrastar a gaveta para a esquerda também fecha
+stage.addEventListener('click', (e) => { if (e.target === stage && document.body.classList.contains('list-open')) setList(false); });
+{
+  let x0 = null;
+  const side = $('#sidebar');
+  side.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+  side.addEventListener('touchend', (e) => {
+    if (x0 !== null && e.changedTouches[0].clientX - x0 < -70) setList(false);
+    x0 = null;
+  }, { passive: true });
+}
 
 /* ───────────────────────── Controles do palco ───────────────────────── */
 $('#optLabels').addEventListener('change', (e) => { state.labels = e.target.checked; });
@@ -792,7 +810,7 @@ window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     if (!setupEl.hidden) { closeSetup(); return; }
     if (state.quiz) { stopQuiz(); return; }
-    document.body.classList.remove('list-open');
+    setList(false);
     if (!state.quiz) select(null, { fly: false });
     return;
   }
@@ -1634,6 +1652,7 @@ function loadBody() {
 }
 
 /* ───────────────────────── Início ───────────────────────── */
+showDesktopDownload();
 $('#appVersion').textContent = window.__APP_VERSION && window.__APP_VERSION !== 'dev' ? `versão ${window.__APP_VERSION}` : '';
 
 const perf = {

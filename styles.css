@@ -1,4 +1,8 @@
 :root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
   --bg: #0B1220;
   --panel: #0F1828;
   --panel-2: #162033;
@@ -17,6 +21,7 @@
 
 * { box-sizing: border-box; }
 html, body { height: 100%; margin: 0; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
 body {
   background: var(--bg);
   color: var(--text);
@@ -26,7 +31,7 @@ body {
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
 }
-button { font: inherit; color: inherit; cursor: pointer; }
+button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
 button:focus-visible, input:focus-visible, [tabindex="0"]:focus-visible, .item:focus-visible, .mode-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 #app { display: grid; grid-template-columns: var(--sidebar-w) 1fr; height: 100%; height: 100dvh; }
@@ -316,26 +321,35 @@ body.quiz-locate .toolbar button[data-region] { pointer-events: none; }
 .tag.half { color: #f1c76a; background: rgba(241, 199, 106, 0.12); }
 #qrWeak[hidden] { display: none; }
 
-/* ───── Responsivo ───── */
-@media (max-width: 860px) {
+/* ───── Responsivo ─────
+   Gaveta lateral em telas estreitas (celular, tablet em pé) e em celular deitado (pouca altura).
+   Referência mínima: iPhone 11 (414×896); vai até tablets de ~11,5" (≈ 834–1194 px). */
+@media (min-width: 861px) and (max-width: 1100px) { :root { --sidebar-w: 300px; } }
+@media (max-width: 860px), (max-height: 520px) {
   #app { grid-template-columns: 1fr; }
   #sidebar {
-    position: fixed; inset: 0 0 0 0; width: min(88vw, 360px); transform: translateX(-102%); transition: transform 0.25s ease; box-shadow: 0 0 60px rgba(0,0,0,.6);
+    position: fixed; inset: 0 0 0 0; width: min(88vw, 360px); z-index: 30; transform: translateX(-102%); visibility: hidden;
+    transition: transform 0.25s ease, visibility 0s linear 0.25s; box-shadow: 0 0 60px rgba(0,0,0,.6);
+    padding: var(--safe-top) 0 var(--safe-bottom) var(--safe-left);
   }
-  body.list-open #sidebar { transform: none; }
+  body.list-open #sidebar { transform: none; visibility: visible; transition: transform 0.25s ease; }
+  /* fundo escurecido sobre o palco: tocar nele fecha a gaveta (o clique cai no próprio #stage) */
+  body.list-open #stage::after { content: ''; position: absolute; inset: 0; z-index: 25; background: rgba(4, 8, 16, 0.6); }
+  body.list-open { overflow: hidden; }
+  .sidebar-close { display: grid; }
   .fab {
-    display: block; position: absolute; top: 14px; left: 14px; z-index: 4; padding: 8px 12px; border-radius: 10px;
+    display: block; position: absolute; top: calc(14px + var(--safe-top)); left: calc(14px + var(--safe-left)); z-index: 4; padding: 8px 12px; border-radius: 10px;
     background: rgba(15, 24, 40, 0.88); border: 1px solid var(--line); font-size: 12.5px;
   }
-  .toolbar { top: 62px; max-width: calc(100% - 20px); overflow-x: auto; }
+  .toolbar { top: calc(62px + var(--safe-top)); max-width: calc(100% - 20px); overflow-x: auto; }
   .toolbar button { padding: 7px 9px; font-size: 12px; white-space: nowrap; }
-  .info { top: auto; left: 10px; right: 10px; bottom: 10px; width: auto; max-height: 52%; transform: translateY(calc(100% + 24px)); }
+  .info { top: auto; left: 10px; right: 10px; bottom: calc(10px + var(--safe-bottom)); width: auto; max-height: 52%; transform: translateY(calc(100% + 24px + var(--safe-bottom))); }
   .info.open { transform: none; }
-  .controls { left: 10px; bottom: auto; top: 108px; right: 10px; max-width: none; padding: 8px 10px; gap: 6px 12px; }
+  .controls { left: 10px; bottom: auto; top: calc(108px + var(--safe-top)); right: 10px; max-width: none; padding: 8px 10px; gap: 6px 12px; }
   .hint { display: none; }
-  .quiz { top: auto; bottom: 10px; }
+  .quiz { top: auto; bottom: calc(10px + var(--safe-bottom)); }
   .quiz-options { grid-template-columns: 1fr; }
-  .locate { top: auto; bottom: 10px; left: 10px; right: 10px; width: auto; }
+  .locate { top: auto; bottom: calc(10px + var(--safe-bottom)); left: 10px; right: 10px; width: auto; }
   .loc-name { font-size: 21px; }
   body.info-open .locate { display: none; }
   body.quiz-locate .controls { display: none; }
@@ -623,3 +637,33 @@ body.info-open .color-legend { right: 410px; } /* a ficha ocupa os 380px da dire
 @media print {
   .color-legend, .floating-chip { display: none !important; }
 }
+
+/* ───── Celular e tablet: gaveta, toque e download do .exe ───── */
+.sidebar-close {
+  display: none; position: absolute; top: calc(14px + var(--safe-top)); right: 12px; width: 44px; height: 44px; place-items: center;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--panel-2); color: var(--text); font-size: 26px; line-height: 1; z-index: 2;
+}
+.brand { position: relative; padding-right: 64px; }
+@media (max-width: 860px), (max-height: 520px) { .sidebar-close { display: grid; } }
+@media (pointer: coarse) {
+  /* abaixo de 16 px o Safari do iPhone dá zoom ao focar um campo e desalinha a tela */
+  input, select, textarea { font-size: 16px; }
+  .item { min-height: 48px; }
+  .sec-head { min-height: 44px; }
+  .sec-head .eye, .item .eye { width: 40px; height: 40px; }
+  .chip { padding: 8px 13px; font-size: 12.5px; }
+  .toolbar button { min-height: 38px; }
+  .tab-btn, .opt-seg button, .btn, .primary { min-height: 40px; }
+  .controls .btn { min-height: 40px; }
+}
+.get-app {
+  position: absolute; right: 16px; bottom: 58px; z-index: 5; display: flex; align-items: center; gap: 4px;
+  padding: 6px 6px 6px 8px; border-radius: 999px; background: rgba(15, 24, 40, 0.92); border: 1px solid var(--line); backdrop-filter: blur(8px);
+}
+.get-app[hidden] { display: none; }
+.get-app .primary { display: inline-block; padding: 7px 14px; border-radius: 999px; font-size: 12.5px; text-decoration: none; }
+.get-app button { border: 0; background: none; color: var(--muted); font-size: 18px; width: 28px; height: 28px; border-radius: 50%; line-height: 1; }
+.get-app button:hover { color: var(--text); background: var(--panel-2); }
+body.info-open .get-app, body.quiz-on .get-app { display: none; }
+@media (max-width: 860px), (max-height: 520px) { .get-app { display: none !important; } }
+@media print { .get-app, .sidebar-close { display: none !important; } }

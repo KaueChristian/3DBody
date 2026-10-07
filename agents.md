@@ -172,7 +172,7 @@ Este é um material de estudo: **um fato errado prejudica quem estuda**. Por iss
 1. Módulo novo em `src/` (não inflar `main.js`); estilos em `styles.css`; texto em PT-BR.
 2. Tem de funcionar **offline e por `file://`**: sem CDN, sem `fetch` de arquivo local, sem módulos ES em tempo de execução.
 3. Leitura/escrita de `localStorage` sempre em `try/catch` e com a interface funcionando se falhar.
-4. Teclado e `aria-*` desde o começo; teste em largura de celular.
+4. Teclado e `aria-*` desde o começo; teste em celular: **iPhone 11 (414×896) é o tamanho mínimo**, também deitado, e tablets até 11,5" (≈ 834–1194 px). O `smoke_test.js` emula esses tamanhos; use `var(--safe-*)` em elementos fixos e fonte ≥ 16 px em campos.
 5. Tudo que vem de fora (backup importado, hash da URL, nomes digitados) entra no HTML escapado (`esc` de `src/study/util.js`) ou por
    `textContent`/`.value`, nunca em `innerHTML` cru; o importador valida tipos e tamanhos (`sanitize` em `storage.js`).
 6. Se o estado afeta a vista (camadas, corte, cores…), ele precisa ir e voltar pelo hash (`views.js`); o que não está no hash vale o padrão.

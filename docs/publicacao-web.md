@@ -44,8 +44,8 @@ Revisitar só se as medições em aparelhos reais (abaixo) mostrarem que o WebGL
    gera a release do `.exe` para todos os usuários (`agents.md` §9). Só faça com o `dev` aprovado.
 3. **Medir em aparelhos reais** (Android e Huawei/HarmonyOS), abrindo o site e anotando em `docs/desempenho.md`: tempo até a
    primeira imagem, fps ao girar, RAM e se a carga do corpo termina. Meta do roteiro: primeira imagem < 3 s e ≥ 30 fps.
-4. **Passe de usabilidade em tela pequena:** lista de estruturas, ficha e modais; toque em estruturas finas (nervos);
-   download de backup e de PNG em navegadores móveis.
+4. **Passe de usabilidade em tela pequena:** a gaveta da lista foi corrigida e testada em emulação (iPhone 11 em pé e deitado, tablet 11"); falta
+   conferir em aparelho real a ficha, os modais, o toque em estruturas finas (nervos) e o download de backup e de PNG em navegadores móveis.
 5. Se faltar desempenho: decimar mais as malhas, carregar o corpo sob demanda e reduzir a resolução do renderizador
    (`setPixelRatio`) em telas pequenas.
 6. Ícones "maskable" separados (os atuais servem como `any maskable` e podem ser cortados em alguns launchers).

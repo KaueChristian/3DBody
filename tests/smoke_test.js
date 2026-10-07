@@ -643,6 +643,81 @@ async function runSmokeTest() {
 
     console.log('✔ Ferramentas de Estudo validadas no navegador.');
 
+    // 5b. Celular e tablet: a gaveta da lista precisa abrir E fechar (iPhone 11 = 414×896 é o mínimo; tablets até ~11,5")
+    console.log('Testando a gaveta lateral em celular e tablet...');
+    const drawerCheck = async (fn, label) => run(fn, label);
+    const viewports = [
+      ['iPhone 11 em pé (414×896)', { width: 414, height: 896, mobile: true }],
+      ['iPhone 11 deitado (896×414)', { width: 896, height: 414, mobile: true }],
+      ['tablet 11" em pé (834×1194)', { width: 834, height: 1194, mobile: true }],
+    ];
+    for (const [name, vp] of viewports) {
+      await send('Emulation.setDeviceMetricsOverride', { ...vp, deviceScaleFactor: 2 });
+      await new Promise((r) => setTimeout(r, 800));
+      await drawerCheck(async () => {
+        const f = [];
+        const t = (c, m) => { if (!c) f.push(m); };
+        const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+        const sidebar = document.getElementById('sidebar');
+        const open = () => document.body.classList.contains('list-open');
+        const vis = () => { const r = sidebar.getBoundingClientRect(); return r.right > 40 && getComputedStyle(sidebar).visibility !== 'hidden'; };
+        t(!open() && !vis(), 'a gaveta deveria começar fechada');
+        t(document.documentElement.scrollWidth <= window.innerWidth, 'a página tem rolagem horizontal');
+        const fab = document.getElementById('openList');
+        t(fab.getBoundingClientRect().width > 0, 'o botão de abrir a lista não aparece');
+        const fr = fab.getBoundingClientRect();
+        t(fr.height >= 32, 'o botão de abrir a lista é pequeno demais para o toque (' + Math.round(fr.height) + ' px)');
+
+        // abre
+        fab.click(); await sleep(350);
+        t(open() && vis(), 'a gaveta não abriu');
+        t(fab.getAttribute('aria-expanded') === 'true', 'aria-expanded não acompanhou a abertura');
+        const sr = sidebar.getBoundingClientRect();
+        t(sr.width <= window.innerWidth * 0.9, 'a gaveta cobre mais de 90% da largura (' + Math.round(sr.width) + ' de ' + window.innerWidth + ')');
+        // o fundo escurecido existe e é o palco: é nele que o toque cai
+        const probe = document.elementFromPoint(Math.min(window.innerWidth - 4, sr.right + 10), window.innerHeight / 2);
+        t(probe && probe.id === 'stage', 'fora da gaveta o toque não cai no fundo de fechamento (caiu em ' + (probe && (probe.id || probe.tagName)) + ')');
+        // fecha tocando fora
+        probe.click(); await sleep(350);
+        t(!open() && !vis(), 'tocar fora não fechou a gaveta');
+
+        // abre de novo e fecha pelo X
+        fab.click(); await sleep(350);
+        const x = document.getElementById('closeList');
+        const xr = x.getBoundingClientRect();
+        t(xr.width >= 40 && xr.height >= 40, 'o botão de fechar é pequeno demais (' + Math.round(xr.width) + '×' + Math.round(xr.height) + ')');
+        t(xr.right <= window.innerWidth && xr.left >= 0, 'o botão de fechar está fora da tela');
+        x.click(); await sleep(350);
+        t(!open() && !vis(), 'o X não fechou a gaveta');
+
+        // abre e escolhe uma estrutura: fecha sozinha
+        fab.click(); await sleep(350);
+        document.querySelector('#list .item').click(); await sleep(350);
+        t(!open(), 'escolher uma estrutura deveria fechar a gaveta');
+
+        // Esc também fecha
+        fab.click(); await sleep(350);
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await sleep(350);
+        t(!open(), 'Esc não fechou a gaveta');
+
+        // o campo de busca não pode provocar zoom no iPhone (fonte >= 16 px em tela de toque)
+        const fs = parseFloat(getComputedStyle(document.getElementById('search')).fontSize);
+        t(fs >= 16 || !matchMedia('(pointer: coarse)').matches, 'campo de busca com ' + fs + ' px: o Safari dá zoom ao focar');
+        // o botão de baixar o .exe nunca aparece em tela pequena nem fora do https
+        t(document.getElementById('getApp').hidden || getComputedStyle(document.getElementById('getApp')).display === 'none', 'o botão do .exe apareceu no celular');
+        return f;
+      }, name);
+    }
+    await send('Emulation.clearDeviceMetricsOverride');
+    await run(async () => {
+      const f = [];
+      const side = document.getElementById('sidebar').getBoundingClientRect();
+      if (!(side.width > 250 && side.left >= 0)) f.push('no desktop a lista lateral deveria ficar fixa e visível');
+      if (getComputedStyle(document.getElementById('closeList')).display !== 'none') f.push('o X da gaveta apareceu no desktop');
+      if (!document.getElementById('getApp').hidden) f.push('o botão do .exe apareceu fora do site publicado (http local)');
+      return f;
+    }, 'desktop: lista fixa, sem X e sem botão do .exe fora do https');
+
     // 6. Verificar ausência de erros no console
     if (consoleErrors.length > 0) {
       console.error('\nErros detectados no console do navegador:');
