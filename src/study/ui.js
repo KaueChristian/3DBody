@@ -64,7 +64,10 @@ export class StudyController {
   /* ───────────── Elementos criados por script ───────────── */
   initElements() {
     const stage = document.getElementById('stage') || document.body;
-    const make = (tag, id, className, attrs = {}) => {
+    // legenda e chip do corte vão para a base do palco (.dock), onde o CSS os arranja com os controles sem sobrepor
+    const dock = stage.querySelector('.dock');
+    const dockSide = stage.querySelector('.dock-side');
+    const make = (tag, id, className, attrs = {}, place = (el) => stage.appendChild(el)) => {
       let el = document.getElementById(id);
       if (!el) {
         el = document.createElement(tag);
@@ -72,13 +75,15 @@ export class StudyController {
         el.className = className;
         el.hidden = true;
         Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
-        stage.appendChild(el);
+        place(el);
       }
       return el;
     };
     this.tourBox = make('div', 'tourBox', 'tour-box', { role: 'region', 'aria-label': 'Tour guiado', 'aria-live': 'polite' });
-    this.legendEl = make('aside', 'colorLegend', 'color-legend', { 'aria-label': 'Legenda das cores' });
-    this.clipChip = make('button', 'clipChip', 'floating-chip', { type: 'button', title: 'Desativar o plano de corte' });
+    this.legendEl = make('aside', 'colorLegend', 'color-legend', { 'aria-label': 'Legenda das cores' },
+      (el) => (dockSide ? dockSide.prepend(el) : stage.appendChild(el)));
+    this.clipChip = make('button', 'clipChip', 'floating-chip', { type: 'button', title: 'Desativar o plano de corte' },
+      (el) => (dock && dockSide ? dock.insertBefore(el, dockSide) : stage.appendChild(el)));
     this.clipChip.addEventListener('click', () => this.resetClip());
   }
 

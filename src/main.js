@@ -783,11 +783,13 @@ $('#closeList').onclick = () => setList(false);
 // tocar no fundo escurecido (que é o próprio palco) ou arrastar a gaveta para a esquerda também fecha
 stage.addEventListener('click', (e) => { if (e.target === stage && document.body.classList.contains('list-open')) setList(false); });
 {
-  let x0 = null;
+  let x0 = null, y0 = 0;
   const side = $('#sidebar');
-  side.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+  side.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
   side.addEventListener('touchend', (e) => {
-    if (x0 !== null && e.changedTouches[0].clientX - x0 < -70) setList(false);
+    // só um arrasto francamente horizontal fecha: rolar a lista na diagonal não pode fechar a gaveta
+    const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+    if (x0 !== null && dx < -70 && Math.abs(dx) > 1.5 * Math.abs(dy)) setList(false);
     x0 = null;
   }, { passive: true });
 }

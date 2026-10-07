@@ -29,25 +29,28 @@
         </div>
       </header>
 
-      <div class="search">
-        <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><circle cx="9" cy="9" r="5.500" fill="none" stroke="currentColor" stroke-width="1.600"/><path d="m13.500 13.500 4 4" stroke="currentColor" stroke-width="1.600" stroke-linecap="round"/></svg>
-        <input id="search" type="search" placeholder="Buscar estrutura, ação ou nervo…" autocomplete="off" />
-      </div>
+      <!-- tudo abaixo da marca rola junto: no toque, arrastar sobre os chips ou a dissecação também desce a lista -->
+      <div class="side-scroll">
+        <div class="search">
+          <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><circle cx="9" cy="9" r="5.500" fill="none" stroke="currentColor" stroke-width="1.600"/><path d="m13.500 13.500 4 4" stroke="currentColor" stroke-width="1.600" stroke-linecap="round"/></svg>
+          <input id="search" type="search" placeholder="Buscar estrutura, ação ou nervo…" autocomplete="off" />
+        </div>
 
-      <div class="dissect-box">
-        <label for="dissect">Dissecação <output id="dissectVal">Pele translúcida</output></label>
-        <input id="dissect" type="range" min="0" max="6" step="1" value="1" />
-      </div>
-      <div id="chips" class="chips" role="group" aria-label="Camadas"></div>
+        <div class="dissect-box">
+          <label for="dissect">Dissecação <output id="dissectVal">Pele translúcida</output></label>
+          <input id="dissect" type="range" min="0" max="6" step="1" value="1" />
+        </div>
+        <div id="chips" class="chips" role="group" aria-label="Camadas"></div>
 
-      <div class="list-head">
-        <span id="count">0 estruturas</span>
-        <span class="list-actions">
-          <button id="showAll" class="link">mostrar tudo</button>
-          <button id="hideAll" class="link">ocultar tudo</button>
-        </span>
+        <div class="list-head">
+          <span id="count">0 estruturas</span>
+          <span class="list-actions">
+            <button id="showAll" class="link">mostrar tudo</button>
+            <button id="hideAll" class="link">ocultar tudo</button>
+          </span>
+        </div>
+        <ul id="list" class="list"></ul>
       </div>
-      <ul id="list" class="list"></ul>
     </aside>
 
     <!-- ───── Palco 3D ───── -->
@@ -77,16 +80,27 @@
       </div>
       <div id="bodyStatus" class="body-status" hidden></div>
 
-      <div class="controls" id="controls">
-        <label class="switch"><input type="checkbox" id="optLabels" /><span></span>Rótulos</label>
-        <label class="slider">Pele
-          <input type="range" id="optSkin" min="0" max="100" value="14" />
-          <output id="skinVal">14%</output>
-        </label>
-        <button id="btnStudy" class="btn" title="Ferramentas de Estudo (Tours, Cortes, Cores, Backup)">📚 Estudo</button>
-        <button id="btnCapture" class="btn" title="Exportar imagem do modelo em PNG">📷</button>
-        <button id="btnShareLink" class="btn" title="Copiar link da vista atual">🔗</button>
-        <button id="btnQuiz" class="primary">Modo quiz</button>
+      <!-- base do palco: controles à esquerda e, à direita, o aviso do .exe e o rodapé; sem espaço, o rodapé sobe em vez de sobrepor -->
+      <div class="dock">
+        <div class="controls" id="controls">
+          <label class="switch"><input type="checkbox" id="optLabels" /><span></span>Rótulos</label>
+          <label class="slider">Pele
+            <input type="range" id="optSkin" min="0" max="100" value="14" />
+            <output id="skinVal">14%</output>
+          </label>
+          <button id="btnStudy" class="btn" title="Ferramentas de Estudo (Tours, Cortes, Cores, Backup)">📚 Estudo</button>
+          <button id="btnCapture" class="btn" title="Exportar imagem do modelo em PNG">📷</button>
+          <button id="btnShareLink" class="btn" title="Copiar link da vista atual">🔗</button>
+          <button id="btnQuiz" class="primary">Modo quiz</button>
+        </div>
+        <div class="dock-side">
+          <!-- Só aparece no site (https), em computadores Windows: no .exe e no celular não faz sentido -->
+          <div id="getApp" class="get-app" hidden>
+            <a class="primary" href="https://github.com/KaueChristian/3DBody/releases/latest/download/Anatomia3D.exe" rel="noopener">⬇ Baixar para Windows (.exe)</a>
+            <button id="getAppClose" type="button" aria-label="Dispensar o aviso de download">×</button>
+          </div>
+          <p class="hint">Arraste para girar · role para aproximar · clique em uma estrutura<br>Modelos 3D: BodyParts3D, © DBCLS, <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/" target="_blank" rel="noopener">CC BY-SA 2.1 Japão</a><span id="appVersion"></span></p>
+        </div>
       </div>
 
       <div id="tooltip" class="tooltip" hidden></div>
@@ -306,14 +320,6 @@
         <button id="infoClose" class="close" aria-label="Fechar">×</button>
         <div id="infoBody"></div>
       </aside>
-
-      <!-- Só aparece no site (https), em computadores Windows: no .exe e no celular não faz sentido -->
-      <div id="getApp" class="get-app" hidden>
-        <a class="primary" href="https://github.com/KaueChristian/3DBody/releases/latest/download/Anatomia3D.exe" rel="noopener">⬇ Baixar para Windows (.exe)</a>
-        <button id="getAppClose" type="button" aria-label="Dispensar o aviso de download">×</button>
-      </div>
-
-      <p class="hint">Arraste para girar · role para aproximar · clique em uma estrutura<br>Modelos 3D: BodyParts3D, © DBCLS, <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/" target="_blank" rel="noopener">CC BY-SA 2.1 Japão</a><span id="appVersion"></span></p>
     </main>
   </div>
 
