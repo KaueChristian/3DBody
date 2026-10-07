@@ -149,7 +149,8 @@ async function runSmokeTest() {
 
   // Aguardar CDP estar disponível
   let targets = null;
-  for (let i = 0; i < 30; i++) {
+  // em servidor de CI o Chrome pode levar bem mais de 6 s para abrir a porta de depuração
+  for (let i = 0; i < 150; i++) {
     await new Promise((r) => setTimeout(r, 200));
     try {
       targets = await fetchJson(`http://127.0.0.1:${debugPort}/json`);
