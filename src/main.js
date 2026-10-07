@@ -395,7 +395,7 @@ function setColorOverrides(map) {
   applyHighlight();
 }
 
-const FLASH = { ok: new THREE.Color('#34d17f'), bad: new THREE.Color('#ff4a5c') };
+const FLASH = { ok: new THREE.Color('#86D36B'), bad: new THREE.Color('#ff4a5c') };
 
 function applyHighlight() {
   const sel = state.selected;

@@ -1,7 +1,7 @@
 # Body3D
 
 > **Identidade (2026-10-07):** nome provisório **Body3D** e logo novo: um “B” formado por um osso minimalista e duas curvas que também
-> desenham um “3”, em azul-marinho (`#0B1220`), branco (`#F2F4F7`) e verde-água (`#2DD4BF`). Arquivos em `assets/` (`favicon.svg`,
+> desenham um “3”, em azul-marinho (`#0B1220`), branco (`#F2F4F7`) e verde-água (`#2DD4BF`). A interface usa o mesmo verde-água como acento sobre azul-marinho (variáveis em `:root` de `styles.css`). Arquivos em `assets/` (`favicon.svg`,
 > `logo-mark.svg`, `icon-*.png`); `python tools/gen_pwa_icons.py` regenera os PNG e o mesmo desenho gera o ícone do `.exe`
 > (`draw_icon` em `tools/build_exe.py`). O executável, o repositório e a pasta de instalação **ainda se chamam** `Anatomia3D`/`3DBody`:
 > renomear o lançador faz o `.exe` se trocar sozinho, então fica para uma release própria.
