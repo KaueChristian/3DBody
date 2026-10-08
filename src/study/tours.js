@@ -18,22 +18,22 @@ export const TOURS = [
     steps: [
       {
         title: 'Visão Geral do Manguito Rotador',
-        text: 'O manguito rotador é formado por quatro músculos que abraçam a cabeça do úmero, estabilizando-a na cavidade glenoidal da escápula: supraespinhal, infraespinhal, redondo menor e subescapular.',
+        text: 'O manguito rotador é formado por quatro músculos que abraçam a cabeça do úmero, estabilizando-a na cavidade glenoidal da escápula: supraespinal, infraespinal, redondo menor e subescapular.',
         dissect: 2,
         region: 'membro_sup',
         view: 'three',
       },
       {
-        title: 'Músculo Supraespinhal',
-        text: 'Origina-se na fossa supraespinhal da escápula e insere-se na faceta superior do tubérculo maior do úmero. Inicia a abdução do braço e colabora com o deltoide durante o movimento (a descrição clássica fala nos primeiros 15°, mas ele atua em toda a amplitude). Seu tendão é o mais acometido por tendinopatias e rupturas, em geral por compressão sob o arco coracoacromial.',
+        title: 'Músculo Supraespinal',
+        text: 'Origina-se na fossa supraespinal da escápula e insere-se na faceta superior do tubérculo maior do úmero. Inicia a abdução do braço e colabora com o deltoide durante o movimento (a descrição clássica fala nos primeiros 15°, mas ele atua em toda a amplitude). Seu tendão é o mais acometido por tendinopatias e rupturas, em geral por compressão sob o arco coracoacromial.',
         dissect: 3,
         region: 'membro_sup',
         highlight: 'supraespinal',
         view: 'back',
       },
       {
-        title: 'Músculo Infraespinhal',
-        text: 'Ocupa a fossa infraespinhal e fixa-se na faceta média do tubérculo maior. É o principal rotador lateral do braço. Inervado pelo nervo supraescapular (C5, C6).',
+        title: 'Músculo Infraespinal',
+        text: 'Ocupa a fossa infraespinal e fixa-se na faceta média do tubérculo maior. É o principal rotador lateral do braço. Inervado pelo nervo supraescapular (C5, C6).',
         dissect: 3,
         region: 'membro_sup',
         highlight: 'infraespinal',
@@ -41,7 +41,7 @@ export const TOURS = [
       },
       {
         title: 'Músculo Redondo Menor',
-        text: 'Pequeno músculo tubular abaixo do infraespinhal. Realiza rotação lateral e adução fraca do braço. Diferencia-se por ser inervado pelo nervo axilar (C5, C6).',
+        text: 'Pequeno músculo tubular abaixo do infraespinal. Realiza rotação lateral e adução fraca do braço. Diferencia-se por ser inervado pelo nervo axilar (C5, C6).',
         dissect: 3,
         region: 'membro_sup',
         highlight: 'redondo_menor',

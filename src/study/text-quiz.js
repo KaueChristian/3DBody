@@ -138,7 +138,8 @@ export class TextQuizGenerator {
     const wrong = this.distractors(target, pool.filter((i) => textOf(i)), region, textOf);
     if (!wrong) return null;
     return this.make(type, target, target, wrong, {
-      prompt: `${esc(prompt)}<br><i>“${esc(text)}”</i>`,
+      // aspas dentro do texto citado viram simples, para não ficar “Olho “para baixo…” …”
+      prompt: `${esc(prompt)}<br><i>“${esc(text).replace(/“/g, '‘').replace(/”/g, '’')}”</i>`,
       explanation: `${esc(target.name)} (${esc(target.latin)}): ${esc(text)}`,
       named: false,
     });
@@ -155,8 +156,9 @@ export class TextQuizGenerator {
     if (!wrong) return null;
     const all = nerves.map((n) => n.name).join(' e ');
     return this.make('nervo', muscle, correct, wrong, {
-      prompt: `Qual nervo inerva o músculo <b>${esc(muscle.name)}</b>?${others.length ? '<br><small>(há mais de um; escolha o principal)</small>' : ''}`,
-      explanation: `${esc(muscle.name)} é inervado por: ${esc(all)}.`,
+      // sem "o músculo": muitos nomes são plurais (Intercostais externos, Lumbricais)
+      prompt: `Qual nervo inerva <b>${esc(muscle.name)}</b>?${others.length ? '<br><small>(há mais de um; escolha o principal)</small>' : ''}`,
+      explanation: `Inervação de ${esc(muscle.name)}: ${esc(all)}.`,
       named: true,
     });
   }
@@ -170,7 +172,7 @@ export class TextQuizGenerator {
     if (!wrong) return null;
     const shown = mine.slice(0, 6).map((m) => m.name).join(', ');
     return this.make('musculos', nerve, correct, wrong, {
-      prompt: `Qual destes músculos é inervado pelo nervo <b>${esc(nerve.name)}</b>?`,
+      prompt: `Qual destes músculos é inervado por <b>${esc(nerve.name)}</b>?`,
       explanation: `${esc(nerve.name)} inerva, entre outros: ${esc(shown)}${mine.length > 6 ? '…' : '.'}`,
       named: true,
     });
