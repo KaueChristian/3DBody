@@ -39,16 +39,18 @@ Revisitar só se as medições em aparelhos reais (abaixo) mostrarem que o WebGL
 - Para republicar o site sem gerar release: `gh workflow run pages.yml --ref main` (o push na `main` também gera a release do `.exe`).
 
 ## O que ainda falta (passos manuais e pendências)
-1. **Ativar o Pages** (uma vez): no GitHub, *Settings → Pages → Build and deployment → Source: GitHub Actions*.
-2. **Disparar o deploy.** O workflow roda em push na `main` (e `workflow_dispatch`). **Atenção:** o push na `main` também
-   gera a release do `.exe` para todos os usuários (`agents.md` §9). Só faça com o `dev` aprovado.
-3. **Medir em aparelhos reais** (Android e Huawei/HarmonyOS), abrindo o site e anotando em `docs/desempenho.md`: tempo até a
+1. ~~Ativar o Pages~~ e ~~disparar o deploy~~: feitos em 2026-10-07 (ver “Situação”). O push na `main` publica o site **e**
+   gera a release do `.exe` para todos os usuários (`agents.md` §9): só com o `dev` aprovado.
+2. **Medir em aparelhos reais** (Android e Huawei/HarmonyOS), abrindo o site e anotando em `docs/desempenho.md`: tempo até a
    primeira imagem, fps ao girar, RAM e se a carga do corpo termina. Meta do roteiro: primeira imagem < 3 s e ≥ 30 fps.
-4. **Passe de usabilidade em tela pequena:** a gaveta da lista foi corrigida e testada em emulação (iPhone 11 em pé e deitado, tablet 11"); falta
-   conferir em aparelho real a ficha, os modais, o toque em estruturas finas (nervos) e o download de backup e de PNG em navegadores móveis.
-5. Se faltar desempenho: decimar mais as malhas, carregar o corpo sob demanda e reduzir a resolução do renderizador
+3. **Passe de usabilidade em aparelho real.** Em emulação já estão cobertos pelo teste de fumaça: gaveta (abrir, fechar por 4
+   caminhos, rolar com o dedo sobre os chips) e ausência de sobreposição no palco em 9 tamanhos de celular e tablet, em pé e
+   deitado (inclusive o tablet 2200×1440). Falta conferir no aparelho a ficha, os modais, o toque em estruturas finas (nervos),
+   o download de backup e de PNG nos navegadores móveis, a instalação como PWA e uma atualização do service worker.
+4. Se faltar desempenho: decimar mais as malhas, carregar o corpo sob demanda e reduzir a resolução do renderizador
    (`setPixelRatio`) em telas pequenas.
-6. Ícones "maskable" separados (os atuais servem como `any maskable` e podem ser cortados em alguns launchers).
+5. ~~Ícone *maskable* separado~~: `assets/icon-maskable-512.png` já tem a marca dentro da zona segura (círculo de 80 %),
+   gerado por `tools/gen_pwa_icons.py`, e o manifesto o declara com `purpose: maskable`.
 
 ## Limitações conhecidas do formato web
 - O WebGL depende do navegador/WebView do aparelho; aparelhos antigos podem ficar lentos ou sem WebGL 2.

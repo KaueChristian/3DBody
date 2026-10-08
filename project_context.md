@@ -141,8 +141,8 @@ geral desses produtos, sem pesquisa nova; vale reconferir na F0.
 | ID | Item | Peso | Aqui hoje |
 | --- | --- | --- | --- |
 | F1 | Aplicativo desktop com atualização automática | ★★ | ✅ Windows |
-| F2 | **Versão web** hospedada (qualquer sistema, celular, tablet) | ★★★ | ⬜ |
-| F3 | Funciona offline como PWA instalável | ★★ | ⬜ (o `.exe` já é offline) |
+| F2 | **Versão web** hospedada (qualquer sistema, celular, tablet) | ★★★ | ✅ <https://body3d.app> (GitHub Pages); falta medir em aparelho real |
+| F3 | Funciona offline como PWA instalável | ★★ | ✅ manifesto, service worker e ícone *maskable*; falta testar a instalação e uma atualização em aparelho real |
 | F4 | Acessibilidade: teclado, leitor de tela, contraste, daltonismo | ★★★ | 🟡 |
 | F5 | Interface em mais de um idioma (EN/ES) | ★★ | ⬜ |
 | F6 | Contas, sincronização, modo turma | ★ | ⬜ (exige backend; ver §9) |
