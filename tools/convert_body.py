@@ -95,9 +95,29 @@ def process_skin(elems):
     return v2, f2
 
 
+def mirror_x(v, f):
+    """Acrescenta a cópia espelhada (x → −x) com a ordem dos vértices invertida, para as normais continuarem para fora."""
+    m = v.copy()
+    m[:, 0] *= -1
+    return np.concatenate([v, m]), np.concatenate([f, f[:, ::-1] + len(v)])
+
+
+def load_pack(path):
+    """Lê um anatomy-body.js já gerado: (manifest, blob descompactado)."""
+    src = open(path, encoding="utf-8").read()
+    d = json.loads(src[src.index("=") + 1:].rstrip().rstrip(";"))
+    return d["manifest"], bytearray(gzip.decompress(base64.b64decode(d["data"])))
+
+
 def main():
     res = json.load(open("body_elems.json"))
-    only = set(sys.argv[1:])
+    args = sys.argv[1:]
+    # --append: converte só as peças pedidas e as acrescenta ao pacote atual (../dist/anatomy-body.js) sem tocar nas outras,
+    # que continuam idênticas byte a byte (regenerar tudo exigiria baixar ~60 MB e mudaria malhas já validadas)
+    append = "--append" in args
+    only = {a for a in args if not a.startswith("--")}
+    if append and not only:
+        sys.exit("--append exige os ids das peças")
     out = []
     for pid, spec in BODY.items():
         if only and pid not in only:
@@ -113,12 +133,19 @@ def main():
             if len(f) > spec["tris"]:
                 v, f = decimate_to(v, f, spec["tris"])
             v = smooth(v, f, spec["smooth"])
+        if spec.get("mirror"):
+            v, f = mirror_x(v, f)
         v = (v - ORIGIN) * SCALE
         out.append(dict(id=pid, cat=spec["cat"], region=spec["region"], v=v, f=f, elems=elems))
         print(f"{pid:28s} elems={len(elems):2d} v={len(v):6d} f={len(f):6d}", flush=True)
     # empacotar
     blob = bytearray()
     manifest = []
+    if append:
+        manifest, blob = load_pack("../dist/anatomy-body.js")
+        dup = {m["id"] for m in manifest} & {p["id"] for p in out}
+        if dup:
+            sys.exit(f"já estão no pacote: {sorted(dup)}")
     for p in out:
         v, f = p["v"], p["f"]
         lo, hi = v.min(0), v.max(0)

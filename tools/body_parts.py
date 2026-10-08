@@ -33,8 +33,9 @@ R = LR  # atalho
 BODY = {}
 
 
-def add(pid, cat, pattern, smooth=4, tris=9000, region="tronco"):
-    BODY[pid] = dict(cat=cat, pattern=pattern, smooth=smooth, tris=tris, region=region)
+def add(pid, cat, pattern, smooth=4, tris=9000, region="tronco", mirror=False):
+    """mirror=True: o banco só tem um lado; o conversor acrescenta a cópia espelhada (x → −x)."""
+    BODY[pid] = dict(cat=cat, pattern=pattern, smooth=smooth, tris=tris, region=region, mirror=mirror)
 
 
 # ───────── Ossos ─────────
@@ -152,6 +153,15 @@ for k, pat in [
 for k, pat in [("pubococcigeo", r"pubococcygeus"), ("iliococcigeo", r"iliococcygeus"), ("esfincter_anal_ext", r"external anal sphincter"),
                ("perineo_superficial", r"superficial perineal muscle")]:
     add(k, "musculo", LR + pat, 5, 5000, "tronco")
+
+
+# F2.2 — tórax e pescoço, sem decimar (a decimação por agrupamento abre buracos em lâminas finas como estas). Levantadores
+# das costelas: o banco tem os dois lados. Longo do pescoço: só as três partes do lado
+# esquerdo (FJ1557, FJ1600, FJ1601), por isso o espelho.
+add("levantadores_costelas_curtos", "musculo", r"set of " + LR + "levatores costarum breves", 5, 13000, "tronco")
+add("levantadores_costelas_longos", "musculo", r"set of " + LR + "levatores costarum longi", 5, 25000, "tronco")
+add("longo_pescoco", "musculo", r"(?:superior oblique|inferior oblique|vertical intermediate) part of " + LR + "longus colli", 5, 8000,
+    "cabeca", mirror=True)
 
 
 def resolve():

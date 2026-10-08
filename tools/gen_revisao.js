@@ -18,7 +18,7 @@ const muscles = ITEMS.filter((i) => i.kind === 'musculo');
 const nerves = ITEMS.filter((i) => i.kind === 'nervo');
 
 let md = '# Revisão de Conteúdo Anatômico — Músculos e Nervos\n\n';
-md += '> Documento de auditoria e referência bibliográfica para as 209 estruturas neuromusculares ativas (154 músculos e 55 nervos).\n';
+md += `> Documento de auditoria e referência bibliográfica para as ${muscles.length + nerves.length} estruturas neuromusculares ativas (${muscles.length} músculos e ${nerves.length} nervos). Gerado por \`node tools/gen_revisao.js\`.\n`;
 md += '> Cumpre o item **F0.4** do roteiro (`project_context.md`).\n\n';
 
 md += '## 1. Referências Bibliográficas Primárias\n\n';
@@ -28,7 +28,7 @@ md += '3. **Netter, F. H.** — *Atlas de Anatomia Humana* (7ª ed., Elsevier, 2
 md += '4. **Paulsen, F. & Waschke, J.** — *Sobotta: Atlas de Anatomia Humana* (24ª ed., Guanabara Koogan, 2018).\n';
 md += '5. **Terminologia Anatomica (TA2 / FIPAT, 2019)** e *Terminologia Anatômica da Sociedade Brasileira de Anatomia (SBA)*.\n\n';
 
-md += '## 2. Músculos (154 estruturas)\n\n';
+md += `## 2. Músculos (${muscles.length} estruturas)\n\n`;
 md += '| ID | Nome (PT-BR) | Latim (TA) | Região | Campos Validados | Variação / Nota Clínica | Status |\n';
 md += '| --- | --- | --- | --- | --- | --- | --- |\n';
 
@@ -41,7 +41,7 @@ for (const m of muscles) {
   md += `| \`${m.id}\` | ${m.name} | *${m.latin}* | ${reg} | ${campos} | ${nota} | ${status} |\n`;
 }
 
-md += '\n## 3. Nervos (55 estruturas)\n\n';
+md += `\n## 3. Nervos (${nerves.length} estruturas)\n\n`;
 md += '| ID | Nome (PT-BR) | Latim (TA) | Região | Ramos Mapeados | Variação / Lesão Clínica | Status |\n';
 md += '| --- | --- | --- | --- | --- | --- | --- |\n';
 

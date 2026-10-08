@@ -7,7 +7,9 @@ res = resolve()
 miss = [k for k, v in res.items() if not v]
 print("sem elementos:", miss, flush=True)
 json.dump(res, open("body_elems.json", "w"))
-todo = sorted({e for v in res.values() for e in v})
+# com ids na linha de comando, baixa só os elementos dessas peças (ex.: ao acrescentar músculos com convert_body.py --append)
+only = set(sys.argv[1:])
+todo = sorted({e for k, v in res.items() if not only or k in only for e in v})
 print("elementos:", len(todo), "compactados:", sum(idx[e][1] for e in todo)//1000, "KB", flush=True)
 done = 0; total = 0; t0 = time.time()
 def fetch(e):
