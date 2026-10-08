@@ -1,5 +1,7 @@
 # Linha de Base de Desempenho e Orçamento de Pacotes
 
+> Medições em celular emulado e plano de otimização para celular: [`otimizacao-mobile.md`](otimizacao-mobile.md).
+
 > Documento de referência de métricas de desempenho e regras de engenharia para controle de tamanho e tempo de carga.
 > Cumpre o item **F0.9** do roteiro (`project_context.md`).
 
