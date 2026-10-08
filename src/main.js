@@ -11,6 +11,7 @@ import { NerveBuilder } from './nerve-geo.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { SKULL_PARTS } from './surfaces.js';
 import { StudyController } from './study/ui.js';
+import { sideSphere } from './framing.js';
 import { userData } from './study/storage.js';
 import { showDesktopDownload } from './get-app.js';
 
@@ -148,10 +149,14 @@ function handLandmark(name) {
   const avg = (arr) => arr.reduce((acc, p) => [acc[0] + p[0] / arr.length, acc[1] + p[1] / arr.length, acc[2] + p[2] / arr.length], [0, 0, 0]);
   const distal = avg(pts.slice(0, n));
   const proximal = avg(pts.slice(-n));
-  const base = what === 'head' ? distal : what === 'base' ? proximal : avg([distal, proximal]);
-  // palma voltada para a frente (+z); lado radial = lado do polegar (+x na mão esquerda)
-  const dz = side === 'palm' ? 0.05 : -0.03;
-  return new THREE.Vector3(base[0] + 0.03, base[1], base[2] + dz);
+  const mid = avg([distal, proximal]);
+  // 'neck': colo do metacarpal, a 65 % do caminho do meio até a cabeça (na cabeça, o raio já pega a base da falange)
+  const base = what === 'head' ? distal : what === 'base' ? proximal : what === 'neck' ? mid.map((v, i) => v + (distal[i] - v) * 0.65) : mid;
+  // palma voltada para a frente (+z); lado radial = lado do polegar (+x na mão esquerda). 'lumb' (palmar e radial) e 'rad'
+  // (ao lado da base da falange) levam os lumbricais por fora dos ossos: medido, ~2 % dos pontos dentro de osso, contra 40 %
+  // quando iam de 'head.palm' a 'base.dorsal' atravessando a articulação
+  const [dx, dz] = { palm: [0.03, 0.05], dorsal: [0.03, -0.03], lumb: [0.05, 0.08], rad: [0.12, 0.03] }[side] ?? [0.03, 0];
+  return new THREE.Vector3(base[0] + dx, base[1], base[2] + dz);
 }
 
 const lm = (name) => {
@@ -502,8 +507,10 @@ function focusItem(id, wide = false, side = 0) {
     if (d > bestDot) { bestDot = d; best = a; }
   }
   const dir = best.normal.clone().multiplyScalar(0.8).add(new THREE.Vector3(0, 0.1, 0)).add(cam.clone().multiplyScalar(0.3));
-  const target = best.pos.clone().multiplyScalar(0.6).add(m.center.clone().multiplyScalar(0.4)).multiplyScalar(0.9);
-  const dist = Math.min(14, Math.max(3.2, m.radius * 3.6 + 1.6)) + (wide ? 3.5 : 0);
+  // estruturas pares: enquadra só o lado da âncora escolhida (o centro das duas mãos fica no meio do corpo)
+  const sph = sideSphere(m, Math.sign(best.pos.x));
+  const target = best.pos.clone().multiplyScalar(0.6).add(sph.center.clone().multiplyScalar(0.4));
+  const dist = Math.min(14, Math.max(2.2, sph.radius * 3.6 + 1.6)) + (wide ? 3.5 : 0);
   flyTo(dir.toArray(), dist, target);
 }
 
@@ -1696,7 +1703,7 @@ async function init() {
       state, M, ITEMS, INNERVATION, LAYERS, inRegion, perf, setup, S, THREE,
       catalogItems: ALL_ITEMS,
       catalog: new Map(ALL_ITEMS.map((i) => [i.id, i])),
-      camera, controls, renderer, scene, jump, flyTo, viewPreset,
+      camera, controls, renderer, scene, jump, flyTo, viewPreset, cameraGoal: () => goal,
       select, focusItem, setRegion, setDissect, setSkin, syncLayers, syncList, setColorOverrides, applyHighlight,
       startLocate, locateClick, locateHint, locatePool, openSetup,
       enterQuiz, stopQuiz, recordSession, showAllLayersForQuiz,

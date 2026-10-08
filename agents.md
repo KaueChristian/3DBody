@@ -54,6 +54,7 @@ Dados (raramente necessário; baixa ~60 MB e regenera arquivos grandes — só c
 | `src/proc.js`, `surfaces.js`, `landmarks.js` | Geometria procedural, projeção na pele/osso (BVH), pontos de referência | |
 | `src/anatomy.js` | Descompacta as malhas de `dist/anatomy-*.js` | |
 | `src/main.js` | Cena, interface, rótulos, quizzes de localizar e de escolher o nome (≈ 1 700 linhas) | **Não aumente**: extraia módulos novos |
+| `src/framing.js` | Enquadramento de estruturas pares (esfera só do lado escolhido) | |
 | `src/study/*.js` | Ferramentas de estudo (modal, progresso, listas, tours, corte, cores, quiz teórico, backup); `groups.js` mapeia cada músculo a um grupo | O `main.js` só expõe uma interface (`api`) ao `StudyController`; veja §8 |
 | `index.html`, `styles.css` | Página e estilos | A ordem dos `<script>` importa |
 | `dist/` | **Versionado.** `app.js` (build) e pacotes de dados `anatomy-*.js` | Ver §9 |
