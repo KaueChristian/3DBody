@@ -296,6 +296,13 @@ export const BODY_MUSCLES = [
     insercao: 'Parte basilar do occipital.',
     inervacao: 'Ramos ventrais dos nervos cervicais (C1–C3).',
   }),
+  bm('longo_pescoco', 'Longo do pescoço', 'M. longus colli', 'prof', 'cabeca', P('longo_pescoco'), {
+    acao: 'Flete o pescoço; contraído de um lado só, inclina-o para esse lado, e a parte oblíqua inferior ajuda a rodá-lo para o lado oposto.',
+    origem: 'Parte vertical: corpos de C5 a T3. Parte oblíqua superior: tubérculos anteriores dos processos transversos de C3 a C5. Parte oblíqua inferior: corpos de T1 a T3.',
+    insercao: 'Parte vertical: corpos de C2 a C4. Parte oblíqua superior: tubérculo anterior do atlas. Parte oblíqua inferior: tubérculos anteriores dos processos transversos de C5 e C6.',
+    inervacao: 'Ramos anteriores dos nervos espinais C2–C6.',
+    nota: 'É o mais medial e o mais longo dos pré-vertebrais, colado à face anterior dos corpos vertebrais, atrás da faringe e do esôfago; o longo da cabeça fica lateral e acima dele. O BodyParts3D só traz o lado esquerdo: o direito é uma cópia espelhada.',
+  }),
   bm('reto_ant_cabeca', 'Reto anterior da cabeça', 'M. rectus capitis anterior', 'prof', 'cabeca', P('reto_ant_cabeca'), {
     acao: 'Flete a cabeça na articulação atlantoccipital (movimento de “sim”).',
     origem: 'Massa lateral do atlas.',
@@ -327,6 +334,15 @@ export const BODY_MUSCLES = [
     insercao: 'Face externa da 2ª costela.',
     inervacao: 'Ramos ventrais de C6–C8.',
     nota: 'A passagem entre escaleno anterior e médio (triângulo interescalênico) é sede da síndrome do desfiladeiro torácico.',
+  }),
+  bm('escaleno_minimo', 'Escaleno mínimo', 'M. scalenus minimus', 'med', 'cabeca', {
+    proc: [{ kind: 'tube', pts: [[0.28, -1.62, -0.08], [0.34, -1.74, -0.05], [0.42, -1.86, 0.0]], ref: [0, 0, 1], width: 0.045, thick: 0.025, taper: 'blunt', nf: 14, nc: 8 }],
+  }, {
+    acao: 'Tensiona a cúpula da pleura; pode ajudar a elevar a 1ª costela.',
+    origem: 'Tubérculo anterior do processo transverso de C7.',
+    insercao: 'Margem interna da 1ª costela, atrás do sulco da artéria subclávia, e cúpula da pleura.',
+    inervacao: 'Ramo anterior de C7.',
+    nota: 'Inconstante: quando falta, costuma haver no lugar uma faixa fibrosa que reforça a membrana suprapleural (fáscia de Sibson). Passa entre a artéria subclávia e o tronco inferior do plexo braquial e é citado entre as causas anatômicas da síndrome do desfiladeiro torácico. Músculo não presente no banco BodyParts3D — modelado por código (forma e posição aproximadas).',
   }),
   bm('esternohioideo', 'Esterno-hióideo', 'M. sternohyoideus', 'med', 'cabeca', P('esternohioideo'), {
     acao: 'Abaixa o hioide após a deglutição.',
@@ -380,6 +396,36 @@ export const BODY_MUSCLES = [
     origem: 'Face posterior do esterno (corpo e processo xifoide).',
     insercao: 'Face interna das cartilagens costais 2 a 6.',
     inervacao: 'Nervos intercostais (T2–T6).',
+  }),
+  bm('subcostais', 'Subcostais', 'Mm. subcostales', 'prof', 'tronco', {
+    // três feixes representativos na face interna das costelas 8 a 12, logo lateral aos ângulos (pontos do sulco costal
+    // medidos nas malhas — RIB em catalog-nerves.js — deslocados 5 mm para dentro do tórax), cada um saltando uma costela.
+    // Medido: ~1 % dos pontos dentro de osso; mais perto do ângulo a borda medial entrava no colo das costelas.
+    proc: [
+      [[0.779, -3.691, -0.674], [0.736, -4.036, -0.626], [0.704, -4.309, -0.581]],
+      [[0.743, -4.046, -0.634], [0.697, -4.359, -0.574], [0.632, -4.575, -0.55]],
+      [[0.704, -4.369, -0.581], [0.626, -4.625, -0.542], [0.598, -4.857, -0.478]],
+    ].map((pts) => ({ kind: 'tube', pts, ref: [-0.58, 0, 0.82], width: 0.1, thick: 0.014, taper: 'blunt', nf: 16, nc: 8 })),
+  }, {
+    acao: 'Aproximam as costelas; se abaixam ou elevam, as fontes divergem (ver nota).',
+    origem: 'Face interna das costelas inferiores, perto dos ângulos.',
+    insercao: 'Margem superior da 2ª ou da 3ª costela abaixo.',
+    inervacao: 'Nervos intercostais dos espaços correspondentes.',
+    nota: 'Lâminas finas e variáveis, mais desenvolvidas na parte posterior e inferior do tórax, no mesmo plano dos intercostais íntimos. As fibras têm a direção das dos intercostais internos, e por isso muitos textos lhes dão a mesma ação (abaixar as costelas); outros falam em elevar. Músculos não presentes no banco BodyParts3D — modelados por código (três feixes representativos, costelas 8 a 12).',
+  }),
+  bm('levantadores_costelas_curtos', 'Levantadores curtos das costelas', 'Mm. levatores costarum breves', 'prof', 'tronco', P('levantadores_costelas_curtos'), {
+    acao: 'Elevam as costelas; agindo sobre a coluna, ajudam a estendê-la, a incliná-la para o mesmo lado e a rodá-la.',
+    origem: 'Ápices dos processos transversos de C7 e T1 a T11.',
+    insercao: 'Face externa da costela logo abaixo, entre o tubérculo e o ângulo.',
+    inervacao: 'Ramos posteriores dos nervos espinais C8–T11.',
+    nota: 'São 12 pares. Estão no tórax, mas são inervados por ramos posteriores, como os músculos próprios do dorso. O peso deles na respiração é discutido: Moore lista “elevar as costelas” como ação principal; o Gray’s considera a contribuição respiratória pequena e destaca a ação sobre a coluna.',
+  }),
+  bm('levantadores_costelas_longos', 'Levantadores longos das costelas', 'Mm. levatores costarum longi', 'prof', 'tronco', P('levantadores_costelas_longos'), {
+    acao: 'Elevam as costelas e ajudam a estender, inclinar e rodar a coluna torácica.',
+    origem: 'Processos transversos de vértebras torácicas inferiores.',
+    insercao: 'Saltam uma costela e se inserem na segunda costela abaixo, perto do ângulo.',
+    inervacao: 'Ramos posteriores dos nervos espinais torácicos correspondentes.',
+    nota: 'São fascículos dos levantadores que descem uma costela a mais que os curtos. O Gray’s os descreve sobretudo nos níveis torácicos inferiores; a malha do BodyParts3D os traz ao longo de todo o tórax.',
   }),
   bm('diafragma', 'Diafragma', 'Diaphragma', 'prof', 'tronco', P('diafragma'), {
     acao: 'Principal músculo da inspiração: ao contrair, abaixa o centro tendíneo e aumenta o volume torácico.',
@@ -807,6 +853,17 @@ export const BODY_MUSCLES = [
     origem: 'Hâmulo do hamato e retináculo dos flexores.',
     insercao: 'Margem medial do 5º metacarpal.',
     inervacao: 'Ramo profundo do nervo ulnar (C8–T1).',
+  }),
+  bm('palmar_curto', 'Palmar curto', 'M. palmaris brevis', 'sup', 'membro_sup', {
+    // lâmina fina no subcutâneo da eminência hipotenar: da margem medial da aponeurose palmar (x ≈ 2,46) até a pele da
+    // margem ulnar da palma (x ≈ 2,25), 1–2 mm sob a pele medida no modelo (z da pele ≈ 0,66–0,67)
+    proc: [{ kind: 'tube', pts: [[2.46, -7.6, 0.648], [2.36, -7.6, 0.658], [2.25, -7.61, 0.6]], ref: [0, 0, 1], width: 0.15, thick: 0.012, taper: 'blunt', nf: 14, nc: 8 }],
+  }, {
+    acao: 'Enruga a pele da eminência hipotenar e aprofunda a concavidade da palma, firmando a preensão.',
+    origem: 'Margem medial da aponeurose palmar e retináculo dos flexores.',
+    insercao: 'Pele da margem medial (ulnar) da palma.',
+    inervacao: 'Ramo superficial do nervo ulnar.',
+    nota: 'Músculo cutâneo, no tecido subcutâneo sobre a eminência hipotenar; recobre o nervo e a artéria ulnares logo depois do canal ulnar (de Guyon). É o único músculo inervado pelo ramo superficial, que depois segue só sensitivo. Músculo não presente no banco BodyParts3D — modelado por código (forma e posição aproximadas).',
   }),
   bm('interosseos_dorsais', 'Interósseos dorsais da mão', 'Mm. interossei dorsales manus', 'prof', 'membro_sup', P('interosseos_dorsais'), {
     acao: 'Abduzem os dedos 2 a 4 (afastam-nos do 3º dedo); flexionam as metacarpofalângicas e estendem as interfalângicas.',

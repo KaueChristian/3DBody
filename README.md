@@ -61,7 +61,7 @@ Use a branch **`dev`** para trabalhar sem publicar; quando estiver bom, junte na
 
 Para gerar o executável localmente: `npm run exe` (usa o compilador C# do próprio Windows; resultado em `release/`).
 
-## O que tem (271 estruturas: 154 músculos e 55 nervos)
+## O que tem (277 estruturas: 160 músculos e 55 nervos)
 
 | Camada | Conteúdo |
 | --- | --- |
@@ -70,11 +70,11 @@ Para gerar o executável localmente: `npm run exe` (usa o compilador C# do próp
 | Músculos da mímica | frontal, occipital, auriculares, orbicular do olho/boca, corrugador, prócero, nasal, levantadores, zigomáticos, risório, abaixadores, mentual… |
 | Músculos da mastigação e planos profundos da cabeça | masseter, temporal, pterigóideos, bucinador, supra-hióideos |
 | Órbita e olho | globo ocular, 6 músculos extraoculares, levantador da pálpebra, placas tarsais |
-| Músculos superficiais (tronco e membros) | peitoral maior (3 partes), trapézio (3 partes), latíssimo do dorso, oblíquo externo, reto do abdome, deltoide (3 partes), bíceps, tríceps, extensores e flexores superficiais do antebraço, tenar/hipotenar superficial |
-| Músculos intermediários | peitoral menor, subclávio, serrátil anterior, rombóides, levantador da escápula, serráteis posteriores, esplênios, oblíquo interno, manguito rotador, braquial, flexor superficial, lumbricais… |
-| Músculos profundos (tronco e membros) | intercostais, transverso do tórax, diafragma, transverso do abdome, quadrado do lombo, psoas, ilíaco, eretores da espinha, semiespinais, multífido, rotadores, interespinais, intertransversários, suboccipitais, pré-vertebrais, assoalho pélvico, flexor profundo, pronador quadrado, interósseos |
+| Músculos superficiais (tronco e membros) | peitoral maior (3 partes), trapézio (3 partes), latíssimo do dorso, oblíquo externo, reto do abdome, deltoide (3 partes), bíceps, tríceps, extensores e flexores superficiais do antebraço, tenar/hipotenar superficial, palmar curto |
+| Músculos intermediários | peitoral menor, subclávio, serrátil anterior, rombóides, levantador da escápula, escalenos (incluindo o mínimo), serráteis posteriores, esplênios, oblíquo interno, manguito rotador, braquial, flexor superficial, lumbricais… |
+| Músculos profundos (tronco e membros) | intercostais, subcostais, levantadores das costelas, transverso do tórax, diafragma, transverso do abdome, quadrado do lombo, psoas, ilíaco, eretores da espinha, semiespinais, multífido, rotadores, interespinais, intertransversários, suboccipitais, pré-vertebrais (longos da cabeça e do pescoço), assoalho pélvico, flexor profundo, pronador quadrado, interósseos |
 | Ligamentos | 10 da cabeça (temporomandibular, estilomandibular, palpebrais…), linha alba, retináculo dos flexores |
-| Nervos | 55 nervos ligados a **todos** os 154 músculos (veja abaixo) |
+| Nervos | 55 nervos ligados a **todos** os 160 músculos (veja abaixo) |
 | Glândulas e língua | parótida e ducto, submandibular, sublingual, língua |
 | Cartilagens e discos | nasais, orelha, costais, discos intervertebrais |
 | Ossos e dentes | crânio completo, mandíbula, hioide, coluna (atlas a sacro), costelas, esterno, quadril, clavícula, escápula, úmero, rádio, ulna, carpo, metacarpais, falanges, dentes |
@@ -206,6 +206,17 @@ python convert_nerves.py  # nervos da órbita: converte e empacota → anatomy-n
 ```
 
 (`isa_element_parts.txt`, `zip_index.tsv` e `want.json` já estão em `tools/`; copie os `.js` gerados para `dist/`.)
+
+Para **acrescentar** peças do tronco ou dos membros sem regenerar as outras (que ficam idênticas byte a byte), defina-as em
+`tools/body_parts.py` e rode só para elas (baixa poucos KB e não precisa do `fast-simplification`):
+
+```bash
+cd tools
+python fetch_body.py id1 id2            # só os elementos dessas peças
+python convert_body.py --append id1 id2 # lê ../dist/anatomy-body.js e acrescenta as peças → anatomy-body.js
+```
+
+`mirror=True` em `add(...)` cria o lado que falta no banco (cópia espelhada em x).
 
 ## Estrutura
 

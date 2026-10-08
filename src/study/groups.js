@@ -32,10 +32,10 @@ const BY_GROUP = {
   olho: 'levantador_palpebra reto_sup reto_inf reto_med reto_lat obliquo_sup obliquo_inf',
   mastigacao: 'masseter temporal pterigoideo_medial pterigoideo_lateral',
   hioideos: 'digastrico milo_hioideo genio_hioideo estilo_hioideo esternohioideo esternotireoideo tireohioideo omohioideo',
-  pescoco: 'ecm escaleno_ant escaleno_med escaleno_post longo_cabeca reto_ant_cabeca reto_lat_cabeca reto_post_maior reto_post_menor obliquo_cabeca_sup obliquo_cabeca_inf',
+  pescoco: 'ecm escaleno_ant escaleno_med escaleno_post escaleno_minimo longo_cabeca longo_pescoco reto_ant_cabeca reto_lat_cabeca reto_post_maior reto_post_menor obliquo_cabeca_sup obliquo_cabeca_inf',
   dorso_ext: 'trapezio_desc trapezio_transv trapezio_asc grande_dorsal levantador_escapula rombo_menor rombo_maior serratil_post_sup serratil_post_inf',
   dorso_prof: 'iliocostal_lombar iliocostal_toracico iliocostal_cervical longuissimo_toracico longuissimo_cervical longuissimo_cabeca espinal_toracico semiespinal_toracico semiespinal_cervical semiespinal_cabeca rotadores_cervicais rotadores_toracicos rotadores_lombares interespinais_toracicos interespinais_lombares intertransversarios_med intertransversarios_lat multifido esplenio_cabeca esplenio_pescoco',
-  torax: 'peitoral_clav peitoral_esternocostal peitoral_abdominal peitoral_menor subclavio serratil_anterior intercostal_ext intercostal_int intercostal_intimo transverso_torax diafragma',
+  torax: 'peitoral_clav peitoral_esternocostal peitoral_abdominal peitoral_menor subclavio serratil_anterior intercostal_ext intercostal_int intercostal_intimo subcostais transverso_torax levantadores_costelas_curtos levantadores_costelas_longos diafragma',
   abdome: 'obliquo_externo obliquo_interno transverso_abdome reto_abdome piramidal quadrado_lombo psoas_maior iliaco',
   pelve: 'pubococcigeo iliococcigeo coccigeo esfincter_anal_ext perineo_superficial',
   ombro: 'delt_clav delt_acro delt_esp supraespinal infraespinal redondo_menor redondo_maior subescapular',
@@ -44,7 +44,7 @@ const BY_GROUP = {
   antebraco_flex: 'pronador_redondo_h pronador_redondo_u fcr palmar_longo fcu_h fcu_u fds fdp fpl pronador_quadrado',
   antebraco_ext: 'braquiorradial ecrl ecrb ed edm ecu supinador apl epb epl extensor_indicador',
   mao_tenar: 'abdutor_polegar_curto flexor_polegar_curto oponente_polegar adutor_polegar_obliquo adutor_polegar_transverso',
-  mao_hipotenar: 'abdutor_minimo flexor_minimo_curto oponente_minimo',
+  mao_hipotenar: 'palmar_curto abdutor_minimo flexor_minimo_curto oponente_minimo',
   mao_central: 'interosseos_dorsais interosseos_palmares lumbricais',
 };
 

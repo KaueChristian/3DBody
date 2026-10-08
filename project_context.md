@@ -64,7 +64,7 @@ geral desses produtos, sem pesquisa nova; vale reconferir na F0.
 | A1 | Ossos individuais com **acidentes ósseos** (forames, processos, tuberosidades) selecionáveis | ★★★ | 🟡 38 ossos/grupos; acidentes só como pontos internos |
 | A2 | Articulações (tipo, movimentos, cápsula) | ★★★ | ⬜ |
 | A3 | Ligamentos | ★★★ | 🟡 12 (10 na cabeça, linha alba, retináculo) |
-| A4 | Músculos esqueléticos | ★★★ | 🟡 154 (61 cabeça/pescoço, 45 tronco, 48 membro superior); sem membro inferior |
+| A4 | Músculos esqueléticos | ★★★ | 🟡 160 (63 cabeça/pescoço, 48 tronco, 49 membro superior); sem membro inferior |
 | A5 | Nervos (cranianos, espinais, plexos, ramos) | ★★★ | 🟡 55 motores/mistos; faltam sensitivos, vago, glossofaríngeo etc. |
 | A6 | Artérias e veias | ★★★ | ⬜ |
 | A7 | Sistema linfático (linfonodos, ducto torácico) | ★★ | ⬜ |
@@ -249,9 +249,10 @@ conferidas contra os ids do catálogo da v2.0.1; antes de começar, repetir a co
 
 **Músculos que faltam (≈ 45–50):**
 
-- [ ] **F2.1** Mão: palmar curto.
-- [ ] **F2.2** Tórax e pescoço: levantadores das costelas (curtos e longos), subcostais, longo do pescoço, escaleno mínimo
-  (variável — com nota).
+- [x] **F2.1** Mão: palmar curto. ✅ (modelado por código; ramo superficial do ulnar)
+- [x] **F2.2** Tórax e pescoço: levantadores das costelas (curtos e longos), subcostais, longo do pescoço, escaleno mínimo
+  (variável — com nota). ✅ Levantadores e longo do pescoço com malha real (o longo do pescoço espelhado: o banco só tem o
+  lado esquerdo); subcostais e escaleno mínimo modelados por código.
 - [ ] **F2.3** Língua: extrínsecos (genioglosso, hioglosso, estiloglosso, palatoglosso) e intrínsecos (longitudinais
   superior e inferior, transverso, vertical).
 - [ ] **F2.4** Palato mole e faringe: levantador e tensor do véu palatino, músculo da úvula, palatofaríngeo; constritores
@@ -465,6 +466,7 @@ Use a coluna “Observações” para anotar o que atrasou (ex.: geometria de ne
 | 2026-10-07 | **Site no ar:** GitHub Pages ativado e publicado (release **v2.1.2** do `.exe` no mesmo push; CI passou a usar Node 22, pois o teste de fumaça precisa do `WebSocket` global). Domínio **body3d.app** (Name.com) apontado por DNS e configurado no Pages; HTTPS válido, `www` redireciona. Pendente: marcar *Enforce HTTPS* no Pages (o `http://` ainda não redireciona), medir em aparelhos reais e decidir a renovação do domínio. Detalhes em `docs/publicacao-web.md`. |
 | 2026-10-07 | **Celular e tablet (correção):** no iPhone a gaveta da lista cobria a tela e não havia como fechá-la (o botão de abrir ficava por baixo dela e nada fechava). Agora há botão ×, toque no fundo escurecido, deslizar para a esquerda e Esc; a gaveta fecha ao escolher uma estrutura; `visibility` evita foco em gaveta fechada. Referência mínima **iPhone 11 (414×896)**, também deitado (896×414, por altura ≤ 520 px) e tablets em pé até 11,5" (834×1194); de 861 a 1100 px a lista fixa encolhe para 300 px. Áreas seguras (`env(safe-area-inset-*)`), campos com 16 px em telas de toque (evita o zoom do Safari) e alvos de toque ≥ 40–48 px. Teste de fumaça agora emula os três tamanhos (abrir, fechar por 4 caminhos, rolagem horizontal, tamanho dos botões). **Botão “Baixar para Windows (.exe)”** (canto inferior direito) só no site em https, em Windows desktop, fora do PWA instalado e dispensável; nunca no `.exe` (que abre por `file://`) nem no celular. |
 | 2026-10-07 | **Tablet 2200×1440 (229 ppi) e rolagem da gaveta (correção):** (1) no toque só a `<ul>` da lista rolava; busca, dissecação e os 15 chips (maiores no toque) ocupavam ~60 % da gaveta e arrastar sobre eles não fazia nada — no tablet deitado a lista começava abaixo da tela. Agora tudo abaixo da marca rola junto (`.side-scroll`), a marca e o × ficam fixos, o controle de dissecação usa `touch-action: pan-y` e deslizar só fecha a gaveta se o gesto for francamente horizontal. (2) No tablet (≈ 1100×720 e 720×1100 em CSS no DPR 2; 1467×960 no 1,5) os controles passavam por cima do rodapé de licença, a ficha cobria Perfil E/Costas e, em pé, vistas, controles e o aviso “Montando…” se sobrepunham. Controles, chip do corte, legenda, aviso do .exe e rodapé agora ficam numa base flexível (`.dock`, `wrap-reverse`: sem espaço o rodapé sobe), a ficha começa abaixo da barra de vistas, a pilha do topo da gaveta foi refeita (vistas na linha do ☰ a partir de 760 px), celular deitado tem ficha lateral, e quiz e tour têm altura máxima. Teste de fumaça: gesto de toque real (CDP) sobre os chips em 4 tamanhos e verificação de sobreposição/saída da tela em 9 tamanhos (celular e tablet, em pé e deitado, com ficha, legenda e corte); as transições ficam desligadas nessa parte (no Windows o Chrome sem janela não as anima e o teste falhava já antes). |
+| 2026-10-08 | **F2.1 e F2.2 concluídas (160 músculos, 277 estruturas):** palmar curto, levantadores curtos e longos das costelas, subcostais, longo do pescoço e escaleno mínimo, todos com inervação e grupo. Malha real para levantadores (os dois lados no banco) e longo do pescoço (só o lado esquerdo no banco: `mirror=True` no `body_parts.py`); palmar curto, subcostais e escaleno mínimo por código, com pontos medidos no modelo (subcostais com ~1 % dos pontos dentro de osso). Pipeline ganhou `fetch_body.py <ids>` e `convert_body.py --append <ids>`, que acrescentam peças ao `anatomy-body.js` sem regenerar as outras (conferido: as 186 peças antigas ficaram idênticas byte a byte; pacote +274 KB, sem decimação para não abrir buracos nas lâminas finas). O escaleno mínimo recebe o ramo da raiz C7 do plexo braquial (vindo do plexo cervical, o ramo descia por dentro dos processos transversos). Divergências na nota: ação dos subcostais e peso respiratório dos levantadores (Moore × Gray’s); a malha dos levantadores longos cobre todo o tórax, embora o Gray’s os descreva sobretudo embaixo. `tools/gen_revisao.js` passou a contar as estruturas em vez de números fixos. |
 
 ## 11. Referências
 

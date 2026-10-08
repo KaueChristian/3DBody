@@ -1,6 +1,6 @@
 # Revisão de Conteúdo Anatômico — Músculos e Nervos
 
-> Documento de auditoria e referência bibliográfica para as 209 estruturas neuromusculares ativas (154 músculos e 55 nervos).
+> Documento de auditoria e referência bibliográfica para as 215 estruturas neuromusculares ativas (160 músculos e 55 nervos). Gerado por `node tools/gen_revisao.js`.
 > Cumpre o item **F0.4** do roteiro (`project_context.md`).
 
 ## 1. Referências Bibliográficas Primárias
@@ -11,7 +11,7 @@
 4. **Paulsen, F. & Waschke, J.** — *Sobotta: Atlas de Anatomia Humana* (24ª ed., Guanabara Koogan, 2018).
 5. **Terminologia Anatomica (TA2 / FIPAT, 2019)** e *Terminologia Anatômica da Sociedade Brasileira de Anatomia (SBA)*.
 
-## 2. Músculos (154 estruturas)
+## 2. Músculos (160 estruturas)
 
 | ID | Nome (PT-BR) | Latim (TA) | Região | Campos Validados | Variação / Nota Clínica | Status |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -94,11 +94,13 @@
 | `obliquo_cabeca_sup` | Oblíquo superior da cabeça | *M. obliquus capitis superior* | Cabeça e pescoço | Ação, Origem, Inserção, Inervação | — | ✅ Verificado |
 | `obliquo_cabeca_inf` | Oblíquo inferior da cabeça | *M. obliquus capitis inferior* | Cabeça e pescoço | Ação, Origem, Inserção, Inervação | Com os retos e o oblíquo superior forma o trígono suboccipital, por... | 🟡 Nota clínica |
 | `longo_cabeca` | Longo da cabeça | *M. longus capitis* | Cabeça e pescoço | Ação, Origem, Inserção, Inervação | — | ✅ Verificado |
+| `longo_pescoco` | Longo do pescoço | *M. longus colli* | Cabeça e pescoço | Ação, Origem, Inserção, Inervação | É o mais medial e o mais longo dos pré-vertebrais, colado à face an... | 🟡 Nota clínica |
 | `reto_ant_cabeca` | Reto anterior da cabeça | *M. rectus capitis anterior* | Cabeça e pescoço | Ação, Origem, Inserção, Inervação | — | ✅ Verificado |
 | `reto_lat_cabeca` | Reto lateral da cabeça | *M. rectus capitis lateralis* | Cabeça e pescoço | Ação, Origem, Inserção, Inervação | — | ✅ Verificado |
 | `escaleno_ant` | Escaleno anterior | *M. scalenus anterior* | Cabeça e pescoço | Ação, Origem, Inserção, Inervação | Separa a veia subclávia (anterior) da artéria subclávia e do plexo ... | 🟡 Nota clínica |
 | `escaleno_med` | Escaleno médio | *M. scalenus medius* | Cabeça e pescoço | Ação, Origem, Inserção, Inervação | — | ✅ Verificado |
 | `escaleno_post` | Escaleno posterior | *M. scalenus posterior* | Cabeça e pescoço | Ação, Origem, Inserção, Inervação | A passagem entre escaleno anterior e médio (triângulo interescalêni... | 🟡 Nota clínica |
+| `escaleno_minimo` | Escaleno mínimo | *M. scalenus minimus* | Cabeça e pescoço | Ação, Origem, Inserção, Inervação | Inconstante: quando falta, costuma haver no lugar uma faixa fibrosa... | 🟡 Nota clínica |
 | `esternohioideo` | Esterno-hióideo | *M. sternohyoideus* | Cabeça e pescoço | Ação, Origem, Inserção, Inervação | — | ✅ Verificado |
 | `esternotireoideo` | Esternotireóideo | *M. sternothyroideus* | Cabeça e pescoço | Ação, Origem, Inserção, Inervação | — | ✅ Verificado |
 | `tireohioideo` | Tíreo-hióideo | *M. thyrohyoideus* | Cabeça e pescoço | Ação, Origem, Inserção, Inervação | — | ✅ Verificado |
@@ -107,6 +109,9 @@
 | `intercostal_int` | Intercostais internos | *Mm. intercostales interni* | Tronco | Ação, Origem, Inserção, Inervação | — | ✅ Verificado |
 | `intercostal_intimo` | Intercostais íntimos | *Mm. intercostales intimi* | Tronco | Ação, Origem, Inserção, Inervação | Separados dos internos pelo feixe vasculonervoso intercostal (veia,... | 🟡 Nota clínica |
 | `transverso_torax` | Transverso do tórax | *M. transversus thoracis* | Tronco | Ação, Origem, Inserção, Inervação | — | ✅ Verificado |
+| `subcostais` | Subcostais | *Mm. subcostales* | Tronco | Ação, Origem, Inserção, Inervação | Lâminas finas e variáveis, mais desenvolvidas na parte posterior e ... | 🟡 Nota clínica |
+| `levantadores_costelas_curtos` | Levantadores curtos das costelas | *Mm. levatores costarum breves* | Tronco | Ação, Origem, Inserção, Inervação | São 12 pares. Estão no tórax, mas são inervados por ramos posterior... | 🟡 Nota clínica |
+| `levantadores_costelas_longos` | Levantadores longos das costelas | *Mm. levatores costarum longi* | Tronco | Ação, Origem, Inserção, Inervação | São fascículos dos levantadores que descem uma costela a mais que o... | 🟡 Nota clínica |
 | `diafragma` | Diafragma | *Diaphragma* | Tronco | Ação, Origem, Inserção, Inervação | Aberturas: caval (T8), esofágica (T10) e aórtica (T12). “C3, 4, 5 m... | 🟡 Nota clínica |
 | `obliquo_externo` | Oblíquo externo do abdome | *M. obliquus externus abdominis* | Tronco | Ação, Origem, Inserção, Inervação | Seu bordo inferior forma o ligamento inguinal. Fibras orientadas co... | 🟡 Nota clínica |
 | `obliquo_interno` | Oblíquo interno do abdome | *M. obliquus internus abdominis* | Tronco | Ação, Origem, Inserção, Inervação | Fibras perpendiculares às do oblíquo externo — “mãos de bolsos para... | 🟡 Nota clínica |
@@ -166,6 +171,7 @@
 | `abdutor_minimo` | Abdutor do dedo mínimo | *M. abductor digiti minimi manus* | Membro superior | Ação, Origem, Inserção, Inervação | Músculo hipotenar (borda ulnar da palma). | 🟡 Nota clínica |
 | `flexor_minimo_curto` | Flexor curto do dedo mínimo | *M. flexor digiti minimi brevis manus* | Membro superior | Ação, Origem, Inserção, Inervação | — | ✅ Verificado |
 | `oponente_minimo` | Oponente do dedo mínimo | *M. opponens digiti minimi* | Membro superior | Ação, Origem, Inserção, Inervação | — | ✅ Verificado |
+| `palmar_curto` | Palmar curto | *M. palmaris brevis* | Membro superior | Ação, Origem, Inserção, Inervação | Músculo cutâneo, no tecido subcutâneo sobre a eminência hipotenar; ... | 🟡 Nota clínica |
 | `interosseos_dorsais` | Interósseos dorsais da mão | *Mm. interossei dorsales manus* | Membro superior | Ação, Origem, Inserção, Inervação | Mnemônico: “DAB” (Dorsais ABduzem) e “PAD” (Palmares ADduzem). | 🟡 Nota clínica |
 | `interosseos_palmares` | Interósseos palmares da mão | *Mm. interossei palmares manus* | Membro superior | Ação, Origem, Inserção, Inervação | Mnemônico: “PAD” (Palmares ADduzem). | 🟡 Nota clínica |
 | `lumbricais` | Lumbricais da mão | *Mm. lumbricales manus* | Membro superior | Ação, Origem, Inserção, Inervação | São os únicos músculos que se originam de tendões e se inserem em o... | 🟡 Nota clínica |
@@ -196,13 +202,13 @@
 | `n_facial_cervical` | Ramo cervical do nervo facial | *Ramus colli n. facialis* | Cabeça e pescoço | 1 músculo(s) | — | ✅ Verificado |
 | `n_hipoglosso` | Nervo hipoglosso (XII) | *N. hypoglossus* | Cabeça e pescoço | 3 músculo(s) | Ao pôr a língua para fora, ela desvia para o lado lesado (o geniogl... | ✅ Verificado |
 | `n_acessorio` | Nervo acessório (XI) | *N. accessorius* | Cabeça e pescoço, Tronco | 4 músculo(s) | É muito superficial no trígono posterior e pode ser lesado em bióps... | ✅ Verificado |
-| `n_ramos_cervicais` | Plexo cervical — ramos musculares | *Plexus cervicalis, rami musculares* | Cabeça e pescoço | 9 músculo(s) | O bloqueio do plexo cervical superficial, no ponto médio da margem ... | ✅ Verificado |
+| `n_ramos_cervicais` | Plexo cervical — ramos musculares | *Plexus cervicalis, rami musculares* | Cabeça e pescoço | 10 músculo(s) | O bloqueio do plexo cervical superficial, no ponto médio da margem ... | ✅ Verificado |
 | `n_alca_cervical` | Alça cervical | *Ansa cervicalis* | Cabeça e pescoço | 3 músculo(s) | Pode servir de nervo doador para reinervar a laringe ou a língua. N... | ✅ Verificado |
 | `n_frenico` | Nervo frênico | *N. phrenicus* | Cabeça e pescoço, Tronco | 1 músculo(s) | Lesão unilateral: paralisia e elevação da cúpula do diafragma do me... | ✅ Verificado |
 | `n_suboccipital` | Nervo suboccipital (C1) | *N. suboccipitalis* | Cabeça e pescoço | 5 músculo(s) | Comunica-se com o nervo occipital maior. | ✅ Verificado |
 | `n_occipital_maior` | Nervo occipital maior (C2) | *N. occipitalis major* | Cabeça e pescoço | 1 músculo(s) | Neuralgia occipital: dor em pontada na nuca e no couro cabeludo. O ... | ✅ Verificado |
-| `n_ramos_posteriores` | Ramos posteriores dos nervos espinais | *Rami posteriores nn. spinalium* | Cabeça e pescoço, Tronco | 19 músculo(s) | A denervação do ramo medial por radiofrequência é usada na dor das ... | ✅ Verificado |
-| `n_plexo_braquial` | Plexo braquial | *Plexus brachialis* | Cabeça e pescoço, Tronco, Membro superior | 0 músculo(s) | Erb-Duchenne (C5–C6; queda que afasta a cabeça do ombro, parto difí... | ✅ Verificado |
+| `n_ramos_posteriores` | Ramos posteriores dos nervos espinais | *Rami posteriores nn. spinalium* | Cabeça e pescoço, Tronco | 21 músculo(s) | A denervação do ramo medial por radiofrequência é usada na dor das ... | ✅ Verificado |
+| `n_plexo_braquial` | Plexo braquial | *Plexus brachialis* | Cabeça e pescoço, Tronco, Membro superior | 1 músculo(s) | Erb-Duchenne (C5–C6; queda que afasta a cabeça do ombro, parto difí... | ✅ Verificado |
 | `n_dorsal_escapula` | Nervo dorsal da escápula | *N. dorsalis scapulae* | Tronco | 3 músculo(s) | Rara. A escápula do lado afetado se afasta da coluna (romboides fra... | ✅ Verificado |
 | `n_toracico_longo` | Nervo torácico longo | *N. thoracicus longus* | Tronco | 1 músculo(s) | É superficial na parede lateral do tórax (lesão em esvaziamento axi... | ✅ Verificado |
 | `n_supraescapular` | Nervo supraescapular | *N. suprascapularis* | Membro superior | 2 músculo(s) | Compressão na incisura da escápula (cisto, ligamento calcificado): ... | ✅ Verificado |
@@ -218,10 +224,10 @@
 | `n_interosseo_posterior` | Ramo profundo do nervo radial (nervo interósseo posterior) | *R. profundus n. radialis; N. interosseus antebrachii posterior* | Membro superior | 9 músculo(s) | Compressão na arcada de Frohse ou fratura da cabeça do rádio: dedos... | ✅ Verificado |
 | `n_mediano` | Nervo mediano | *N. medianus* | Membro superior | 9 músculo(s) | Síndrome do túnel do carpo: dormência noturna nos três primeiros de... | ✅ Verificado |
 | `n_interosseo_anterior` | Nervo interósseo anterior | *N. interosseus antebrachii anterior* | Membro superior | 3 músculo(s) | Não consegue fazer o sinal de “OK”: a pinça vira um “bico de pato”,... | ✅ Verificado |
-| `n_ulnar` | Nervo ulnar | *N. ulnaris* | Membro superior | 3 músculo(s) | No cotovelo (“osso do cotovelo”, túnel cubital): formigamento no 4º... | ✅ Verificado |
+| `n_ulnar` | Nervo ulnar | *N. ulnaris* | Membro superior | 4 músculo(s) | No cotovelo (“osso do cotovelo”, túnel cubital): formigamento no 4º... | ✅ Verificado |
 | `n_ulnar_profundo` | Ramo profundo do nervo ulnar | *R. profundus n. ulnaris* | Membro superior | 9 músculo(s) | Compressão no canal de Guyon (ciclistas, ferramentas): fraqueza dos... | ✅ Verificado |
 | `n_intercostais` | Nervos intercostais (T1–T6) | *Nn. intercostales* | Tronco | 5 músculo(s) | O herpes-zóster segue um dermátomo intercostal. Toracocentese e blo... | ✅ Verificado |
-| `n_toracoabdominais` | Nervos toracoabdominais (T7–T11) | *Nn. thoracoabdominales* | Tronco | 9 músculo(s) | Incisões verticais na margem lateral do reto podem seccioná-los e d... | ✅ Verificado |
+| `n_toracoabdominais` | Nervos toracoabdominais (T7–T11) | *Nn. thoracoabdominales* | Tronco | 10 músculo(s) | Incisões verticais na margem lateral do reto podem seccioná-los e d... | ✅ Verificado |
 | `n_subcostal` | Nervo subcostal (T12) | *N. subcostalis* | Tronco | 7 músculo(s) | — | ✅ Verificado |
 | `n_ilio_hipogastrico` | Nervo ílio-hipogástrico (L1) | *N. iliohypogastricus* | Tronco | 2 músculo(s) | Pode ser lesado em incisões baixas (apendicectomia, Pfannenstiel): ... | ✅ Verificado |
 | `n_ilioinguinal` | Nervo ilioinguinal (L1) | *N. ilioinguinalis* | Tronco | 2 músculo(s) | Neuralgia após hernioplastia inguinal (aprisionamento por tela ou s... | ✅ Verificado |

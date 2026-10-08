@@ -428,7 +428,7 @@ export const NERVES = [
       { pts: [[0.32, -1.09, -0.05], [0.42, -1.22, -0.2], CAST('trapezio_desc', [0.58, -1.55, -0.15], [0, 0, -1], 0.03)], r: 0.0045 },
     ],
     ramos: [
-      { m: 'longo_cabeca' }, { m: 'reto_ant_cabeca' }, { m: 'reto_lat_cabeca' },
+      { m: 'longo_cabeca' }, { m: 'longo_pescoco', obs: 'C2–C6' }, { m: 'reto_ant_cabeca' }, { m: 'reto_lat_cabeca' },
       { m: 'escaleno_ant', obs: 'C4–C6' }, { m: 'escaleno_med', obs: 'C3–C8' }, { m: 'escaleno_post', obs: 'C6–C8' },
       { m: 'levantador_escapula', obs: 'C3–C4' },
       { m: 'ecm', obs: 'C2–C3, dor e propriocepção', sens: true },
@@ -497,6 +497,7 @@ export const NERVES = [
       { m: 'rotadores_cervicais' }, { m: 'rotadores_toracicos' }, { m: 'rotadores_lombares' },
       { m: 'interespinais_toracicos' }, { m: 'interespinais_lombares' }, { m: 'intertransversarios_med' },
       { m: 'esplenio_cabeca' }, { m: 'esplenio_pescoco' },
+      { m: 'levantadores_costelas_curtos', obs: 'C8–T11' }, { m: 'levantadores_costelas_longos', obs: 'torácicos inferiores' },
     ],
     labelAt: 0.5,
   }, {
@@ -527,13 +528,15 @@ export const NERVES = [
       { pts: [BP.latCord, [1.35, -2.6, 0.1], BP.medianStart], r: 0.012 },
       { pts: [BP.medCord, [1.33, -2.63, 0.09], BP.medianStart], r: 0.012 },
     ],
+    // ramo curto da raiz C7 (trajeto 2); vindo do plexo cervical, o ramo descia meio palmo por dentro dos processos transversos
+    ramos: [{ m: 'escaleno_minimo', obs: 'raiz C7', path: 2 }],
     labelAt: 0.75,
   }, {
     origem: 'Ramos anteriores de C5, C6, C7, C8 e T1 (as “raízes”), às vezes com contribuição de C4 (plexo pré-fixado) ou de T2 (pós-fixado).',
     trajeto: 'As raízes saem entre os escalenos anterior e médio e formam os troncos superior (C5–C6), médio (C7) e inferior (C8–T1) no trígono posterior do pescoço, sobre a 1ª costela. Atrás da clavícula, cada tronco se divide em divisões anterior e posterior, que formam, na axila, os fascículos lateral, posterior e medial ao redor da artéria axilar, atrás do peitoral menor.',
-    ramos: 'Das raízes: dorsal da escápula e torácico longo. Do tronco superior: supraescapular e nervo para o subclávio. Fascículo lateral: peitoral lateral, musculocutâneo e raiz lateral do mediano. Fascículo medial: peitoral medial, cutâneos medial do braço e do antebraço, ulnar e raiz medial do mediano. Fascículo posterior: subescapulares superior e inferior, toracodorsal, axilar e radial.',
+    ramos: 'Das raízes: dorsal da escápula, torácico longo e ramos curtos para os escalenos e o longo do pescoço (aqui só o do escaleno mínimo, de C7, está desenhado; os demais aparecem no plexo cervical). Do tronco superior: supraescapular e nervo para o subclávio. Fascículo lateral: peitoral lateral, musculocutâneo e raiz lateral do mediano. Fascículo medial: peitoral medial, cutâneos medial do braço e do antebraço, ulnar e raiz medial do mediano. Fascículo posterior: subescapulares superior e inferior, toracodorsal, axilar e radial.',
     lesao: 'Erb-Duchenne (C5–C6; queda que afasta a cabeça do ombro, parto difícil): braço aduzido e rodado medialmente, cotovelo estendido e antebraço pronado (“gorjeta de garçom”). Klumpke (C8–T1; tração do braço para cima): mão em garra e, às vezes, síndrome de Horner.',
-    nota: 'Os músculos são inervados pelos nervos que saem do plexo (fichas próprias). Sequência para lembrar: raízes, troncos, divisões, fascículos, ramos terminais.',
+    nota: 'Fora os ramos curtos das raízes, os músculos são inervados pelos nervos que saem do plexo (fichas próprias). Sequência para lembrar: raízes, troncos, divisões, fascículos, ramos terminais.',
   }),
   nervo('n_dorsal_escapula', 'Nervo dorsal da escápula', 'N. dorsalis scapulae', 'tronco', {
     paths: [{ pts: [[0.25, -1.24, -0.08], [0.38, -1.3, -0.12], [0.5, -1.48, -0.3], { sec: 'rombo_menor', y: -2.0, x: 0.55, at: 'ant', d: 0.02 }, { sec: 'rombo_maior', y: -2.5, x: 0.55, at: 'ant', d: 0.02 }, { sec: 'rombo_maior', y: -3.05, x: 0.65, at: 'ant', d: 0.02 }], r: 0.005 }],
@@ -707,7 +710,10 @@ export const NERVES = [
       // ramo cutâneo dorsal
       { pts: [{ between: ['fcu_h', 'fdp'], y: -6.6 }, SK([2.22, -7.0, 0.1], -0.04), SK([2.25, -7.6, 0.3], -0.03)], r: 0.004 },
     ],
-    ramos: [{ m: 'fcu_h', path: 0 }, { m: 'fcu_u', path: 0 }, { m: 'fdp', obs: 'parte medial (dedos anular e mínimo)', path: 0 }],
+    ramos: [
+      { m: 'fcu_h', path: 0 }, { m: 'fcu_u', path: 0 }, { m: 'fdp', obs: 'parte medial (dedos anular e mínimo)', path: 0 },
+      { m: 'palmar_curto', obs: 'ramo superficial', path: 1 },
+    ],
   }, {
     origem: 'Fascículo medial do plexo braquial (C8–T1, às vezes C7).',
     trajeto: 'Desce medial à artéria braquial; no meio do braço perfura o septo intermuscular medial e passa atrás do epicôndilo medial (túnel cubital), sem dar ramos no braço. Entra no antebraço entre as cabeças do flexor ulnar do carpo e corre sob ele, sobre o flexor profundo dos dedos. No punho passa lateral ao pisiforme, superficial ao retináculo dos flexores, pelo canal ulnar (de Guyon), e se divide em ramos superficial e profundo.',
@@ -748,7 +754,7 @@ export const NERVES = [
   nervo('n_toracoabdominais', 'Nervos toracoabdominais (T7–T11)', 'Nn. thoracoabdominales', 'tronco', {
     paths: [7, 8, 9, 10, 11].map(thoracoabdominal),
     ramos: [
-      { m: 'intercostal_ext' }, { m: 'intercostal_int' }, { m: 'intercostal_intimo' }, { m: 'serratil_post_inf', obs: 'T9–T11' },
+      { m: 'intercostal_ext' }, { m: 'intercostal_int' }, { m: 'intercostal_intimo' }, { m: 'subcostais' }, { m: 'serratil_post_inf', obs: 'T9–T11' },
       { m: 'reto_abdome' }, { m: 'obliquo_externo' }, { m: 'obliquo_interno' }, { m: 'transverso_abdome' },
       { m: 'diafragma', obs: 'sensibilidade da periferia', sens: true },
     ],

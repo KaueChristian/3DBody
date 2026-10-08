@@ -12,7 +12,7 @@ seções 6, 7 e 9 são as que mais evitam retrabalho e acidentes.
 
 ## 2. O projeto em um minuto
 
-Atlas 3D de anatomia em **português** (cabeça, tronco e membros superiores hoje): pele, fáscias, 154 músculos, 55 nervos,
+Atlas 3D de anatomia em **português** (cabeça, tronco e membros superiores hoje): pele, fáscias, 160 músculos, 55 nervos,
 ossos, ligamentos, glândulas, com dissecação por camadas, fichas e quiz. Roda em qualquer navegador **por `file://`**
 (sem servidor) e é empacotado como `Anatomia3D.exe`, que **se atualiza sozinho** a cada release do GitHub
 (`KaueChristian/3DBody`). Malhas reais vêm do BodyParts3D (CC BY-SA 2.1 JP); o que o banco não tem é modelado por código.
@@ -108,7 +108,7 @@ node -e "const c=require(process.env.TEMP+'/cat.cjs'); console.log(c.ITEMS.lengt
 ```
 
 Se lançar `Identificador duplicado…`, `Nervo aponta para estrutura inexistente…` ou `Músculos sem nervo…`, o catálogo está
-errado — corrija os dados. Contagens esperadas hoje: 271 estruturas (154 músculos, 55 nervos, 38 ossos, 12 ligamentos,
+errado — corrija os dados. Contagens esperadas hoje: 277 estruturas (160 músculos, 55 nervos, 38 ossos, 12 ligamentos,
 3 fáscias, 3 glândulas, 6 estruturas).
 
 ### 6.2 Verificação visual (obrigatória para qualquer mudança de geometria ou interface)
