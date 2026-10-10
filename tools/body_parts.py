@@ -33,9 +33,10 @@ R = LR  # atalho
 BODY = {}
 
 
-def add(pid, cat, pattern, smooth=4, tris=9000, region="tronco", mirror=False):
-    """mirror=True: o banco só tem um lado; o conversor acrescenta a cópia espelhada (x → −x)."""
-    BODY[pid] = dict(cat=cat, pattern=pattern, smooth=smooth, tris=tris, region=region, mirror=mirror)
+def add(pid, cat, pattern, smooth=4, tris=9000, region="tronco", mirror=False, exclude=()):
+    """mirror=True: o banco só tem um lado; o conversor acrescenta a cópia espelhada (x → −x).
+    exclude: elementos a ignorar (o banco repete alguns como `…M`, cópia espelhada do outro lado que já existe)."""
+    BODY[pid] = dict(cat=cat, pattern=pattern, smooth=smooth, tris=tris, region=region, mirror=mirror, exclude=tuple(exclude))
 
 
 # ───────── Ossos ─────────
@@ -150,8 +151,10 @@ for k, pat in [
 
 
 # assoalho pélvico e períneo
-for k, pat in [("pubococcigeo", r"pubococcygeus"), ("iliococcigeo", r"iliococcygeus"), ("esfincter_anal_ext", r"external anal sphincter"),
-               ("perineo_superficial", r"superficial perineal muscle")]:
+# o conceito "superficial perineal muscle" do banco tem as MESMAS peças do esfíncter externo do ânus (FJ1450, FJ1450M, FJ2543,
+# FJ2548): não é um músculo perineal à parte. A peça `perineo_superficial` foi retirada do atlas (F2.8); a que ficou no pacote
+# de dados ainda existe, sem uso, porque o pacote não é regenerado por inteiro.
+for k, pat in [("pubococcigeo", r"pubococcygeus"), ("iliococcigeo", r"iliococcygeus"), ("esfincter_anal_ext", r"external anal sphincter")]:
     add(k, "musculo", LR + pat, 5, 5000, "tronco")
 
 
@@ -164,10 +167,36 @@ add("longo_pescoco", "musculo", r"(?:superior oblique|inferior oblique|vertical 
     "cabeca", mirror=True)
 
 
+# F2.3 a F2.8 — músculos da língua, do palato, da faringe, da laringe e da pelve que o banco tem como malha. Sem decimar
+# demais: são peças pequenas e finas. Pares (o banco traz os dois lados); `uvular muscle` é uma peça só.
+for k, pat, tris in [
+    ("genioglosso", r"genioglossus", 6000), ("hioglosso", r"hyoglossus", 5000),
+    ("levantador_veu", r"levator veli palatini", 4000), ("tensor_veu", r"tensor veli palatini", 4000),
+    ("musculo_uvula", r"uvular muscle", 2500), ("palatofaringeo", r"palatopharyngeus", 5000),
+    ("constritor_faringe_sup", r"superior pharyngeal constrictor", 7000), ("constritor_faringe_med", r"middle pharyngeal constrictor", 7000),
+    ("constritor_faringe_inf", r"inferior pharyngeal constrictor", 7000), ("estilofaringeo", r"stylopharyngeus", 4000),
+    ("salpingofaringeo", r"salpingopharyngeus", 3000),
+    ("cricotireoideo", r"(?:straight|oblique) part of (?:left |right )?cricothyroid", 4000),
+    ("cricoaritenoideo_post", r"posterior crico-arytenoid", 3000), ("cricoaritenoideo_lat", r"lateral crico-arytenoid", 3000),
+    ("aritenoideo_obliquo", r"oblique arytenoid", 2500), ("aritenoideo_transverso", r"transverse arytenoid", 2500),
+    ("tireoaritenoideo", r"thyro-arytenoid", 4000), ("vocal", r"vocalis", 2500),
+]:
+    add(k, "musculo", (r"(?:left |right )?" + pat) if pat != r"uvular muscle" else pat, 3, tris, "cabeca")
+add("puborretal", "musculo", LR + r"puborectalis", 5, 5000, "tronco", exclude=("FJ1458M",))  # FJ1458M duplica o lado esquerdo (FJ2546)
+add("obturador_interno", "musculo", LR + r"obturator internus", 5, 8000, "tronco")
+
+# F2 (cobertura) — músculos profundos da coluna cervical que o banco tem: intertransversários anteriores e posteriores e
+# interespinais cervicais (ambos os lados no banco).
+for k, pat in [("intertransversarios_cerv_ant", r"set of anterior cervical intertransversarii"),
+               ("intertransversarios_cerv_post", r"set of posterior cervical intertransversarii"),
+               ("interespinais_cervicais", r"set of interspinales cervicis")]:
+    add(k, "musculo", pat, 4, 4000, "cabeca")
+
+
 def resolve():
     out = {}
     for pid, d in BODY.items():
-        es = elems(d["pattern"])
+        es = [e for e in elems(d["pattern"]) if e not in d["exclude"]]
         out[pid] = es
     return out
 

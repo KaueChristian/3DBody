@@ -20,11 +20,14 @@ NERVE_PARTS = {
     # ramos superior e inferior do oculomotor, gânglio ciliar e nervos ciliares curtos
     "n_oculomotor": ["FJ1321", "FJ1372", "FJ1293", "FJ1344", "FJ1288", "FJ1339", "FJ1319", "FJ1370"],
     "n_troclear": ["FJ1330", "FJ1381"],
-    # oftálmico (V1): frontal, supraorbital, supratroclear, lacrimal, nasociliar, infratroclear, etmoidais,
-    # ciliares longos e ramo comunicante com o gânglio ciliar
-    "n_oftalmico": ["FJ1312", "FJ1363", "FJ1290", "FJ1341", "FJ1325", "FJ1376", "FJ1326", "FJ1377", "FJ1300", "FJ1351",
-                    "FJ1310", "FJ1361", "FJ1296", "FJ1347", "FJ1283", "FJ1333", "FJ1315", "FJ1366", "FJ1318", "FJ1369",
-                    "FJ1311", "FJ1362"],
+    # oftálmico (V1): só o tronco; os ramos viraram peças próprias (F2.10)
+    "n_oftalmico": ["FJ1312", "FJ1363"],
+    # frontal e seus ramos supraorbital e supratroclear
+    "n_frontal": ["FJ1290", "FJ1341", "FJ1325", "FJ1376", "FJ1326", "FJ1377"],
+    "n_lacrimal": ["FJ1300", "FJ1351"],
+    # nasociliar: infratroclear, etmoidais, ciliares longos e ramo comunicante com o gânglio ciliar
+    "n_nasociliar": ["FJ1310", "FJ1361", "FJ1296", "FJ1347", "FJ1283", "FJ1333", "FJ1315", "FJ1366", "FJ1318", "FJ1369",
+                     "FJ1311", "FJ1362"],
 }
 
 
