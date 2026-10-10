@@ -7,7 +7,9 @@ import { userData } from './storage.js';
 import { getDueStructureIds, getWeakStructureIds, getNewStructureIds } from './sm2.js';
 import { encodeViewState, parseViewState, applyViewState, copyShareLink, shareUrl } from './views.js';
 import { ClippingManager } from './clipping.js';
-import { ColoringManager, MODES } from './coloring.js';
+import { ColoringManager, MODES, segmentColor } from './coloring.js';
+import { DermatomeOverlay, dermColor } from './dermatomes.js';
+import { SEGMENT_ORDER, AMPLOS, PROPRIOCEPTIVOS, segRegion } from '../segments.js';
 import { TextQuizRunner } from './text-quiz-ui.js';
 import { ListsPanel } from './lists-ui.js';
 import { ProgressPanel } from './progress-ui.js';
@@ -42,6 +44,7 @@ export class StudyController {
     this.userData = userData;
     this.clipping = new ClippingManager(app.renderer, () => app.getModelBox());
     this.coloring = new ColoringManager(app);
+    this.derm = new DermatomeOverlay(app);
     this.activeTour = null;
     this.tourStepIndex = 0;
     this.tourTimer = null;
@@ -117,7 +120,10 @@ export class StudyController {
 
   /* ───────────── Estado na URL ───────────── */
   viewExtra() {
-    return { clip: this.clipping.serialize(), color: this.coloring.mode };
+    return {
+      clip: this.clipping.serialize(), color: this.coloring.mode, derm: this.derm.on,
+      segment: this.coloring.mode === 'segmento' || this.derm.on ? this.coloring.segment : null,
+    };
   }
 
   currentHash() {
@@ -152,6 +158,7 @@ export class StudyController {
   /** O corpo e os nervos terminaram de carregar: recalcula cores e legenda. */
   onModelUpdated() {
     if (this.coloring.mode !== 'camada') this.coloring.apply();
+    if (this.derm.on) this.derm.update(this.coloring.segment);
     this.updateLegend();
   }
 
@@ -402,6 +409,7 @@ export class StudyController {
         nervo: 'Músculos inervados pelo mesmo nervo (o principal) têm a mesma cor.',
         regiao: 'Cabeça e pescoço, tronco e membro superior em cores diferentes.',
         grupo: 'Mímica, mastigação, manguito, compartimentos do braço e antebraço, mão e outros.',
+        segmento: 'Cada músculo na cor do seu segmento medular; escolha um segmento para ver o miótomo.',
       }[mode];
       return `<button type="button" class="mode-card" data-color="${mode}" role="radio" aria-checked="false"><b>${esc(label)}</b><span>${esc(desc)}</span></button>`;
     }).join('');
@@ -413,7 +421,87 @@ export class StudyController {
       this.scheduleViewUpdate();
     });
     this.coloring.onChange = () => this.updateLegend();
+    this.initSegmentPanel();
+    document.getElementById('optDerm')?.addEventListener('change', (e) => this.setDermatomes(e.target.checked));
     this.syncColorUi();
+  }
+
+  /* ───────────── Segmentos medulares e miótomos (F2.14) ───────────── */
+  initSegmentPanel() {
+    const chips = document.getElementById('segChips');
+    if (!chips) return;
+    const rows = [['C', 'Cervicais'], ['T', 'Torácicos'], ['L', 'Lombares'], ['S', 'Sacrais e coccígeo']];
+    chips.innerHTML = `<button type="button" class="seg-chip all" data-seg="" aria-pressed="true">Cor por segmento</button>${rows.map(([r, label]) => `
+      <div class="seg-row" role="group" aria-label="${esc(label)}"><span>${esc(label)}</span>${SEGMENT_ORDER.filter((s) => segRegion(s) === r).map((s) =>
+        `<button type="button" class="seg-chip" data-seg="${s}" aria-pressed="false" style="--c:${segmentColor(s)}">${s}</button>`).join('')}</div>`).join('')}`;
+    chips.addEventListener('click', (e) => {
+      const b = e.target.closest('.seg-chip');
+      if (!b) return;
+      this.coloring.setSegment(b.dataset.seg || null);
+      if (this.derm.on) this.derm.update(this.coloring.segment);
+      this.syncColorUi();
+      this.scheduleViewUpdate();
+    });
+    document.getElementById('segReadout')?.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-go]');
+      if (!b) return;
+      this.closeModal();
+      this.app.select(b.dataset.go, { fly: true });
+    });
+  }
+
+  /** Liga/desliga os dermátomos sobre a pele (F2.15). A pele fica quase opaca enquanto estiverem ligados. */
+  setDermatomes(on) {
+    const { app } = this;
+    if (on === this.derm.on) return;
+    if (on && !(app.state.bodyReady && this.derm.skin())) { showToast('Aguarde o corpo terminar de carregar para ver os dermátomos.'); this.syncColorUi(); return; }
+    this.derm.on = on;
+    if (on) {
+      this.derm.prev = app.state.skin;
+      app.state.layers.add('pele');
+      app.setSkin(0.92);
+      app.syncLayers();
+    } else if (this.derm.prev != null) {
+      app.setSkin(this.derm.prev);
+      this.derm.prev = null;
+    }
+    this.coloring.skinWhite = on;
+    this.coloring.apply();
+    this.derm.update(this.coloring.segment);
+    this.syncColorUi();
+    this.updateLegend();
+    this.scheduleViewUpdate();
+  }
+
+  /** Músculos e nervos do segmento escolhido, para a lista abaixo dos botões. */
+  renderSegmentReadout() {
+    const el = document.getElementById('segReadout');
+    if (!el) return;
+    const seg = this.coloring.segment;
+    if (this.coloring.mode !== 'segmento') {
+      el.innerHTML = this.derm.on
+        ? `<p class="opt-desc">${seg ? `O dermátomo <b>${esc(seg)}</b> está em destaque na pele.` : 'Escolha um segmento para destacar o dermátomo dele na pele.'} Para ver também os músculos do segmento, escolha o modo “Por segmento medular”.</p>`
+        : '';
+      return;
+    }
+    if (!seg) {
+      el.innerHTML = '<p class="opt-desc">Cada músculo aparece na cor do seu <b>segmento principal</b> (o do meio dos que o inervam). Escolha um segmento acima para ver o miótomo dele, com a lista.</p>';
+      return;
+    }
+    const all = [...this.app.catalog.values()].filter((i) => i.segmentos?.includes(seg));
+    const muscles = all.filter((i) => i.kind === 'musculo');
+    const main = muscles.filter((i) => !AMPLOS.has(i.id));
+    const broad = muscles.filter((i) => AMPLOS.has(i.id));
+    const nerves = all.filter((i) => i.kind !== 'musculo');
+    const chip = (i) => `<button type="button" class="lchip" data-go="${esc(i.id)}">${esc(i.name)}${PROPRIOCEPTIVOS.has(i.id) ? ' <small>(propriocepção)</small>' : ''}</button>`;
+    const group = (title, list) => (list.length ? `<h4>${esc(title)} <small>${list.length}</small></h4><div class="seg-list">${list.map(chip).join('')}</div>` : '');
+    el.innerHTML = `
+      <p class="opt-desc"><b>Segmento ${esc(seg)}</b>: o miótomo é o conjunto de músculos que recebem fibras de um mesmo segmento medular.
+      Os valores seguem Moore e o Gray’s; as fontes divergem em alguns músculos (veja a nota da ficha).</p>
+      ${group('Músculos', main)}
+      ${group('Também recebem este segmento (inervação segmentar regional do dorso; não é um miótomo clínico)', broad)}
+      ${group('Nervos e estruturas', nerves)}
+      ${all.length ? '' : '<p class="opt-desc">Nenhuma estrutura do catálogo tem este segmento.</p>'}`;
   }
 
   syncColorUi() {
@@ -422,14 +510,32 @@ export class StudyController {
       b.classList.toggle('on', on);
       b.setAttribute('aria-checked', String(on));
     });
+    const dBox = document.getElementById('optDerm');
+    if (dBox) dBox.checked = this.derm.on;
+    const panel = document.getElementById('segPanel');
+    if (panel) {
+      panel.hidden = this.coloring.mode !== 'segmento' && !this.derm.on;
+      document.querySelectorAll('#segChips .seg-chip').forEach((b) => {
+        b.setAttribute('aria-pressed', String((b.dataset.seg || null) === this.coloring.segment));
+      });
+      this.renderSegmentReadout();
+    }
   }
 
   updateLegend() {
     const el = this.legendEl;
     if (!el) return;
+    if (this.derm.on && !this.app.state.quiz) {
+      el.hidden = false;
+      el.innerHTML = `
+        <div class="legend-head"><strong>Dermátomos (esquemático)</strong><button type="button" class="link" id="legendReset">desligar</button></div>
+        <ul class="cols">${this.derm.legend().map((e) => `<li><i style="background:${esc(dermColor(e.key))}"></i><span>${esc(e.label)}</span></li>`).join('')}</ul>`;
+      el.querySelector('#legendReset').onclick = () => this.setDermatomes(false);
+      return;
+    }
     if (this.coloring.mode === 'camada' || this.app.state.quiz) { el.hidden = true; return; }
     const entries = this.coloring.legend(this.app.state.region);
-    const title = MODES.find(([m]) => m === this.coloring.mode)?.[1] ?? '';
+    const title = this.coloring.mode === 'segmento' && this.coloring.segment ? `Miótomo ${this.coloring.segment}` : MODES.find(([m]) => m === this.coloring.mode)?.[1] ?? '';
     el.hidden = false;
     el.innerHTML = `
       <div class="legend-head"><strong>${esc(title)}</strong><button type="button" class="link" id="legendReset">padrão</button></div>

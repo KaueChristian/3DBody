@@ -6,6 +6,7 @@
  */
 import * as THREE from 'three';
 import { GROUPS, MUSCLE_GROUP, GROUP_LABEL, groupColor } from './groups.js';
+import { SEGMENT_ORDER, principalSegment, segRegion } from '../segments.js';
 
 const REGION_ORDER = ['cabeca', 'tronco', 'membro_sup'];
 const REGION_COLORS = { cabeca: '#4d88e6', tronco: '#42b883', membro_sup: '#e68a3e', varias: '#9c7be6' };
@@ -15,7 +16,24 @@ export const MODES = [
   ['nervo', 'Por nervo que inerva'],
   ['regiao', 'Por região do corpo'],
   ['grupo', 'Por grupo / compartimento'],
+  ['segmento', 'Por segmento medular (miótomos)'],
 ];
+
+const SEG_DIM = '#4a5568';
+const SEG_ON = '#2DD4BF';
+const SEG_NERVE = '#f2cf55';
+const SEG_BASE_HUE = { C: 212, T: 142, L: 32, S: 282 };
+
+/** Cor de um segmento: matiz por região (C azul, T verde, L laranja, S roxo) e luminosidade crescente ao longo da região. */
+export function segmentColor(seg) {
+  const region = segRegion(seg);
+  const same = SEGMENT_ORDER.filter((s) => segRegion(s) === region);
+  const k = same.indexOf(seg);
+  // vizinhos se distinguem: a matiz oscila em torno da base da região e a luminosidade alterna a cada segmento
+  const hue = (SEG_BASE_HUE[region] + [-22, 0, 22, 44][k % 4] + 360) % 360;
+  const light = 38 + (k / Math.max(1, same.length - 1)) * 22 + (k % 2 ? 8 : -4);
+  return `hsl(${hue}, 66%, ${light.toFixed(0)}%)`;
+}
 
 /** Matiz espaçada pelo ângulo áureo; luminosidade alternada para nervos vizinhos na lista não se confundirem. */
 function nerveColor(index) {
@@ -38,6 +56,8 @@ export class ColoringManager {
   constructor(app) {
     this.app = app;
     this.mode = 'camada';
+    this.skinWhite = false; // com os dermátomos ligados, a pele fica branca (a cor vem dos vértices)
+    this.segment = null; // no modo 'segmento': um segmento em destaque (miótomo); null = cor por segmento principal
     this.overrides = new Map();
     this.legendEntries = [];
     this.onChange = null; // ouvinte: legenda e botões
@@ -47,6 +67,12 @@ export class ColoringManager {
     if (!MODES.some(([m]) => m === mode)) mode = 'camada';
     this.mode = mode;
     this.apply();
+  }
+
+  /** Escolhe o segmento em destaque do modo 'segmento' (ou null para colorir por segmento principal). */
+  setSegment(seg) {
+    this.segment = SEGMENT_ORDER.includes(seg) ? seg : null;
+    if (this.mode === 'segmento') this.apply();
   }
 
   /** Recalcula o mapa de cores (chamar de novo quando o corpo e os nervos terminarem de carregar). */
@@ -79,6 +105,25 @@ export class ColoringManager {
           const color = REGION_COLORS[key];
           this.overrides.set(id, new THREE.Color(color));
           add(key, color, key === 'varias' ? 'Mais de uma região' : this.regionLabel(key), id);
+        } else if (this.mode === 'segmento') {
+          if (item.kind !== 'musculo' && !item.segmentos) continue;
+          const segs = item.segmentos;
+          if (this.segment) {
+            const on = segs?.includes(this.segment);
+            const color = on ? (item.kind === 'musculo' ? SEG_ON : SEG_NERVE) : SEG_DIM;
+            this.overrides.set(id, new THREE.Color(color));
+            add(on ? (item.kind === 'musculo' ? 'on' : 'nervo') : 'off', color,
+              on ? (item.kind === 'musculo' ? `Músculos com o segmento ${this.segment}` : `Nervos com o segmento ${this.segment}`)
+                : 'Sem este segmento', id);
+          } else if (segs) {
+            const seg = principalSegment(segs);
+            const color = segmentColor(seg);
+            this.overrides.set(id, new THREE.Color(color));
+            add(seg, color, `Segmento principal ${seg}`, id);
+          } else {
+            this.overrides.set(id, new THREE.Color(SEG_DIM));
+            add('cranial', SEG_DIM, 'Sem segmento medular (nervos cranianos)', id);
+          }
         } else if (this.mode === 'grupo') {
           if (item.kind !== 'musculo') continue;
           const g = MUSCLE_GROUP.get(id);
@@ -89,6 +134,7 @@ export class ColoringManager {
         }
       }
     }
+    if (this.skinWhite) this.overrides.set('pele', new THREE.Color('#ffffff'));
     this.legendEntries = this.sortLegend([...counts.values()]);
     this.app.setColorOverrides(this.overrides.size ? this.overrides : null);
     this.onChange?.(this);
@@ -115,6 +161,13 @@ export class ColoringManager {
     }
     if (this.mode === 'grupo') {
       return entries.sort((a, b) => GROUPS.findIndex((g) => g.id === a.key) - GROUPS.findIndex((g) => g.id === b.key));
+    }
+    if (this.mode === 'segmento') {
+      const rank = (e) => {
+        const i = SEGMENT_ORDER.indexOf(e.key);
+        return i >= 0 ? i : { on: -3, nervo: -2, off: 100, cranial: 101 }[e.key] ?? 102;
+      };
+      return entries.sort((a, b) => rank(a) - rank(b));
     }
     return entries.sort((a, b) => b.ids.length - a.ids.length || a.label.localeCompare(b.label, 'pt-BR'));
   }

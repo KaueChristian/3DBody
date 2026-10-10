@@ -26,7 +26,9 @@ function load() {
         import * as clipping from './src/study/clipping.js';
         import * as util from './src/study/util.js';
         import * as catalog from './src/catalog.js';
-        export { sm2, storage, views, textQuiz, clipping, util, catalog };`,
+        import * as segs from './src/segments.js';
+        import * as derm from './src/study/dermatomes.js';
+        export { sm2, storage, views, textQuiz, clipping, util, catalog, segs, derm };`,
       resolveDir: root,
     },
     bundle: true, format: 'cjs', platform: 'node', write: false, logLevel: 'error',
@@ -36,7 +38,7 @@ function load() {
   return mod.exports;
 }
 
-const { sm2, storage, views, textQuiz, clipping, util, catalog } = load();
+const { sm2, storage, views, textQuiz, clipping, util, catalog, segs, derm } = load();
 const DAY = 24 * 60 * 60 * 1000;
 
 /* ───────────── util ───────────── */
@@ -264,6 +266,61 @@ console.log('• quiz teórico');
   eq(only.map((i) => i.id), ['n_facial'], 'o filtro de ids e de tipo se combinam');
   ok(textQuiz.leaks('o masseter eleva a mandíbula', byId.get('masseter')), 'leaks detecta o nome');
   ok(!textQuiz.leaks('eleva a mandíbula', byId.get('masseter')), 'leaks não acusa texto sem o nome');
+}
+
+/* ───────────── segmentos medulares, miótomos e dermátomos (F2.14 e F2.15) ───────────── */
+console.log('• segmentos medulares e dermátomos');
+{
+  const { SEGMENT_ORDER, SEGMENTOS, AMPLOS, segmentLabel, principalSegment } = segs;
+  eq(SEGMENT_ORDER.length, 31, '31 segmentos: 8 C, 12 T, 5 L, 5 S e 1 coccígeo');
+  eq(segmentLabel(['C5', 'C6', 'C7', 'C8']), 'C5–C8', 'segmentos consecutivos viram intervalo');
+  eq(segmentLabel(['C5', 'C7', 'C8', 'T1']), 'C5, C7–T1', 'segmentos com lacuna ficam separados');
+  eq(segmentLabel(['T12']), 'T12', 'um segmento só');
+  eq(principalSegment(['C5', 'C6', 'C7']), 'C6', 'o segmento principal é o do meio');
+  const byId = new Map(catalog.ITEMS.map((i) => [i.id, i]));
+  for (const [id, list] of Object.entries(SEGMENTOS)) {
+    ok(byId.has(id), `segmentos de estrutura inexistente: ${id}`);
+    ok(list.length > 0 && list.every((s) => SEGMENT_ORDER.includes(s)), `segmento inválido em ${id}`);
+    const idx = list.map((s) => SEGMENT_ORDER.indexOf(s));
+    ok(idx.every((v, i) => i === 0 || v > idx[i - 1]), `segmentos fora da ordem craniocaudal em ${id}`);
+    ok(byId.get(id)?.segmentos === list, `${id}: o catálogo não recebeu o campo segmentos`);
+    ok(byId.get(id)?.campos.some(([k]) => k === 'Segmentos medulares'), `${id}: a ficha não tem a linha "Segmentos medulares"`);
+  }
+  eq(byId.get('diafragma').segmentos, ['C3', 'C4', 'C5'], 'diafragma: C3–C5');
+  eq(byId.get('delt_acro').segmentos, ['C5', 'C6'], 'deltoide: C5–C6');
+  eq(byId.get('interosseos_dorsais').segmentos, ['C8', 'T1'], 'interósseos: C8–T1');
+  eq(byId.get('psoas_maior').segmentos, ['L1', 'L2', 'L3'], 'psoas maior: L1–L3');
+  ok(!byId.get('masseter').segmentos && !byId.get('genioglosso').segmentos, 'músculos só de nervo craniano não têm segmento');
+  ok(AMPLOS.has('multifido') && !AMPLOS.has('biceps_longa'), 'só os músculos próprios do dorso são de inervação regional');
+  // miótomo: C7 tem de incluir tríceps, extensores do punho e flexor radial do carpo
+  const c7 = catalog.ITEMS.filter((i) => i.kind === 'musculo' && i.segmentos?.includes('C7')).map((i) => i.id);
+  for (const id of ['triceps_longa', 'fcr', 'ecrl', 'ed', 'grande_dorsal']) ok(c7.includes(id), `C7 deveria incluir ${id}`);
+  ok(!c7.includes('delt_acro'), 'C7 não inclui o deltoide');
+  // todo músculo inervado por um nervo espinal tem segmentos
+  const sem = catalog.ITEMS.filter((i) => i.kind === 'musculo' && !i.segmentos && (catalog.INNERVATION.get(i.id) ?? []).some((l) => SEGMENTOS[l.nervo]));
+  eq(sem.map((i) => i.id), [], 'músculos inervados por nervo espinal sem segmentos');
+
+  // o estado do segmento e dos dermátomos vai e volta pelo hash
+  const app = { state: { selected: null, region: 'cabeca', dissect: 1, skin: 0.14, layers: new Set(catalog.layersForDissect(1)), hidden: new Set(), labels: false } };
+  const hash = views.encodeViewState(app, null, null, { color: 'segmento', segment: 'C7', derm: true });
+  ok(/col=segmento/.test(hash) && /seg=C7/.test(hash) && /derm=1/.test(hash), `o hash não guarda segmento e dermátomos: ${hash}`);
+  const st = views.parseViewState(hash);
+  ok(st.color === 'segmento' && st.segment === 'C7' && st.derm === true, 'o hash não volta com segmento e dermátomos');
+  ok(!/seg=|derm=/.test(views.encodeViewState(app, null, null, {})), 'sem segmento nem dermátomos, o hash não os guarda');
+
+  // classificação dos dermátomos em pontos conhecidos do modelo (x esquerda, y cima, z frente; a pele é simétrica em |x|)
+  const d = derm.dermatomeOf;
+  eq(d(0.2, 0.3, 0.9), 'V1', 'fronte: V1');
+  eq(d(0.35, -0.5, 1.0), 'V2', 'bochecha: V2');
+  eq(d(0.1, -1.0, 0.8), 'V3', 'queixo: V3');
+  eq(d(0.2, -1.0, -0.6), 'C3', 'nuca: C3');
+  eq(d(0.55, -3.05, 1.0), 'T4', 'mamilo: T4');
+  eq(d(-0.55, -3.05, 1.0), 'T4', 'o lado direito espelha o esquerdo');
+  eq(d(0.0, -5.5, 1.2), 'T10', 'umbigo: T10');
+  eq(d(2.3, -3.5, -0.1), 'C5', 'face lateral do braço: C5');
+  eq(d(2.7, -6.0, 0.2), 'C6', 'face radial do antebraço: C6');
+  eq(d(2.76, -8.5, 1.0), 'C7', 'dedo médio: C7');
+  eq(d(2.25, -8.4, 0.9), 'C8', 'dedo mínimo: C8');
 }
 
 console.log(`\n${checks} verificações.`);

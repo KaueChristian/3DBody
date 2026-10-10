@@ -25,6 +25,8 @@ export function encodeViewState(app, camera, controls, extra = {}) {
   if (state.hidden.size) parts.push(`hid=${[...state.hidden].join('.')}`);
   if (extra.clip) parts.push(`clip=${extra.clip}`);
   if (extra.color && extra.color !== 'camada') parts.push(`col=${extra.color}`);
+  if (extra.segment) parts.push(`seg=${encodeURIComponent(extra.segment)}`);
+  if (extra.derm) parts.push('derm=1');
   if (state.labels) parts.push('lb=1');
 
   if (camera && controls) {
@@ -58,6 +60,8 @@ export function parseViewState(hashStr) {
   if (params.has('hid')) out.hidden = list(params.get('hid'));
   if (params.has('clip')) out.clip = params.get('clip');
   if (params.has('col')) out.color = params.get('col');
+  if (params.has('seg')) out.segment = params.get('seg');
+  if (params.get('derm') === '1') out.derm = true;
   if (params.get('lb') === '1') out.labels = true;
 
   if (params.has('cam')) {
@@ -124,6 +128,9 @@ function applyNow(app, st, hooks) {
     ctl.clipping.restore(st.clip ?? '');
     ctl.syncClipUi();
     ctl.coloring.setMode(st.color ?? 'camada');
+    ctl.coloring.setSegment(st.segment ?? null);
+    ctl.setDermatomes(!!st.derm);
+    if (ctl.derm.on) ctl.derm.update(ctl.coloring.segment);
     ctl.syncColorUi();
   }
 

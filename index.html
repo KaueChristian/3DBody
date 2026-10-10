@@ -285,6 +285,12 @@
           <div class="tab-pane" data-pane="coloring" role="tabpanel" hidden>
             <p class="opt-desc">Escolha como as estruturas são coloridas no modelo. A legenda aparece no canto da tela.</p>
             <div class="mode-cards" id="colorModes" role="radiogroup" aria-label="Modo de coloração"></div>
+            <label class="derm-box"><input type="checkbox" id="optDerm"> <span><b>Mostrar os dermátomos sobre a pele</b> (esquemático)<br><small>A pele fica quase opaca e é pintada em faixas: cabeça (trigêmeo), pescoço, tronco e membro superior. Escolha um segmento abaixo para destacar um deles.</small></span></label>
+            <div class="seg-panel" id="segPanel" hidden>
+              <h3>Segmento medular</h3>
+              <div class="seg-chips" id="segChips" role="group" aria-label="Segmento medular"></div>
+              <div class="seg-readout" id="segReadout" aria-live="polite"></div>
+            </div>
           </div>
 
           <!-- Vistas e backup -->

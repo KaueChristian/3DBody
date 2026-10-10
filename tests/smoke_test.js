@@ -556,6 +556,74 @@ async function runSmokeTest() {
       const app = window.__app;
       const sc = app.studyController;
       const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      for (let i = 0; i < 120 && !app.state.nervesReady; i++) await sleep(250);
+
+      // F2: estruturas novas existem no modelo e abrem a ficha
+      app.setRegion('todos', { fly: false });
+      app.setDissect(6);
+      for (const id of ['genioglosso', 'estiloglosso', 'lingua_vertical', 'constritor_faringe_inf', 'vocal', 'estapedio', 'ciliar', 'tarsal_sup',
+        'puborretal', 'bulboesponjoso', 'esfincter_uretra', 'intertransversarios_cerv_post', 'n_vago', 'n_laringeo_recorrente', 'n_olfatorio',
+        'n_frontal', 'n_corda_timpano', 'g_otico', 'n_simpatico_cervical', 'n_digitais_palmares', 'n_supraclaviculares', 'medula_espinal',
+        'n_espinais_sacrais', 'cauda_equina']) {
+        t(app.M.has(id) && app.M.get(id).meshes.length > 0, 'estrutura nova sem malha no modelo: ' + id);
+      }
+      t(!app.M.has('perineo_superficial'), 'a entrada antiga perineo_superficial (duplicata do esfíncter do ânus) voltou');
+      app.select('triceps_longa', { fly: false });
+      const ficha = document.getElementById('infoBody').textContent;
+      t(/Segmentos medulares/.test(ficha) && /C6–C8/.test(ficha), 'a ficha do tríceps não mostra os segmentos medulares (C6–C8)');
+      t(/n_radial|radial/i.test(ficha), 'a ficha do tríceps perdeu o chip do nervo radial');
+      app.select(null, { fly: false });
+
+      // F2.14: modo de cor por segmento medular + miótomo
+      app.setRegion('todos', { fly: false });
+      app.setDissect(2);
+      sc.coloring.setMode('segmento');
+      t(sc.coloring.overrides.get('triceps_longa') && sc.coloring.overrides.get('masseter'), 'o modo segmento não coloriu músculos espinais e cranianos');
+      sc.coloring.setSegment('C7');
+      const on = sc.coloring.overrides.get('triceps_longa');
+      const off = sc.coloring.overrides.get('masseter');
+      t(on && off && !on.equals(off), 'o miótomo C7 não destaca o tríceps de forma diferente do masseter');
+      sc.syncColorUi();
+      await sleep(350);
+      t(!document.getElementById('segPanel').hidden, 'o painel de segmentos não apareceu no modo segmento');
+      const chips = document.querySelectorAll('#segReadout [data-go]').length;
+      t(chips >= 15, 'a lista do miótomo C7 tem poucas estruturas: ' + chips);
+      t(document.querySelectorAll('#segChips .seg-chip').length === 32, 'esperava 31 segmentos + "cor por segmento"');
+      const hash = sc.currentHash();
+      t(/col=segmento/.test(hash) && /seg=C7/.test(hash), 'o hash não guarda o segmento: ' + hash);
+      sc.coloring.setSegment(null);
+      t(sc.coloring.overrides.get('triceps_longa') && !sc.coloring.overrides.get('triceps_longa').equals(on), 'sem segmento escolhido, deveria colorir por segmento principal');
+
+      // F2.15: dermátomos sobre a pele
+      const skin = app.M.get('pele');
+      const prev = app.state.skin;
+      sc.setDermatomes(true);
+      t(sc.derm.on, 'os dermátomos não ligaram');
+      const geo = skin.meshes[0].geometry;
+      t(geo.attributes.color && skin.mats[0].vertexColors === true, 'a pele não usa cor de vértice com os dermátomos ligados');
+      let distintas = new Set();
+      for (let i = 0; i < geo.attributes.color.count; i += 997) distintas.add(geo.attributes.color.getX(i).toFixed(3) + geo.attributes.color.getY(i).toFixed(3));
+      t(distintas.size >= 8, 'a pele tem poucas cores de dermátomo: ' + distintas.size);
+      t(app.state.skin >= 0.9, 'a pele deveria ficar quase opaca com os dermátomos');
+      t(/derm=1/.test(sc.currentHash()), 'o hash não guarda os dermátomos');
+      sc.coloring.setSegment('T4');
+      sc.derm.update('T4');
+      t(sc.derm.legend().some((e) => e.key === 'T4'), 'a legenda de dermátomos não tem T4');
+      sc.setDermatomes(false);
+      t(!sc.derm.on && skin.mats[0].vertexColors === false, 'os dermátomos não desligaram');
+      t(Math.abs(app.state.skin - prev) < 0.011, 'a opacidade da pele não voltou ao desligar os dermátomos');
+      sc.coloring.setSegment(null);
+      sc.coloring.setMode('camada');
+      sc.syncColorUi();
+      return f;
+    }, 'F2: estruturas novas, segmentos medulares (miótomo, hash) e dermátomos na pele');
+
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
+      const sc = app.studyController;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
       // uma vista com bastante coisa
       app.setRegion('tronco', { fly: false });
@@ -792,7 +860,30 @@ async function runSmokeTest() {
         A.select(null, { fly: false });
         sc.coloring.setMode('grupo'); sc.syncColorUi(); sc.clipping.setAxis('sagittal'); sc.syncClipUi(); sc.updateLegend(); await sleep(200);
         check('com legenda e corte');
-        sc.coloring.setMode('camada'); sc.syncColorUi(); sc.resetClip(); sc.updateLegend();
+        sc.resetClip();
+        // F2: legenda por segmento, dermátomos sobre a pele e o painel de segmentos no modal de estudo
+        sc.coloring.setMode('segmento'); sc.syncColorUi(); sc.updateLegend(); await sleep(150);
+        check('legenda por segmento');
+        await sc.setDermatomes(true); await sleep(300);
+        check('dermátomos ligados');
+        const modal = document.getElementById('studyModal');
+        document.getElementById('btnStudy').click(); await sleep(250);
+        modal.querySelector('.tab-btn[data-tab="coloring"]').click(); await sleep(150);
+        const card = modal.querySelector('.modal-card'), cr = card.getBoundingClientRect(), W = innerWidth, H = innerHeight;
+        if (modal.hidden || !cr.width) f.push('modal de estudo não abriu');
+        if (cr.left < -1 || cr.right > W + 1) f.push(`modal Cores: o cartão sai da tela na horizontal (${Math.round(cr.left)} → ${Math.round(cr.right)} em ${W})`);
+        if (cr.top < -1 || cr.bottom > H + 1) f.push(`modal Cores: o cartão sai da tela na vertical (${Math.round(cr.top)} → ${Math.round(cr.bottom)} em ${H})`);
+        for (const el of card.querySelectorAll('#colorModes > *, .derm-box, #segPanel, #segChips button, #segReadout')) {
+          const cs = getComputedStyle(el);
+          if (el.hidden || cs.display === 'none' || cs.visibility === 'hidden') continue;
+          const r = el.getBoundingClientRect();
+          if (r.width && (r.right > cr.right + 2 || r.left < cr.left - 2)) f.push(`modal Cores: ${el.id ? '#' + el.id : el.tagName.toLowerCase() + '.' + el.className} passa do cartão (${Math.round(r.left)} → ${Math.round(r.right)}; cartão ${Math.round(cr.left)} → ${Math.round(cr.right)})`);
+          if (el.matches('#segChips button') && (r.height < 24 || r.width < 24)) f.push(`modal Cores: chip de segmento pequeno demais para o toque (${Math.round(r.width)}×${Math.round(r.height)})`);
+        }
+        if (card.scrollWidth > card.clientWidth + 2) f.push('modal Cores: o cartão rola na horizontal');
+        document.getElementById('studyClose').click(); await sleep(200);
+        await sc.setDermatomes(false);
+        sc.coloring.setMode('camada'); sc.syncColorUi(); sc.updateLegend();
         return f;
       }, `layout sem sobreposição: ${name} (${vp.width}×${vp.height})`);
     }
