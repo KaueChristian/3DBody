@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { buildCapsule, buildWeb, collateralPoints } from './joint-geo.js';
 
 /**
  * Geração procedural de estruturas (músculos, fáscias, ligamentos) coladas na anatomia real.
@@ -191,11 +193,12 @@ function buildSurfacePart(spec, side, S) {
   return { geometry: g, anchors };
 }
 
-function buildTube(spec, side, lm, S) {
+function buildTube(spec, side, lm, S, ctx) {
   const pts = spec.pts.map((p) => {
     let v;
     if (typeof p === 'string') v = lm(p).clone();
     else if (Array.isArray(p)) v = new THREE.Vector3(...p);
+    else if (!p.proj) v = ctx.point(p).clone(); // ancorado no osso: { on, p, d }, { cast }, { sec }… (ver nerve-geo.js)
     else {
       // ponto projetado sobre a pele (lado esquerdo), afundado `inset`
       const axis = p.proj[0];
@@ -292,10 +295,35 @@ function buildTorus(spec, side) {
   return { geometry: g, anchors };
 }
 
-/** @param {object} spec @param {number} side +1 esquerdo / -1 direito @param {import('./surfaces.js').Surfaces} S @param {(name:string)=>THREE.Vector3} lm */
-export function buildProc(spec, side, S, lm) {
+/**
+ * @param {object} spec @param {number} side +1 esquerdo / -1 direito @param {import('./surfaces.js').Surfaces} S
+ * @param {(name:string)=>THREE.Vector3} lm
+ * @param {{ point: (spec: object) => THREE.Vector3, geo: (part: string) => THREE.BufferGeometry }} [ctx] pontos ancorados
+ *   nas malhas e geometria das peças (só no corpo; usados por ligamentos e articulações)
+ */
+export function buildProc(spec, side, S, lm, ctx) {
+  if (spec.kind === 'group') return buildGroup(spec.of, side, S, lm, ctx);
+  if (spec.kind === 'collateral') {
+    // dois colaterais (um de cada lado da articulação), cada um uma faixa curta entre as duas peças
+    const tubes = collateralPoints(spec, ctx.geo).map(([a, b]) => ({ kind: 'tube', pts: [a.toArray(), b.toArray()], ref: spec.lat, width: spec.width ?? 0.03, thick: spec.thick ?? 0.012, taper: 'blunt', nf: 6, nc: 6 }));
+    return buildGroup(tubes, side, S, lm, ctx);
+  }
   if (spec.kind === 'torus') return buildTorus(spec, side);
-  return spec.kind === 'tube' ? buildTube(spec, side, lm, S) : buildSurfacePart(spec, side, S);
+  if (spec.kind === 'capsule') return buildCapsule(spec, side, ctx.geo);
+  if (spec.kind === 'web') return buildWeb(spec, side, ctx.geo);
+  return spec.kind === 'tube' ? buildTube(spec, side, lm, S, ctx) : buildSurfacePart(spec, side, S);
+}
+
+/** Várias peças numa malha só (menos chamadas de desenho): só ficam os atributos que todas têm. */
+function buildGroup(specs, side, S, lm, ctx) {
+  const built = specs.map((sp) => buildProc(sp, side, S, lm, ctx));
+  const geos = built.map((b) => b.geometry);
+  const keep = Object.keys(geos[0].attributes).filter((k) => geos.every((g) => g.attributes[k]));
+  for (const g of geos) for (const k of Object.keys(g.attributes)) if (!keep.includes(k)) g.deleteAttribute(k);
+  const geometry = mergeGeometries(geos);
+  geometry.computeBoundingBox();
+  geometry.computeBoundingSphere();
+  return { geometry, anchors: built.flatMap((b) => b.anchors) };
 }
 
 /** Textura de fibras (listras finas). */

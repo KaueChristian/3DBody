@@ -58,7 +58,7 @@ export class TextQuizGenerator {
     this.muscles = items.filter((i) => i.kind === 'musculo');
     this.nerves = items.filter((i) => i.kind === 'nervo');
     // nervos que inervam músculos (as alternativas de "qual nervo?" saem daqui)
-    this.motorNerves = this.nerves.filter((n) => (n.ramos ?? []).length > 0);
+    this.motorNerves = this.nerves.filter((n) => (n.ramos ?? []).some((r) => this.byId.get(r.m)?.kind === 'musculo'));
     // nervo → conjunto de músculos que ele inerva (ids)
     this.nerveMuscles = new Map();
     for (const [mid, links] of innervation) {

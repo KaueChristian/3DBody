@@ -147,7 +147,8 @@ export class ColoringManager {
   /** Índice estável de cada nervo que inerva ao menos um músculo (ordem do mapa `INNERVATION`, que é fixa). */
   nerveIndex() {
     const idx = new Map();
-    for (const links of this.app.INNERVATION.values()) {
+    for (const [id, links] of this.app.INNERVATION) {
+      if (this.app.catalog.get(id)?.kind !== 'musculo') continue; // ramos articulares (F3) não mudam as cores
       const n = links[0]?.nervo;
       if (n && !idx.has(n)) idx.set(n, idx.size);
     }

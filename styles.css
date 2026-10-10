@@ -469,6 +469,12 @@ button.lchip:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent)
 .lchip small { display: block; color: var(--muted); font-size: 11px; }
 .lchip.sens { border-style: dashed; }
 .links-note { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+.lchip.aux { opacity: 0.82; border-style: dotted; }
+.movs .mov { padding: 8px 0; border-top: 1px dashed var(--line); }
+.movs .mov:first-of-type { border-top: 0; padding-top: 0; }
+.mov-head { margin: 0 0 6px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.mov-head .amp { color: var(--accent); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.mov-obs { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
 
 /* ───── Ferramentas de Estudo (Fase F1) ───── */
 .study-card { width: min(640px, 100%); }

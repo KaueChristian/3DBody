@@ -14,6 +14,8 @@ import { StudyController } from './study/ui.js';
 import { sideSphere } from './framing.js';
 import { userData } from './study/storage.js';
 import { showDesktopDownload } from './get-app.js';
+import { functionLinksHtml, jointRelatedIds, shownFields } from './joint-links.js';
+import { jointContext } from './joint-geo.js';
 
 let studyController = null;
 
@@ -21,6 +23,7 @@ const $ = (s) => document.querySelector(s);
 const stage = $('#stage');
 const canvas = $('#gl');
 const LAYER = Object.fromEntries(LAYERS.map((l) => [l.id, l]));
+const CATALOG = new Map(ALL_ITEMS.map((i) => [i.id, i]));
 /** Itens já construídos (a cabeça primeiro; o corpo é carregado em segundo plano). */
 const ITEMS = [];
 const HEAD_CENTER = new THREE.Vector3(0, -0.35, 0);
@@ -107,6 +110,7 @@ function makeMaterial(key, color) {
     case 'gland': return std({ color: '#dca35e', roughness: 0.6 });
     case 'tongue': return std({ color: '#c9606c', roughness: 0.55 });
     case 'cartilage': return std({ color: '#9fc3c9', roughness: 0.5 });
+    case 'capsule': return std({ color, roughness: 0.3, transparent: true, opacity: 0.38, depthWrite: false });
     case 'nerve': return std({ color: '#f0cf55', roughness: 0.42, emissive: '#000000' });
     default: // músculo
       return std({ color, roughness: 0.5, map: fiberTex, bumpMap: fiberTex, bumpScale: 1.2 });
@@ -114,7 +118,7 @@ function makeMaterial(key, color) {
 }
 
 /** Resolve disputas de profundidade entre superfícies quase coincidentes: camadas superficiais ganham. */
-const DEPTH_OFFSET = { nervo: -2.5, fascia: -3, mimica: -2, sup: -2, pescoco: -1.5, med: -1.5, mastigacao: -1, ligamento: -1, prof: -0.5, osso: 0.5 };
+const DEPTH_OFFSET = { nervo: -2.5, fascia: -3, mimica: -2, sup: -2, pescoco: -1.5, med: -1.5, mastigacao: -1, ligamento: -1, articulacao: -0.5, prof: -0.5, osso: 0.5 };
 
 function jitter(hex, id) {
   const c = new THREE.Color(hex);
@@ -215,12 +219,14 @@ function outerAnchors(g) {
 
 function procMatKey(item) {
   if (item.kind === 'ligamento') return 'ligament';
+  if (item.kind === 'articulacao') return 'capsule';
   if (item.kind === 'fascia') return 'fascia';
   if (item.kind === 'glandula') return 'gland';
   return 'muscle';
 }
 
-function buildItems(parts, S, items) {
+/** @param {object} [ctx] pontos ancorados nas malhas e peças do corpo (ligamentos e articulações; ver proc.js) */
+function buildItems(parts, S, items, ctx) {
   for (const item of items) {
     const layer = LAYER[item.layer];
     const color = jitter(item.color ?? layer.color, item.id);
@@ -258,12 +264,18 @@ function buildItems(parts, S, items) {
       const sides = item.paired === false ? [1] : [1, -1];
       for (const side of sides) {
         item.proc.forEach((spec, si) => {
-          const { geometry, anchors: an } = buildProc(spec, side, S, lm);
-          addMesh(geometry, matFor(procMatKey(item)), si === 0 ? an : null);
+          // uma geometria que falha (ex.: peça sem contato) não pode impedir a montagem do resto do corpo
+          try {
+            const { geometry, anchors: an } = buildProc(spec, side, S, lm, ctx);
+            addMesh(geometry, matFor(procMatKey(item)), si === 0 ? an : null);
+          } catch (err) {
+            console.error(`[estruturas] ${item.id}:`, err);
+          }
         });
       }
     }
-    if (!anchors.length && meshes.length) anchors.push(...outerAnchors(meshes[0].geometry));
+    if (!meshes.length) continue;
+    if (!anchors.length) anchors.push(...outerAnchors(meshes[0].geometry));
     const box = new THREE.Box3();
     meshes.forEach((m) => {
       if (!m.geometry.boundingBox) m.geometry.computeBoundingBox();
@@ -366,12 +378,12 @@ async function buildNerves(nerveParts, skins) {
   }
 }
 
-/** Estruturas ligadas à selecionada: músculo → seus nervos; nervo → músculos que inerva. */
+/** Estruturas ligadas à selecionada: músculo → seus nervos; nervo → músculos que inerva; articulação → ossos e ligamentos. */
 function relatedIds(id) {
   const m = M.get(id);
   if (!m) return [];
   if (m.item.kind === 'nervo') return (m.item.ramos ?? []).map((r) => r.m);
-  return (INNERVATION.get(id) ?? []).map((r) => r.nervo);
+  return jointRelatedIds(m.item, CATALOG) ?? (INNERVATION.get(id) ?? []).map((r) => r.nervo);
 }
 
 /* ───────────────────────── Visibilidade e destaque ───────────────────────── */
@@ -538,6 +550,17 @@ function select(id, { fly = true, panel = true } = {}) {
 const infoEl = $('#info');
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
+/** Chip clicável de uma estrutura ligada (nervo, músculo, osso, articulação…). */
+function linkChip(l) {
+  const target = M.get(l.id);
+  const name = target ? target.item.name : CATALOG.get(l.id)?.name ?? l.id;
+  const color = target ? target.color.getStyle() : LAYER[CATALOG.get(l.id)?.layer]?.color ?? LAYER.nervo.color;
+  const extra = [l.obs, l.sens ? 'sensitivo' : ''].filter(Boolean).join(' · ');
+  const tag = state.quiz || !target ? 'span' : 'button';
+  const cls = [l.sens ? 'sens' : '', l.cls ?? ''].filter(Boolean).map((c) => ` ${c}`).join('');
+  return `<${tag} class="lchip${cls}" data-go="${esc(l.id)}" style="--c:${color}"><i></i><span>${esc(name)}${extra ? `<small>${esc(extra)}</small>` : ''}</span></${tag}>`;
+}
+
 /** Chips das estruturas ligadas (nervo → músculos; músculo → nervos). */
 function linksHtml(item) {
   const isNerve = item.kind === 'nervo';
@@ -545,17 +568,9 @@ function linksHtml(item) {
     ? (item.ramos ?? []).map((r) => ({ id: r.m, obs: r.obs, sens: r.sens }))
     : (INNERVATION.get(item.id) ?? []).map((r) => ({ id: r.nervo, obs: r.obs, sens: r.sens }));
   if (!list.length) return '';
-  const chip = (l) => {
-    const target = M.get(l.id);
-    const name = target ? target.item.name : ALL_ITEMS.find((i) => i.id === l.id)?.name ?? l.id;
-    const color = target ? target.color.getStyle() : LAYER.nervo.color;
-    const extra = [l.obs, l.sens ? 'sensitivo' : ''].filter(Boolean).join(' · ');
-    const tag = state.quiz || !target ? 'span' : 'button';
-    return `<${tag} class="lchip${l.sens ? ' sens' : ''}" data-go="${esc(l.id)}" style="--c:${color}"><i></i><span>${esc(name)}${extra ? `<small>${esc(extra)}</small>` : ''}</span></${tag}>`;
-  };
   const title = isNerve ? 'Músculos e estruturas inervados' : 'Nervos (inervação)';
   const pending = !isNerve && !state.nervesReady ? '<p class="links-note">Os nervos aparecem em instantes, quando terminarem de ser montados.</p>' : '';
-  return `<div class="links"><h3>${title}</h3><div class="lchips">${list.map(chip).join('')}</div>${pending}</div>`;
+  return `<div class="links"><h3>${title}</h3><div class="lchips">${list.map(linkChip).join('')}</div>${pending}</div>`;
 }
 
 function geomBadge(item) {
@@ -575,6 +590,8 @@ function sourcesHtml(item) {
   return `<div class="sources"><b>Fontes</b><ul>${item.fontes.map((f) => `<li>${esc(f)}</li>`).join('')}</ul></div>`;
 }
 
+const ISO_LABEL = { nervo: 'Isolar com os músculos', articulacao: 'Isolar com ossos e ligamentos', ligamento: 'Isolar com os ossos' };
+
 function showInfo(id) {
   const { item } = M.get(id);
   const layer = LAYER[item.layer];
@@ -586,14 +603,15 @@ function showInfo(id) {
     </div>
     <h2>${esc(item.name)}</h2>
     <p class="latin">${esc(item.latin)}</p>
-    ${item.campos.map(([k, v], i) => `<div class="field${i === 0 ? ' act' : ''}"><h3>${esc(k)}</h3><p>${esc(v)}</p></div>`).join('')}
+    ${shownFields(item).map(([k, v], i) => `<div class="field${i === 0 ? ' act' : ''}"><h3>${esc(k)}</h3><p>${esc(v)}</p></div>`).join('')}
+    ${functionLinksHtml(item, linkChip, esc)}
     ${linksHtml(item)}
     ${item.nota ? `<div class="note"><b>Para lembrar</b>${esc(item.nota)}</div>` : ''}
     ${sourcesHtml(item)}
     ${item.expressao ? `<div class="expr"><span>Expressão / função:</span><strong>${esc(item.expressao)}</strong></div>` : ''}
     ${state.quiz ? '' : `<div class="info-actions">
       <button class="btn" id="btnIso">Isolar</button>
-      ${rel.length ? `<button class="btn" id="btnIsoRel">${item.kind === 'nervo' ? 'Isolar com os músculos' : rel.length > 1 ? 'Isolar com os nervos' : 'Isolar com o nervo'}</button>` : ''}
+      ${rel.length ? `<button class="btn" id="btnIsoRel">${ISO_LABEL[item.kind] ?? (rel.length > 1 ? 'Isolar com os nervos' : 'Isolar com o nervo')}</button>` : ''}
       <button class="btn" id="btnHideThis">Ocultar</button>
     </div>`}`;
   if (!state.quiz) {
@@ -867,6 +885,8 @@ function pick(ev) {
     if (!m.group.visible) continue;
     if (isSkin(m) && state.skin < (loc ? 0.9 : 0.5)) continue;
     if (loc && m.item.kind === 'fascia') continue;
+    // as cápsulas translúcidas envolvem os ossos: só respondem ao clique quando a pergunta é uma articulação
+    if (loc && m.item.kind === 'articulacao' && M.get(state.quiz.cur?.id)?.item.kind !== 'articulacao') continue;
     targets.push(...(m.pick ?? m.meshes)); // nervos finos têm uma malha de clique mais grossa e invisível
   }
   const clip = studyController?.clipping;
@@ -1405,7 +1425,7 @@ $('#locRestore').onclick = () => {
 /* ── Configuração ── */
 const SETUP_KEY = 'anatomia3d.quiz';
 const REGION_SHORT = { todos: 'Corpo', cabeca: 'Cabeça', tronco: 'Tronco', membro_sup: 'Braço' };
-const KIND_GROUPS = [['musculo', 'Músculos'], ['nervo', 'Nervos'], ['osso', 'Ossos'], ['outras', 'Ligamentos e outras']];
+const KIND_GROUPS = [['musculo', 'Músculos'], ['nervo', 'Nervos'], ['osso', 'Ossos'], ['outras', 'Articulações, ligamentos e outras']];
 const COUNT_OPTS = [10, 20, 30, 0]; // 0 = todas
 const setup = { mode: 'locate', region: 'cabeca', kinds: KIND_GROUPS.map((k) => k[0]), count: 10, latin: false, smart: 'all' };
 try {
@@ -1620,7 +1640,7 @@ function loadBody() {
       bodyParts = parts;
       const tBuild = performance.now();
       const S2 = new Surfaces(parts, { skin: 'pele_corpo', bones: TORSO_PARTS });
-      buildItems(parts, S2, BODY_ITEMS);
+      buildItems(parts, S2, BODY_ITEMS, jointContext(parts, lm));
       perf.bodyStructuresMs = Math.round(performance.now() - tBuild);
       swapSkin(parts);
       state.bodyReady = true;
