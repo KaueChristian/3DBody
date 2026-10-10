@@ -61,20 +61,20 @@ Use a branch **`dev`** para trabalhar sem publicar; quando estiver bom, junte na
 
 Para gerar o executável localmente: `npm run exe` (usa o compilador C# do próprio Windows; resultado em `release/`).
 
-## O que tem (277 estruturas: 160 músculos e 55 nervos)
+## O que tem (367 estruturas: 204 músculos e 100 nervos, mais a medula espinal)
 
 | Camada | Conteúdo |
 | --- | --- |
 | Pele | pele do corpo (translúcida ou opaca) e sobrancelhas |
 | Fáscias e aponeuroses | gálea aponeurótica, fáscia temporal, fáscia parotideomassetérica |
 | Músculos da mímica | frontal, occipital, auriculares, orbicular do olho/boca, corrugador, prócero, nasal, levantadores, zigomáticos, risório, abaixadores, mentual… |
-| Músculos da mastigação e planos profundos da cabeça | masseter, temporal, pterigóideos, bucinador, supra-hióideos |
-| Órbita e olho | globo ocular, 6 músculos extraoculares, levantador da pálpebra, placas tarsais |
+| Músculos da mastigação e planos profundos da cabeça | masseter, temporal, pterigóideos, bucinador, supra-hióideos; **língua** (genioglosso, hioglosso, estiloglosso, palatoglosso e 4 intrínsecos), **palato mole** (levantador e tensor do véu, úvula, palatofaríngeo), **faringe** (3 constritores, estilofaríngeo, salpingofaríngeo), **laringe** (cricotireóideo, cricoaritenóideos, aritenóideos, tireoaritenóideo, vocal) e **ouvido médio** (tensor do tímpano, estapédio) |
+| Órbita e olho | globo ocular, 6 músculos extraoculares, levantador da pálpebra, placas tarsais e os músculos lisos intrínsecos (ciliar, esfíncter e dilatador da pupila, tarsais superior e inferior) |
 | Músculos superficiais (tronco e membros) | peitoral maior (3 partes), trapézio (3 partes), latíssimo do dorso, oblíquo externo, reto do abdome, deltoide (3 partes), bíceps, tríceps, extensores e flexores superficiais do antebraço, tenar/hipotenar superficial, palmar curto |
 | Músculos intermediários | peitoral menor, subclávio, serrátil anterior, rombóides, levantador da escápula, escalenos (incluindo o mínimo), serráteis posteriores, esplênios, oblíquo interno, manguito rotador, braquial, flexor superficial, lumbricais… |
 | Músculos profundos (tronco e membros) | intercostais, subcostais, levantadores das costelas, transverso do tórax, diafragma, transverso do abdome, quadrado do lombo, psoas, ilíaco, eretores da espinha, semiespinais, multífido, rotadores, interespinais, intertransversários, suboccipitais, pré-vertebrais (longos da cabeça e do pescoço), assoalho pélvico, flexor profundo, pronador quadrado, interósseos |
 | Ligamentos | 10 da cabeça (temporomandibular, estilomandibular, palpebrais…), linha alba, retináculo dos flexores |
-| Nervos | 55 nervos ligados a **todos** os 160 músculos (veja abaixo) |
+| Nervos | 100 nervos e gânglios, mais a **medula espinal**, ligados a **todos** os 204 músculos (veja abaixo) |
 | Glândulas e língua | parótida e ducto, submandibular, sublingual, língua |
 | Cartilagens e discos | nasais, orelha, costais, discos intervertebrais |
 | Ossos e dentes | crânio completo, mandíbula, hioide, coluna (atlas a sacro), costelas, esterno, quadril, clavícula, escápula, úmero, rádio, ulna, carpo, metacarpais, falanges, dentes |
@@ -98,16 +98,22 @@ Cada músculo do atlas está ligado ao(s) nervo(s) que o inervam, e cada nervo c
 
 | Região | Nervos |
 | --- | --- |
-| Nervos cranianos | óptico (II), oculomotor (III), troclear (IV), trigêmeo (V) e gânglio trigeminal, oftálmico (V1), maxilar/infraorbital (V2), mandibular (V3: nervos pterigóideos, bucal, auriculotemporal), massetérico, temporais profundos, alveolar inferior/mentual, milo-hióideo, lingual, abducente (VI), facial (VII: tronco, auricular posterior, ramos temporais, zigomáticos, bucais, marginal da mandíbula e cervical), acessório (XI), hipoglosso (XII) |
-| Pescoço e dorso | plexo cervical (ramos musculares), alça cervical, frênico, suboccipital (C1), occipital maior (C2), ramos posteriores dos nervos espinais (C3–L5) |
-| Membro superior | plexo braquial (raízes, troncos, divisões, fascículos), dorsal da escápula, torácico longo, supraescapular, subclávio, peitorais lateral e medial, subescapulares superior e inferior, toracodorsal, axilar, musculocutâneo, radial, interósseo posterior, mediano, interósseo anterior, ulnar e ramo profundo do ulnar |
-| Tronco e pelve | intercostais (T1–T6), toracoabdominais (T7–T11), subcostal (T12), ílio-hipogástrico, ilioinguinal, plexo lombar (ramos musculares), femoral (parte pélvica), nervos do levantador do ânus/coccígeo, pudendo |
+| Nervos cranianos | **os 12 pares**: olfatório (I), óptico (II), oculomotor (III), troclear (IV), trigêmeo (V) e gânglio trigeminal, oftálmico (V1) com os nervos frontal (supraorbital e supratroclear), lacrimal e nasociliar, maxilar/infraorbital (V2) com o zigomático, os palatinos e o nasopalatino, mandibular (V3: nervos pterigóideos, bucal, auriculotemporal), massetérico, temporais profundos, alveolar inferior/mentual, milo-hióideo, lingual, abducente (VI), facial (VII: tronco, auricular posterior, ramos temporais, zigomáticos, bucais, marginal da mandíbula, cervical, **corda do tímpano, petroso maior e nervo do estapédio**), vestibulococlear (VIII), glossofaríngeo (IX), **vago (X)** com o plexo faríngeo e os laríngeos superior e recorrente, acessório (XI), hipoglosso (XII), nervos dos tensores (V3) |
+| Autônomos da cabeça e do pescoço | gânglios pterigopalatino, ótico e submandibular (o ciliar vem da malha real do oculomotor) e o **tronco simpático cervical** com os gânglios superior, médio e estrelado |
+| Pescoço e dorso | plexo cervical (ramos musculares), alça cervical, frênico, suboccipital (C1), occipital maior (C2), ramos posteriores dos nervos espinais (C3–L5), e os cutâneos do plexo cervical: occipital menor, auricular magno, cervical transverso e supraclaviculares |
+| Medula e nervos espinais | **medula espinal** (intumescências, cone e filo terminal), nervos espinais cervicais, torácicos, lombares e sacrais/coccígeo (raízes, gânglio espinal e início do nervo; os 31 pares) e **cauda equina** |
+| Membro superior | plexo braquial (raízes, troncos, divisões, fascículos), dorsal da escápula, torácico longo, supraescapular, subclávio, peitorais lateral e medial, subescapulares superior e inferior, toracodorsal, axilar, musculocutâneo, radial, interósseo posterior, mediano, interósseo anterior, ulnar e ramo profundo do ulnar; **nervos sensitivos**: intercostobraquial, cutâneos medial do braço e do antebraço, posterior e lateral inferior do braço, posterior do antebraço, lateral superior do braço, lateral do antebraço, ramo superficial do radial, ramos cutâneos palmar (mediano e ulnar) e dorsal do ulnar, nervos digitais palmares e dorsais |
+| Tronco e pelve | intercostais (T1–T6), toracoabdominais (T7–T11), subcostal (T12), ílio-hipogástrico, ilioinguinal, plexo lombar (ramos musculares), femoral (parte pélvica), nervos do levantador do ânus/coccígeo, pudendo e nervo para o obturador interno |
 
 Os textos seguem Moore, Dalley & Agur (*Anatomia orientada para a clínica*), *Gray's Anatomy*, Netter e a Terminologia
 Anatômica; onde as fontes divergem (ex.: segmentos medulares de alguns músculos), a ficha diz isso.
 
-**Geometria:** o BodyParts3D só tem nervos da órbita (óptico, oculomotor, troclear, oftálmico e ramos, gânglio ciliar) —
-esses usam as malhas reais. Os demais são **modelados por código** (`src/catalog-nerves.js` + `src/nerve-geo.js`):
+**Segmentos medulares (F2.14).** Cada músculo inervado por nervos espinais e cada nervo espinal traz na ficha os **segmentos
+medulares** (por exemplo, C5–C6), um campo estruturado (`segmentos`, em `src/segments.js`) que alimenta o mapa de
+**miótomos** (`docs/miotomos.md`, gerado por `node tools/gen_miotomos.js`) e o modo de cor *Por segmento medular*.
+
+**Geometria:** o BodyParts3D só tem nervos da órbita (óptico, oculomotor, troclear, oftálmico, frontal, lacrimal,
+nasociliar e seus ramos, gânglio e nervos ciliares) — esses usam as malhas reais. Os demais são **modelados por código** (`src/catalog-nerves.js` + `src/nerve-geo.js`):
 cada trajeto passa por pontos medidos no próprio modelo — forames da base do crânio, forames intervertebrais, sulcos das
 costelas, sulco do nervo radial, túnel do carpo, espaços entre músculos (“entre o flexor superficial e o profundo”) — e
 os ramos finais vão até a superfície de cada músculo inervado. São aproximações didáticas: a posição geral e as relações
@@ -161,9 +167,13 @@ O botão **📚 Estudo** abre um painel com abas. Tudo funciona offline e os dad
 - **Corte** — plano **sagital**, **coronal** ou **axial** com controle deslizante (o curso vem do tamanho do modelo) e
   botão para inverter o lado. Esconde um dos lados do plano; as malhas são cascas, então o corte mostra o interior delas,
   sem desenhar a superfície da fatia. Um aviso na tela lembra que há corte ativo.
-- **Cores** — por camada (padrão), por **nervo que inerva** (nervo principal do músculo), por **região** ou por **grupo /
-  compartimento** (18 grupos definidos músculo a músculo em `src/study/groups.js`). A cor sobrevive a seleção e hover e há
-  legenda na tela.
+- **Cores** — por camada (padrão), por **nervo que inerva** (nervo principal do músculo), por **região**, por **grupo /
+  compartimento** (23 grupos definidos músculo a músculo em `src/study/groups.js`) ou por **segmento medular**: no último,
+  escolha C1 a Co1 e o **miótomo** (músculos e nervos do segmento) fica em destaque, com a lista na janela. A cor sobrevive a
+  seleção e hover e há legenda na tela.
+- **Dermátomos** — na mesma aba, uma opção pinta a pele em faixas (V1–V3 na face, C2–C4 no pescoço, T2–L1 e L1–S3 no tronco,
+  C5–T2 no membro superior), **esquemáticas** (`docs/dermatomos.md` explica a decisão e os limites). Com um segmento escolhido,
+  destaca o dermátomo dele; os dois (dermátomo e miótomo) aparecem ao mesmo tempo no modo *Por segmento medular*.
 - **Vistas e backup** — uma *vista* guarda região, dissecação, camadas, estruturas ocultas, opacidade da pele, rótulos,
   câmera, corte, coloração e seleção; o mesmo estado vai no `#hash` da URL. O backup JSON leva favoritos, anotações,
   progresso, listas, vistas e histórico (a importação valida o arquivo e descarta o que não reconhece).
@@ -182,9 +192,10 @@ superiores são malhas do **BodyParts3D** (versão 4.0), simplificadas e suaviza
 O BodyParts3D **não possui** alguns músculos e a maioria dos ligamentos e fáscias. Esses foram **modelados por código**
 e “colados” sobre a pele e o esqueleto reais (`src/proc.js`), com posições marcadas à mão:
 
-- cabeça: músculos da expressão facial, masseter, temporal, pterigóideos, bucinador, ligamentos, fáscias e parótida;
-- tronco: latíssimo do dorso, reto do abdome, piramidal, oblíquo interno, transverso do abdome, quadrado do lombo e multífido;
-- mão: lumbricais.
+- cabeça: músculos da expressão facial, masseter, temporal, pterigóideos, bucinador, ligamentos, fáscias e parótida; estiloglosso, palatoglosso, os quatro intrínsecos da língua, tensor do tímpano e estapédio (intraósseos, sem os ossículos), transverso do mento, incisivos labiais, temporoparietal e os músculos lisos do olho (ciliar, esfíncter e dilatador da pupila, tarsais);
+- tronco: latíssimo do dorso, reto do abdome, piramidal, oblíquo interno, transverso do abdome, quadrado do lombo e multífido; músculos do períneo urogenital (bulboesponjoso, isquiocavernoso, transversos superficial e profundo, esfíncter externo da uretra);
+- mão: lumbricais, palmar curto;
+- sistema nervoso: todos os nervos, exceto os da órbita (malhas reais), e a medula espinal (esquemática: não há meninges nem substância cinzenta).
 
 São aproximações didáticas. Por causa da licença **Share-Alike**, os arquivos `dist/anatomy-data.js`,
 `dist/anatomy-body.js` e `dist/anatomy-nerves.js` (malhas derivadas) devem manter a atribuição acima e a mesma licença CC BY-SA ao serem redistribuídos.
@@ -224,17 +235,19 @@ python convert_body.py --append id1 id2 # lê ../dist/anatomy-body.js e acrescen
 | --- | --- |
 | `src/catalog*.js` | **Textos e geometria de cada estrutura** (edite aqui para corrigir ou acrescentar) |
 | `src/catalog-nerves.js` | Nervos: textos, trajetos e a lista de músculos de cada um (fonte da ligação músculo ↔ nervo) |
+| `src/catalog-muscles-oral.js`, `catalog-nerves-cranial.js`, `catalog-nerves-sensory.js`, `catalog-spinal.js` | Língua, palato, faringe e laringe com malha real; nervos cranianos e autônomos que faltavam; nervos sensitivos; medula, nervos espinais e cauda equina |
+| `src/segments.js` | **Segmentos medulares** de músculos e nervos (fonte do mapa de miótomos e dos dermátomos por segmento) |
 | `src/nerve-geo.js` | Geometria dos nervos: resolve os pontos dos trajetos e gera os ramos até os músculos |
 | `src/landmarks.js` | Pontos de referência ósseos usados por músculos profundos e ligamentos |
 | `src/proc.js` | Geração das malhas procedurais (fita, lâmina, anel, tubo) |
 | `src/surfaces.js` | Projeção de pontos sobre a pele e o esqueleto (BVH) |
 | `src/anatomy.js` | Carrega e descompacta as malhas reais |
 | `src/main.js` | Cena, interface, rótulos e quizzes de localizar e de escolher o nome |
-| `src/study/` | Ferramentas de estudo: `ui.js` (controlador e modal), `storage.js`, `sm2.js`, `views.js`, `clipping.js`, `coloring.js` + `groups.js`, `tours.js`, `text-quiz.js` + `text-quiz-ui.js`, `lists-ui.js`, `progress-ui.js`, `export.js` |
+| `src/study/` | Ferramentas de estudo: `ui.js` (controlador e modal), `storage.js`, `sm2.js`, `views.js`, `clipping.js`, `coloring.js` + `groups.js`, `dermatomes.js`, `tours.js`, `text-quiz.js` + `text-quiz-ui.js`, `lists-ui.js`, `progress-ui.js`, `export.js` |
 | `tools/` | Pipeline de dados (Python) e do executável (`build_exe.py`, `launcher/Launcher.cs`) |
 | `.github/workflows/release.yml` | Gera e publica a release a cada push na `main` |
 | `tests/` | Testes: integridade do catálogo, dos tours e dos grupos (`test_catalog.js`), lógica das ferramentas de estudo (`test_study.js`) e fumaça no navegador (`smoke_test.js`; `SMOKE_FILE=1` abre por `file://`) |
-| `docs/` | Auditoria de conteúdo (`revisao-conteudo.md`), desempenho (`desempenho.md`), concorrentes (`concorrentes.md`) e publicação como site/celular (`publicacao-web.md`) |
+| `docs/` | Auditoria de conteúdo (`revisao-conteudo.md`), cobertura (`cobertura.md`), miótomos (`miotomos.md`), dermátomos (`dermatomos.md`), desempenho (`desempenho.md`), concorrentes (`concorrentes.md`) e publicação como site/celular (`publicacao-web.md`) |
 | `project_context.md` | Roteiro: mapa do que atlas de anatomia costumam ter e a ordem de desenvolvimento por fases |
 | `agents.md` | Guia para agentes de código e colaboradores: convenções, verificação, regras de conteúdo e de publicação |
 
@@ -243,7 +256,8 @@ python convert_body.py --append id1 id2 # lê ../dist/anatomy-body.js e acrescen
 No catálogo, use `proc: [ { kind, proj, ... } ]`. As formas 2D (`ribbon`, `sheet`, `ring`) são desenhadas no plano de
 projeção (`'z+'` frente, `'x+'` lateral, `'y+'` topo, `'z-'` costas, `'r+'` radial ao redor do tronco: coordenadas
 `[ângulo, altura]`) e projetadas na pele, afundadas `inset` unidades (1 unidade = 10 cm). `tube` liga pontos 3D —
-nomes de `landmarks.js`, coordenadas ou pontos projetados na pele. Desenhe só o lado esquerdo (x > 0); o direito é
+nomes de `landmarks.js`, coordenadas ou pontos projetados na pele; `torus` desenha um anel em torno de um eixo (pupila,
+corpo ciliar, esfíncter da uretra). Desenhe só o lado esquerdo (x > 0); o direito é
 espelhado, a menos que `paired: false`.
 
 ## Aviso

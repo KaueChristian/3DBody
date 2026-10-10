@@ -14,12 +14,12 @@
 | Arquivo | Papel | Tamanho não compactado | Carregamento |
 | --- | --- | --- | --- |
 | `dist/version.js` | Identificador de versão e build | 30 B | Síncrono inicial |
-| `dist/app.js` | Bundle da aplicação (Three.js 0.170 + three-mesh-bvh + catálogo + interface) | ~1.0 MB | Síncrono inicial |
+| `dist/app.js` | Bundle da aplicação (Three.js 0.170 + three-mesh-bvh + catálogo + interface) | ~1.2 MB | Síncrono inicial |
 | `dist/anatomy-data.js` | Malhas 3D compactadas da cabeça e pescoço (BodyParts3D) | ~3.37 MB | Síncrono inicial |
-| `dist/anatomy-nerves.js` | Malhas 3D compactadas dos nervos da órbita | ~0.26 MB | Em segundo plano com os nervos |
-| `dist/anatomy-body.js` | Malhas 3D compactadas do tronco e membros superiores | ~7.01 MB | Assíncrono (segundo plano) |
+| `dist/anatomy-nerves.js` | Malhas 3D compactadas dos nervos da órbita (oftálmico, frontal, lacrimal, nasociliar…) | ~0.37 MB | Em segundo plano com os nervos |
+| `dist/anatomy-body.js` | Malhas 3D compactadas do tronco e membros superiores, mais língua, palato, faringe, laringe e músculos curtos do pescoço e da pelve (F2) | ~8.31 MB | Assíncrono (segundo plano) |
 | **Total inicial (Cabeça visível)** | Dados para primeira renderização | **~4.37 MB** | **Imediato (< 1s)** |
-| **Total completo (Corpo + Nervos)** | Modelo 3D integral com todas as estruturas | **~11.64 MB** | **Gradual (~1.5s)** |
+| **Total completo (Corpo + Nervos)** | Modelo 3D integral com todas as estruturas | **~12.05 MB** (era 11.64 MB antes da F2) | **Gradual (~1.5s)** |
 | `release/app.zip` | Pacote compactado de atualização do lançador | ~8.5 MB | Sob demanda em releases |
 | `release/Anatomia3D.exe` | Executável único do Windows (.NET Framework + app.zip embutido) | **~8.5 MB** | Offline local |
 
@@ -44,6 +44,19 @@ Medições capturadas via API `window.__app.perf`:
 - **Taxa de quadros:** 60 FPS estáveis com amortecimento (damping: 0.09) em GPU dedicada e integrada contemporânea (Intel Iris Xe / AMD Radeon Vega). Meta mínima: ≥ 30 FPS em notebooks modestos e dispositivos móveis.
 - **Memória de vídeo (VRAM / Heap):** ~120–180 MB para o conjunto completo de geometrias e buffers de BVH.
 - **Otimização de nervos:** Laço de construção cede o controle ao event loop a cada 4 itens (`await new Promise(r => setTimeout(r, 0))`), garantindo zero travamentos na interface visual.
+
+
+### 1.4 Efeito da F2 (2026-10-09)
+
+A F2 acrescentou 44 músculos, 45 nervos e a medula espinal (277 → 367 estruturas): +0,85 MB no pacote do corpo (23 peças com malha
+real), +0,1 MB no pacote dos nervos da órbita e +0,1 MB de catálogo no `app.js`. A montagem dos nervos passou de 55 para 100 itens.
+Os dermátomos só são calculados quando ligados (uma passada pelos 55 mil vértices da pele).
+
+Comparação no **mesmo navegador embutido do app**, nesta máquina de desenvolvimento (bem mais lenta que a de referência acima, e
+com muito ruído entre cargas): antes da F2 (HEAD) `ttfiMs` 1 928, `nervesMs` 2 721 e `totalReadyMs` 7 227; depois, `ttfiMs`
+2 661, `nervesMs` 1 453 e `totalReadyMs` 6 354. Não há regressão distinguível do ruído, e a primeira imagem saiu em menos de 3 s mesmo nesta máquina
+(meta do §3.5); o `.exe` continua muito abaixo de 30 MB. A máquina de referência da §1.2 **não foi medida de novo**: refazer
+as medições dela ao publicar a 2.2.
 
 ---
 

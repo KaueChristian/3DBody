@@ -64,16 +64,16 @@ geral desses produtos, sem pesquisa nova; vale reconferir na F0.
 | A1 | Ossos individuais com **acidentes ósseos** (forames, processos, tuberosidades) selecionáveis | ★★★ | 🟡 38 ossos/grupos; acidentes só como pontos internos |
 | A2 | Articulações (tipo, movimentos, cápsula) | ★★★ | ⬜ |
 | A3 | Ligamentos | ★★★ | 🟡 12 (10 na cabeça, linha alba, retináculo) |
-| A4 | Músculos esqueléticos | ★★★ | 🟡 160 (63 cabeça/pescoço, 48 tronco, 49 membro superior); sem membro inferior |
-| A5 | Nervos (cranianos, espinais, plexos, ramos) | ★★★ | 🟡 55 motores/mistos; faltam sensitivos, vago, glossofaríngeo etc. |
+| A4 | Músculos esqueléticos | ★★★ | 🟡 204 (101 cabeça/pescoço, 54 tronco, 49 membro superior); sem membro inferior |
+| A5 | Nervos (cranianos, espinais, plexos, ramos) | ★★★ | 🟡 100 nervos e gânglios: os 12 pares, plexos, sensitivos do membro superior e do pescoço, autônomos da cabeça; faltam os do membro inferior e os das vísceras |
 | A6 | Artérias e veias | ★★★ | ⬜ |
 | A7 | Sistema linfático (linfonodos, ducto torácico) | ★★ | ⬜ |
 | A8 | Vísceras: respiratório, digestório, urinário, genital, endócrino, coração | ★★★ | ⬜ |
-| A9 | Sistema nervoso central (encéfalo, medula, meninges, ventrículos) | ★★★ | ⬜ |
-| A10 | Órgãos dos sentidos (olho, ouvido, nariz, língua) | ★★ | 🟡 globo ocular, 6 extraoculares, língua inteira |
+| A9 | Sistema nervoso central (encéfalo, medula, meninges, ventrículos) | ★★★ | 🟡 medula espinal e cauda equina (esquemáticas); sem encéfalo e meninges |
+| A10 | Órgãos dos sentidos (olho, ouvido, nariz, língua) | ★★ | 🟡 globo ocular com músculos lisos, 6 extraoculares, língua e seus 8 músculos, músculos do ouvido médio (sem ossículos) |
 | A11 | Fáscias, compartimentos, bursas, bainhas sinoviais, retináculos | ★★ | 🟡 3 fáscias da cabeça + retináculo dos flexores |
 | A12 | Regiões e espaços clínicos (triângulos do pescoço, fossa cubital, canal do carpo, canal inguinal) | ★★ | ⬜ |
-| A13 | Pele e anexos; anatomia de superfície | ★★ | 🟡 pele translúcida; sem anotações de superfície |
+| A13 | Pele e anexos; anatomia de superfície | ★★ | 🟡 pele translúcida, com dermátomos esquemáticos; sem anotações de superfície |
 | A14 | Histologia e embriologia | ★ | ⬜ |
 | A15 | Variações (sexo, idade, anatomia comparada de variações comuns) | ★ | ⬜ |
 
@@ -87,7 +87,7 @@ geral desses produtos, sem pesquisa nova; vale reconferir na F0.
 | B4 | Vistas predefinidas e opacidade da pele | ★★ | ✅ |
 | B5 | Salvar/compartilhar uma vista (câmera + camadas + seleção) | ★★ | ✅ vistas salvas e link com `#hash` (região, dissecação, camadas, câmera, corte, cores, seleção) |
 | B6 | **Plano de corte** (sagital, coronal, axial) | ★★ | 🟡 plano sagital/coronal/axial ✅; a fatia não é “tampada” (as malhas são cascas) |
-| B7 | Colorir por sistema, nervo que inerva, ação ou grupo | ★★ | ✅ por camada, nervo, região e grupo (18 grupos), com legenda |
+| B7 | Colorir por sistema, nervo que inerva, ação ou grupo | ★★ | ✅ por camada, nervo, região, grupo (23 grupos) e segmento medular, com legenda |
 | B8 | **Origem e inserção marcadas no osso** | ★★★ | ⬜ |
 | B9 | Animação de movimento / de ação muscular | ★★★ | ⬜ |
 | B10 | Vista explodida; medidas (distância/ângulo) | ★ | ⬜ |
@@ -130,7 +130,7 @@ geral desses produtos, sem pesquisa nova; vale reconferir na F0.
 | ID | Item | Peso | Aqui hoje |
 | --- | --- | --- | --- |
 | E1 | Movimentos e amplitude por articulação; músculos agonistas/antagonistas | ★★★ | ⬜ |
-| E2 | **Dermátomos e miótomos** | ★★★ | ⬜ (segmentos aparecem em texto) |
+| E2 | **Dermátomos e miótomos** | ★★★ | ✅ miótomos por segmento (C1–Co1) e dermátomos esquemáticos (sem membro inferior) |
 | E3 | Síndromes de lesão nervosa visualizadas (mão em garra, queda do punho…) | ★★ | 🟡 texto |
 | E4 | Testes ortopédicos/neurológicos, pontos de palpação, pontos motores | ★★ | ⬜ |
 | E5 | Patologias em 3D (fraturas, luxações, hérnias) | ★★ | ⬜ |
@@ -253,38 +253,53 @@ conferidas contra os ids do catálogo da v2.0.1; antes de começar, repetir a co
 - [x] **F2.2** Tórax e pescoço: levantadores das costelas (curtos e longos), subcostais, longo do pescoço, escaleno mínimo
   (variável — com nota). ✅ Levantadores e longo do pescoço com malha real (o longo do pescoço espelhado: o banco só tem o
   lado esquerdo); subcostais e escaleno mínimo modelados por código.
-- [ ] **F2.3** Língua: extrínsecos (genioglosso, hioglosso, estiloglosso, palatoglosso) e intrínsecos (longitudinais
-  superior e inferior, transverso, vertical).
-- [ ] **F2.4** Palato mole e faringe: levantador e tensor do véu palatino, músculo da úvula, palatofaríngeo; constritores
-  superior, médio e inferior, estilofaríngeo, salpingofaríngeo.
-- [ ] **F2.5** Laringe: cricotireóideo, cricoaritenóideos posterior e lateral, aritenóideos transverso e oblíquo,
-  tireoaritenóideo (e vocal).
-- [ ] **F2.6** Ouvido médio: tensor do tímpano e estapédio.
-- [ ] **F2.7** Face e olho (pequenos/variáveis, cada um com nota): transverso do mento, incisivos labiais, temporoparietal;
-  músculos lisos intrínsecos do olho (ciliar, esfíncter e dilatador da pupila, tarsais).
-- [ ] **F2.8** Períneo e pelve: bulboesponjoso, isquiocavernoso, transversos superficial e profundo do períneo, esfíncter
-  externo da uretra, puborretal, obturador interno.
+- [x] **F2.3** Língua: extrínsecos (genioglosso, hioglosso, estiloglosso, palatoglosso) e intrínsecos (longitudinais
+  superior e inferior, transverso, vertical). ✅ Genioglosso e hioglosso com malha real; estiloglosso, palatoglosso e os quatro
+  intrínsecos por código, com pontos medidos no dorso e na face inferior da língua (92 a 99 % dentro da malha da língua).
+- [x] **F2.4** Palato mole e faringe: levantador e tensor do véu palatino, músculo da úvula, palatofaríngeo; constritores
+  superior, médio e inferior, estilofaríngeo, salpingofaríngeo. ✅ Todos com malha real do banco.
+- [x] **F2.5** Laringe: cricotireóideo, cricoaritenóideos posterior e lateral, aritenóideos transverso e oblíquo,
+  tireoaritenóideo (e vocal). ✅ Todos com malha real (o vocal vem separado no banco). As cartilagens da laringe não estão no modelo.
+- [x] **F2.6** Ouvido médio: tensor do tímpano e estapédio. ✅ Por código e intraósseos (o modelo não tem o ouvido médio nem os ossículos).
+- [x] **F2.7** Face e olho (pequenos/variáveis, cada um com nota): transverso do mento, incisivos labiais, temporoparietal;
+  músculos lisos intrínsecos do olho (ciliar, esfíncter e dilatador da pupila, tarsais). ✅ Por código; os do olho usam um tipo
+  novo de forma (`torus`, um anel em torno de um eixo) dentro do globo.
+- [x] **F2.8** Períneo e pelve: bulboesponjoso, isquiocavernoso, transversos superficial e profundo do períneo, esfíncter
+  externo da uretra, puborretal, obturador interno. ✅ Puborretal e obturador interno com malha real; os do períneo urogenital por
+  código. **Achado:** o único “músculo perineal” do banco é o esfíncter externo do ânus em duplicata; a entrada antiga
+  `perineo_superficial` mostrava essa malha e foi substituída.
+- [x] **Cobertura** (fora da lista original): intertransversários cervicais anteriores e posteriores e interespinais cervicais,
+  que o banco tem e a TA lista (malhas reais). Exclusões justificadas: `docs/cobertura.md`.
 
 **Nervos que faltam:**
 
-- [ ] **F2.9** Cranianos: olfatório (I), vestibulococlear (VIII), glossofaríngeo (IX), **vago (X)** com laríngeos superior e
-  recorrente e ramos faríngeos.
-- [ ] **F2.10** Ramos de V e VII ainda ausentes: lacrimal, frontal (supraorbital e supratroclear), nasociliar, zigomático,
-  palatinos, nasopalatino, corda do tímpano, petroso maior, nervo do estapédio, nervos do tensor do tímpano e do véu.
-- [ ] **F2.11** Autônomos da cabeça e do pescoço: gânglios pterigopalatino, ótico e submandibular; tronco simpático cervical
-  e gânglios cervicais (o ciliar já existe).
-- [ ] **F2.12** Sensitivos do plexo cervical (occipital menor, auricular magno, cervical transverso, supraclaviculares) e
+- [x] **F2.9** Cranianos: olfatório (I), vestibulococlear (VIII), glossofaríngeo (IX), **vago (X)** com laríngeos superior e
+  recorrente e ramos faríngeos. ✅ Os 12 pares estão no catálogo. O vago vai só até T4–T5 (o resto exige vísceras); o laço do
+  recorrente é aproximado (o modelo não tem aorta nem subclávia).
+- [x] **F2.10** Ramos de V e VII ainda ausentes: lacrimal, frontal (supraorbital e supratroclear), nasociliar, zigomático,
+  palatinos, nasopalatino, corda do tímpano, petroso maior, nervo do estapédio, nervos do tensor do tímpano e do véu. ✅ Frontal,
+  lacrimal e nasociliar usam as malhas reais do banco (o pacote `anatomy-nerves.js` foi regenerado com as peças separadas).
+- [x] **F2.11** Autônomos da cabeça e do pescoço: gânglios pterigopalatino, ótico e submandibular; tronco simpático cervical
+  e gânglios cervicais (o ciliar já existe). ✅
+- [x] **F2.12** Sensitivos do plexo cervical (occipital menor, auricular magno, cervical transverso, supraclaviculares) e
   do **membro superior** (cutâneos medial e posterior do braço e do antebraço, cutâneo lateral do antebraço, ramo superficial
-  do radial, ramos cutâneos palmar e dorsal, digitais, intercostobraquial, cutâneo lateral superior do braço).
-- [ ] **F2.13** Medula espinal, raízes, gânglios espinais, 31 pares de nervos espinais e cauda equina (representação
-  esquemática) — base para miótomos e dermátomos.
-- [ ] **F2.14** Campo estruturado `segmentos` (ex.: `['C5','C6']`) em músculos e nervos → **mapa de miótomos** e filtro
-  “músculos do segmento C7”.
-- [ ] **F2.15** **Dermátomos** sobre a pele (spike de 1 dia para decidir entre faixas esquemáticas pintadas na malha da pele ou
-  textura; documentar a decisão).
+  do radial, ramos cutâneos palmar e dorsal, digitais, intercostobraquial, cutâneo lateral superior do braço). ✅ 18 nervos; os
+  que já existiam como trechos dentro de outro nervo (cutâneo lateral do antebraço, ramo superficial do radial, dorsal do ulnar,
+  digitais do mediano, cutâneo lateral superior do braço) ganharam ficha própria.
+- [x] **F2.13** Medula espinal, raízes, gânglios espinais, 31 pares de nervos espinais e cauda equina (representação
+  esquemática) — base para miótomos e dermátomos. ✅ Eixo do canal medido nas vértebras; medula com intumescências e cone, filo
+  terminal, quatro fichas para os 31 pares e a cauda equina.
+- [x] **F2.14** Campo estruturado `segmentos` (ex.: `['C5','C6']`) em músculos e nervos → **mapa de miótomos** e filtro
+  “músculos do segmento C7”. ✅ `src/segments.js` (132 músculos e 58 nervos/estruturas), linha “Segmentos medulares” na ficha, guarda no
+  catálogo (todo músculo inervado por nervo espinal tem segmentos), modo de cor *Por segmento medular* com lista do miótomo e
+  `docs/miotomos.md`.
+- [x] **F2.15** **Dermátomos** sobre a pele (spike de 1 dia para decidir entre faixas esquemáticas pintadas na malha da pele ou
+  textura; documentar a decisão). ✅ Decisão: cor de vértice (`docs/dermatomos.md`); cabeça (V1–V3, C2–C3), pescoço, tronco e
+  membro superior, esquemáticos.
 
 **Saída:** cada músculo da cabeça, pescoço, tronco e membro superior previsto na TA tem entrada, ou exclusão justificada em
-`docs/cobertura.md`; todos os pares cranianos presentes; guardas continuam exigindo nervo para todo músculo.
+`docs/cobertura.md`; todos os pares cranianos presentes; guardas continuam exigindo nervo para todo músculo. ✅ Concluído em
+2026-10-09; publicada como 2.2 em 2026-10-10.
 
 ---
 
@@ -425,7 +440,8 @@ visível e mantém o retorno do usuário frequente. Cada lote = um ciclo `dev` �
 | 2.0 (nervos + atualização automática) | 55 nervos, 154 vínculos, exe auto-atualizável | — | — | referência: um grande lote contínuo |
 | 2.0.x (Fase F0 — Alicerce) | F0.1 a F0.10 concluídos (testes, CI, web, PWA, a11y, docs) | ~1 dia | M | Alicerce 100% verde; zero quebras |
 | 2.1.0 (Fase F1 — Ferramentas de estudo) | F1.1 a F1.10 (views/hash, favoritos/notas, SM-2, quiz teórico, clipping, cores, 6 tours, export, listas) | ~1 dia + ~1 dia de correções | G | 100% offline; modularizado em src/study/*. A 1ª entrega passou nos testes mas tinha defeitos de interface (ver correções em F1): teste que só chama a API não basta; o de fumaça agora dirige a interface |
-| *(próximo: F2 — Fechar músculos e nervos das regiões atuais)* | | | | |
+| 2.2 (Fase F2 — Fechar músculos e nervos) | F2.3 a F2.15: 44 músculos novos (204), 45 nervos novos (100) e a medula espinal, segmentos medulares, miótomos e dermátomos | ~1 dia de trabalho contínuo | G | Os músculos com malha real saíram do pipeline sem decimar demais; o que não tinha malha foi medido no modelo. O banco tem o “músculo perineal” só como duplicata do esfíncter do ânus: foi preciso modelar o períneo urogenital. Tempo gasto sobretudo em medir (tongue, canal vertebral, mão, órbita) e em textos com fonte. |
+| *(próximo: F3 — Articulações, ligamentos e movimento)* | | | | |
 
 Use a coluna “Observações” para anotar o que atrasou (ex.: geometria de nervo que cai dentro do osso, ajuste de decimação).
 
@@ -469,6 +485,9 @@ Use a coluna “Observações” para anotar o que atrasou (ex.: geometria de ne
 | 2026-10-08 | **F2.1 e F2.2 concluídas (160 músculos, 277 estruturas):** palmar curto, levantadores curtos e longos das costelas, subcostais, longo do pescoço e escaleno mínimo, todos com inervação e grupo. Malha real para levantadores (os dois lados no banco) e longo do pescoço (só o lado esquerdo no banco: `mirror=True` no `body_parts.py`); palmar curto, subcostais e escaleno mínimo por código, com pontos medidos no modelo (subcostais com ~1 % dos pontos dentro de osso). Pipeline ganhou `fetch_body.py <ids>` e `convert_body.py --append <ids>`, que acrescentam peças ao `anatomy-body.js` sem regenerar as outras (conferido: as 186 peças antigas ficaram idênticas byte a byte; pacote +274 KB, sem decimação para não abrir buracos nas lâminas finas). O escaleno mínimo recebe o ramo da raiz C7 do plexo braquial (vindo do plexo cervical, o ramo descia por dentro dos processos transversos). Divergências na nota: ação dos subcostais e peso respiratório dos levantadores (Moore × Gray’s); a malha dos levantadores longos cobre todo o tórax, embora o Gray’s os descreva sobretudo embaixo. `tools/gen_revisao.js` passou a contar as estruturas em vez de números fixos. |
 | 2026-10-08 | **Bateria de testes (navegador e Node) e correções:** todas as 277 fichas abertas (título, campos, chips de ligação, malha sem NaN), 4 regiões × 7 níveis de dissecação, busca, ida e volta do hash, coloração e corte, “Isolar”, os três quizzes jogados pela interface (placar, resultado, opções únicas, nome não vaza) e lint de texto do catálogo. **Corrigido:** (1) selecionar estrutura par distal ou da pelve enquadrava o meio do corpo (o alvo usava o centro das duas mãos e era puxado 10 % para a cabeça): agora usa a esfera só do lado escolhido — 19 → 1 estrutura mal enquadrada (a pele inteira); (2) lumbricais atravessavam a articulação metacarpofalângica (40 % dos pontos dentro de osso → 3 %), com novos pontos da mão `neck.lumb` e `base.rad`; (3) quiz teórico: “inervado pelo nervo Nervo …”, “o músculo Intercostais…” e aspas dentro de aspas; (4) grafia: “ramos dorsais dos nervos espinhais” → “ramos posteriores dos nervos espinais” (20 fichas) e “supraespinhal” → “supraespinal” nos tours. **Achados sem correção (exigem refazer geometria com cuidado anatômico):** estruturas por código com muita interseção com osso — ligamento temporomandibular 56 %, pterigóideo lateral 34 %, ligamento alar 24 %, orbicular da boca 20 %, esfenomandibular 16 %, multífido 15 %; busca sem sinônimos (“flexiona” × “flete”); `hid=` do hash cresce sem limite quando se ocultam muitas estruturas uma a uma. |
 | 2026-10-08 | **Levantamento de desempenho no celular** (`docs/otimizacao-mobile.md`, medido com o novo `tools/perf_mobile.js`): 1,82 mi de triângulos, 492 chamadas de desenho, `DoubleSide` e PBR com 5 luzes em tudo, e o laço redesenha 60 quadros/s mesmo parado. Num celular emulado (CPU 4×) o modelo fica pronto em 19 s, 10 deles montando os nervos; só não redesenhar com a tela parada leva a 13 s. Plano em três levas: sem perda (renderização sob demanda, resolução adaptativa, nervos mais leves, sem leitura de layout no laço), sem perda com mais trabalho (faces orientadas + `FrontSide`, −45 % por quadro; nervos pré-calculados; corpo sob demanda; materiais leves) e com redução de resolução (pacote de malhas leve). Nada implementado ainda. |
+| 2026-10-09 | **F2 concluída (F2.3 a F2.15); publicada como 2.2 em 2026-10-10 após a última validação de layout (ver a linha seguinte).** 367 estruturas: 204 músculos (+44), 100 nervos e gânglios (+45) e a medula espinal. **Músculos:** língua (8), palato mole e faringe (9), laringe (7), ouvido médio (2), face e olho (9), períneo e pelve (7), mais 3 músculos curtos da coluna cervical que a TA lista e o banco tem; os 3 grupos oral/faríngeo/laríngeo e o puborretal e o obturador interno com malha real (`tools/body_parts.py` + `fetch_body.py` + `convert_body.py --append`; pacote +0,85 MB); o resto por código, medido no modelo. **Achado:** o único “músculo perineal” do BodyParts3D é o esfíncter externo do ânus em duplicata; a entrada `perineo_superficial` foi removida (o id continua no pacote de dados, sem uso). **Nervos:** 12 pares cranianos completos, vago com plexo faríngeo e laríngeos, ramos de V e VII, gânglios autônomos e tronco simpático, 18 nervos sensitivos (os que eram trechos dentro de outro nervo ganharam ficha), medula, 4 fichas dos 31 pares espinais e cauda equina. O pacote de nervos da órbita foi regenerado com as peças separadas (oftálmico, frontal, lacrimal, nasociliar). **F2.14:** `src/segments.js` com os segmentos (132 músculos, 58 nervos/estruturas), linha na ficha, guarda no catálogo, modo de cor e lista do miótomo, `docs/miotomos.md` gerado. **F2.15:** dermátomos por cor de vértice (decisão e limites em `docs/dermatomos.md`). Nova forma procedural `torus`. Cobertura e exclusões: `docs/cobertura.md`. Divergências entre fontes (Moore, Gray’s, Netter) anotadas nas fichas: inervação do feixe lateral dos intertransversários posteriores, limite radial/ulnar no dorso da mão (2½+2½ × 3½+1½), psoas L1–L3 × L2–L4, plexo faríngeo (vago × acessório craniano), vocal como parte do tireoaritenóideo. **Pendências:** os músculos intrínsecos da língua, os do ouvido médio e os lisos do olho são esquemáticos (e os dois últimos grupos, intraósseos ou dentro do globo); as cartilagens da laringe, a glândula lacrimal e os ossículos não estão no modelo; o teste de interface agora cobre o modo por segmento, os dermátomos e as estruturas novas, mas as bordas dos dermátomos não são testadas visualmente. |
+| 2026-10-10 | **Validação final da F2 e publicação (2.2):** varredura de layout no navegador embutido em 13 tamanhos (celulares de 568×320 a 430×932, em pé e deitados, com toque emulado; tablets de 768×1024, 834×1194 e 1194×834 e desktop de 1024×768 a 1920×1080, sem toque emulado, que essa ferramenta só liga abaixo de 768 px) com fichas longas (medula, vago, facial, nasociliar, masseter, língua, obturador interno, cauda equina), legendas por segmento e dos dermátomos, modal de estudo em todas as abas (inclusive o painel de segmentos com 32 chips) e configuração do quiz: nenhuma sobreposição, nada fora da tela, sem rolagem horizontal. O teste de fumaça passou a conferir também, nos 9 tamanhos de toque (celular e tablet, em pé e deitado), a legenda por segmento, os dermátomos ligados e o painel de segmentos dentro do modal. A bateria que seleciona as 367 estruturas, percorre 4 regiões × 7 níveis de dissecação, a busca e o hash só acusou os dois limites de busca já conhecidos (“ulnar” e “flexiona” dentro da região cabeça, sem sinônimos). `npm test` e `SMOKE_FILE=1 npm run test:smoke` verdes. Versão do `package.json` 2.1 → 2.2. Não medido: desempenho na máquina de referência (`docs/desempenho.md` §1.4). |
+
 
 ## 11. Referências
 

@@ -109,8 +109,8 @@ node -e "const c=require(process.env.TEMP+'/cat.cjs'); console.log(c.ITEMS.lengt
 ```
 
 Se lançar `Identificador duplicado…`, `Nervo aponta para estrutura inexistente…` ou `Músculos sem nervo…`, o catálogo está
-errado — corrija os dados. Contagens esperadas hoje: 277 estruturas (160 músculos, 55 nervos, 38 ossos, 12 ligamentos,
-3 fáscias, 3 glândulas, 6 estruturas).
+errado — corrija os dados. Contagens esperadas hoje: 367 estruturas (204 músculos, 100 nervos e gânglios, 38 ossos, 12 ligamentos,
+3 fáscias, 3 glândulas, 7 estruturas, entre elas a medula espinal).
 
 ### 6.2 Verificação visual (obrigatória para qualquer mudança de geometria ou interface)
 
