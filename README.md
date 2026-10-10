@@ -6,10 +6,11 @@
 > (`draw_icon` em `tools/build_exe.py`). O executável, o repositório e a pasta de instalação **ainda se chamam** `Anatomia3D`/`3DBody`:
 > renomear o lançador faz o `.exe` se trocar sozinho, então fica para uma release própria.
 
-Atlas 3D interativo de **cabeça, tronco e membros superiores**, com pele, fáscias, músculos, **nervos**, ligamentos,
-glândulas, cartilagens, ossos e dentes em camadas. Cada estrutura tem nome em português e em latim e uma ficha: nos
-músculos, **ação, origem, inserção e inervação**; nos nervos, **origem, trajeto, ramos, sensibilidade, lesão e os músculos
-que inervam**; nos ossos, localização, articulações, estruturas e função; nos ligamentos, fixações e função.
+Atlas 3D interativo de **cabeça, tronco e membros superiores**, com pele, fáscias, músculos, **nervos**, **articulações**,
+ligamentos, glândulas, cartilagens, ossos e dentes em camadas. Cada estrutura tem nome em português e em latim e uma ficha: nos
+músculos, **ação, origem, inserção, inervação e os movimentos que realizam**; nos nervos, **origem, trajeto, ramos, sensibilidade,
+lesão e os músculos que inervam**; nas articulações, **tipo, superfícies, cápsula, ligamentos, movimentos com amplitude e músculos,
+inervação e irrigação**; nos ossos, localização, articulações, estruturas e função; nos ligamentos, fixações e função.
 Membros inferiores ficam para uma próxima etapa.
 
 ## Como abrir
@@ -61,7 +62,7 @@ Use a branch **`dev`** para trabalhar sem publicar; quando estiver bom, junte na
 
 Para gerar o executável localmente: `npm run exe` (usa o compilador C# do próprio Windows; resultado em `release/`).
 
-## O que tem (367 estruturas: 204 músculos e 100 nervos, mais a medula espinal)
+## O que tem (396 estruturas: 204 músculos, 100 nervos, 13 articulações e 28 ligamentos, mais a medula espinal)
 
 | Camada | Conteúdo |
 | --- | --- |
@@ -73,7 +74,8 @@ Para gerar o executável localmente: `npm run exe` (usa o compilador C# do próp
 | Músculos superficiais (tronco e membros) | peitoral maior (3 partes), trapézio (3 partes), latíssimo do dorso, oblíquo externo, reto do abdome, deltoide (3 partes), bíceps, tríceps, extensores e flexores superficiais do antebraço, tenar/hipotenar superficial, palmar curto |
 | Músculos intermediários | peitoral menor, subclávio, serrátil anterior, rombóides, levantador da escápula, escalenos (incluindo o mínimo), serráteis posteriores, esplênios, oblíquo interno, manguito rotador, braquial, flexor superficial, lumbricais… |
 | Músculos profundos (tronco e membros) | intercostais, subcostais, levantadores das costelas, transverso do tórax, diafragma, transverso do abdome, quadrado do lombo, psoas, ilíaco, eretores da espinha, semiespinais, multífido, rotadores, interespinais, intertransversários, suboccipitais, pré-vertebrais (longos da cabeça e do pescoço), assoalho pélvico, flexor profundo, pronador quadrado, interósseos |
-| Ligamentos | 10 da cabeça (temporomandibular, estilomandibular, palpebrais…), linha alba, retináculo dos flexores |
+| Articulações (cápsulas) | membro superior: esternoclavicular, acromioclavicular, escapulotorácica (funcional), ombro, cotovelo, radiulnares proximal e distal, radiocarpal, intercarpais, carpometacarpais (polegar e 2º–5º), metacarpofalângicas e interfalângicas |
+| Ligamentos | 10 da cabeça (temporomandibular, estilomandibular, palpebrais…), linha alba, retináculo dos flexores e 16 do membro superior (esternoclaviculares, interclavicular, costoclavicular, acromioclavicular, coracoclavicular, coracoacromial, coracoumeral, glenoumerais, colaterais do cotovelo, anular do rádio, membrana interóssea, radiocarpais, colaterais do carpo, colaterais dos dedos, metacarpal transverso profundo) |
 | Nervos | 100 nervos e gânglios, mais a **medula espinal**, ligados a **todos** os 204 músculos (veja abaixo) |
 | Glândulas e língua | parótida e ducto, submandibular, sublingual, língua |
 | Cartilagens e discos | nasais, orelha, costais, discos intervertebrais |
@@ -119,6 +121,24 @@ costelas, sulco do nervo radial, túnel do carpo, espaços entre músculos (“e
 os ramos finais vão até a superfície de cada músculo inervado. São aproximações didáticas: a posição geral e as relações
 estão certas, mas espessuras e pequenos ramos são esquemáticos.
 
+## Articulações e movimentos (F3, em andamento)
+
+As articulações do membro superior têm ficha própria (`src/catalog-joints.js`): tipo, superfícies articulares, cápsula,
+ligamentos, **movimentos com amplitude** e, para cada movimento, os **músculos principais e auxiliares** (chips clicáveis),
+inervação (ramos articulares, que também aparecem na ficha do nervo) e irrigação. A ficha de cada músculo do membro superior mostra
+os movimentos que ele realiza em cada articulação; a do osso e a do ligamento, as articulações de que fazem parte. Ao selecionar uma
+articulação, os ossos e ligamentos dela ficam em destaque (**Isolar com ossos e ligamentos** mostra só o conjunto).
+
+- **Cápsulas** (camada *Articulações (cápsulas)*): envoltórios translúcidos **esquemáticos**, calculados na carga a partir da zona
+  em que as superfícies dos ossos se encaram. No quiz de localizar, elas só respondem ao clique quando a pergunta é uma articulação.
+- **Ligamentos**: faixas ancoradas em pontos medidos nas malhas dos ossos; colaterais dos dedos, membrana interóssea e ligamento
+  anular gerados por código.
+- **Amplitudes**: valores de referência da AAOS (em Norkin & White); outras tabelas diferem em alguns graus e a ficha cita as
+  diferenças relevantes. Fontes e decisões em [`docs/articulacoes.md`](docs/articulacoes.md).
+
+Ainda não há (próximos lotes da F3): articulações da coluna, do tórax, da pelve e da cabeça; página e quiz de movimentos; origem e
+inserção desenhadas no osso; animação.
+
 ## Modo quiz
 
 O botão **Modo quiz** abre uma janela para escolher o tipo de treino. Em todos os tipos há o filtro **Quais estruturas**
@@ -127,7 +147,7 @@ quantidade de estruturas de cada opção; opções sem nada ficam desabilitadas.
 
 - **Localizar** — aparece o *nome* de um músculo, osso, ligamento etc. e a pessoa precisa **clicar nele no modelo 3D**.
   Não há alternativas para eliminar. Configurações: região (corpo, cabeça, tronco, braço), o que praticar (músculos,
-  nervos, ossos, ligamentos e outras), número de perguntas (10, 20, 30 ou todas) e se mostra o nome em latim.
+  nervos, ossos e o grupo “articulações, ligamentos e outras”), número de perguntas (10, 20, 30 ou todas) e se mostra o nome em latim.
   - **3 tentativas** por pergunta. Acertar de primeira vale **1 ponto**; acertar com erro ou dica, **0,5**; esgotar as
     tentativas (ou pular) revela a resposta e vale 0. Clicar de novo na mesma estrutura errada não gasta tentativa.
   - **Dissecação e camadas** continuam disponíveis para chegar às estruturas profundas. O botão **Remover** (ou o
@@ -195,6 +215,7 @@ e “colados” sobre a pele e o esqueleto reais (`src/proc.js`), com posições
 - cabeça: músculos da expressão facial, masseter, temporal, pterigóideos, bucinador, ligamentos, fáscias e parótida; estiloglosso, palatoglosso, os quatro intrínsecos da língua, tensor do tímpano e estapédio (intraósseos, sem os ossículos), transverso do mento, incisivos labiais, temporoparietal e os músculos lisos do olho (ciliar, esfíncter e dilatador da pupila, tarsais);
 - tronco: latíssimo do dorso, reto do abdome, piramidal, oblíquo interno, transverso do abdome, quadrado do lombo e multífido; músculos do períneo urogenital (bulboesponjoso, isquiocavernoso, transversos superficial e profundo, esfíncter externo da uretra);
 - mão: lumbricais, palmar curto;
+- articulações do membro superior: cápsulas (esquemáticas) e os 16 ligamentos novos;
 - sistema nervoso: todos os nervos, exceto os da órbita (malhas reais), e a medula espinal (esquemática: não há meninges nem substância cinzenta).
 
 São aproximações didáticas. Por causa da licença **Share-Alike**, os arquivos `dist/anatomy-data.js`,
@@ -239,7 +260,9 @@ python convert_body.py --append id1 id2 # lê ../dist/anatomy-body.js e acrescen
 | `src/segments.js` | **Segmentos medulares** de músculos e nervos (fonte do mapa de miótomos e dos dermátomos por segmento) |
 | `src/nerve-geo.js` | Geometria dos nervos: resolve os pontos dos trajetos e gera os ramos até os músculos |
 | `src/landmarks.js` | Pontos de referência ósseos usados por músculos profundos e ligamentos |
-| `src/proc.js` | Geração das malhas procedurais (fita, lâmina, anel, tubo) |
+| `src/proc.js` | Geração das malhas procedurais (fita, lâmina, anel, tubo; cápsula, lâmina entre ossos, colaterais e grupos via `joint-geo.js`) |
+| `src/catalog-joints.js` | **Articulações e ligamentos do membro superior**: fichas, ossos, ligamentos, movimentos (fonte da ligação músculo ↔ articulação) e nervos |
+| `src/joint-geo.js`, `src/joint-links.js` | Geometria das cápsulas e ligamentos medida nos ossos; seções da ficha ligadas às articulações |
 | `src/surfaces.js` | Projeção de pontos sobre a pele e o esqueleto (BVH) |
 | `src/anatomy.js` | Carrega e descompacta as malhas reais |
 | `src/main.js` | Cena, interface, rótulos e quizzes de localizar e de escolher o nome |

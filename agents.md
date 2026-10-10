@@ -50,10 +50,12 @@ Dados (raramente necessário; baixa ~60 MB e regenera arquivos grandes — só c
 | `src/catalog-bones.js`, `catalog-body-bones.js` | Ossos, dentes, cartilagens, discos | |
 | `src/catalog-nerves.js` | 55 nervos: textos, trajetos, `ramos` (fonte única músculo ↔ nervo) | Pontos medidos no modelo; ver §8 |
 | `src/catalog-other.js` | Ligamentos, fáscias, glândulas, pele | |
+| `src/catalog-joints.js` | Articulações e ligamentos do membro superior; `movimentos` (fonte única músculo ↔ articulação) e `nervos` (ramos articulares) | Ver `docs/articulacoes.md` |
+| `src/joint-geo.js`, `joint-links.js` | Cápsulas, colaterais e membrana interóssea medidas nos ossos; seções da ficha ligadas às articulações | |
 | `src/nerve-geo.js` | `NerveBuilder`: resolve pontos, gera tubos e ramos até os músculos | |
 | `src/proc.js`, `surfaces.js`, `landmarks.js` | Geometria procedural, projeção na pele/osso (BVH), pontos de referência | |
 | `src/anatomy.js` | Descompacta as malhas de `dist/anatomy-*.js` | |
-| `src/main.js` | Cena, interface, rótulos, quizzes de localizar e de escolher o nome (≈ 1 700 linhas) | **Não aumente**: extraia módulos novos |
+| `src/main.js` | Cena, interface, rótulos, quizzes de localizar e de escolher o nome (≈ 1 740 linhas) | **Não aumente**: extraia módulos novos |
 | `src/framing.js` | Enquadramento de estruturas pares (esfera só do lado escolhido) | |
 | `src/study/*.js` | Ferramentas de estudo (modal, progresso, listas, tours, corte, cores, quiz teórico, backup); `groups.js` mapeia cada músculo a um grupo | O `main.js` só expõe uma interface (`api`) ao `StudyController`; veja §8 |
 | `index.html`, `styles.css` | Página e estilos | A ordem dos `<script>` importa |
@@ -86,7 +88,7 @@ A pasta acima (`Documents/port/`) tem **outros projetos sem relação**. Não to
 }
 ```
 
-- **Prefixos de id:** `o_` ossos, `lig_` ligamentos, `n_` nervos; músculos sem prefixo (`grande_dorsal`). Lados: sem sufixo.
+- **Prefixos de id:** `o_` ossos, `lig_` ligamentos, `n_` nervos, `art_` articulações; músculos sem prefixo (`grande_dorsal`). Lados: sem sufixo.
 - **Músculos** são criados por helpers (`bm(...)` no tronco e membro superior, `mus(...)` na cabeça e pescoço) com `campos`
   na ordem Ação · Origem · Inserção · Inervação.
 - **Nervos** usam `nervo(id, nome, latim, região, geom, {origem, trajeto, ramos, sensibilidade, lesao, nota}, extra)`;
@@ -109,8 +111,9 @@ node -e "const c=require(process.env.TEMP+'/cat.cjs'); console.log(c.ITEMS.lengt
 ```
 
 Se lançar `Identificador duplicado…`, `Nervo aponta para estrutura inexistente…` ou `Músculos sem nervo…`, o catálogo está
-errado — corrija os dados. Contagens esperadas hoje: 367 estruturas (204 músculos, 100 nervos e gânglios, 38 ossos, 12 ligamentos,
-3 fáscias, 3 glândulas, 7 estruturas, entre elas a medula espinal).
+errado — corrija os dados. As articulações têm guardas próprias (`Articulação … cita osso inexistente`, `Cápsula de … usa peças
+fora dos ossos citados`, `Movimento … cita músculo inexistente`…). Contagens esperadas hoje: 396 estruturas (204 músculos, 100 nervos
+e gânglios, 38 ossos, 28 ligamentos, 13 articulações, 3 fáscias, 3 glândulas, 7 estruturas, entre elas a medula espinal).
 
 ### 6.2 Verificação visual (obrigatória para qualquer mudança de geometria ou interface)
 
@@ -162,6 +165,15 @@ Este é um material de estudo: **um fato errado prejudica quem estuda**. Por iss
 2. Liste os músculos em `ramos`; use `path`/`t` quando só um trecho deve gerar ramos.
 3. Verifique que não atravessa osso (§6.2). Normais das malhas do BodyParts3D são **inconsistentes**: use os helpers de
    ancoragem (`on`, `cast`, `skin`, `sec`, `between`), não suponha o lado da malha.
+
+**Acrescentar uma articulação** (ver `docs/articulacoes.md`)
+1. Entrada `art(...)` em `catalog-joints.js` com `ossos`, `ligamentos`, `movimentos` (principais em `agon`, auxiliares em `sin`,
+   amplitude com fonte), `nervos` e a ficha completa; os músculos do movimento ganham a ligação sozinhos (`MOVEMENTS`).
+2. Geometria: `cap(peças A, peças B, gap)` — só peças dos ossos citados (a guarda confere). Ajuste `gap`/`y` olhando a nuvem de
+   contato no navegador; várias cápsulas numa malha só com `grupo([...])`.
+3. Ligamentos: `L(...)` com faixas cujas pontas são `on(peça, p, d)` medidas no modelo; meça a fração dentro de osso (≈ 5–12 % é
+   o esperado pelas pontas) e acrescente pontos intermediários com `d` > 0 onde a faixa atravessar o osso.
+4. `npm run build`, `npm test`, §6.1 e §6.2 (a ficha mostra ossos, ligamentos e movimentos; o músculo mostra a articulação).
 
 **Região ou sistema novo** (membro inferior, vasos, vísceras…)
 1. Novo pacote de dados `dist/anatomy-<nome>.js` carregado em segundo plano, **dentro do orçamento de tamanho** do roteiro.

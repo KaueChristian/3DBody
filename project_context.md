@@ -62,8 +62,8 @@ geral desses produtos, sem pesquisa nova; vale reconferir na F0.
 | ID | Item | Peso | Aqui hoje |
 | --- | --- | --- | --- |
 | A1 | Ossos individuais com **acidentes ósseos** (forames, processos, tuberosidades) selecionáveis | ★★★ | 🟡 38 ossos/grupos; acidentes só como pontos internos |
-| A2 | Articulações (tipo, movimentos, cápsula) | ★★★ | ⬜ |
-| A3 | Ligamentos | ★★★ | 🟡 12 (10 na cabeça, linha alba, retináculo) |
+| A2 | Articulações (tipo, movimentos, cápsula) | ★★★ | 🟡 13 do membro superior (F3a), com cápsula esquemática; faltam coluna, tórax, pelve, cabeça e membro inferior |
+| A3 | Ligamentos | ★★★ | 🟡 28 (10 na cabeça, linha alba, retináculo dos flexores e 16 do membro superior) |
 | A4 | Músculos esqueléticos | ★★★ | 🟡 204 (101 cabeça/pescoço, 54 tronco, 49 membro superior); sem membro inferior |
 | A5 | Nervos (cranianos, espinais, plexos, ramos) | ★★★ | 🟡 100 nervos e gânglios: os 12 pares, plexos, sensitivos do membro superior e do pescoço, autônomos da cabeça; faltam os do membro inferior e os das vísceras |
 | A6 | Artérias e veias | ★★★ | ⬜ |
@@ -108,7 +108,7 @@ geral desses produtos, sem pesquisa nova; vale reconferir na F0.
 | C8 | Pronúncia dos termos | ★ | ⬜ |
 | C9 | Ilustrações 2D, esquemas e fotos | ★★ | ⬜ |
 | C10 | Links cruzados: músculo ↔ nervo | ★★★ | ✅ |
-| C11 | Links cruzados: músculo ↔ artéria, ↔ articulação, ↔ movimento | ★★★ | ⬜ |
+| C11 | Links cruzados: músculo ↔ artéria, ↔ articulação, ↔ movimento | ★★★ | 🟡 músculo ↔ articulação ↔ movimento no membro superior; falta artéria |
 
 ### D. Estudo e avaliação
 
@@ -129,7 +129,7 @@ geral desses produtos, sem pesquisa nova; vale reconferir na F0.
 
 | ID | Item | Peso | Aqui hoje |
 | --- | --- | --- | --- |
-| E1 | Movimentos e amplitude por articulação; músculos agonistas/antagonistas | ★★★ | ⬜ |
+| E1 | Movimentos e amplitude por articulação; músculos agonistas/antagonistas | ★★★ | 🟡 membro superior: amplitude (AAOS) e músculos principais e auxiliares por movimento; antagonistas só implícitos |
 | E2 | **Dermátomos e miótomos** | ★★★ | ✅ miótomos por segmento (C1–Co1) e dermátomos esquemáticos (sem membro inferior) |
 | E3 | Síndromes de lesão nervosa visualizadas (mão em garra, queda do punho…) | ★★ | 🟡 texto |
 | E4 | Testes ortopédicos/neurológicos, pontos de palpação, pontos motores | ★★ | ⬜ |
@@ -307,16 +307,22 @@ conferidas contra os ids do catálogo da v2.0.1; antes de começar, repetir a co
 
 Objetivo: a camada de **função**. Quebrar em F3a (modelo + membro superior), F3b (coluna, tórax, pelve, cabeça) e F3c (movimento).
 
-- [ ] **F3.1** Novo `kind: 'articulacao'` com ficha: tipo, superfícies articulares, cápsula, ligamentos, movimentos e
+- [x] **F3.1** Novo `kind: 'articulacao'` com ficha: tipo, superfícies articulares, cápsula, ligamentos, movimentos e
   amplitude, músculos motores, inervação e irrigação, notas clínicas. Guarda: toda articulação cita ≥ 2 ossos existentes. **M**
-- [ ] **F3.2** Articulações e ligamentos do **membro superior**: esternoclavicular, acromioclavicular (coracoclavicular),
+  ✅ `src/catalog-joints.js`; movimentos estruturados (principais e auxiliares) geram `MOVEMENTS`; os nervos da articulação ganham
+  ramos articulares; guardas na carga (ossos, peças da cápsula, ligamentos, músculos, nervos). Cápsula esquemática calculada na
+  zona de contato entre os ossos (`src/joint-geo.js`). Detalhes em `docs/articulacoes.md`.
+- [x] **F3.2** Articulações e ligamentos do **membro superior**: esternoclavicular, acromioclavicular (coracoclavicular),
   glenoumeral (glenoumerais, coracoumeral, coracoacromial), cotovelo (colaterais, anular), radiulnares (membrana
-  interóssea), radiocarpal e carpais, carpometacarpais, metacarpofalângicas e interfalângicas. **G**
+  interóssea), radiocarpal e carpais, carpometacarpais, metacarpofalângicas e interfalângicas. **G** ✅ 13 articulações (inclui a
+  escapulotorácica, funcional) e 16 ligamentos, todos por código sobre as malhas reais dos ossos.
 - [ ] **F3.3** Coluna e tórax: ligamentos longitudinais anterior e posterior, amarelo, interespinal, supraespinal, nucal,
   atlantoccipital e atlantoaxiais, costovertebrais e radiados. **M**
 - [ ] **F3.4** Pelve: sacroilíacos, sacrotuberal, sacroespinal, inguinal, pubianos. **M**
 - [ ] **F3.5** Campo estruturado `acoes` nos músculos: `{articulacao, movimento, papel: agonista|sinergista|antagonista|fixador}`
-  → página “Movimentos”, filtro “movimento → músculos”, quiz “que músculos realizam X”. **G**
+  → página “Movimentos”, filtro “movimento → músculos”, quiz “que músculos realizam X”. **G** 🟡 Os dados existem para o membro
+  superior, mas do lado da articulação (`movimentos` → mapa derivado `MOVEMENTS`, papéis principal e auxiliar), como os `ramos`
+  dos nervos; a ficha do músculo já mostra os movimentos. Faltam a página, o filtro, o quiz e os papéis antagonista e fixador.
 - [ ] **F3.6** **Origem e inserção desenhadas no osso** (áreas coloridas nas superfícies de origem/inserção) e acidentes
   ósseos selecionáveis (tuberosidade deltóidea, sulco intertubercular…). Dados: pontos e regiões em `landmarks.js`. **GG**
 - [ ] **F3.7** Bursas, bainhas sinoviais, retináculos dos extensores, aponeurose palmar, fáscia toracolombar. **M**
@@ -441,7 +447,8 @@ visível e mantém o retorno do usuário frequente. Cada lote = um ciclo `dev` �
 | 2.0.x (Fase F0 — Alicerce) | F0.1 a F0.10 concluídos (testes, CI, web, PWA, a11y, docs) | ~1 dia | M | Alicerce 100% verde; zero quebras |
 | 2.1.0 (Fase F1 — Ferramentas de estudo) | F1.1 a F1.10 (views/hash, favoritos/notas, SM-2, quiz teórico, clipping, cores, 6 tours, export, listas) | ~1 dia + ~1 dia de correções | G | 100% offline; modularizado em src/study/*. A 1ª entrega passou nos testes mas tinha defeitos de interface (ver correções em F1): teste que só chama a API não basta; o de fumaça agora dirige a interface |
 | 2.2 (Fase F2 — Fechar músculos e nervos) | F2.3 a F2.15: 44 músculos novos (204), 45 nervos novos (100) e a medula espinal, segmentos medulares, miótomos e dermátomos | ~1 dia de trabalho contínuo | G | Os músculos com malha real saíram do pipeline sem decimar demais; o que não tinha malha foi medido no modelo. O banco tem o “músculo perineal” só como duplicata do esfíncter do ânus: foi preciso modelar o períneo urogenital. Tempo gasto sobretudo em medir (tongue, canal vertebral, mão, órbita) e em textos com fonte. |
-| *(próximo: F3 — Articulações, ligamentos e movimento)* | | | | |
+| 2.3 (F3a — modelo e membro superior) | F3.1 e F3.2: 13 articulações, 16 ligamentos, movimentos com músculos (dados de F3.5) | ~1 dia de trabalho contínuo | M + G | A cápsula calculada pela zona de contato poupou medir à mão cada articulação; o tempo foi para os ligamentos (pontos encaixados no osso e conferidos pela fração dentro de osso) e para os textos com fonte. Custo na carga: ≈ 0,1 s de cápsulas e ≈ 0,04 s de ligamentos. |
+| *(próximo: F3b — coluna, tórax, pelve e cabeça; F3c — movimento)* | | | | |
 
 Use a coluna “Observações” para anotar o que atrasou (ex.: geometria de nervo que cai dentro do osso, ajuste de decimação).
 
@@ -458,7 +465,7 @@ Use a coluna “Observações” para anotar o que atrasou (ex.: geometria de ne
    só de bancos com licença aberta, com crédito no dado.
 6. **Backend para contas/turmas.** Quebra o princípio offline-first. Preferir arquivos/URLs estáticos até haver necessidade real.
 7. **Assinatura do `.exe`.** O SmartScreen avisa; certificado tem custo. Decidir se vale na F9.
-8. **`main.js` com ~1 500 linhas.** Features novas (F1) devem sair em módulos (`src/study/*`, `src/tours/*`), não inflar o arquivo.
+8. **`main.js` com ~1 740 linhas.** Features novas (F1) devem sair em módulos (`src/study/*`, `src/tours/*`), não inflar o arquivo.
 9. **Conferência de fatos anatômicos.** Número de músculos, segmentos medulares e nomenclatura variam entre fontes; toda
    divergência vai para a ficha. A revisão da F0.4 existe para isso.
 10. **Service worker e HTML.** `sw.js` serve do cache e atualiza em segundo plano; uma atualização que mude o `index.html` e o
@@ -487,7 +494,7 @@ Use a coluna “Observações” para anotar o que atrasou (ex.: geometria de ne
 | 2026-10-08 | **Levantamento de desempenho no celular** (`docs/otimizacao-mobile.md`, medido com o novo `tools/perf_mobile.js`): 1,82 mi de triângulos, 492 chamadas de desenho, `DoubleSide` e PBR com 5 luzes em tudo, e o laço redesenha 60 quadros/s mesmo parado. Num celular emulado (CPU 4×) o modelo fica pronto em 19 s, 10 deles montando os nervos; só não redesenhar com a tela parada leva a 13 s. Plano em três levas: sem perda (renderização sob demanda, resolução adaptativa, nervos mais leves, sem leitura de layout no laço), sem perda com mais trabalho (faces orientadas + `FrontSide`, −45 % por quadro; nervos pré-calculados; corpo sob demanda; materiais leves) e com redução de resolução (pacote de malhas leve). Nada implementado ainda. |
 | 2026-10-09 | **F2 concluída (F2.3 a F2.15); publicada como 2.2 em 2026-10-10 após a última validação de layout (ver a linha seguinte).** 367 estruturas: 204 músculos (+44), 100 nervos e gânglios (+45) e a medula espinal. **Músculos:** língua (8), palato mole e faringe (9), laringe (7), ouvido médio (2), face e olho (9), períneo e pelve (7), mais 3 músculos curtos da coluna cervical que a TA lista e o banco tem; os 3 grupos oral/faríngeo/laríngeo e o puborretal e o obturador interno com malha real (`tools/body_parts.py` + `fetch_body.py` + `convert_body.py --append`; pacote +0,85 MB); o resto por código, medido no modelo. **Achado:** o único “músculo perineal” do BodyParts3D é o esfíncter externo do ânus em duplicata; a entrada `perineo_superficial` foi removida (o id continua no pacote de dados, sem uso). **Nervos:** 12 pares cranianos completos, vago com plexo faríngeo e laríngeos, ramos de V e VII, gânglios autônomos e tronco simpático, 18 nervos sensitivos (os que eram trechos dentro de outro nervo ganharam ficha), medula, 4 fichas dos 31 pares espinais e cauda equina. O pacote de nervos da órbita foi regenerado com as peças separadas (oftálmico, frontal, lacrimal, nasociliar). **F2.14:** `src/segments.js` com os segmentos (132 músculos, 58 nervos/estruturas), linha na ficha, guarda no catálogo, modo de cor e lista do miótomo, `docs/miotomos.md` gerado. **F2.15:** dermátomos por cor de vértice (decisão e limites em `docs/dermatomos.md`). Nova forma procedural `torus`. Cobertura e exclusões: `docs/cobertura.md`. Divergências entre fontes (Moore, Gray’s, Netter) anotadas nas fichas: inervação do feixe lateral dos intertransversários posteriores, limite radial/ulnar no dorso da mão (2½+2½ × 3½+1½), psoas L1–L3 × L2–L4, plexo faríngeo (vago × acessório craniano), vocal como parte do tireoaritenóideo. **Pendências:** os músculos intrínsecos da língua, os do ouvido médio e os lisos do olho são esquemáticos (e os dois últimos grupos, intraósseos ou dentro do globo); as cartilagens da laringe, a glândula lacrimal e os ossículos não estão no modelo; o teste de interface agora cobre o modo por segmento, os dermátomos e as estruturas novas, mas as bordas dos dermátomos não são testadas visualmente. |
 | 2026-10-10 | **Validação final da F2 e publicação (2.2):** varredura de layout no navegador embutido em 13 tamanhos (celulares de 568×320 a 430×932, em pé e deitados, com toque emulado; tablets de 768×1024, 834×1194 e 1194×834 e desktop de 1024×768 a 1920×1080, sem toque emulado, que essa ferramenta só liga abaixo de 768 px) com fichas longas (medula, vago, facial, nasociliar, masseter, língua, obturador interno, cauda equina), legendas por segmento e dos dermátomos, modal de estudo em todas as abas (inclusive o painel de segmentos com 32 chips) e configuração do quiz: nenhuma sobreposição, nada fora da tela, sem rolagem horizontal. O teste de fumaça passou a conferir também, nos 9 tamanhos de toque (celular e tablet, em pé e deitado), a legenda por segmento, os dermátomos ligados e o painel de segmentos dentro do modal. A bateria que seleciona as 367 estruturas, percorre 4 regiões × 7 níveis de dissecação, a busca e o hash só acusou os dois limites de busca já conhecidos (“ulnar” e “flexiona” dentro da região cabeça, sem sinônimos). `npm test` e `SMOKE_FILE=1 npm run test:smoke` verdes. Versão do `package.json` 2.1 → 2.2. Não medido: desempenho na máquina de referência (`docs/desempenho.md` §1.4). |
-
+| 2026-10-10 | **F3a iniciada e entregue na `dev` (F3.1 e F3.2; sem publicar).** 396 estruturas: **13 articulações** (`kind: 'articulacao'`, ids `art_*`) e **16 ligamentos** do membro superior, em `src/catalog-joints.js`. Ficha: tipo, superfícies, cápsula, ligamentos, movimentos com amplitude (AAOS, em Norkin & White) e músculos principais e auxiliares (Moore), inervação e irrigação, notas clínicas e fontes. **Vínculos derivados** em `catalog.js`: `MOVEMENTS` (músculo → articulação, movimento e papel; todo músculo do membro superior tem ao menos um, exceto o palmar curto), `JOINTS_OF` (osso/ligamento → articulações) e ramos articulares nos nervos (a articulação declara os nervos; sem desenhar ramo). **Guardas** novas na carga e no `test:catalog`. **Geometria** por código sobre as malhas reais: cápsula elipsoidal calculada na zona de contato entre os ossos (`joint-geo.js`, medida uma vez e espelhada, com pré-filtro por caixa), faixas de ligamento com pontas encaixadas no osso (o resolvedor de pontos dos nervos), colaterais dos dedos pela zona de contato, membrana interóssea como lâmina entre as margens, anular como anel; fração dentro de osso de 0 a 13 % (o anular, 20 %, só dentro da ulna, onde a incisura fecha o anel). **Interface:** seções *Ossos*, *Ligamentos* e *Movimentos e músculos* na articulação, *Movimentos (articulações)* no músculo, *Articulação(ões)* no osso e no ligamento (`src/joint-links.js`); selecionar a articulação destaca ossos e ligamentos; no quiz de localizar as cápsulas só respondem ao clique quando a pergunta é uma articulação; o grupo do quiz passou a “Articulações, ligamentos e outras”. Correções colaterais: um erro de geometria de uma estrutura não derruba mais a montagem do corpo (fica no console); cores “por nervo” e distratores “qual nervo?” do quiz teórico contam só nervos que inervam músculos. Versão do `package.json` 2.2 → 2.3. **Não feito:** F3.3–F3.9 (coluna, pelve, página e quiz de movimentos, origem e inserção no osso, bursas e retináculos, animação); inervação das carpometacarpais (fontes divergem) e amplitudes de abdução/adução dos dedos não estão na ficha; a cápsula não mostra recessos nem a linha de inserção. |
 
 ## 11. Referências
 

@@ -5,6 +5,8 @@ cabeça, do pescoço, do tronco e do membro superior, a entrada correspondente n
 Os músculos e os nervos dos membros inferiores ficam para a F4. Contagem atual: **204 músculos**, **100 nervos e gânglios**,
 mais a medula espinal (367 estruturas no atlas).
 
+Articulações e ligamentos (F3) têm o registro próprio em [`articulacoes.md`](articulacoes.md).
+
 Método: conferência da lista da TA e dos capítulos de miologia de Moore e do Gray’s contra os ids do catálogo; cada músculo
 foi verificado no banco BodyParts3D (nome do conceito em `tools/isa_element_parts.txt`) antes de ser modelado por código.
 
