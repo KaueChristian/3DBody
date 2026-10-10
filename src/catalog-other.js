@@ -1,6 +1,7 @@
 /** Ligamentos, fáscias, glândulas, língua e pele. */
 
-const lig = (id, name, latin, geom, d, extra = {}) => ({
+/** Ligamento: fixações, função e relações (também usado pelos ligamentos das articulações, em catalog-joints.js). */
+export const lig = (id, name, latin, geom, d, extra = {}) => ({
   kind: 'ligamento',
   id,
   name,

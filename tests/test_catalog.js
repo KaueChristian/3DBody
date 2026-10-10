@@ -160,6 +160,44 @@ function runTests() {
     }
   }
 
+  // 6b. Articulações (F3): ficha completa, ossos, ligamentos e músculos existentes; músculos do membro superior com movimento
+  const { MOVEMENTS, JOINTS_OF } = mod.exports;
+  const { JOINT_LIGAMENTS } = loadModule('../src/catalog-joints.js');
+  const joints = ITEMS.filter((i) => i.kind === 'articulacao');
+  const requiredJointFields = ['Tipo', 'Superfícies articulares', 'Cápsula e membrana sinovial', 'Ligamentos', 'Inervação', 'Irrigação'];
+  for (const j of joints) {
+    const campos = new Map(j.campos);
+    for (const req of requiredJointFields) if (!campos.get(req)?.trim()) logFail(`Articulação "${j.id}" sem o campo "${req}".`);
+    if (!j.id.startsWith('art_')) logFail(`Articulação "${j.id}" sem o prefixo art_.`);
+    for (const o of j.ossos ?? []) if (itemMap.get(o)?.kind !== 'osso') logFail(`Articulação "${j.id}" cita osso inexistente "${o}".`);
+    for (const l of j.ligamentos ?? []) if (itemMap.get(l)?.kind !== 'ligamento') logFail(`Articulação "${j.id}" cita ligamento inexistente "${l}".`);
+    if (!(j.movimentos ?? []).length) logFail(`Articulação "${j.id}" sem movimentos.`);
+    for (const m of j.movimentos ?? []) {
+      if (!m.mov?.trim()) logFail(`Articulação "${j.id}" com movimento sem nome.`);
+      if (!m.agon.length && !m.obs) logFail(`Movimento "${m.mov}" de "${j.id}" sem músculos e sem observação.`);
+      for (const id of [...m.agon, ...m.sin]) if (itemMap.get(id)?.kind !== 'musculo') logFail(`Movimento "${m.mov}" de "${j.id}" cita músculo inexistente "${id}".`);
+      const dup = m.agon.filter((id) => m.sin.includes(id));
+      if (dup.length) logFail(`Movimento "${m.mov}" de "${j.id}" lista como principal e auxiliar: ${dup.join(', ')}.`);
+    }
+    if (!(j.proc ?? []).length) logFail(`Articulação "${j.id}" sem geometria (cápsula).`);
+  }
+  // músculos que cruzam articulações do membro superior: todos têm ao menos um movimento (o palmar curto só move a pele)
+  const limbGroups = new Set(['ombro', 'braco_ant', 'braco_post', 'antebraco_flex', 'antebraco_ext', 'mao_tenar', 'mao_hipotenar', 'mao_central']);
+  const { MUSCLE_GROUP: MG } = loadModule('../src/study/groups.js');
+  for (const m of muscles) {
+    if (limbGroups.has(MG.get(m.id)) && m.id !== 'palmar_curto' && !MOVEMENTS.has(m.id)) logFail(`Músculo do membro superior "${m.id}" sem movimento em nenhuma articulação.`);
+  }
+  // ligamentos das articulações: cada um pertence a uma articulação (a membrana interóssea é ela mesma uma sindesmose)
+  for (const l of JOINT_LIGAMENTS) {
+    if (l.id !== 'lig_membrana_interossea' && !JOINTS_OF.has(l.id)) logFail(`Ligamento "${l.id}" não pertence a nenhuma articulação.`);
+  }
+  // ramos articulares: cada nervo citado por uma articulação lista a articulação nos seus ramos
+  for (const j of joints) {
+    for (const n of j.nervos ?? []) {
+      if (!(INNERVATION.get(j.id) ?? []).some((l) => l.nervo === n)) logFail(`Articulação "${j.id}" cita o nervo "${n}", que não aparece na inervação.`);
+    }
+  }
+
   // 7. Ferramentas de estudo que dependem do catálogo: tours e grupos musculares
   const { TOURS, TOUR_VIEWS } = loadModule('../src/study/tours.js');
   const { GROUPS, MUSCLE_GROUP } = loadModule('../src/study/groups.js');

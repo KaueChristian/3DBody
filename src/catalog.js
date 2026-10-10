@@ -8,6 +8,7 @@ import { NERVES as NERVES_BASE } from './catalog-nerves.js';
 import { NERVES_CRANIAL } from './catalog-nerves-cranial.js';
 import { NERVES_SENSORY } from './catalog-nerves-sensory.js';
 import { NERVES_SPINAL } from './catalog-spinal.js';
+import { JOINTS, JOINT_LIGAMENTS } from './catalog-joints.js';
 import { SEGMENTOS, SEGMENT_ORDER, AMPLOS, PROPRIOCEPTIVOS, segmentLabel } from './segments.js';
 
 /** Camadas, da mais superficial (depth 0) à mais profunda. */
@@ -23,6 +24,7 @@ export const LAYERS = [
   { id: 'prof', label: 'Músculos profundos (tronco e membros)', depth: 4, color: '#8a3558' },
   { id: 'orbita', label: 'Órbita e olho', depth: 4, color: '#e98a4a' },
   { id: 'nervo', label: 'Nervos', depth: 4, color: '#f2cf55' },
+  { id: 'articulacao', label: 'Articulações (cápsulas)', depth: 4, color: '#7fb2e8' },
   { id: 'ligamento', label: 'Ligamentos', depth: 4, color: '#f1da8c' },
   { id: 'glandula', label: 'Glândulas e língua', depth: 4, color: '#dba35a' },
   { id: 'cartilagem', label: 'Cartilagens e discos', depth: 4, color: '#a9d0d6' },
@@ -42,6 +44,7 @@ export const KIND_LABEL = {
   nervo: 'Nervo',
   osso: 'Osso',
   ligamento: 'Ligamento',
+  articulacao: 'Articulação',
   fascia: 'Fáscia / aponeurose',
   glandula: 'Glândula',
   estrutura: 'Estrutura',
@@ -65,9 +68,21 @@ const HEAD_ITEMS = [SKIN, ...FASCIAS, ...MUSCLES, ...LIGAMENTS, ...GLANDS, ...OT
   ...i,
 }));
 export const HEAD_IDS = new Set(HEAD_ITEMS.map((i) => i.id));
-export const BODY_ITEMS = [...BODY_MUSCLES, ...ORAL_MUSCLES, ...BODY_BONES];
+export const BODY_ITEMS = [...BODY_MUSCLES, ...ORAL_MUSCLES, ...BODY_BONES, ...JOINTS, ...JOINT_LIGAMENTS];
 export const NERVES = [...NERVES_BASE, ...NERVES_CRANIAL, ...NERVES_SENSORY, ...NERVES_SPINAL];
 export const ITEMS = [...HEAD_ITEMS, ...BODY_ITEMS, ...NERVES];
+
+// ramos articulares (F3): a articulação diz quais nervos a inervam e o nervo ganha o ramo (sem desenhar: é só o vínculo)
+{
+  const byId = new Map(NERVES.map((n) => [n.id, n]));
+  for (const j of JOINTS) {
+    for (const nid of j.nervos) {
+      const n = byId.get(nid);
+      if (!n) throw new Error(`Articulação ${j.id} cita nervo inexistente: ${nid}`);
+      n.ramos = [...(n.ramos ?? []), { m: j.id, obs: 'ramo articular', sens: true, semRamo: true }];
+    }
+  }
+}
 
 /**
  * Inervação: estrutura → nervos que a inervam (derivado de `ramos` de cada nervo).
@@ -109,4 +124,51 @@ for (const n of NERVES) {
   const semSegmento = ITEMS.filter((i) => i.kind === 'musculo' && !i.segmentos
     && (INNERVATION.get(i.id) ?? []).some((l) => SEGMENTOS[l.nervo]));
   if (semSegmento.length) throw new Error(`Músculos sem segmentos medulares: ${semSegmento.map((i) => i.id).join(', ')}`);
+}
+
+/**
+ * Articulações (F3): movimentos de cada músculo e articulações de cada osso e ligamento, derivados das fichas das articulações.
+ * @type {Map<string, {art: string, mov: string, papel: 'principal'|'auxiliar'}[]>}
+ */
+export const MOVEMENTS = new Map();
+/** Osso ou ligamento → articulações de que faz parte. @type {Map<string, string[]>} */
+export const JOINTS_OF = new Map();
+{
+  const byId = new Map(ITEMS.map((i) => [i.id, i]));
+  const kindOf = (id) => byId.get(id)?.kind;
+  for (const j of JOINTS) {
+    // a cápsula só pode usar peças dos ossos citados: assim a geometria e o texto não divergem
+    const parts = new Set();
+    for (const o of j.ossos) {
+      if (kindOf(o) !== 'osso') throw new Error(`Articulação ${j.id} cita osso inexistente: ${o}`);
+      for (const p of byId.get(o).parts ?? []) parts.add(p.id);
+    }
+    const used = new Set();
+    const walk = (spec) => {
+      if (spec.kind === 'group') spec.of.forEach(walk);
+      else if (spec.kind === 'capsule') [...spec.a, ...spec.b].forEach((p) => used.add(p));
+    };
+    j.proc.forEach(walk);
+    const alheias = [...used].filter((p) => !parts.has(p));
+    if (alheias.length) throw new Error(`Cápsula de ${j.id} usa peças fora dos ossos citados: ${alheias.join(', ')}`);
+    // “toda articulação cita ≥ 2 ossos”: conta ossos do catálogo ou, dentro de um grupo (carpo, falanges), as peças
+    if (j.ossos.length < 2 && used.size < 2) throw new Error(`Articulação ${j.id} cita menos de dois ossos`);
+    for (const l of j.ligamentos) if (kindOf(l) !== 'ligamento') throw new Error(`Articulação ${j.id} cita ligamento inexistente: ${l}`);
+    for (const id of [...j.ossos, ...j.ligamentos]) {
+      if (!JOINTS_OF.has(id)) JOINTS_OF.set(id, []);
+      JOINTS_OF.get(id).push(j.id);
+    }
+    for (const m of j.movimentos) {
+      for (const [papel, list] of [['principal', m.agon], ['auxiliar', m.sin]]) {
+        for (const mid of list) {
+          if (kindOf(mid) !== 'musculo') throw new Error(`Movimento "${m.mov}" de ${j.id} cita músculo inexistente: ${mid}`);
+          if (!MOVEMENTS.has(mid)) MOVEMENTS.set(mid, []);
+          MOVEMENTS.get(mid).push({ art: j.id, mov: m.mov, papel });
+        }
+      }
+    }
+    // linha de texto da ficha (busca, impressão e quiz); a lista com os músculos é desenhada pela interface
+    const txt = j.movimentos.map((m) => (m.amp ? `${m.mov} (${m.amp})` : m.mov)).join('; ');
+    if (txt) j.campos.splice(4, 0, ['Movimentos e amplitude', `${txt}.`]);
+  }
 }
