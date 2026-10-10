@@ -3,7 +3,7 @@
  * Coordenadas procedurais: lado esquerdo (x > 0); o direito é espelhado. Ver src/proc.js.
  */
 
-const mus = (id, name, latin, layer, geom, d, extra = {}) => ({
+export const mus = (id, name, latin, layer, geom, d, extra = {}) => ({
   kind: 'musculo',
   id,
   name,
@@ -417,4 +417,180 @@ export const MUSCLES = [
     insercao: 'Esclera ínfero-lateral posterior.',
     inervacao: 'Nervo oculomotor (III), ramo inferior.',
   }),
+
+  /* ───────── F2.3 Língua: o banco não traz estes músculos; modelados por código dentro da malha da língua ─────────
+     Pontos medidos no modelo (dorso e face inferior da língua em x = 0,04 / 0,08 / 0,12 / 0,14 e z de 0,34 a 0,8). */
+  mus('estiloglosso', 'Estiloglosso', 'M. styloglossus', 'profundo', {
+    proc: [{ kind: 'tube', pts: ['temp.estiloide', [0.34, -0.7, 0.17], [0.26, -0.77, 0.3], [0.2, -0.8, 0.44], [0.17, -0.79, 0.58], [0.13, -0.8, 0.72]], ref: [1, 0, 0], width: 0.045, thick: 0.022, taper: 'blunt', nf: 36, nc: 8 }],
+  }, {
+    acao: 'Retrai a língua e a eleva, formando a goteira que conduz o bolo alimentar para trás (deglutição).',
+    origem: 'Ápice do processo estiloide do temporal e ligamento estilomandibular.',
+    insercao: 'Bordas laterais da língua, de trás para a frente, com fibras longitudinais e oblíquas que se misturam às do hioglosso e do longitudinal inferior.',
+    inervacao: 'Nervo hipoglosso (XII).',
+    nota: 'É o menor e o mais curto dos extrínsecos. O banco BodyParts3D não traz o músculo: trajeto desenhado por código, da ponta do processo estiloide à borda da língua (posição aproximada).',
+  }),
+  mus('palatoglosso', 'Palatoglosso', 'M. palatoglossus', 'profundo', {
+    proc: [{ kind: 'tube', pts: [[0.03, -0.64, 0.26], [0.1, -0.66, 0.3], [0.15, -0.72, 0.34], [0.18, -0.8, 0.4]], ref: [0.7, 0, 0.7], width: 0.04, thick: 0.02, taper: 'blunt', nf: 20, nc: 8 }],
+  }, {
+    acao: 'Eleva a parte posterior da língua e aproxima os arcos palatoglossos, fechando o istmo das fauces (separa a boca da orofaringe); também abaixa o palato mole.',
+    origem: 'Face oral da aponeurose palatina, no palato mole.',
+    insercao: 'Parte lateral e posterior da língua, onde se junta aos músculos intrínsecos e ao estiloglosso.',
+    inervacao: 'Plexo faríngeo, com fibras do vago (X) e da raiz craniana do acessório (XI).',
+    nota: 'É o único músculo da língua que não é inervado pelo hipoglosso: pertence, pela origem e pela inervação, ao palato mole. Forma o arco palatoglosso, a prega anterior das fauces, na frente da tonsila palatina. Trajeto desenhado por código (posição aproximada).',
+  }),
+  mus('lingua_long_sup', 'Longitudinal superior da língua', 'M. longitudinalis superior linguae', 'profundo', {
+    proc: [
+      { kind: 'tube', pts: [[0.04, -0.79, 0.34], [0.04, -0.744, 0.42], [0.04, -0.711, 0.5], [0.04, -0.711, 0.58], [0.04, -0.732, 0.66], [0.04, -0.758, 0.74], [0.04, -0.781, 0.8]], ref: [0, 1, 0], width: 0.09, thick: 0.022, taper: 'blunt', nf: 30, nc: 8 },
+      { kind: 'tube', pts: [[0.12, -0.784, 0.4], [0.12, -0.754, 0.48], [0.12, -0.751, 0.56], [0.12, -0.77, 0.64], [0.12, -0.792, 0.72]], ref: [0, 1, 0], width: 0.07, thick: 0.02, taper: 'blunt', nf: 24, nc: 8 },
+    ],
+  }, {
+    acao: 'Encurta a língua e curva a ponta e as bordas para cima, deixando o dorso côncavo.',
+    origem: 'Camada submucosa fibrosa (aponeurose lingual) e septo fibroso mediano, perto da epiglote.',
+    insercao: 'Bordas laterais e ápice da língua (tecido fibroso submucoso).',
+    inervacao: 'Nervo hipoglosso (XII).',
+    nota: 'Fica logo abaixo da mucosa do dorso da língua. Os intrínsecos não têm origem nem inserção óssea: formam um arcabouço muscular (um “hidrostato”), em camadas que se cruzam, e é a contração combinada deles que dá à língua a forma. Modelado por código dentro da malha da língua, de forma esquemática (oculte a língua na lista para ver).',
+  }, { label: false }),
+  mus('lingua_long_inf', 'Longitudinal inferior da língua', 'M. longitudinalis inferior linguae', 'profundo', {
+    proc: [{ kind: 'tube', pts: [[0.08, -0.98, 0.34], [0.08, -0.91, 0.42], [0.08, -0.91, 0.5], [0.08, -0.902, 0.58], [0.08, -0.852, 0.66], [0.08, -0.818, 0.74], [0.08, -0.796, 0.8]], ref: [0, 1, 0], width: 0.06, thick: 0.05, taper: 'blunt', nf: 30, nc: 8 }],
+  }, {
+    acao: 'Encurta a língua e curva a ponta para baixo, deixando o dorso convexo.',
+    origem: 'Raiz da língua e corpo do hioide.',
+    insercao: 'Ápice da língua, entre o genioglosso (medialmente) e o hioglosso (lateralmente).',
+    inervacao: 'Nervo hipoglosso (XII).',
+    nota: 'Feixe estreito, junto à face inferior da língua, no espaço entre o genioglosso e o hioglosso; no ápice funde-se às fibras do estiloglosso. Modelado por código (forma e posição aproximadas).',
+  }, { label: false }),
+  mus('lingua_transverso', 'Transverso da língua', 'M. transversus linguae', 'profundo', {
+    proc: [
+      { kind: 'tube', pts: [[0.02, -0.824, 0.46], [0.08, -0.831, 0.46], [0.14, -0.834, 0.46], [0.17, -0.845, 0.46]], ref: [0, 0, 1], width: 0.13, thick: 0.035, taper: 'blunt', nf: 16, nc: 8 },
+      { kind: 'tube', pts: [[0.02, -0.83, 0.56], [0.08, -0.826, 0.56], [0.14, -0.816, 0.56]], ref: [0, 0, 1], width: 0.14, thick: 0.035, taper: 'blunt', nf: 16, nc: 8 },
+      { kind: 'tube', pts: [[0.02, -0.831, 0.66], [0.08, -0.805, 0.66], [0.13, -0.815, 0.66]], ref: [0, 0, 1], width: 0.1, thick: 0.035, taper: 'blunt', nf: 16, nc: 8 },
+      { kind: 'tube', pts: [[0.02, -0.8, 0.76], [0.07, -0.803, 0.76]], ref: [0, 0, 1], width: 0.07, thick: 0.03, taper: 'blunt', nf: 10, nc: 8 },
+    ],
+  }, {
+    acao: 'Estreita e alonga a língua (ajuda a protraí-la).',
+    origem: 'Septo fibroso mediano da língua.',
+    insercao: 'Bordas laterais da língua (tecido fibroso submucoso).',
+    inervacao: 'Nervo hipoglosso (XII).',
+    nota: 'Fibras que correm de um lado a outro, perpendiculares ao septo, entre as camadas longitudinais; algumas atravessam o septo. Aqui, quatro feixes representativos (a ponta da língua é mais fina). Modelado por código (posição aproximada).',
+  }, { label: false }),
+  mus('lingua_vertical', 'Vertical da língua', 'M. verticalis linguae', 'profundo', {
+    proc: [
+      { kind: 'tube', pts: [[0.14, -0.76, 0.5], [0.14, -0.89, 0.5]], ref: [1, 0, 0], width: 0.06, thick: 0.04, taper: 'blunt', nf: 10, nc: 8 },
+      { kind: 'tube', pts: [[0.14, -0.765, 0.6], [0.14, -0.855, 0.6]], ref: [1, 0, 0], width: 0.06, thick: 0.04, taper: 'blunt', nf: 10, nc: 8 },
+      { kind: 'tube', pts: [[0.14, -0.795, 0.7], [0.14, -0.835, 0.7]], ref: [1, 0, 0], width: 0.05, thick: 0.03, taper: 'blunt', nf: 8, nc: 8 },
+    ],
+  }, {
+    acao: 'Achata e alarga a língua.',
+    origem: 'Face dorsal da língua (aponeurose lingual).',
+    insercao: 'Face ventral da língua, nas bordas laterais da parte anterior.',
+    inervacao: 'Nervo hipoglosso (XII).',
+    nota: 'Fibras que vão do dorso à face inferior, na parte anterior e lateral da língua, entrecruzando os feixes transversos e longitudinais. Com o transverso, forma o par que estreita/alonga e achata/alarga a língua. Modelado por código (três colunas representativas).',
+  }, { label: false }),
+
+  /* ───────── F2.6 Ouvido médio: o banco não traz o ouvido médio; dentro do osso temporal, forma e posição aproximadas ───────── */
+  mus('tensor_timpano', 'Tensor do tímpano', 'M. tensor tympani', 'profundo', {
+    proc: [{ kind: 'tube', pts: [[0.285, -0.335, 0.125], [0.33, -0.31, 0.07], [0.375, -0.29, 0.02], [0.41, -0.3, 0.0]], ref: [0, 1, 0], width: 0.03, thick: 0.02, taper: 'blunt', nf: 16, nc: 8 }],
+  }, {
+    acao: 'Puxa o cabo do martelo medialmente, tensionando a membrana timpânica e amortecendo as vibrações (reflexo protetor contra sons intensos e contra o ruído da própria mastigação).',
+    origem: 'Cartilagem da tuba auditiva, asa maior do esfenoide e parede do canal musculotubário, na parte petrosa do temporal.',
+    insercao: 'Cabo do martelo. O tendão faz um ângulo reto ao contornar o processo cocleariforme.',
+    inervacao: 'Nervo para o tensor do tímpano, ramo do nervo pterigóideo medial (mandibular, V3), pelo gânglio ótico.',
+    nota: 'Fica no semicanal superior do canal musculotubário, acima da tuba auditiva. É inervado pelo V3, como o tensor do véu palatino (mesmo arco faríngeo), e não pelo facial. O modelo não tem os ossículos nem a membrana timpânica: o trajeto é aproximado e intraósseo (dentro do temporal).',
+  }, { label: false }),
+  mus('estapedio', 'Estapédio', 'M. stapedius', 'profundo', {
+    proc: [{ kind: 'tube', pts: [[0.37, -0.275, -0.075], [0.365, -0.28, -0.045], [0.35, -0.285, -0.02]], ref: [0, 1, 0], width: 0.015, thick: 0.012, taper: 'blunt', nf: 10, nc: 8 }],
+  }, {
+    acao: 'Puxa o colo do estribo para trás, limitando seu movimento na janela do vestíbulo e protegendo a cóclea de sons intensos (reflexo estapédico).',
+    origem: 'Eminência piramidal, na parede posterior da cavidade timpânica (o ventre fica num canal dentro do osso).',
+    insercao: 'Colo do estribo, por um tendão fino que sai do ápice da eminência.',
+    inervacao: 'Nervo para o estapédio, ramo do nervo facial (VII).',
+    nota: 'É o menor músculo esquelético do corpo. Na paralisia do facial acima da origem do seu nervo (paralisia de Bell, por exemplo), o reflexo se perde e os sons parecem excessivamente altos (hiperacusia). Modelo aproximado e intraósseo (posição e forma indicativas; sem os ossículos).',
+  }, { label: false }),
+
+  /* ───────── F2.7 Face: músculos pequenos e variáveis (alguns textos os tratam como parte do orbicular da boca ou do auricular superior) ───────── */
+  mus('transverso_mento', 'Transverso do mento', 'M. transversus menti', 'mimica', {
+    proc: [{ kind: 'ribbon', proj: 'z+', inset: 0.045, thick: 0.014, path: [[0.0, -1.075], [0.14, -1.075], [0.26, -1.055]], width: [0.035, 0.035, 0.03] }],
+  }, {
+    acao: 'Função mal definida: tensiona a pele do queixo e talvez ajude o abaixador do ângulo da boca.',
+    origem: 'Fibras do abaixador do ângulo da boca de um lado, que cruzam o mento.',
+    insercao: 'Pele do mento, com fibras que cruzam a linha mediana e se continuam com as do lado oposto.',
+    inervacao: 'Ramo marginal da mandíbula do nervo facial (VII).',
+    nota: 'Feixe inconstante, descrito no Gray’s como uma faixa que atravessa o mento abaixo do mentual; muitos textos nem o listam. É um dos músculos de variação: aparece em parte das pessoas. Posição desenhada por código (aproximada).',
+  }),
+  mus('incisivo_labio_sup', 'Incisivo do lábio superior', 'M. incisivus labii superioris', 'mimica', {
+    proc: [{ kind: 'ribbon', proj: 'z+', inset: 0.075, thick: 0.014, path: [[0.12, -0.72], [0.2, -0.73], [0.3, -0.765]], width: [0.035, 0.035, 0.03] }],
+  }, {
+    acao: 'Ajuda o orbicular da boca a manter e a fruncir o lábio superior e a fixar o ângulo da boca (modíolo).',
+    origem: 'Fossa incisiva da maxila (acima do incisivo lateral).',
+    insercao: 'Modíolo no ângulo da boca, misturando-se ao orbicular da boca.',
+    inervacao: 'Ramos bucais do nervo facial (VII).',
+    nota: 'Fica profundo ao orbicular da boca, e muitos textos o descrevem como fascículos desse músculo. Posição desenhada por código (aproximada).',
+  }),
+  mus('incisivo_labio_inf', 'Incisivo do lábio inferior', 'M. incisivus labii inferioris', 'mimica', {
+    proc: [{ kind: 'ribbon', proj: 'z+', inset: 0.075, thick: 0.014, path: [[0.12, -0.915], [0.21, -0.87], [0.3, -0.795]], width: [0.035, 0.035, 0.03] }],
+  }, {
+    acao: 'Ajuda o orbicular da boca a manter e a fruncir o lábio inferior e a fixar o ângulo da boca (modíolo).',
+    origem: 'Fossa incisiva da mandíbula (abaixo do incisivo lateral).',
+    insercao: 'Modíolo no ângulo da boca, misturando-se ao orbicular da boca.',
+    inervacao: 'Ramos bucais e ramo marginal da mandíbula do nervo facial (VII).',
+    nota: 'Fica profundo ao orbicular da boca e ao abaixador do lábio inferior; também descrito como parte do orbicular. Posição desenhada por código (aproximada).',
+  }),
+  mus('temporoparietal', 'Temporoparietal', 'M. temporoparietalis', 'mimica', {
+    proc: [{ kind: 'sheet', proj: 'x+', inset: 0.03, thick: 0.01, minDepth: 0.006, nf: 20, nc: 8,
+      A: [[-0.05, 0.5], [0.1, 0.53], [0.28, 0.48]],
+      B: [[-0.12, 0.4], [0.1, 0.4], [0.3, 0.3]] }],
+  }, {
+    acao: 'Tensiona a gálea aponeurótica e, com o auricular superior, move o couro cabeludo e a orelha (efeito fraco).',
+    origem: 'Fáscia temporoparietal, acima da orelha, na região do auricular superior.',
+    insercao: 'Gálea aponeurótica, lateralmente.',
+    inervacao: 'Ramos temporais do nervo facial (VII).',
+    nota: 'Lâmina muito fina e variável, que muitos descrevem como parte da própria fáscia temporoparietal (a “fáscia temporal superficial”, continuação do SMAS) ou do auricular superior. A fáscia carrega a artéria temporal superficial e é a camada usada em retalhos de reconstrução. Posição desenhada por código (aproximada).',
+  }, { label: false }),
+
+  /* ───────── F2.7 Músculos lisos do olho e da pálpebra: dentro do bulbo, sob a íris e a esclera; esquemáticos ───────── */
+  mus('ciliar', 'Músculo ciliar', 'M. ciliaris', 'orbita', {
+    proc: [{ kind: 'torus', c: [0.298, -0.173, 0.735], axis: [0, 0, 1], R: 0.078, rb: 0.008, rn: 0.011, nf: 56, nc: 10 }],
+  }, {
+    acao: 'Ao contrair-se, relaxa as fibras da zônula que sustentam o cristalino, que se torna mais convexo e permite a acomodação para ver de perto.',
+    origem: 'Esporão escleral e malha trabecular, no ângulo iridocorneano.',
+    insercao: 'Estroma do corpo ciliar e da coroide: fibras meridionais (de Brücke), radiais e circulares (de Müller).',
+    inervacao: 'Parassimpático: nervo oculomotor (III), pelo gânglio ciliar e pelos nervos ciliares curtos.',
+    nota: 'Músculo liso, de contração involuntária, em anel atrás da íris, no corpo ciliar. Com a idade o cristalino perde elasticidade (presbiopia) e a acomodação diminui, embora o músculo continue a agir. Colírios que o paralisam (atropina) causam cicloplegia e visão borrada de perto. Representado como um anel esquemático (posição e proporções aproximadas).',
+  }, { label: false }),
+  mus('esfincter_pupila', 'Esfíncter da pupila', 'M. sphincter pupillae', 'orbita', {
+    proc: [{ kind: 'torus', c: [0.298, -0.173, 0.769], axis: [0, 0, 1], R: 0.022, rb: 0.007, rn: 0.0045, nf: 40, nc: 8 }],
+  }, {
+    acao: 'Contrai a pupila (miose), no reflexo fotomotor (luz forte) e na acomodação para perto.',
+    origem: 'Não tem origem óssea: forma um anel de fibras musculares lisas no estroma da íris, junto à margem pupilar.',
+    insercao: 'As fibras circulares inserem-se no próprio anel e nas fibras radiais vizinhas.',
+    inervacao: 'Parassimpático: nervo oculomotor (III), pelo gânglio ciliar e pelos nervos ciliares curtos.',
+    nota: 'Na lesão do oculomotor a pupila dilata e não reage à luz; na compressão por aneurisma da artéria comunicante posterior, as fibras parassimpáticas, periféricas no nervo, são as primeiras atingidas. Representado como um anel esquemático dentro do modelo da íris (posição e proporções aproximadas).',
+  }, { label: false }),
+  mus('dilatador_pupila', 'Dilatador da pupila', 'M. dilator pupillae', 'orbita', {
+    proc: [{ kind: 'torus', c: [0.298, -0.173, 0.767], axis: [0, 0, 1], R: 0.04, rb: 0.016, rn: 0.003, nf: 48, nc: 8 }],
+  }, {
+    acao: 'Dilata a pupila (midríase) com pouca luz e em situações de medo ou dor.',
+    origem: 'Fibras radiais, na face posterior da íris, junto ao epitélio pigmentar (derivam do epitélio e não do mesênquima).',
+    insercao: 'Esfíncter da pupila (na margem pupilar) e raiz da íris (na periferia).',
+    inervacao: 'Simpático: tronco simpático cervical (neurônios do gânglio cervical superior), pelo plexo carotídeo interno e pelos nervos ciliares longos (ramos do nasociliar, V1).',
+    nota: 'Na síndrome de Horner (lesão da via simpática) o músculo falha: a pupila fica pequena (miose), com ptose leve (tarsal superior) e, no lado afetado, sem suor na face. Representado como um anel plano esquemático dentro do modelo da íris (posição e proporções aproximadas).',
+  }, { label: false }),
+  mus('tarsal_sup', 'Tarsal superior (de Müller)', 'M. tarsalis superior', 'orbita', {
+    proc: [{ kind: 'tube', pts: [[0.2, -0.09, 0.74], [0.25, -0.06, 0.78], [0.3, -0.04, 0.79], [0.36, -0.06, 0.78], [0.41, -0.09, 0.745]], ref: [0, 0, 1], width: 0.035, thick: 0.008, taper: 'blunt', nf: 28, nc: 8 }],
+  }, {
+    acao: 'Eleva a pálpebra superior em cerca de 2 mm, mantendo a fenda palpebral aberta, em complemento ao levantador da pálpebra superior.',
+    origem: 'Face inferior (profunda) da parte final do músculo levantador da pálpebra superior.',
+    insercao: 'Margem superior da placa tarsal superior.',
+    inervacao: 'Simpático: tronco simpático cervical (gânglio cervical superior), pelo plexo carotídeo interno e ramos que acompanham os nervos oculomotor e oftálmico.',
+    nota: 'Músculo liso, sob a conjuntiva. A perda da inervação simpática (síndrome de Horner) causa a ptose leve (2 mm), em geral com pupila pequena. Representado como uma faixa esquemática sobre a margem superior do tarso (posição aproximada).',
+  }, { label: false }),
+  mus('tarsal_inf', 'Tarsal inferior', 'M. tarsalis inferior', 'orbita', {
+    proc: [{ kind: 'tube', pts: [[0.2, -0.265, 0.74], [0.25, -0.29, 0.775], [0.3, -0.3, 0.785], [0.36, -0.29, 0.775], [0.41, -0.265, 0.74]], ref: [0, 0, 1], width: 0.03, thick: 0.008, taper: 'blunt', nf: 28, nc: 8 }],
+  }, {
+    acao: 'Abaixa discretamente a pálpebra inferior e a mantém firme.',
+    origem: 'Bainha do músculo reto inferior (fáscia capsulopalpebral).',
+    insercao: 'Margem inferior da placa tarsal inferior.',
+    inervacao: 'Simpático: tronco simpático cervical (gânglio cervical superior), pelo plexo carotídeo interno.',
+    nota: 'Músculo liso, menor e menos conhecido que o tarsal superior; na síndrome de Horner a pálpebra inferior se eleva um pouco (“ptose invertida”). Representado como uma faixa esquemática sob a margem inferior do tarso (posição aproximada).',
+  }, { label: false }),
 ];

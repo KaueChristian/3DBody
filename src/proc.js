@@ -252,8 +252,49 @@ function buildTube(spec, side, lm, S) {
   return { geometry: g, anchors };
 }
 
+/**
+ * Anel (toroide) em torno de um eixo, de seção elíptica: esfíncteres e músculos circulares (pupila, corpo ciliar, uretra).
+ * { kind: 'torus', c: [x,y,z], axis: [x,y,z], R: raio do anel, rb: meia-largura radial, rn: meia-espessura axial }
+ */
+function buildTorus(spec, side) {
+  const c = new THREE.Vector3(...spec.c);
+  const ax = new THREE.Vector3(...(spec.axis ?? [0, 0, 1])).normalize();
+  if (side < 0) {
+    c.x = -c.x;
+    ax.x = -ax.x;
+  }
+  const up = Math.abs(ax.y) < 0.9 ? new THREE.Vector3(0, 1, 0) : new THREE.Vector3(1, 0, 0);
+  const e1 = new THREE.Vector3().crossVectors(ax, up).normalize();
+  const e2 = new THREE.Vector3().crossVectors(ax, e1).normalize();
+  const nf = spec.nf ?? 48;
+  const nc = spec.nc ?? 10;
+  const pos = [];
+  const uv = [];
+  const r = new THREE.Vector3();
+  for (let i = 0; i <= nf; i++) {
+    const t = (i / nf) * Math.PI * 2;
+    r.copy(e1).multiplyScalar(Math.cos(t)).addScaledVector(e2, Math.sin(t));
+    for (let j = 0; j <= nc; j++) {
+      const a = (j / nc) * Math.PI * 2;
+      const rad = spec.R + spec.rb * Math.cos(a);
+      const ax_ = spec.rn * Math.sin(a);
+      pos.push(c.x + r.x * rad + ax.x * ax_, c.y + r.y * rad + ax.y * ax_, c.z + r.z * rad + ax.z * ax_);
+      uv.push(j / nc, i / nf);
+    }
+  }
+  const g = finishGeometry(pos, uv, gridIndices(nf, nc), nf, nc, true, 0.7);
+  // a seção em a = 0 é a face externa (rad máximo): a normal tem de apontar para fora do eixo do anel
+  const nrm = g.attributes.normal;
+  const k = 0;
+  const out = r.copy(e1);
+  if (nrm.getX(k) * out.x + nrm.getY(k) * out.y + nrm.getZ(k) * out.z < 0) flip(g);
+  const anchors = [{ pos: c.clone().addScaledVector(e1, spec.R + spec.rb), normal: e1.clone() }];
+  return { geometry: g, anchors };
+}
+
 /** @param {object} spec @param {number} side +1 esquerdo / -1 direito @param {import('./surfaces.js').Surfaces} S @param {(name:string)=>THREE.Vector3} lm */
 export function buildProc(spec, side, S, lm) {
+  if (spec.kind === 'torus') return buildTorus(spec, side);
   return spec.kind === 'tube' ? buildTube(spec, side, lm, S) : buildSurfacePart(spec, side, S);
 }
 

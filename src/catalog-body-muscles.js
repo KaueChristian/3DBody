@@ -3,7 +3,7 @@
  * Malhas reais do BodyParts3D (`parts`) ou geometria procedural (`proc`) quando o banco não possui o músculo.
  */
 
-const bm = (id, name, latin, layer, region, geom, d, extra = {}) => ({
+export const bm = (id, name, latin, layer, region, geom, d, extra = {}) => ({
   kind: 'musculo',
   id,
   name,
@@ -20,7 +20,7 @@ const bm = (id, name, latin, layer, region, geom, d, extra = {}) => ({
   nota: d.nota,
   ...extra,
 });
-const P = (...ids) => ({ parts: ids });
+export const P = (...ids) => ({ parts: ids });
 
 export const BODY_MUSCLES = [
   /* ═════════════ Tórax anterior e cintura escapular ═════════════ */
@@ -303,6 +303,28 @@ export const BODY_MUSCLES = [
     inervacao: 'Ramos anteriores dos nervos espinais C2–C6.',
     nota: 'É o mais medial e o mais longo dos pré-vertebrais, colado à face anterior dos corpos vertebrais, atrás da faringe e do esôfago; o longo da cabeça fica lateral e acima dele. O BodyParts3D só traz o lado esquerdo: o direito é uma cópia espelhada.',
   }),
+  /* ───────── Coluna cervical: músculos curtos que o BodyParts3D traz (cobertura da F2) ───────── */
+  bm('intertransversarios_cerv_ant', 'Intertransversários cervicais anteriores', 'Mm. intertransversarii anteriores cervicis', 'prof', 'cabeca', P('intertransversarios_cerv_ant'), {
+    acao: 'Inclinam o pescoço para o mesmo lado e estabilizam a coluna cervical; aproximam os processos transversos vizinhos.',
+    origem: 'Tubérculo anterior do processo transverso de uma vértebra cervical.',
+    insercao: 'Tubérculo anterior do processo transverso da vértebra imediatamente acima.',
+    inervacao: 'Ramos anteriores dos nervos espinais cervicais (C2–C8).',
+    nota: 'Pares de feixes curtos entre as vértebras C2 e C7, separados pelo nervo espinal que passa entre os feixes anterior e posterior. Têm pouca força e muitos receptores de propriocepção: informam a posição da coluna cervical.',
+  }),
+  bm('intertransversarios_cerv_post', 'Intertransversários cervicais posteriores', 'Mm. intertransversarii posteriores cervicis', 'prof', 'cabeca', P('intertransversarios_cerv_post'), {
+    acao: 'Inclinam o pescoço para o mesmo lado e estabilizam a coluna cervical.',
+    origem: 'Tubérculo posterior do processo transverso de uma vértebra cervical.',
+    insercao: 'Tubérculo posterior do processo transverso da vértebra imediatamente acima.',
+    inervacao: 'Ramos posteriores dos nervos espinais cervicais; o feixe lateral recebe também ramos anteriores, segundo algumas fontes.',
+    nota: 'Cada nível tem, de fato, dois feixes posteriores, o medial e o lateral; o banco os traz como um conjunto. Têm função sobretudo proprioceptiva, como os anteriores. As fontes divergem sobre a inervação do feixe lateral (ramo anterior ou posterior).',
+  }),
+  bm('interespinais_cervicais', 'Interespinais cervicais', 'Mm. interspinales cervicis', 'prof', 'cabeca', P('interespinais_cervicais'), {
+    acao: 'Estendem a coluna cervical e a estabilizam, aproximando os processos espinhosos vizinhos.',
+    origem: 'Face superior do processo espinhoso de uma vértebra cervical (de C2 a C7).',
+    insercao: 'Face inferior do processo espinhoso da vértebra imediatamente acima.',
+    inervacao: 'Ramos posteriores dos nervos espinais cervicais.',
+    nota: 'Pares de feixes de cada lado do ligamento interespinal, em geral de C2 a C7, mais desenvolvidos que os torácicos. São músculos posturais de ajuste fino, ricos em propriocepção.',
+  }),
   bm('reto_ant_cabeca', 'Reto anterior da cabeça', 'M. rectus capitis anterior', 'prof', 'cabeca', P('reto_ant_cabeca'), {
     acao: 'Flete a cabeça na articulação atlantoccipital (movimento de “sim”).',
     origem: 'Massa lateral do atlas.',
@@ -547,13 +569,68 @@ export const BODY_MUSCLES = [
     insercao: 'Corpo do períneo (centro tendíneo).',
     inervacao: 'Nervo retal inferior (ramo do pudendo, S2–S4).',
   }),
-  bm('perineo_superficial', 'Músculos perineais superficiais', 'Mm. perinei superficiales', 'prof', 'tronco', P('perineo_superficial'), {
-    acao: 'Fixam o centro tendíneo do períneo; auxiliam a ereção e a ejaculação / constrição vaginal (bulboesponjoso e isquiocavernoso).',
-    origem: 'Túber isquiático e ramo do ísquio; corpo do períneo.',
-    insercao: 'Corpo do períneo, bulbo do pênis/vestíbulo e corpos cavernosos.',
-    inervacao: 'Ramo perineal do nervo pudendo (S2–S4).',
-    nota: 'Inclui o transverso superficial do períneo, o bulboesponjoso e o isquiocavernoso.',
+  bm('puborretal', 'Puborretal', 'M. puborectalis', 'prof', 'tronco', P('puborretal'), {
+    acao: 'Forma uma alça atrás da junção anorretal e a puxa para a frente, mantendo o ângulo anorretal (cerca de 90° em repouso), peça-chave da continência fecal; relaxa na defecação.',
+    origem: 'Face posterior do corpo do púbis, de cada lado da sínfise púbica.',
+    insercao: 'Forma uma alça (em “U”) atrás do reto, onde se une ao músculo do lado oposto; as fibras mais baixas se misturam ao esfíncter externo do ânus.',
+    inervacao: 'Nervo para o levantador do ânus (S3–S4), pela face superior, e ramo retal inferior do nervo pudendo, pela face inferior.',
+    nota: 'É a parte mais medial e inferior do levantador do ânus. As fontes divergem sobre sua classificação: algumas a tratam como parte do pubococcígeo, outras como músculo separado, ou ainda como parte do esfíncter externo. Sua lesão obstétrica contribui para incontinência fecal.',
   }),
+  bm('obturador_interno', 'Obturador interno', 'M. obturator internus', 'prof', 'tronco', P('obturador_interno'), {
+    acao: 'Roda lateralmente a coxa estendida e abduz a coxa fletida; ajuda a manter a cabeça do fêmur no acetábulo.',
+    origem: 'Face interna (pélvica) da membrana obturadora e das margens do forame obturado, no púbis e no ísquio.',
+    insercao: 'Face medial do grande trocânter do fêmur (fossa trocantérica anterior ao tendão do piriforme). O tendão sai da pelve pelo forame isquiático menor, dobrando-se sobre o ísquio.',
+    inervacao: 'Nervo para o obturador interno e gêmeo superior (plexo sacral, L5–S2).',
+    nota: 'Reveste a parede lateral da pelve. A fáscia que o cobre dá origem ao arco tendíneo do levantador do ânus e forma o canal do pudendo (de Alcock), por onde correm o nervo e os vasos pudendos. O fêmur ainda não está no modelo: o tendão termina no limite do que foi modelado. Os segmentos do nervo variam: L5–S1 em Moore e L5–S2 no Gray’s.',
+  }),
+  /* F2.8 — o BodyParts3D só traz um “músculo perineal” (na verdade o esfíncter do ânus, em duas cópias); os músculos
+     do períneo urogenital são modelados por código a partir de pontos medidos no ramo isquiopúbico (z = −0,3 a 0,3, y ≈ −7,7 a −7,85). O modelo
+     do banco é masculino e não tem o pênis nem o bulbo: a forma é indicativa. */
+  bm('bulboesponjoso', 'Bulboesponjoso', 'M. bulbospongiosus', 'prof', 'tronco', {
+    proc: [{ kind: 'tube', pts: [[0.02, -7.9, -0.36], [0.05, -7.9, -0.2], [0.055, -7.88, -0.04], [0.05, -7.84, 0.12]], ref: [0.4, -0.9, 0], width: 0.07, thick: 0.05, taper: 'blunt', nf: 24, nc: 8 }],
+  }, {
+    acao: 'No homem, comprime o bulbo do pênis e a uretra esponjosa, esvaziando-a no fim da micção e na ejaculação, e ajuda a ereção. Na mulher, comprime o bulbo do vestíbulo e atua como esfíncter da vagina.',
+    origem: 'Homem: rafe mediana do bulbo e corpo do períneo. Mulher: corpo do períneo.',
+    insercao: 'Homem: fáscia do bulbo do pênis e membrana perineal; fibras anteriores chegam ao dorso do pênis. Mulher: corpos cavernosos do clitóris e fáscia do bulbo do vestíbulo.',
+    inervacao: 'Ramo perineal do nervo pudendo (S2–S4).',
+    nota: 'Cobre o bulbo do pênis (ou do vestíbulo) e é um dos músculos do triângulo urogenital superficial. O modelo é masculino e sem o pênis: forma e posição indicativas. Sua paralisia contribui para o gotejamento pós-miccional.',
+  }),
+  bm('isquiocavernoso', 'Isquiocavernoso', 'M. ischiocavernosus', 'prof', 'tronco', {
+    proc: [{ kind: 'tube', pts: [[0.4, -7.85, -0.33], [0.35, -7.82, -0.2], [0.29, -7.8, -0.08], [0.22, -7.76, 0.05], [0.16, -7.7, 0.16]], ref: [-0.5, -0.85, 0], width: 0.07, thick: 0.045, taper: 'blunt', nf: 28, nc: 8 }],
+  }, {
+    acao: 'Comprime o crus do pênis ou do clitóris e o fixa ao ramo isquiopúbico, mantendo a ereção ao dificultar o retorno venoso.',
+    origem: 'Face interna do túber isquiático e do ramo do ísquio, de cada lado.',
+    insercao: 'Faces laterais e inferior do crus do pênis (ou do clitóris), na túnica albugínea.',
+    inervacao: 'Ramo perineal do nervo pudendo (S2–S4).',
+    nota: 'Recobre o crus e o ramo isquiopúbico, formando o limite lateral do triângulo urogenital. Em textos antigos é chamado de “ereitor do pênis”. Forma e posição indicativas (o modelo não tem o pênis).',
+  }),
+  bm('transverso_superficial_perineo', 'Transverso superficial do períneo', 'M. transversus perinei superficialis', 'prof', 'tronco', {
+    proc: [{ kind: 'tube', pts: [[0.36, -7.84, -0.29], [0.2, -7.88, -0.33], [0.05, -7.9, -0.36]], ref: [0, 1, 0], width: 0.035, thick: 0.018, taper: 'blunt', nf: 20, nc: 8 }],
+  }, {
+    acao: 'Estabiliza o corpo do períneo (centro tendíneo), reforçando o assoalho da pelve.',
+    origem: 'Face interna do ramo do ísquio, perto do túber isquiático.',
+    insercao: 'Corpo do períneo (centro tendíneo), onde se funde ao músculo do lado oposto, ao bulboesponjoso e ao esfíncter externo do ânus.',
+    inervacao: 'Ramo perineal do nervo pudendo (S2–S4).',
+    nota: 'Faixa fina e inconstante, às vezes ausente ou só unilateral. É o limite posterior do triângulo urogenital superficial. Forma e posição indicativas.',
+  }),
+  bm('transverso_profundo_perineo', 'Transverso profundo do períneo', 'M. transversus perinei profundus', 'prof', 'tronco', {
+    proc: [{ kind: 'tube', pts: [[0.26, -7.72, -0.1], [0.15, -7.73, -0.11], [0.04, -7.73, -0.12]], ref: [0, 1, 0], width: 0.05, thick: 0.025, taper: 'blunt', nf: 18, nc: 8 }],
+  }, {
+    acao: 'Estabiliza o corpo do períneo e sustenta a membrana perineal; fixa as estruturas do períneo urogenital.',
+    origem: 'Face interna do ramo do ísquio.',
+    insercao: 'Corpo do períneo (centro tendíneo) com algumas fibras na parede da vagina ou da próstata.',
+    inervacao: 'Ramo perineal (ramo profundo) do nervo pudendo (S2–S4).',
+    nota: 'Fica na bolsa profunda do períneo, acima da membrana perineal, com o esfíncter externo da uretra. A anatomia do “diafragma urogenital” é discutida: o termo clássico foi substituído por membrana perineal e bolsa profunda, e na mulher alguns autores duvidam de que o transverso profundo seja um músculo distinto. Forma e posição indicativas.',
+  }),
+  bm('esfincter_uretra', 'Esfíncter externo da uretra', 'M. sphincter urethrae externus', 'prof', 'tronco', {
+    proc: [{ kind: 'torus', c: [0, -7.7, 0.1], axis: [0, 1, 0], R: 0.05, rb: 0.016, rn: 0.02, nf: 40, nc: 10 }],
+  }, {
+    acao: 'Comprime a uretra membranácea e mantém a continência urinária voluntária; contrai-se para interromper o jato da urina.',
+    origem: 'Ramos isquiopúbicos, na margem do arco púbico (fibras que se estendem também ao colo da bexiga e à próstata no homem).',
+    insercao: 'Forma um anel em torno da uretra membranácea; na mulher, fibras do esfíncter uretrovaginal e do compressor da uretra circundam a uretra e a vagina.',
+    inervacao: 'Ramo perineal (ramo profundo) do nervo pudendo (S2–S4).',
+    nota: 'É o esfíncter voluntário (estriado); o esfíncter interno, liso, do colo da bexiga é autônomo. A incontinência por esforço após a prostatectomia radical decorre da lesão dele ou de seu nervo. Representado como um anel esquemático em torno da uretra, que o modelo ainda não traz.',
+  }, { paired: false }),
 
   /* ═════════════ Ombro ═════════════ */
   bm('delt_clav', 'Deltoide — parte clavicular', 'M. deltoideus, pars clavicularis', 'sup', 'membro_sup', P('delt_clav'), {

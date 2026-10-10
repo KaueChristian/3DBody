@@ -11,7 +11,7 @@
  * Netter — Atlas de anatomia humana (7ª ed.); Terminologia Anatômica (FIPAT, 2019).
  */
 
-const nervo = (id, name, latin, region, geom, d, extra = {}) => ({
+export const nervo = (id, name, latin, region, geom, d, extra = {}) => ({
   kind: 'nervo',
   layer: 'nervo',
   id,
@@ -31,19 +31,19 @@ const nervo = (id, name, latin, region, geom, d, extra = {}) => ({
 });
 
 /* ───────── pontos usados por vários nervos ───────── */
-const SK = (p, d) => ({ skin: true, p, d });
+export const SK = (p, d) => ({ skin: true, p, d });
 /** Raio de `from` na direção `dir` até a primeira superfície de `id`; d > 0 recua em direção à origem. */
-const CAST = (id, from, dir, d) => ({ cast: id, from, dir, d });
+export const CAST = (id, from, dir, d) => ({ cast: id, from, dir, d });
 
 // discos intervertebrais (altura y e margem posterior z), medidos no modelo
-const DISC = {
+export const DISC = {
   C2: [-0.884, -0.157], C3: [-1.053, -0.125], C4: [-1.201, -0.111], C5: [-1.364, -0.099], C6: [-1.518, -0.11], C7: [-1.683, -0.151],
   T1: [-1.859, -0.2], T2: [-2.063, -0.296], T3: [-2.277, -0.389], T4: [-2.504, -0.48], T5: [-2.753, -0.514], T6: [-3.011, -0.543],
   T7: [-3.284, -0.512], T8: [-3.539, -0.469], T9: [-3.798, -0.424], T10: [-4.077, -0.35], T11: [-4.361, -0.287], T12: [-4.72, -0.22],
   L1: [-4.952, -0.103], L2: [-5.267, -0.071], L3: [-5.613, -0.103], L4: [-5.937, -0.193], L5: [-6.257, -0.313],
 };
 /** Forame intervertebral de saída do nervo espinal `n` (C3–C8 saem acima da vértebra de mesmo número; T e L, abaixo). */
-function foramen(n) {
+export function foramen(n) {
   const key = { C3: 'C2', C4: 'C3', C5: 'C4', C6: 'C5', C7: 'C6', C8: 'C7' }[n] ?? n;
   const [y, z] = DISC[key];
   const x = n[0] === 'L' ? 0.23 : n[0] === 'C' ? 0.19 : 0.18;
@@ -51,10 +51,10 @@ function foramen(n) {
 }
 
 // forame mentual (face externa do corpo da mandíbula, abaixo do 2º pré-molar)
-const MENTUAL = CAST('mandibula', [0.6, -0.88, 1.15], [-0.33, 0, -0.43], 0.0);
+export const MENTUAL = CAST('mandibula', [0.6, -0.88, 1.15], [-0.33, 0, -0.43], 0.0);
 
 // sulco costal (borda inferior interna) de cada costela, de trás para a frente — medido nas malhas
-const RIB = {
+export const RIB = {
   1: [[0.141, -1.766, -0.066], [0.236, -1.766, -0.095], [0.397, -1.807, -0.087], [0.408, -1.846, -0.035], [0.592, -1.907, 0.001], [0.64, -1.988, 0.078], [0.66, -2.052, 0.159], [0.627, -2.12, 0.26], [0.585, -2.19, 0.345], [0.515, -2.242, 0.423]],
   2: [[0.153, -1.901, -0.145], [0.361, -1.889, -0.231], [0.456, -1.905, -0.21], [0.549, -1.938, -0.17], [0.713, -2.007, -0.151], [0.814, -2.087, -0.059], [0.927, -2.187, 0.046], [0.88, -2.28, 0.17], [0.846, -2.348, 0.29], [0.76, -2.45, 0.43], [0.661, -2.534, 0.572], [0.55, -2.58, 0.67], [0.463, -2.605, 0.756]],
   3: [[0.137, -2.114, -0.283], [0.362, -2.096, -0.386], [0.535, -2.108, -0.446], [0.711, -2.145, -0.41], [0.8, -2.191, -0.372], [0.952, -2.292, -0.247], [0.996, -2.38, -0.109], [1.03, -2.476, 0.032], [1.0, -2.58, 0.24], [0.95, -2.684, 0.434], [0.82, -2.78, 0.6], [0.685, -2.846, 0.757], [0.477, -2.877, 0.919]],
@@ -69,20 +69,20 @@ const RIB = {
   12: [[0.248, -4.603, -0.318], [0.48, -4.809, -0.515], [0.633, -4.977, -0.514], [0.718, -5.11, -0.421], [0.773, -5.203, -0.303], [0.805, -5.227, -0.246]],
 };
 /** Ponto do sulco costal deslocado para baixo da costela e para dentro do tórax (onde corre o feixe intercostal). */
-function groove(p) {
+export function groove(p) {
   const dx = -p[0];
   const dz = 0.15 - p[2];
   const l = Math.hypot(dx, dz) || 1;
   return [p[0] + (dx / l) * 0.025, p[1] - 0.014, p[2] + (dz / l) * 0.025];
 }
 /** Suaviza o sulco costal (a borda inferior medida oscila entre as faces interna e externa da costela). */
-function smoothRib(pts) {
+export function smoothRib(pts) {
   return pts.map((p, i) => {
     if (i === 0 || i === pts.length - 1) return p;
     return p.map((v, k) => 0.25 * pts[i - 1][k] + 0.5 * v + 0.25 * pts[i + 1][k]);
   });
 }
-const CART = { 1: [0.195, -2.333, 0.601], 2: [0.102, -2.514, 0.855], 3: [0.131, -2.793, 0.975], 4: [0.143, -3.051, 1.11], 5: [0.176, -3.288, 1.144], 6: [0.134, -3.457, 1.189] };
+export const CART = { 1: [0.195, -2.333, 0.601], 2: [0.102, -2.514, 0.855], 3: [0.131, -2.793, 0.975], 4: [0.143, -3.051, 1.11], 5: [0.176, -3.288, 1.144], 6: [0.134, -3.457, 1.189] };
 
 /** Nervo intercostal Tn: forame → sulco da costela → (T2–T6) ao longo da cartilagem até o esterno. */
 function intercostal(n) {
@@ -129,7 +129,7 @@ const DORSAL_PATHS = [
 ];
 
 /* ───────── plexo braquial (lado esquerdo) ───────── */
-const BP = {
+export const BP = {
   supTrunk: [0.55, -1.5, -0.05],
   midTrunk: [0.62, -1.72, -0.06],
   infTrunk: [0.55, -1.82, -0.08],
@@ -162,6 +162,8 @@ export const NERVES = [
       { m: 'reto_med', obs: 'ramo inferior', semRamo: true },
       { m: 'reto_inf', obs: 'ramo inferior', semRamo: true },
       { m: 'obliquo_inf', obs: 'ramo inferior', semRamo: true },
+      { m: 'ciliar', obs: 'parassimpático, pelo gânglio ciliar e pelos nervos ciliares curtos', semRamo: true },
+      { m: 'esfincter_pupila', obs: 'parassimpático, pelo gânglio ciliar e pelos nervos ciliares curtos', semRamo: true },
     ],
   }, {
     origem: 'Núcleo do oculomotor (motor) e núcleo de Edinger-Westphal (parassimpático), no mesencéfalo. Emerge na fossa interpeduncular.',
@@ -203,7 +205,7 @@ export const NERVES = [
   }, {
     origem: 'Divisão superior, puramente sensitiva, do gânglio trigeminal.',
     trajeto: 'Corre na parede lateral do seio cavernoso e, antes da fissura orbital superior, divide-se em nervos lacrimal, frontal (que dá os nervos supraorbital e supratroclear) e nasociliar.',
-    ramos: 'Nasociliar: nervos ciliares longos, etmoidais anterior e posterior, infratroclear e ramo comunicante com o gânglio ciliar.',
+    ramos: 'Lacrimal, frontal (com os nervos supraorbital e supratroclear) e nasociliar (com os ciliares longos, os etmoidais, o infratroclear e o ramo comunicante com o gânglio ciliar), todos com fichas próprias.',
     sensibilidade: 'Fronte, pálpebra superior, dorso do nariz, córnea e conjuntiva, seios frontal e etmoidal, parte da cavidade nasal e dura-máter da fossa anterior.',
     lesao: 'O herpes-zóster oftálmico acomete este território. Lesões na ponta do nariz (sinal de Hutchinson, ramo nasal externo do nasociliar) indicam risco de comprometimento do olho.',
     nota: 'O nervo nasociliar é a via aferente do reflexo corneano. Não inerva músculos.',
@@ -246,7 +248,7 @@ export const NERVES = [
     ramos: 'Aqui: tronco, nervos pterigóideos medial e lateral, nervo bucal e nervo auriculotemporal. Massetérico, temporais profundos, alveolar inferior, milo-hióideo e lingual têm fichas próprias.',
     sensibilidade: 'Nervo bucal: pele e mucosa da bochecha (atravessa o bucinador sem inervá-lo). Auriculotemporal: região temporal, pavilhão e meato acústico externo; leva à parótida as fibras parassimpáticas do glossofaríngeo (via gânglio ótico).',
     lesao: 'A lesão da raiz motora enfraquece a mastigação do mesmo lado. Bloqueios anestésicos do tronco (Gow-Gates) anestesiam toda a hemimandíbula.',
-    nota: 'O nervo pterigóideo medial também supre o tensor do véu palatino e o tensor do tímpano (não representados).',
+    nota: 'O nervo pterigóideo medial também dá os ramos para o tensor do véu palatino e o tensor do tímpano (ficha própria: nervos dos tensores).',
   }),
   nervo('n_masseterico', 'Nervo massetérico', 'N. massetericus', 'cabeca', {
     paths: [{ pts: [[0.26, -0.42, 0.175], [0.37, -0.405, 0.22], [0.42, -0.44, 0.31], [0.437, -0.47, 0.34], [0.47, -0.52, 0.36]], r: 0.0055 }],
@@ -334,7 +336,7 @@ export const NERVES = [
     ],
     ramos: [
       { m: 'frontal' }, { m: 'auricular_sup' }, { m: 'auricular_ant' }, { m: 'orbicular_olho', obs: 'parte superior' },
-      { m: 'corrugador' }, { m: 'depressor_supercilio' }, { m: 'procero' },
+      { m: 'corrugador' }, { m: 'depressor_supercilio' }, { m: 'procero' }, { m: 'temporoparietal' },
     ],
   }, {
     origem: 'Divisão temporofacial do plexo intraparotídeo do nervo facial (VII).',
@@ -365,7 +367,7 @@ export const NERVES = [
     ramos: [
       { m: 'bucinador' }, { m: 'orbicular_boca', obs: 'parte superior' }, { m: 'nasal' }, { m: 'depressor_septo' }, { m: 'risorio' },
       { m: 'levantador_labio' }, { m: 'levantador_labio_asa' }, { m: 'zigomatico_maior' }, { m: 'zigomatico_menor' },
-      { m: 'levantador_angulo' }, { m: 'abaixador_angulo' },
+      { m: 'levantador_angulo' }, { m: 'abaixador_angulo' }, { m: 'incisivo_labio_sup' }, { m: 'incisivo_labio_inf', obs: 'também o ramo marginal' },
     ],
   }, {
     origem: 'Plexo intraparotídeo do nervo facial (VII).',
@@ -376,7 +378,7 @@ export const NERVES = [
   nervo('n_facial_marginal', 'Ramo marginal da mandíbula do nervo facial', 'Ramus marginalis mandibularis n. facialis', 'cabeca', {
     superficial: true,
     paths: [{ pts: [[0.53, -0.6, 0.12], SK([0.58, -0.82, 0.2], -0.07), SK([0.52, -0.93, 0.45], -0.06), SK([0.4, -0.93, 0.72], -0.05), SK([0.22, -0.86, 0.92], -0.04)], r: 0.004 }],
-    ramos: [{ m: 'abaixador_angulo' }, { m: 'abaixador_labio' }, { m: 'mentual' }, { m: 'orbicular_boca', obs: 'parte inferior' }],
+    ramos: [{ m: 'abaixador_angulo' }, { m: 'abaixador_labio' }, { m: 'mentual' }, { m: 'transverso_mento' }, { m: 'orbicular_boca', obs: 'parte inferior' }],
   }, {
     origem: 'Divisão cervicofacial do plexo intraparotídeo do nervo facial (VII).',
     trajeto: 'Corre ao longo da margem inferior da mandíbula — às vezes 1 a 2 cm abaixo dela, sob o platisma —, cruza superficialmente os vasos faciais e chega aos músculos do lábio inferior e do mento.',
@@ -394,6 +396,8 @@ export const NERVES = [
     paths: [{ pts: [[0.04, -0.42, -0.09], [0.09, -0.45, -0.05], [0.12, -0.5, 0.0], [0.2, -0.6, 0.02], [0.235, -0.75, 0.04], [0.245, -0.87, 0.11], [0.205, -0.925, 0.22], [0.16, -0.9, 0.37], [0.11, -0.83, 0.52]], r: 0.009 }],
     ramos: [
       { m: 'lingua', obs: 'músculos intrínsecos e extrínsecos, exceto o palatoglosso' },
+      { m: 'genioglosso' }, { m: 'hioglosso' }, { m: 'estiloglosso' },
+      { m: 'lingua_long_sup', semRamo: true }, { m: 'lingua_long_inf', semRamo: true }, { m: 'lingua_transverso', semRamo: true }, { m: 'lingua_vertical', semRamo: true },
       { m: 'genio_hioideo', obs: 'fibras de C1 conduzidas pelo XII' },
       { m: 'tireohioideo', obs: 'fibras de C1 conduzidas pelo XII' },
     ],
@@ -429,6 +433,7 @@ export const NERVES = [
     ],
     ramos: [
       { m: 'longo_cabeca' }, { m: 'longo_pescoco', obs: 'C2–C6' }, { m: 'reto_ant_cabeca' }, { m: 'reto_lat_cabeca' },
+      { m: 'intertransversarios_cerv_ant' }, { m: 'intertransversarios_cerv_post', obs: 'feixe lateral, segundo algumas fontes' },
       { m: 'escaleno_ant', obs: 'C4–C6' }, { m: 'escaleno_med', obs: 'C3–C8' }, { m: 'escaleno_post', obs: 'C6–C8' },
       { m: 'levantador_escapula', obs: 'C3–C4' },
       { m: 'ecm', obs: 'C2–C3, dor e propriocepção', sens: true },
@@ -497,6 +502,7 @@ export const NERVES = [
       { m: 'rotadores_cervicais' }, { m: 'rotadores_toracicos' }, { m: 'rotadores_lombares' },
       { m: 'interespinais_toracicos' }, { m: 'interespinais_lombares' }, { m: 'intertransversarios_med' },
       { m: 'esplenio_cabeca' }, { m: 'esplenio_pescoco' },
+      { m: 'interespinais_cervicais' }, { m: 'intertransversarios_cerv_post' },
       { m: 'levantadores_costelas_curtos', obs: 'C8–T11' }, { m: 'levantadores_costelas_longos', obs: 'torácicos inferiores' },
     ],
     labelAt: 0.5,
@@ -617,21 +623,17 @@ export const NERVES = [
   nervo('n_axilar', 'Nervo axilar', 'N. axillaris', 'membro_sup', {
     paths: [
       { pts: [BP.postCord, [1.42, -2.56, -0.12], [1.55, -2.6, -0.3], CAST('umero', [1.75, -2.55, -1.2], [0, 0, 1], 0.045), CAST('umero', [2.8, -2.5, -0.06], [-1, 0, 0], 0.05), CAST('umero', [1.8, -2.45, 1.2], [0, 0, -1], 0.05)], r: 0.008 },
-      // nervo cutâneo lateral superior do braço
-      { pts: [[1.62, -2.63, -0.32], [1.8, -2.82, -0.4], SK([1.98, -2.9, -0.25], -0.03)], r: 0.004 },
     ],
     ramos: [{ m: 'redondo_menor', path: 0, t: [0.25, 0.55] }, { m: 'delt_esp' }, { m: 'delt_acro' }, { m: 'delt_clav' }],
   }, {
     origem: 'Fascículo posterior do plexo braquial (C5–C6).',
     trajeto: 'Passa abaixo da articulação do ombro, atravessa o espaço quadrangular (redondo menor acima, redondo maior abaixo, cabeça longa do tríceps medialmente e colo cirúrgico do úmero lateralmente) com a artéria circunflexa posterior do úmero e contorna o colo cirúrgico por trás, sob o deltoide.',
-    sensibilidade: 'Pele sobre a parte inferior do deltoide (nervo cutâneo lateral superior do braço) e articulação do ombro.',
+    sensibilidade: 'Pele sobre a parte inferior do deltoide (nervo cutâneo lateral superior do braço, ficha própria) e articulação do ombro.',
     lesao: 'Fratura do colo cirúrgico do úmero ou luxação anterior do ombro: abdução fraca (perde-se após os primeiros 15°, feitos pelo supraespinal), atrofia do deltoide (ombro “quadrado”) e dormência na face lateral do ombro.',
   }),
   nervo('n_musculocutaneo', 'Nervo musculocutâneo', 'N. musculocutaneus', 'membro_sup', {
     paths: [
       { pts: [BP.latCord, [1.42, -2.6, 0.09], { sec: 'coracobraquial', y: -2.8, at: 'c' }, { between: ['biceps_curta', 'braquial'], y: -3.3, w: 0.2 }, { between: ['biceps_longa', 'braquial'], y: -3.9, w: 0.35 }, { between: ['biceps_longa', 'braquial'], y: -4.45, w: 0.4 }, { sec: 'biceps_longa', y: -4.75, at: 'lat', d: 0.03 }], r: 0.0075 },
-      // nervo cutâneo lateral do antebraço
-      { pts: [{ sec: 'biceps_longa', y: -4.75, at: 'lat', d: 0.03 }, SK([2.42, -5.3, 0.1], -0.04), SK([2.6, -6.3, 0.2], -0.04), SK([2.68, -7.0, 0.35], -0.035)], r: 0.004 },
     ],
     ramos: [{ m: 'coracobraquial', obs: 'atravessa o músculo' }, { m: 'biceps_curta' }, { m: 'biceps_longa' }, { m: 'braquial', obs: 'maior parte' }],
   }, {
@@ -643,8 +645,6 @@ export const NERVES = [
   nervo('n_radial', 'Nervo radial', 'N. radialis', 'membro_sup', {
     paths: [
       { pts: [BP.postCord, [1.4, -2.7, -0.05], [1.55, -2.92, -0.2], { sec: 'umero', y: -3.15, at: 'post-med', d: 0.035 }, { sec: 'umero', y: -3.5, at: 'post', d: 0.035 }, { sec: 'umero', y: -3.85, at: 'post-lat', d: 0.035 }, { sec: 'umero', y: -4.1, at: 'lat', d: 0.04 }, { between: ['braquial', 'braquiorradial'], y: -4.45 }, { between: ['braquial', 'braquiorradial'], y: -4.75, add: [0, 0, 0.04] }, [2.3, -4.92, -0.02]], r: 0.009 },
-      // ramo superficial (sensitivo)
-      { pts: [[2.3, -4.92, -0.02], { sec: 'braquiorradial', y: -5.5, at: 'med', d: 0.0 }, { between: ['braquiorradial', 'ecrl'], y: -6.2 }, SK([2.74, -6.85, 0.16], -0.04), SK([2.86, -7.5, 0.34], -0.03), SK([2.95, -7.78, 0.45], -0.03)], r: 0.0045 },
     ],
     ramos: [
       { m: 'triceps_longa', path: 0, t: [0.1, 0.45] }, { m: 'triceps_lateral', path: 0 }, { m: 'triceps_medial', path: 0 },
@@ -675,20 +675,15 @@ export const NERVES = [
       { pts: [BP.medianStart, { between: ['coracobraquial', 'triceps_longa'], y: -3.0, w: 0.25 }, { between: ['biceps_curta', 'triceps_medial'], y: -3.6, w: 0.4 }, { between: ['biceps_curta', 'triceps_medial'], y: -4.2, w: 0.4 }, { sec: 'braquial', y: -4.72, at: 'ant-med', d: 0.02 }, { between: ['pronador_redondo_h', 'pronador_redondo_u'], y: -5.15 }, { between: ['fds', 'fdp'], y: -5.6 }, { between: ['fds', 'fdp'], y: -6.2 }, { between: ['fds', 'fdp'], y: -6.8 }, { between: ['fcr', 'fds'], y: -7.1, w: 0.6 }, [2.56, -7.38, 0.42], [2.6, -7.58, 0.47]], r: 0.0095 },
       // ramo recorrente (tenar)
       { pts: [[2.6, -7.55, 0.47], [2.7, -7.52, 0.53], [2.78, -7.47, 0.58]], r: 0.004 },
-      // nervos digitais palmares (polegar, indicador, médio e metade do anular)
-      { pts: [[2.6, -7.58, 0.47], [2.78, -7.72, 0.6], SK([2.95, -7.9, 0.75], -0.03)], r: 0.0045 },
-      { pts: [[2.6, -7.58, 0.47], [2.7, -7.85, 0.55], SK([2.82, -8.2, 0.72], -0.03)], r: 0.0045 },
-      { pts: [[2.6, -7.58, 0.47], [2.6, -7.9, 0.54], SK([2.66, -8.25, 0.74], -0.03)], r: 0.0045 },
     ],
     ramos: [
       { m: 'pronador_redondo_h', path: 0 }, { m: 'pronador_redondo_u', path: 0 }, { m: 'fcr', path: 0 }, { m: 'palmar_longo', path: 0 }, { m: 'fds', path: 0 },
       { m: 'abdutor_polegar_curto', path: 1 }, { m: 'flexor_polegar_curto', obs: 'cabeça superficial', path: 1 }, { m: 'oponente_polegar', path: 1 },
-      { m: 'lumbricais', obs: '1º e 2º lumbricais', path: 3 },
     ],
   }, {
     origem: 'Raízes lateral (fascículo lateral, C6–C7) e medial (fascículo medial, C8–T1), que se unem à frente da artéria axilar.',
     trajeto: 'Desce no braço junto à artéria braquial (primeiro lateral, depois medial a ela), sem ramos musculares no braço. Na fossa cubital fica medial ao tendão do bíceps e à artéria, passa entre as duas cabeças do pronador redondo e desce entre o flexor superficial e o flexor profundo dos dedos. No punho fica entre os tendões do flexor radial do carpo e do flexor superficial, sob o palmar longo, e passa pelo túnel do carpo.',
-    ramos: 'Antebraço: pronador redondo, flexor radial do carpo, palmar longo e flexor superficial; nervo interósseo anterior (ficha própria); ramo cutâneo palmar. Mão: ramo recorrente (tenares) e nervos digitais palmares (1º e 2º lumbricais e pele).',
+    ramos: 'Antebraço: pronador redondo, flexor radial do carpo, palmar longo e flexor superficial; nervo interósseo anterior (ficha própria); ramo cutâneo palmar. Mão: ramo recorrente (tenares) e nervos digitais palmares (ficha própria: pele e 1º e 2º lumbricais).',
     sensibilidade: 'Palma do lado radial e face palmar dos 3½ dedos laterais, incluindo os leitos ungueais.',
     lesao: 'Síndrome do túnel do carpo: dormência noturna nos três primeiros dedos e atrofia tenar, com a palma poupada (o ramo cutâneo palmar passa por cima do retináculo). Lesão no cotovelo: “mão de bênção” ao tentar fechar a mão e perda da pronação.',
     nota: 'O ramo recorrente é superficial na eminência tenar e vulnerável em cortes (“nervo de um milhão de dólares”). Mnemônico dos músculos da mão inervados pelo mediano: LOAF (lumbricais 1–2, oponente, abdutor curto e flexor curto do polegar).',
@@ -707,8 +702,6 @@ export const NERVES = [
       { pts: [BP.medCord, [1.4, -2.8, 0.0], { sec: 'triceps_medial', y: -3.3, at: 'med', d: 0.04 }, { sec: 'triceps_medial', y: -3.9, at: 'med', d: 0.025 }, { sec: 'triceps_medial', y: -4.4, at: 'med', d: 0.02 }, [1.76, -4.85, -0.26], { between: ['fcu_h', 'fcu_u'], y: -5.1 }, { between: ['fcu_h', 'fdp'], y: -5.7, add: [-0.02, 0, 0.02] }, { between: ['fcu_h', 'fdp'], y: -6.4, add: [-0.03, 0, 0.03] }, { sec: 'fcu_h', y: -7.1, at: 'lat', d: 0.03 }, [2.4, -7.4, 0.52]], r: 0.0085 },
       // ramo superficial (sensitivo) para o dedo mínimo e metade do anular
       { pts: [[2.4, -7.42, 0.52], [2.37, -7.62, 0.56], SK([2.3, -8.0, 0.66], -0.03)], r: 0.004 },
-      // ramo cutâneo dorsal
-      { pts: [{ between: ['fcu_h', 'fdp'], y: -6.6 }, SK([2.22, -7.0, 0.1], -0.04), SK([2.25, -7.6, 0.3], -0.03)], r: 0.004 },
     ],
     ramos: [
       { m: 'fcu_h', path: 0 }, { m: 'fcu_u', path: 0 }, { m: 'fdp', obs: 'parte medial (dedos anular e mínimo)', path: 0 },
@@ -717,7 +710,7 @@ export const NERVES = [
   }, {
     origem: 'Fascículo medial do plexo braquial (C8–T1, às vezes C7).',
     trajeto: 'Desce medial à artéria braquial; no meio do braço perfura o septo intermuscular medial e passa atrás do epicôndilo medial (túnel cubital), sem dar ramos no braço. Entra no antebraço entre as cabeças do flexor ulnar do carpo e corre sob ele, sobre o flexor profundo dos dedos. No punho passa lateral ao pisiforme, superficial ao retináculo dos flexores, pelo canal ulnar (de Guyon), e se divide em ramos superficial e profundo.',
-    ramos: 'Antebraço: flexor ulnar do carpo e metade medial do flexor profundo; ramos cutâneos palmar e dorsal. Ramo superficial: palmar curto e pele. Ramo profundo: ficha própria.',
+    ramos: 'Antebraço: flexor ulnar do carpo e metade medial do flexor profundo; ramos cutâneos palmar e dorsal (fichas próprias). Ramo superficial: palmar curto e pele. Ramo profundo: ficha própria.',
     sensibilidade: 'Lado ulnar da mão: dedo mínimo e metade medial do anular, nas faces palmar e dorsal.',
     lesao: 'No cotovelo (“osso do cotovelo”, túnel cubital): formigamento no 4º e 5º dedos, atrofia dos interósseos e garra ulnar. Sinal de Froment: ao segurar um papel entre o polegar e o indicador, o polegar flete na falange distal (adutor fraco; o flexor longo compensa).',
     nota: 'Paradoxo ulnar: a garra é mais marcada na lesão no punho do que no cotovelo, porque nesta o flexor profundo dos dedos 4–5 também fica fraco.',
@@ -823,7 +816,7 @@ export const NERVES = [
       { pts: [[0.24, -6.85, -0.47], [0.3, -7.0, -0.45], CAST('iliococcigeo', [0.32, -6.6, -0.45], [0, -1, 0], 0.02), CAST('pubococcigeo', [0.22, -6.8, -0.2], [0, -1, 0], 0.02)], r: 0.004 },
       { pts: [[0.17, -7.05, -0.62], CAST('coccigeo', [0.26, -6.7, -0.62], [0, -1, 0], 0.02)], r: 0.0035 },
     ],
-    ramos: [{ m: 'iliococcigeo' }, { m: 'pubococcigeo' }, { m: 'coccigeo', obs: 'S4–S5' }],
+    ramos: [{ m: 'iliococcigeo' }, { m: 'pubococcigeo' }, { m: 'puborretal', obs: 'S3–S4' }, { m: 'coccigeo', obs: 'S4–S5' }],
   }, {
     origem: 'Ramos diretos dos ramos anteriores de S3–S4 (nervo para o levantador do ânus) e de S4–S5 (coccígeo).',
     trajeto: 'Correm na face superior (pélvica) do diafragma da pelve e penetram o levantador do ânus e o coccígeo por cima.',
@@ -837,15 +830,30 @@ export const NERVES = [
       { pts: [[0.17, -7.05, -0.62], [0.43, -6.97, -0.55]], r: 0.005 },
       // nervo retal inferior → esfíncter externo do ânus
       { pts: [[0.43, -7.45, -0.42], [0.25, -7.62, -0.52], [0.13, -7.7, -0.56]], r: 0.004 },
+      // nervo perineal: segue o ramo isquiopúbico até o triângulo urogenital
+      { pts: [[0.36, -7.6, -0.28], [0.38, -7.76, -0.27], [0.33, -7.82, -0.15], [0.22, -7.8, -0.02], [0.14, -7.78, 0.05]], r: 0.0045 },
     ],
     ramos: [
-      { m: 'esfincter_anal_ext', obs: 'nervo retal inferior' }, { m: 'perineo_superficial', obs: 'nervo perineal' },
+      { m: 'esfincter_anal_ext', obs: 'nervo retal inferior' },
+      { m: 'bulboesponjoso', obs: 'nervo perineal', path: 4 }, { m: 'isquiocavernoso', obs: 'nervo perineal', path: 4 },
+      { m: 'transverso_superficial_perineo', obs: 'nervo perineal', path: 4 }, { m: 'transverso_profundo_perineo', obs: 'ramo profundo do nervo perineal', path: 4 },
+      { m: 'esfincter_uretra', obs: 'ramo profundo do nervo perineal', path: 4 },
       { m: 'pubococcigeo', obs: 'ramos retal inferior e perineal (face inferior)' },
+      { m: 'puborretal', obs: 'ramo retal inferior (face inferior)' },
     ],
   }, {
     origem: 'Ramos anteriores de S2, S3 e S4 (plexo sacral).',
     trajeto: 'Sai da pelve pelo forame isquiático maior abaixo do piriforme, contorna a espinha isquiática e o ligamento sacroespinal e reentra pelo forame isquiático menor no canal do pudendo (de Alcock), na parede lateral da fossa isquioanal, onde dá o nervo retal inferior, o nervo perineal e o nervo dorsal do pênis ou do clitóris.',
     sensibilidade: 'Períneo, ânus, escroto ou lábios e pênis ou clitóris.',
     lesao: 'O bloqueio do pudendo, junto à espinha isquiática, é usado no parto. Compressão no canal (ciclistas): dor e dormência perineal.',
+  }),
+  nervo('n_obturador_interno', 'Nervo para o obturador interno e gêmeo superior', 'N. musculi obturatorii interni', 'tronco', {
+    paths: [{ pts: [[0.27, -6.62, -0.3], [0.4, -6.78, -0.44], [0.5, -6.94, -0.55], [0.57, -7.08, -0.45]], r: 0.0055 }],
+    ramos: [{ m: 'obturador_interno' }],
+  }, {
+    origem: 'Plexo sacral (ramos anteriores de L5, S1 e S2).',
+    trajeto: 'Sai da pelve pelo forame isquiático maior, abaixo do piriforme, contorna a espinha isquiática, reentra pelo forame isquiático menor, lateral ao nervo pudendo, e entra no obturador interno pela face pélvica. Dá antes um ramo para o gêmeo superior.',
+    lesao: 'Raramente é lesado sozinho; faz parte das lesões do plexo sacral (fraqueza leve da rotação lateral da coxa). Pode ser aprisionado na síndrome do piriforme, por contiguidade.',
+    nota: 'O plexo sacral completo e o gêmeo superior fazem parte da etapa dos membros inferiores. Aqui só o ramo que supre um músculo já modelado.',
   }),
 ];

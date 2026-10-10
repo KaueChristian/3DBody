@@ -2,8 +2,13 @@ import { MUSCLES } from './catalog-muscles.js';
 import { BONES, OTHER_STRUCTURES } from './catalog-bones.js';
 import { LIGAMENTS, FASCIAS, GLANDS, SKIN } from './catalog-other.js';
 import { BODY_MUSCLES } from './catalog-body-muscles.js';
+import { ORAL_MUSCLES } from './catalog-muscles-oral.js';
 import { BODY_BONES } from './catalog-body-bones.js';
-import { NERVES } from './catalog-nerves.js';
+import { NERVES as NERVES_BASE } from './catalog-nerves.js';
+import { NERVES_CRANIAL } from './catalog-nerves-cranial.js';
+import { NERVES_SENSORY } from './catalog-nerves-sensory.js';
+import { NERVES_SPINAL } from './catalog-spinal.js';
+import { SEGMENTOS, SEGMENT_ORDER, AMPLOS, PROPRIOCEPTIVOS, segmentLabel } from './segments.js';
 
 /** Camadas, da mais superficial (depth 0) à mais profunda. */
 export const LAYERS = [
@@ -60,8 +65,8 @@ const HEAD_ITEMS = [SKIN, ...FASCIAS, ...MUSCLES, ...LIGAMENTS, ...GLANDS, ...OT
   ...i,
 }));
 export const HEAD_IDS = new Set(HEAD_ITEMS.map((i) => i.id));
-export const BODY_ITEMS = [...BODY_MUSCLES, ...BODY_BONES];
-export { NERVES };
+export const BODY_ITEMS = [...BODY_MUSCLES, ...ORAL_MUSCLES, ...BODY_BONES];
+export const NERVES = [...NERVES_BASE, ...NERVES_CRANIAL, ...NERVES_SENSORY, ...NERVES_SPINAL];
 export const ITEMS = [...HEAD_ITEMS, ...BODY_ITEMS, ...NERVES];
 
 /**
@@ -86,4 +91,22 @@ for (const n of NERVES) {
   for (const id of INNERVATION.keys()) if (!seen.has(id)) throw new Error(`Nervo aponta para estrutura inexistente: ${id}`);
   const semNervo = ITEMS.filter((i) => i.kind === 'musculo' && !INNERVATION.has(i.id)).map((i) => i.id);
   if (semNervo.length) throw new Error(`Músculos sem nervo no catálogo: ${semNervo.join(', ')}`);
+}
+
+// segmentos medulares (F2.14): campo estruturado `segmentos` + linha na ficha; guardas de coerência
+{
+  const byId = new Map(ITEMS.map((i) => [i.id, i]));
+  for (const [id, segs] of Object.entries(SEGMENTOS)) {
+    const item = byId.get(id);
+    if (!item) throw new Error(`Segmentos de estrutura inexistente: ${id}`);
+    const bad = segs.filter((s) => !SEGMENT_ORDER.includes(s));
+    if (bad.length) throw new Error(`Segmento inválido em ${id}: ${bad.join(', ')}`);
+    item.segmentos = segs;
+    const nota = PROPRIOCEPTIVOS.has(id) ? ' (só proprioceptivos; a parte motora é do nervo acessório)' : AMPLOS.has(id) ? ' (inervação segmentar regional, não é um miótomo clínico)' : '';
+    item.campos = [...item.campos, ['Segmentos medulares', segmentLabel(segs) + nota]];
+  }
+  // todo músculo inervado por um nervo espinal tem de dizer os seus segmentos
+  const semSegmento = ITEMS.filter((i) => i.kind === 'musculo' && !i.segmentos
+    && (INNERVATION.get(i.id) ?? []).some((l) => SEGMENTOS[l.nervo]));
+  if (semSegmento.length) throw new Error(`Músculos sem segmentos medulares: ${semSegmento.map((i) => i.id).join(', ')}`);
 }
