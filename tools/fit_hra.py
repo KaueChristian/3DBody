@@ -7,7 +7,9 @@ posição anatômica, x para a esquerda do sujeito, y para cima, z para a frente
   · a distância das faces lateral, posterior e anterior às costelas, às cartilagens costais, ao esterno e à coluna;
   · o quanto os pulmões passam para fora do envelope interno da caixa torácica;
   · o quanto os pulmões entram no coração (o encaixe é a incisura cardíaca do pulmão esquerdo);
-  · a distância do ápice à 1ª costela e a dos hilos às pontas das artérias pulmonares.
+  · a distância do ápice à 1ª costela e a dos hilos às pontas das artérias pulmonares;
+  · a distância dos brônquios lobares e segmentares do HRA aos brônquios do BodyParts3D (os dois são a mesma árvore);
+  · o quanto os brônquios segmentares do BodyParts3D ficam para fora do casco de cada pulmão (as pontas têm de estar dentro).
 Resultado em hra_transform.json (lido por convert_hra.py). Uso (em tools/):  python fit_hra.py
 """
 import json
@@ -44,7 +46,7 @@ def cloud(items):
 
 
 def main():
-    body, circ = pack_pieces("body"), pack_pieces("circ")
+    body, circ, resp = pack_pieces("body"), pack_pieces("circ"), pack_pieces("resp")
     ribs = cloud([body[f"costela_{i}"] for i in range(1, 13)])
     cart = cloud([body[f"cartilagem_costal_{i}"] for i in range(1, 8)])
     stern = cloud([body[k] for k in ("esterno_manubrio", "esterno_corpo", "esterno_xifoide")])
@@ -64,6 +66,20 @@ def main():
             if any(re.fullmatch(p, name) for p in pats):
                 allv.append(v)
     L = np.unique(np.round(np.concatenate(allv), 5), axis=0)
+    # brônquios: os do HRA (lobares e segmentares) contra os do BodyParts3D
+    hb = np.concatenate([v for n, (v, f) in nodes.items() if re.fullmatch(r"VH_M_.*bronchus", n) and "cartilage" not in n and "bronchopulmonary" not in n])
+    hb = hb[np.random.default_rng(3).choice(len(hb), size=min(len(hb), 2500), replace=False)]
+    bp = cloud([resp[k] for k in resp if k.startswith(("bronq", "bronquio"))])
+    t_bronq = cKDTree(bp)
+    # pontas dos brônquios segmentares do BodyParts3D (o lado vem do sinal de x) e cascos dos pulmões do HRA: a transformação é afim,
+    # então o casco do resultado é o casco original transformado e os planos se transformam sem recalcular
+    seg_pts = np.concatenate([resp[k][0] for k in resp if k.startswith("bronq_seg")])
+    seg_pts = seg_pts[np.random.default_rng(4).choice(len(seg_pts), size=min(len(seg_pts), 2500), replace=False)]
+    hulls = {}
+    for side, m in (("d", L[:, 0] < 0.004), ("e", L[:, 0] >= 0.004)):
+        hh = ConvexHull(L[m])
+        hulls[side] = (hh.equations[:, :3], hh.equations[:, 3])
+    seg_side = {"d": seg_pts[:, 0] < 0, "e": seg_pts[:, 0] >= 0}
     hil = {s: np.concatenate([nodes[n][0] for n in nodes if n.startswith("VH_M_hilum") and n.endswith("_" + suf)]).mean(0) for s, suf in (("d", "R"), ("e", "L"))}
 
     y0, y1 = L[:, 1].min(), L[:, 1].max()
@@ -138,7 +154,14 @@ def main():
         terms["coracao"] = np.mean(np.maximum(0, depth - 0.04) ** 2) * 6
         # hilos
         hp = {s: hil[s] * x[:3] + x[3:] for s in "de"}
-        terms["hilos"] = 0.4 * sum(np.sum((hp[s] - tips[s]) ** 2) for s in "de") / 2
+        terms["brônquios"] = 1.5 * np.mean(np.minimum(t_bronq.query(hb * x[:3] + x[3:])[0], 0.6) ** 2)
+        fora = 0.0
+        for side, (nrm, off) in hulls.items():
+            n2 = nrm / x[:3]
+            dist = ((seg_pts[seg_side[side]] @ n2.T) - (n2 @ x[3:]) + off) / np.linalg.norm(n2, axis=1)
+            fora += np.sum(np.maximum(0, dist.max(1) - 0.02) ** 2)
+        terms["bronquios-fora"] = 6 * fora / len(seg_pts)
+        terms["hilos"] = 0.1 * sum(np.sum((hp[s] - tips[s]) ** 2) for s in "de") / 2
         terms["forma"] = 0.02 * ((x[0] / x[2] - 1) ** 2 + (x[1] / x[0] - 1.1) ** 2)
         total = sum(terms.values())
         if report:
@@ -161,8 +184,8 @@ def main():
     P = place(None, x)
     print("pulmões no atlas: x", P[:, 0].min().round(2), P[:, 0].max().round(2), "y", P[:, 1].min().round(2), P[:, 1].max().round(2), "z", P[:, 2].min().round(2), P[:, 2].max().round(2))
     json.dump({"scale": [round(float(v), 4) for v in x[:3]], "translation": [round(float(v), 4) for v in x[3:]],
-               "nota": "ajustado por fit_hra.py (escala por eixo): diafragma, costelas, contenção na caixa torácica, coração e hilos"},
-              open(os.path.join(HERE, "hra_transform.json"), "w"), indent=1)
+               "nota": "ajustado por fit_hra.py (escala por eixo): brônquios, diafragma, costelas, contenção na caixa torácica, coração e hilos"},
+              open(os.path.join(HERE, "hra_transform.json"), "w", newline=chr(10)), indent=1)
 
 
 if __name__ == "__main__":
