@@ -136,8 +136,9 @@ articulação, os ossos e ligamentos dela ficam em destaque (**Isolar com ossos 
 - **Amplitudes**: valores de referência da AAOS (em Norkin & White); outras tabelas diferem em alguns graus e a ficha cita as
   diferenças relevantes. Fontes e decisões em [`docs/articulacoes.md`](docs/articulacoes.md).
 
-Ainda não há (próximos lotes da F3): articulações da coluna, do tórax, da pelve e da cabeça; página e quiz de movimentos; origem e
-inserção desenhadas no osso; animação.
+Ainda não há: articulações da coluna, do tórax e da cabeça; página e quiz de movimentos; origem e inserção desenhadas no osso;
+animação. Esses itens foram **adiados** para dar prioridade ao corpo inteiro e aos sistemas da disciplina (as da pelve e do membro
+inferior entram na F4) e estão listados em [`docs/pontos-de-melhoria.md`](docs/pontos-de-melhoria.md).
 
 ## Modo quiz
 

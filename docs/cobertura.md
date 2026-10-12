@@ -45,7 +45,7 @@ foi verificado no banco BodyParts3D (nome do conceito em `tools/isa_element_part
 | Intertransversários torácicos | Rudimentares, sem malha no banco |
 | Ariepiglótico e tireoepiglótico | São partes do aritenóideo oblíquo e do tireoaritenóideo; descritos na ficha desses músculos |
 | Partes dos constritores (pterigofaríngea, bucofaríngea, milofaríngea, glossofaríngea; tireofaríngea e cricofaríngea) | O atlas mostra cada constritor como um músculo só; as partes e o triângulo de Killian estão na ficha |
-| Levantador da glândula tireoide | Inconstante; entra com a tireoide (F6) |
+| Levantador da glândula tireoide | Inconstante; entra com a tireoide (F6.6; o banco não tem a glândula, ver `project_context.md` §5) |
 | Cremaster | É do canal inguinal e do cordão espermático: entra com o sistema genital (F6.4) |
 | Piriforme, gêmeos, quadrado femoral, obturador externo e demais músculos do quadril e da coxa | Membro inferior (F4) |
 
@@ -71,8 +71,9 @@ separada no BodyParts3D ou com inervação própria é uma entrada.
 
 | Item | Onde entra |
 | --- | --- |
-| Nervos cutâneos, motores e plexos lombar e sacral para o membro inferior (femoral na coxa, obturatório, glúteos, ciático e ramos, safeno, cutâneos…) | F4.5 (membros inferiores) |
-| Ramos cardíacos, pulmonares e esofágicos do vago, troncos vagais, plexos autonômicos do tórax e do abdome, tronco simpático torácico e lombar, nervos esplâncnicos | F6 (vísceras) |
+| Nervos motores do membro inferior (femoral na coxa, obturatório, glúteos, ciático e ramos) e os ramos curtos dos plexos lombar e sacral | F4.5 (núcleo do membro inferior) |
+| Nervos cutâneos do membro inferior (safeno, sural, cutâneos femorais…), plexos lombar e sacral desenhados, dermátomos L1–S2 | Adiado: M09, M10 e M11 (`docs/pontos-de-melhoria.md`) |
+| Ramos cardíacos, pulmonares e esofágicos do vago, troncos vagais, plexos autonômicos do tórax e do abdome, tronco simpático torácico e lombar, nervos esplâncnicos | Adiado: M22 (`docs/pontos-de-melhoria.md`); a F6 cita a inervação em texto |
 | Ramos do trigêmeo de calibre pequeno: alveolares superiores, nasais posteriores, faríngeo (de Bock), meníngeo médio, nervos dentais | Ficam nos textos das fichas de V1–V3 (não são desenhados) |
 | Nervo timpânico (de Jacobson), petroso menor, nervo do canal pterigóideo, petroso profundo, ramo auricular do vago, nervo meníngeo | Descritos na ficha do nervo que os origina (IX, VII, X); fios curtos demais para o modelo |
 | Ramos cutâneos laterais e anteriores dos intercostais, nervos clúnios superiores | Descritos nas fichas de origem (intercostais, ramos posteriores) |

@@ -2,7 +2,8 @@
 
 > Documento-guia do ritmo e da **ordem** do desenvolvimento. Lê-se de cima para baixo: §1–§3 dão o contexto, §4–§5 mapeiam
 > o que sites de estudo de anatomia costumam ter e onde estamos, §6 é o roteiro em fases, §7–§9 dizem como e com que cuidado
-> executar. Revisão inicial: 2026-10-05, sobre a versão **2.0.1**.
+> executar. Revisão inicial: 2026-10-05, sobre a versão **2.0.1**. **Reordenado em 2026-10-12** (corpo inteiro e sistemas do
+> cronograma da disciplina primeiro; aprofundamentos em [`docs/pontos-de-melhoria.md`](docs/pontos-de-melhoria.md)).
 > Para regras de trabalho de quem for mexer no código (pessoa ou agente), veja [`agents.md`](agents.md).
 
 ## 1. Como usar este documento
@@ -68,7 +69,7 @@ geral desses produtos, sem pesquisa nova; vale reconferir na F0.
 | A5 | Nervos (cranianos, espinais, plexos, ramos) | ★★★ | 🟡 100 nervos e gânglios: os 12 pares, plexos, sensitivos do membro superior e do pescoço, autônomos da cabeça; faltam os do membro inferior e os das vísceras |
 | A6 | Artérias e veias | ★★★ | ⬜ |
 | A7 | Sistema linfático (linfonodos, ducto torácico) | ★★ | ⬜ |
-| A8 | Vísceras: respiratório, digestório, urinário, genital, endócrino, coração | ★★★ | ⬜ |
+| A8 | Vísceras: respiratório, digestório, urinário, genital, endócrino, coração | ★★★ | ⬜ (coração na F5; demais sistemas na F6, na ordem das aulas) |
 | A9 | Sistema nervoso central (encéfalo, medula, meninges, ventrículos) | ★★★ | 🟡 medula espinal e cauda equina (esquemáticas); sem encéfalo e meninges |
 | A10 | Órgãos dos sentidos (olho, ouvido, nariz, língua) | ★★ | 🟡 globo ocular com músculos lisos, 6 extraoculares, língua e seus 8 músculos, músculos do ouvido médio (sem ossículos) |
 | A11 | Fáscias, compartimentos, bursas, bainhas sinoviais, retináculos | ★★ | 🟡 3 fáscias da cabeça + retináculo dos flexores |
@@ -153,18 +154,38 @@ geral desses produtos, sem pesquisa nova; vale reconferir na F0.
 Verificado em `tools/isa_element_parts.txt` (≈ 2 900 conceitos): o BodyParts3D cobre o **corpo inteiro**, não só o que o
 atlas usa hoje. Há malhas reais para fêmur, tíbia, patela, calcâneo, tálus, glúteos, quadríceps, sartório, gastrocnêmio;
 coração, aorta, artérias e veias (cerca de 1 900 elementos de veias), fígado, rins, estômago, pâncreas, baço, cólon,
-bexiga, próstata, tireoide, laringe, brônquios, timo, adrenais, hipófise, cerebelo e encéfalo (≈ 116 elementos).
-Isso significa que **membros inferiores, vasos e vísceras podem usar o pipeline que já existe** (`fetch_*` → `convert_*`
-→ pacote `.js`), em vez de modelagem por código.
+bexiga, próstata, laringe, brônquios, timo, adrenais, hipófise, cerebelo e encéfalo (≈ 116 elementos).
+Isso significa que **membros inferiores, vasos e a maioria das vísceras podem usar o pipeline que já existe** (`fetch_*` →
+`convert_*` → pacote `.js`), em vez de modelagem por código. **Exceções verificadas em 2026-10-12** (abaixo).
+
+**Conferência do índice em 2026-10-12** (`tools/isa_element_parts.txt`, 2 906 nomes de conceito, busca por nome):
+
+| Sistema | Tem malha no banco | **Não** encontrado no índice (por código, fonte externa ou ficha de texto) |
+| --- | --- | --- |
+| Circulatório | coração (câmaras, valvas, músculos papilares, coronárias), tronco pulmonar, artérias e veias pulmonares, arco da aorta, veias cavas, árvore vascular | **pericárdio**; **placenta, cordão e estruturas fetais** (ducto arterioso, forame oval) |
+| Respiratório | brônquios (inclui segmentos pulmonares), traqueia, laringe, diafragma | **pulmões** (nenhum conceito “lung”), **pleuras**, **mediastino** |
+| Digestório | esôfago, estômago, duodeno, jejuno, íleo, cólon, apêndice, reto, fígado (com setores), vesícula biliar, pâncreas, baço, glândulas salivares, mesentérios do intestino delgado e grosso e regiões do peritônio (qualidade a conferir) | omentos e recessos peritoneais (não encontrados por nome) |
+| Sentidos e tegumentar | olho (córnea, cristalino, íris, corioide, esclera, retina, corpo vítreo), aparelho lacrimal, orelha externa, pele e anexos, cartilagens e ossos do nariz | **membrana timpânica, ossículos, cóclea e labirinto** |
+| Urinário e genital masculino | rins, ureteres, bexiga, uretra, próstata, vesículas seminais, testículo, epidídimo, pênis (corpos cavernoso e esponjoso) | ducto deferente, glândulas bulbouretrais |
+| Genital feminino | — | **útero, tubas, ovários, vagina, vulva, mama** (nenhum) |
+| Endócrino | hipófise, pineal, hipotálamo, suprarrenais, timo | **tireoide e paratireoides** (a “tireoide” da lista antiga não existe como glândula no índice) |
+
+Antes de prometer qualquer item “fora do banco”, vale rodar o spike da F6.0 (outro índice do BodyParts3D, versão *part-of*, e
+fontes abertas) — a busca acima é só por nome no índice que o projeto já baixou.
 
 O que o BodyParts3D **não** traz (ou traz pouco) e continua sendo modelado por código ou buscado em outra fonte:
 **nervos** (só os da órbita), **ligamentos** e cápsulas (poucos, como os do pé e da laringe), **fáscias**, **bursas**,
-**linfonodos**, meniscos, músculos pequenos (mímica, laringe, ouvido médio). Os nomes de pulmões e do modelo feminino
-precisam ser conferidos no índice antes de prometer. Fontes abertas derivadas do BodyParts3D com mais estruturas
+**linfonodos**, meniscos, músculos pequenos (mímica, laringe, ouvido médio), além das lacunas da tabela acima (pulmões,
+pericárdio, aparelho genital feminino, ouvido médio e interno, tireoide). Fontes abertas derivadas do BodyParts3D com mais estruturas
 (por exemplo, o projeto Z-Anatomy) são **candidatas a avaliar**, com checagem de licença e de qualidade antes de qualquer
 uso (§9).
 
 ## 6. Roteiro em fases
+
+> **Reordenação de 2026-10-12.** A meta passou a ser **mostrar o corpo inteiro e os sistemas da disciplina o quanto antes**.
+> Cada fase abaixo tem um **núcleo** (o que entra na release) e os aprofundamentos que saíram do caminho, registrados em
+> [`docs/pontos-de-melhoria.md`](docs/pontos-de-melhoria.md) com IDs `M01…` (aparecem aqui como “→ M…”). Nada foi descartado.
+> A regra do que é núcleo está no §1 desse documento.
 
 Visão geral (a ordem é a recomendada; justificativa abaixo da tabela):
 
@@ -173,21 +194,46 @@ Visão geral (a ordem é a recomendada; justificativa abaixo da tabela):
 | F0 | 2.0.x | Alicerce: testes, CI, web, acessibilidade | M | — |
 | F1 | 2.1 | Ferramentas de estudo | G | F0 |
 | F2 | 2.2 | Fechar músculos e nervos das regiões atuais | G | F0 |
-| F3 | 2.3 | Articulações, ligamentos e movimento | GG | F2 |
-| F4 | **3.0** | Membros inferiores e pelve — osteomuscular completo | GG | F3 |
-| F5 | 3.1 | Sistema vascular | GG | F4 |
-| F6 | 3.2+ | Vísceras e sistemas (um sistema por release) | GG | F5 |
-| F7 | 3.x | Sistema nervoso central e órgãos dos sentidos | GG | F5 |
+| F3 | 2.3 | Articulações do membro superior (**F3a ✅**); o resto da F3 foi adiado → M01–M08 | M | F2 |
+| F4 | **3.0** | **Corpo inteiro**: membros inferiores e pelve, núcleo osteomuscular (ossos, músculos, nervos motores, grandes articulações) | GG | F3 |
+| F5 | 3.1 | **Coração e vasos principais** (circulatório) | G | F4 |
+| F6 | 3.2+ | **Sistemas da disciplina, um por release**, na ordem das aulas: respiratório → digestório → sentidos e tegumentar → urinário e genital masculino → genital feminino → endócrino → urogenital integrado | GG | F5 |
+| F7 | 3.x | Sistema nervoso central (encéfalo, meninges, vias) | GG | F5 |
 | F8 | contínua | Clínica e correlações | M por lote | F2, F3 em diante |
 | F9 | a avaliar | Plataforma estendida (idiomas, turma, apps) | G | F1 |
+| F10 | contínua | **Aprofundamentos adiados** (`docs/pontos-de-melhoria.md`), intercalados pelos gatilhos de cada item | M–GG por item | F4 em diante |
 
 **Por que esta ordem.** (1) F0 protege tudo o que vem depois: uma release quebrada chega a todos os usuários do `.exe`.
 (2) F1 multiplica o valor de qualquer anatomia nova e não depende de dados novos, por isso vem cedo. (3) F2 fecha lacunas
-nas regiões que o usuário já pediu “completas” (músculos e nervos) antes de abrir região nova. (4) F3 estabelece o modelo
-de articulação/movimento, de que os membros inferiores já dependem. (5) F4 reaproveita ao máximo o pipeline validado e é
-a maior lacuna visível (corpo sem pernas). (6) Vasos (F5) vêm antes de vísceras porque acompanham os nervos e entram na
-ficha de todo músculo. (7) F7 é a mais pesada em dados e tem menos reaproveitamento. F1 e F8 podem ser intercalados com
-as fases de conteúdo para manter o ritmo entre lotes grandes de dados.
+nas regiões que o usuário já pediu “completas” (músculos e nervos) antes de abrir região nova. (4) F3 estabeleceu o modelo
+de articulação/movimento; a F3a (membro superior) basta como modelo para a F4, e o restante da F3 virou aprofundamento.
+(5) **F4 vem inteira antes de qualquer víscera**: sem o corpo completo não dá para situar os sistemas (coração no tórax, rins
+na região lombar, útero na pelve) e é a maior lacuna visível (corpo sem pernas); por isso o núcleo da F4 é obrigatório e só os
+detalhes saem dela. (6) O **coração e os vasos principais (F5)** vêm logo depois, porque abrem o cronograma da disciplina e
+os vasos acompanham os nervos e as vísceras; a irrigação detalhada em todos os músculos fica para depois (M15). (7) A F6 segue a
+**ordem das aulas** (mapa abaixo), um sistema por release. (8) O sistema nervoso central (F7) é a fase mais pesada em dados e
+tem menos reaproveitamento; o olho e o ouvido saíram da F7 e foram para a F6, onde a disciplina os cobra. F1, F8 e F10 podem ser
+intercalados com as fases de conteúdo para manter o ritmo entre lotes grandes de dados.
+
+### Mapa do cronograma da disciplina (Anatomia Humana) → fases
+
+Fonte: imagem do cronograma enviada pelo responsável em 2026-10-12 (a aula de genital feminino aparece sem data própria, logo
+depois da de 17/11). O mapa serve de **critério de prioridade**, não de promessa de
+data: as aulas já começaram (08/10) e a F4 é GG.
+
+| Data(s) | Tema da aula | Fase do roteiro | Observação |
+| --- | --- | --- | --- |
+| 08/10 | Circulatório — generalidades | F5 (vasos principais) e tour da circulação | |
+| 13/10 | Coração, pericárdio, circulação fetal e anexos | F5.1 (coração), F5.2 (pericárdio esquemático) | Circulação fetal e anexos **não têm malha** → M21 (tour e ficha de texto no núcleo) |
+| 15/10, 20/10 | Circulatório — prática | F5 completa + quiz | |
+| 22/10, 27/10 | Respiratório — teórica e prática | F6.1 | Pulmões e pleuras **não estão no banco**: decidir no spike F6.0 |
+| 29/10, 03/11 | Digestório — teórica e prática | F6.2 | |
+| 05/11 | Órgãos dos sentidos e tegumentar | F6.3 | Ouvido médio e interno → M28 |
+| 10/11, 12/11 | CONPEEX (sem aula) | — | Janela para fechar pendências ou puxar um item de F10 |
+| 17/11 e seguinte | Urinário e masculino; genital feminino | F6.4 e F6.5 | Genital feminino **não está no banco** |
+| 19/11 | Endócrino | F6.6 | Tireoide e paratireoides **não estão no banco** |
+| 24/11 | Urogenital — prática | F6.7 | |
+| 26/11 | N2 — provas teórica e prática | — | Congelar: só correções |
 
 ---
 
@@ -316,32 +362,41 @@ Objetivo: a camada de **função**. Quebrar em F3a (modelo + membro superior), F
   glenoumeral (glenoumerais, coracoumeral, coracoacromial), cotovelo (colaterais, anular), radiulnares (membrana
   interóssea), radiocarpal e carpais, carpometacarpais, metacarpofalângicas e interfalângicas. **G** ✅ 13 articulações (inclui a
   escapulotorácica, funcional) e 16 ligamentos, todos por código sobre as malhas reais dos ossos.
-- [ ] **F3.3** Coluna e tórax: ligamentos longitudinais anterior e posterior, amarelo, interespinal, supraespinal, nucal,
-  atlantoccipital e atlantoaxiais, costovertebrais e radiados. **M**
-- [ ] **F3.4** Pelve: sacroilíacos, sacrotuberal, sacroespinal, inguinal, pubianos. **M**
-- [ ] **F3.5** Campo estruturado `acoes` nos músculos: `{articulacao, movimento, papel: agonista|sinergista|antagonista|fixador}`
-  → página “Movimentos”, filtro “movimento → músculos”, quiz “que músculos realizam X”. **G** 🟡 Os dados existem para o membro
-  superior, mas do lado da articulação (`movimentos` → mapa derivado `MOVEMENTS`, papéis principal e auxiliar), como os `ramos`
-  dos nervos; a ficha do músculo já mostra os movimentos. Faltam a página, o filtro, o quiz e os papéis antagonista e fixador.
-- [ ] **F3.6** **Origem e inserção desenhadas no osso** (áreas coloridas nas superfícies de origem/inserção) e acidentes
-  ósseos selecionáveis (tuberosidade deltóidea, sulco intertubercular…). Dados: pontos e regiões em `landmarks.js`. **GG**
-- [ ] **F3.7** Bursas, bainhas sinoviais, retináculos dos extensores, aponeurose palmar, fáscia toracolombar. **M**
-- [ ] **F3.8** Spike: animação de movimento por segmentos rígidos (ombro, cotovelo, punho) — decidir viabilidade antes de
-  prometer; se inviável, mostrar o movimento por poses predefinidas (antes/depois). **M**
-- [ ] **F3.9** Quizzes de função: “que ligamento limita…?”, “qual a amplitude de…?”. **P**
+**Reordenação de 2026-10-12:** a F3 **fecha na F3a**. O que sobrou dela não bloqueia o corpo inteiro e foi para
+`docs/pontos-de-melhoria.md` (os IDs F3.x continuam valendo para citar a origem):
 
-**Saída:** toda articulação sinovial do membro superior e da coluna tem ficha, ligamentos e movimentos; filtro de músculos
-por movimento funcionando; origem/inserção visíveis no osso para os músculos do membro superior.
+- [ ] **F3.3** Coluna e tórax: ligamentos e articulações. **Adiado → M01** (e a ATM → M02)
+- [ ] **F3.4** Pelve: sacroilíacos, sacrotuberal, sacroespinal, inguinal, pubianos. **Movido para a F4.6** (pertence à pelve)
+- [ ] **F3.5** Campo estruturado `acoes`/`movimentos`. 🟡 Os dados existem para o membro superior (`movimentos` → mapa derivado
+  `MOVEMENTS`, papéis principal e auxiliar); a ficha do músculo já mostra os movimentos, e **a F4.6 repete o mesmo modelo no membro
+  inferior**. Página “Movimentos”, filtro, quiz e papéis antagonista e fixador: **adiado → M03**
+- [ ] **F3.6** Origem e inserção desenhadas no osso e acidentes ósseos selecionáveis. **Adiado → M04** (primeiro a puxar depois
+  dos sistemas do cronograma)
+- [ ] **F3.7** Bursas, bainhas sinoviais, retináculos, aponeurose palmar, fáscia toracolombar. **Adiado → M05** (e M13)
+- [ ] **F3.8** Spike de animação de movimento. **Adiado → M06**
+- [ ] **F3.9** Quizzes de função. **Adiado → M07**
+- Pendências da F3a (inervação das carpometacarpais, amplitudes de abdução e adução dos dedos, recessos da cápsula). **→ M08**
+
+**Saída (reduzida):** toda articulação sinovial do **membro superior** tem ficha, ligamentos e movimentos (✅ F3a). O restante
+da saída original (coluna, filtro por movimento, origem e inserção no osso) passa a ser cobrado por M01, M03 e M04.
 
 ---
 
 ### F4 — Membros inferiores e pelve (**3.0**, osteomuscular completo) · GG
 
-Objetivo: corpo inteiro com ossos, músculos, nervos, articulações e ligamentos. Quebrar em quatro lotes, cada um entregável.
+Objetivo: **corpo inteiro** com ossos, **todos os músculos**, os nervos que ligam cada músculo e as grandes articulações com
+seus ligamentos principais. É a fase que destrava as demais (situar os sistemas no corpo) e **não se reduz abaixo do núcleo**:
+só os detalhes marcados “→ M…” saem dela. Quebrar em quatro lotes, cada um entregável.
+
+**Núcleo × adiado, em uma linha por lote:** A e B — tudo entra; C — o que tem malha entra, aponeurose plantar e músculos sem malha
+adiados; D — todos os nervos motores e os ramos musculares entram, os cutâneos, os plexos desenhados e os dermátomos adiados;
+articulações — quadril, joelho, tornozelo, subtalar, sacroilíaca e púbica entram, os detalhes do pé adiados.
 
 - [ ] **F4.1** Pipeline: estender `tools/body_parts.py` (peças por nome de conceito) e rodar `fetch_body.py`/`convert_body.py` para o membro inferior; novo pacote
   `dist/anatomy-leg.js` carregado em segundo plano (orçamento: ≤ +8 MB; decimar mais se preciso). Nova região
-  “Membro inferior” em `REGIONS`, no quiz e nos botões. **M**
+  “Membro inferior” em `REGIONS`, no quiz e nos botões. **Inclui:** (a) **inventário** das peças do membro inferior e da pelve no
+  índice, com a lista do que não tem malha (alimenta M14); (b) **decisão do orçamento de dados** (risco 2 do §9, “decidir antes da
+  F4”); (c) medir a carga com `tools/perf_mobile.js` ao fim do lote A — se piorar muito, **M37 passa na frente**. **M**
 - [ ] **F4.2** Lote A — **quadril e coxa**: ossos (fêmur, patela, quadril já existe), glúteos (máximo, médio, mínimo), tensor da
   fáscia lata, piriforme, gêmeos superior e inferior, obturadores, quadrado femoral, sartório, quadríceps (reto femoral e três
   vastos), articular do joelho, pectíneo, adutores (longo, curto, magno), grácil, isquiotibiais (bíceps femoral, semitendíneo,
@@ -349,61 +404,104 @@ Objetivo: corpo inteiro com ossos, músculos, nervos, articulações e ligamento
 - [ ] **F4.3** Lote B — **perna**: tíbia, fíbula, compartimentos anterior, lateral e posterior (tibial anterior, extensores longo
   dos dedos e do hálux, fibular terceiro, fibulares longo e curto, gastrocnêmio, sóleo, plantar, poplíteo, tibial posterior,
   flexores longo dos dedos e do hálux). **G**
-- [ ] **F4.4** Lote C — **pé**: tarso, metatarso, falanges; músculos intrínsecos dorsais e plantares (extensores curtos,
-  abdutores, flexores curtos, quadrado plantar, lumbricais, adutor do hálux, interósseos); aponeurose plantar. **G**
-- [ ] **F4.5** Lote D — **nervos**: completar femoral (ramos musculares e cutâneos), obturatório, glúteos superior e inferior,
-  ciático (tibial e fibular comum → fibulares superficial e profundo), tibial e seus ramos plantares, cutâneo sural, safeno,
-  cutâneo femoral lateral e posterior, genitofemoral, plexos lombar e sacral completos; dermátomos de L1–S2. **GG**
-- [ ] **F4.6** Articulações e ligamentos do membro inferior: quadril (iliofemoral, pubofemoral, isquiofemoral, ligamento da
-  cabeça do fêmur), joelho (cruzados, colaterais, meniscos, patelar), tornozelo, subtalar, arcos do pé. **G**
-- [ ] **F4.7** Atualizar guardas (todo músculo com nervo e com `acoes`), contagens do README e quizzes por região. **P**
+- [ ] **F4.4** Lote C — **pé**: tarso, metatarso, falanges; músculos intrínsecos dorsais e plantares **que tenham malha no banco**
+  (extensores curtos, abdutores, flexores curtos, quadrado plantar, lumbricais, adutor do hálux, interósseos). **Adiado:**
+  aponeurose plantar e demais retináculos (→ M13); músculos sem malha, por código (→ M14). **G**
+- [ ] **F4.5** Lote D — **nervos (núcleo motor)**: femoral, obturatório, glúteos superior e inferior, ciático (tibial e fibular comum
+  → fibulares superficial e profundo), tibial e seus ramos plantares medial e lateral, e **os ramos musculares de cada músculo**,
+  incluindo os ramos curtos do plexo sacral (piriforme, gêmeos, quadrado femoral, obturador interno) e do lombar, **com
+  `segmentos` medulares** (a guarda os exige). Os ramos curtos entram como ramos do plexo, sem trajeto próprio. **Adiado:** nervos
+  cutâneos (sural, safeno, cutâneos femorais, genitofemoral…) → M09; plexos lombar e sacral desenhados → M10; dermátomos L1–S2 →
+  M11. **G** (era GG)
+- [ ] **F4.6** Articulações e ligamentos do **núcleo**, no mesmo modelo da F3a (`art(...)`, `movimentos` com músculos principais e
+  auxiliares → os músculos do membro inferior ganham as ligações sozinhos): **quadril** (iliofemoral, pubofemoral, isquiofemoral,
+  ligamento da cabeça do fêmur), **joelho** (cruzados, colaterais, meniscos, patelar), **tornozelo** (colaterais lateral e
+  medial/deltóideo) e **subtalar**; da pelve (antigo F3.4): **sacroilíaca** (com sacrotuberal e sacroespinal), **sínfise púbica** e
+  ligamento inguinal. **Adiado:** demais articulações do pé, ligamentos plantar longo e mola, arcos do pé → M12. **G**
+- [ ] **F4.7** Atualizar guardas (todo músculo com nervo e segmentos; toda articulação com ossos e movimentos), contagens do README
+  e quizzes por região. **P**
 
-Estimativa de escala: ≈ 60–70 músculos (conforme a divisão em cabeças/ventres), 7–9 grupos ósseos, ≈ 20 nervos, ≈ 15
-ligamentos principais.
+Estimativa de escala: ≈ 60–70 músculos (conforme a divisão em cabeças/ventres), 7–9 grupos ósseos, ≈ 12 nervos de trajeto
+próprio, ≈ 15 ligamentos principais.
 
-**Saída (marco 3.0):** todos os músculos esqueléticos principais do corpo têm nervo; ossos e articulações do corpo inteiro; o
-`.exe` continua dentro do orçamento de §3.5.
-
----
-
-### F5 — Sistema vascular (3.1) · GG
-
-- [ ] **F5.1** Artérias e veias principais com malhas reais do BodyParts3D (confirmar nomes FMA e decimar); camadas “Artérias” e
-  “Veias”, cores convencionais. **G**
-- [ ] **F5.2** Ficha de vaso: origem, trajeto, ramos, território irrigado/drenado, relações, pulsos e pontos de compressão. **G**
-- [ ] **F5.3** Campo **Irrigação** na ficha de todos os músculos + mapa `IRRIGATION` (como `INNERVATION`) + guarda “todo
-  músculo tem ≥ 1 artéria”. **G**
-- [ ] **F5.4** **Feixes neurovasculares** como conjunto selecionável (axilar, braquial, femoral, poplíteo, tibial posterior…). **M**
-- [ ] **F5.5** Linfonodos regionais principais e ducto torácico (modelagem por código; BodyParts3D não os tem). **G**
-- [ ] **F5.6** Quizzes de vasos e “o que irriga isto?”. **P**
-
-**Saída:** cada músculo com irrigação; vasos de todas as regiões já cobertas; linfáticos principais.
+**Saída (marco 3.0):** corpo inteiro visível; **todos os músculos esqueléticos principais do corpo têm nervo e segmentos**; ossos e
+as grandes articulações do corpo inteiro (a coluna e o tórax ficam para M01); o `.exe` continua dentro do orçamento de §3.5. Os
+itens “→ M…” não bloqueiam o 3.0, mas as fichas que dependem deles **dizem que faltam** (`docs/pontos-de-melhoria.md` §1).
 
 ---
 
-### F6 — Vísceras e sistemas (3.2 em diante) · GG, uma release por sistema
+### F5 — Coração e vasos principais (3.1) · G (era GG)
 
-Ordem sugerida, cada sistema com camada, fichas, inervação autonômica, vasos e quiz:
+Objetivo: abrir o circulatório da disciplina (generalidades, coração, pericárdio, circulação pulmonar e sistêmica) com o corpo já
+completo da F4. **Núcleo:** o que dá para ver, selecionar, nomear e localizar; **adiado:** a irrigação detalhada de cada músculo,
+os linfáticos e a circulação fetal.
 
-- [ ] **F6.1** Tórax: coração (câmaras, valvas, coronárias), pulmões e pleuras, traqueia e brônquios, timo, mediastino.
-- [ ] **F6.2** Abdome: esôfago, estômago, intestinos, fígado e vias biliares, pâncreas, baço, peritônio e mesentérios.
-- [ ] **F6.3** Urinário e endócrino: rins, ureteres, bexiga, uretra; suprarrenais, tireoide e paratireoides, hipófise.
-- [ ] **F6.4** Genital masculino e feminino, períneo, canal inguinal (cremaster, cordão espermático). Conferir se o
-  BodyParts3D tem modelo feminino utilizável; se não, decidir por esquema ou fonte externa (§9).
-- [ ] **F6.5** Regiões e espaços clínicos: triângulos do pescoço, fossa axilar e cubital, canal do carpo, trígono femoral,
-  fossa poplítea (A12).
+- [ ] **F5.1** **Coração**: câmaras, valvas, músculos papilares e coronárias com malhas reais (o banco tem todas, ver §5);
+  camada própria. **G**
+- [ ] **F5.2** **Pericárdio** (sacos fibroso e seroso) como envoltório **esquemático** por código, declarado na ficha (o banco não
+  tem pericárdio); seios do pericárdio → M26. **P**
+- [ ] **F5.3** **Artérias e veias principais** com malhas reais (aorta e ramos principais, tronco e artérias pulmonares, cavas,
+  jugulares, subclávias, axilares, braquiais, ilíacas, femorais…; confirmar nomes FMA e decimar); camadas “Artérias” e “Veias”,
+  cores convencionais. Vasos de menor calibre → M20. **G**
+- [ ] **F5.4** **Ficha básica de vaso e do coração:** origem, trajeto, ramos principais, território irrigado ou drenado e relações
+  importantes, com fonte. Pulsos, pontos de compressão e relações detalhadas → M16. **M**
+- [ ] **F5.5** **Tour “Circulação”** (grande e pequena circulação, 6 a 8 passos) e **quiz de localizar** vasos e câmaras. **P**
+- [ ] **F5.6** Guardas equivalentes às do catálogo para o novo vínculo (todo vaso nomeado com ramos válidos; coração com câmaras e
+  valvas listadas). **P**
 
-**Saída por release:** o sistema completo, com guardas e links (nervo, vaso, região), dentro do orçamento de dados.
+**Adiados desta fase:** irrigação em todos os músculos e a guarda “todo músculo tem ≥ 1 artéria” (**M15**, prioridade A); feixes
+neurovasculares (M17); linfonodos e ducto torácico (M18); quiz “o que irriga isto?” (M19); circulação fetal e anexos (**M21**,
+prioridade A, sem malha no banco).
+
+**Saída:** coração e vasos principais visíveis em todas as regiões já cobertas, com ficha e quiz; o `.exe` dentro do orçamento.
 
 ---
 
-### F7 — Sistema nervoso central e órgãos dos sentidos · GG
+### F6 — Sistemas da disciplina (3.2 em diante) · GG, uma release por sistema
+
+Ordem **das aulas** (mapa do §6). **Núcleo de cada sistema:** camada própria, malhas disponíveis (§5), ficha básica (função,
+partes, relações e nota clínica curta, com fonte), tour curto e quizzes de localizar e escolher o nome, com guarda de ids e
+ramos. **Adiado de todos:** inervação autonômica detalhada (M22), irrigação e drenagem específicas (M23), subdivisões internas
+(M27), histologia e embriologia (M32).
+
+- [ ] **F6.0** **Spike de 1 dia, antes do primeiro sistema:** conferir no BodyParts3D (índice *part-of* e versão 4.0) e em fontes
+  abertas compatíveis com CC BY-SA 2.1 JP (§9, item 3) o que falta em §5: **pulmões, pleuras, mediastino, útero, tubas, ovários,
+  vagina, mama, tireoide, paratireoides, ossículos e cóclea**. Saída: decisão registrada em §10 para cada um (malha de outra
+  fonte, esquema por código declarado, ou só ficha). **P**
+- [ ] **F6.1** **Respiratório** (22 e 27/10): traqueia e brônquios (malhas), cartilagens da laringe (os músculos e o diafragma já
+  existem no catálogo), pulmões e pleuras conforme o spike (esquemáticos se não houver malha), timo e mediastino simples. Pleuras e mediastino por compartimentos
+  → M26; mecânica da caixa torácica → M01. **G**
+- [ ] **F6.2** **Digestório** (29/10 e 03/11): esôfago, estômago, duodeno, jejuno, íleo, cólon, apêndice, reto, fígado e vesícula
+  biliar, pâncreas, baço; glândulas salivares ligadas às da cabeça. Omentos e recessos → M24. **G**
+- [ ] **F6.3** **Órgãos dos sentidos e tegumentar** (05/11): olho (córnea, cristalino, íris, corioide, esclera, retina, corpo vítreo)
+  ligado aos músculos que já existem, aparelho lacrimal, orelha externa, nariz, língua (já existe) e pele; **esquema do ouvido
+  médio e interno** só como ficha (→ M28); olho em detalhe → M29; pele em camadas → M30. *(Estes itens vieram da antiga F7.4.)* **M**
+- [ ] **F6.4** **Urinário e genital masculino** (17/11): rins, ureteres, bexiga, uretra, próstata, vesículas seminais, testículo,
+  epidídimo, pênis, e **canal inguinal com cremaster e cordão espermático** (por código); ducto deferente e glândulas
+  bulbouretrais por código, esquemáticos. **G**
+- [ ] **F6.5** **Genital feminino** (17/11 e seguinte): útero, tubas, ovários, vagina, vulva e mama **conforme a decisão do spike
+  F6.0** — **sem malha no banco**; núcleo = esquema por código **declarado como tal na ficha** (ou fonte externa se a licença
+  permitir). Detalhes → M31. **G**
+- [ ] **F6.6** **Endócrino** (19/11): hipófise, pineal, hipotálamo e suprarrenais (malhas do banco); tireoide e paratireoides
+  conforme o spike (por código, esquemáticas); pâncreas e gônadas ligados aos sistemas de origem; tour e quiz do sistema. **M**
+- [ ] **F6.7** **Urogenital integrado** (24/11, prática): períneo e pelve em corte sagital, relações entre bexiga, próstata, reto
+  (e útero), esfíncteres e músculos do períneo que já existem; tour e quiz integrados dos sistemas F6.4 a F6.6. **M**
+- [ ] **F6.8** *(antigo F6.5)* Regiões e espaços clínicos — triângulos do pescoço, fossas axilar e cubital, canal do carpo, trígono
+  femoral, fossa poplítea (A12). **Adiado → M25.**
+
+**Saída por release:** o sistema com camada, ficha, tour e quiz, guardas na carga, dentro do orçamento de dados. As
+estruturas **sem malha** dizem na ficha que são esquemáticas (`agents.md` §7.4).
+
+---
+
+### F7 — Sistema nervoso central · GG
 
 - [ ] **F7.1** Encéfalo: lobos e giros principais, tálamo, núcleos da base, tronco encefálico, cerebelo, ventrículos;
   medula espinal e meninges; seios venosos e polígono de Willis (liga a F5).
 - [ ] **F7.2** Núcleos e origem aparente dos nervos cranianos, ligados às fichas dos nervos (F2).
 - [ ] **F7.3** Vias principais (motora, sensitiva, visual, auditiva) como esquemas.
-- [ ] **F7.4** Olho em detalhe (túnicas, câmaras, retina) e ouvido (externo, médio com ossículos, interno).
+- [ ] **F7.4** *(movido em 2026-10-12)* Olho e ouvido: o núcleo está na **F6.3**; os detalhes (túnicas e câmaras do olho, ossículos,
+  cóclea e labirinto) são **M28** e **M29**.
 
 ---
 
@@ -448,7 +546,7 @@ visível e mantém o retorno do usuário frequente. Cada lote = um ciclo `dev` �
 | 2.1.0 (Fase F1 — Ferramentas de estudo) | F1.1 a F1.10 (views/hash, favoritos/notas, SM-2, quiz teórico, clipping, cores, 6 tours, export, listas) | ~1 dia + ~1 dia de correções | G | 100% offline; modularizado em src/study/*. A 1ª entrega passou nos testes mas tinha defeitos de interface (ver correções em F1): teste que só chama a API não basta; o de fumaça agora dirige a interface |
 | 2.2 (Fase F2 — Fechar músculos e nervos) | F2.3 a F2.15: 44 músculos novos (204), 45 nervos novos (100) e a medula espinal, segmentos medulares, miótomos e dermátomos | ~1 dia de trabalho contínuo | G | Os músculos com malha real saíram do pipeline sem decimar demais; o que não tinha malha foi medido no modelo. O banco tem o “músculo perineal” só como duplicata do esfíncter do ânus: foi preciso modelar o períneo urogenital. Tempo gasto sobretudo em medir (tongue, canal vertebral, mão, órbita) e em textos com fonte. |
 | 2.3 (F3a — modelo e membro superior) | F3.1 e F3.2: 13 articulações, 16 ligamentos, movimentos com músculos (dados de F3.5) | ~1 dia de trabalho contínuo | M + G | A cápsula calculada pela zona de contato poupou medir à mão cada articulação; o tempo foi para os ligamentos (pontos encaixados no osso e conferidos pela fração dentro de osso) e para os textos com fonte. Custo na carga: ≈ 0,1 s de cápsulas e ≈ 0,04 s de ligamentos. |
-| *(próximo: F3b — coluna, tórax, pelve e cabeça; F3c — movimento)* | | | | |
+| *(próximo: F4 — corpo inteiro, núcleo osteomuscular; depois F5 e F6 na ordem das aulas. F3b/F3c adiadas → M01–M08)* | | | | |
 
 Use a coluna “Observações” para anotar o que atrasou (ex.: geometria de nervo que cai dentro do osso, ajuste de decimação).
 
@@ -456,11 +554,18 @@ Use a coluna “Observações” para anotar o que atrasou (ex.: geometria de ne
 
 1. **Release quebrada chega a todos.** O atualizador apaga as versões antigas (`RemoveOldVersions`), então não há volta
    local. Mitigação: F0.2/F0.3; se necessário, um canal de pré-lançamento opcional.
+   **Agravante (2026-10-12):** com a F4 e os sistemas saindo em sequência para acompanhar as aulas, haverá mais releases em menos
+   tempo. Cada release continua exigindo `npm test` verde e a verificação visual (§7); não relaxar por causa do cronograma.
 2. **Tamanho dos dados.** 11,6 MB hoje; membro inferior soma cerca de 7 MB, vísceras e encéfalo mais. Opções: decimar mais,
-   pacotes por região carregados sob demanda, ou pacotes opcionais baixados pelo atualizador. *Decidir antes da F4.*
+   pacotes por região carregados sob demanda, ou pacotes opcionais baixados pelo atualizador. *Decidir antes da F4 (item F4.1).*
+   Com o plano reordenado, os pacotes de F5 e F6 (coração, vasos, vísceras) chegam logo depois da F4: **um pacote por sistema,
+   carregado sob demanda**, é a opção mais coerente; M37 (desempenho no celular) é o plano B.
 3. **Geometria procedural.** Nervos e ligamentos são aproximações. Avaliar fontes abertas com mais estruturas (Z-Anatomy
    e similares) **só após checar licença (compatibilidade com CC BY-SA 2.1 JP) e qualidade**; não assumir.
-4. **Modelo feminino e variações.** Pode não existir no BodyParts3D; decidir entre esquema, outra fonte ou não cobrir.
+4. **Modelo feminino e variações.** **Confirmado em 2026-10-12: o índice do BodyParts3D não tem útero, tubas, ovários, vagina,
+   vulva nem mama.** A aula de genital feminino está no cronograma; decidir no spike F6.0 entre esquema por código declarado,
+   outra fonte com licença compatível ou só ficha (F6.5). O mesmo vale para pulmões, pleuras, pericárdio, tireoide e ouvido
+   médio e interno (tabela de §5).
 5. **Direitos de texto e imagem.** Textos próprios a partir das referências; imagens de terceiros (radiologia, histologia)
    só de bancos com licença aberta, com crédito no dado.
 6. **Backend para contas/turmas.** Quebra o princípio offline-first. Preferir arquivos/URLs estáticos até haver necessidade real.
@@ -495,6 +600,7 @@ Use a coluna “Observações” para anotar o que atrasou (ex.: geometria de ne
 | 2026-10-09 | **F2 concluída (F2.3 a F2.15); publicada como 2.2 em 2026-10-10 após a última validação de layout (ver a linha seguinte).** 367 estruturas: 204 músculos (+44), 100 nervos e gânglios (+45) e a medula espinal. **Músculos:** língua (8), palato mole e faringe (9), laringe (7), ouvido médio (2), face e olho (9), períneo e pelve (7), mais 3 músculos curtos da coluna cervical que a TA lista e o banco tem; os 3 grupos oral/faríngeo/laríngeo e o puborretal e o obturador interno com malha real (`tools/body_parts.py` + `fetch_body.py` + `convert_body.py --append`; pacote +0,85 MB); o resto por código, medido no modelo. **Achado:** o único “músculo perineal” do BodyParts3D é o esfíncter externo do ânus em duplicata; a entrada `perineo_superficial` foi removida (o id continua no pacote de dados, sem uso). **Nervos:** 12 pares cranianos completos, vago com plexo faríngeo e laríngeos, ramos de V e VII, gânglios autônomos e tronco simpático, 18 nervos sensitivos (os que eram trechos dentro de outro nervo ganharam ficha), medula, 4 fichas dos 31 pares espinais e cauda equina. O pacote de nervos da órbita foi regenerado com as peças separadas (oftálmico, frontal, lacrimal, nasociliar). **F2.14:** `src/segments.js` com os segmentos (132 músculos, 58 nervos/estruturas), linha na ficha, guarda no catálogo, modo de cor e lista do miótomo, `docs/miotomos.md` gerado. **F2.15:** dermátomos por cor de vértice (decisão e limites em `docs/dermatomos.md`). Nova forma procedural `torus`. Cobertura e exclusões: `docs/cobertura.md`. Divergências entre fontes (Moore, Gray’s, Netter) anotadas nas fichas: inervação do feixe lateral dos intertransversários posteriores, limite radial/ulnar no dorso da mão (2½+2½ × 3½+1½), psoas L1–L3 × L2–L4, plexo faríngeo (vago × acessório craniano), vocal como parte do tireoaritenóideo. **Pendências:** os músculos intrínsecos da língua, os do ouvido médio e os lisos do olho são esquemáticos (e os dois últimos grupos, intraósseos ou dentro do globo); as cartilagens da laringe, a glândula lacrimal e os ossículos não estão no modelo; o teste de interface agora cobre o modo por segmento, os dermátomos e as estruturas novas, mas as bordas dos dermátomos não são testadas visualmente. |
 | 2026-10-10 | **Validação final da F2 e publicação (2.2):** varredura de layout no navegador embutido em 13 tamanhos (celulares de 568×320 a 430×932, em pé e deitados, com toque emulado; tablets de 768×1024, 834×1194 e 1194×834 e desktop de 1024×768 a 1920×1080, sem toque emulado, que essa ferramenta só liga abaixo de 768 px) com fichas longas (medula, vago, facial, nasociliar, masseter, língua, obturador interno, cauda equina), legendas por segmento e dos dermátomos, modal de estudo em todas as abas (inclusive o painel de segmentos com 32 chips) e configuração do quiz: nenhuma sobreposição, nada fora da tela, sem rolagem horizontal. O teste de fumaça passou a conferir também, nos 9 tamanhos de toque (celular e tablet, em pé e deitado), a legenda por segmento, os dermátomos ligados e o painel de segmentos dentro do modal. A bateria que seleciona as 367 estruturas, percorre 4 regiões × 7 níveis de dissecação, a busca e o hash só acusou os dois limites de busca já conhecidos (“ulnar” e “flexiona” dentro da região cabeça, sem sinônimos). `npm test` e `SMOKE_FILE=1 npm run test:smoke` verdes. Versão do `package.json` 2.1 → 2.2. Não medido: desempenho na máquina de referência (`docs/desempenho.md` §1.4). |
 | 2026-10-10 | **F3a iniciada e entregue na `dev` (F3.1 e F3.2; sem publicar).** 396 estruturas: **13 articulações** (`kind: 'articulacao'`, ids `art_*`) e **16 ligamentos** do membro superior, em `src/catalog-joints.js`. Ficha: tipo, superfícies, cápsula, ligamentos, movimentos com amplitude (AAOS, em Norkin & White) e músculos principais e auxiliares (Moore), inervação e irrigação, notas clínicas e fontes. **Vínculos derivados** em `catalog.js`: `MOVEMENTS` (músculo → articulação, movimento e papel; todo músculo do membro superior tem ao menos um, exceto o palmar curto), `JOINTS_OF` (osso/ligamento → articulações) e ramos articulares nos nervos (a articulação declara os nervos; sem desenhar ramo). **Guardas** novas na carga e no `test:catalog`. **Geometria** por código sobre as malhas reais: cápsula elipsoidal calculada na zona de contato entre os ossos (`joint-geo.js`, medida uma vez e espelhada, com pré-filtro por caixa), faixas de ligamento com pontas encaixadas no osso (o resolvedor de pontos dos nervos), colaterais dos dedos pela zona de contato, membrana interóssea como lâmina entre as margens, anular como anel; fração dentro de osso de 0 a 13 % (o anular, 20 %, só dentro da ulna, onde a incisura fecha o anel). **Interface:** seções *Ossos*, *Ligamentos* e *Movimentos e músculos* na articulação, *Movimentos (articulações)* no músculo, *Articulação(ões)* no osso e no ligamento (`src/joint-links.js`); selecionar a articulação destaca ossos e ligamentos; no quiz de localizar as cápsulas só respondem ao clique quando a pergunta é uma articulação; o grupo do quiz passou a “Articulações, ligamentos e outras”. Correções colaterais: um erro de geometria de uma estrutura não derruba mais a montagem do corpo (fica no console); cores “por nervo” e distratores “qual nervo?” do quiz teórico contam só nervos que inervam músculos. Versão do `package.json` 2.2 → 2.3. **Não feito:** F3.3–F3.9 (coluna, pelve, página e quiz de movimentos, origem e inserção no osso, bursas e retináculos, animação); inervação das carpometacarpais (fontes divergem) e amplitudes de abdução/adução dos dedos não estão na ficha; a cápsula não mostra recessos nem a linha de inserção. |
+| 2026-10-12 | **Roteiro reordenado: corpo inteiro e sistemas da disciplina primeiro.** Pedido do responsável, com base no cronograma de Anatomia (circulatório a partir de 08/10, N2 em 26/11): como todos os sistemas dependem do corpo inteiro para serem situados, a **F4 fica completa no núcleo** e só os detalhes saem dela. **Mudanças:** (1) F3 fecha na F3a; F3.3, F3.5 (restante), F3.6, F3.7, F3.8, F3.9 e as pendências da F3a viram M01–M08, e o antigo F3.4 (ligamentos da pelve) vai para a F4.6. (2) F4: nervos cutâneos, plexos desenhados, dermátomos L1–S2, articulações menores e arcos do pé, aponeurose plantar e músculos do pé sem malha viram M09–M14; F4.1 ganha inventário, decisão do orçamento de dados e medição de carga. (3) F5 vira “coração e vasos principais” (G): irrigação em todos os músculos, linfáticos, feixes neurovasculares, vasos menores e circulação fetal viram M15–M21. (4) F6 passa à ordem das aulas (respiratório → digestório → sentidos e tegumentar → urinário e masculino → feminino → endócrino → urogenital), com **F6.0 spike** antes do primeiro sistema; o coração sai da antiga F6.1 para a F5; olho e ouvido saem da F7.4 para a F6.3; inervação autonômica, irrigação por víscera, peritônio, regiões clínicas e detalhes internos viram M22–M32. (5) **Conferência do índice** (§5): o BodyParts3D local **não tem** pulmões, pleuras, pericárdio, mediastino, aparelho genital feminino, placenta e estruturas fetais, ossículos e cóclea, tireoide e paratireoides; a lista antiga que citava “tireoide” estava errada. (6) Dívida técnica antiga (geometrias com muita interseção, busca sem sinônimos, desempenho no celular) registrada em M33–M39; **M37 passa na frente se a F4 piorar a carga**. **Nada foi implementado nesta mudança**; só documentação: `project_context.md`, `docs/pontos-de-melhoria.md` (novo), `README.md` e `docs/cobertura.md`. |
 
 ## 11. Referências
 
