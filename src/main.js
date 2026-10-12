@@ -96,7 +96,9 @@ const fiberTex = makeFiberTexture(0.4);
 const fiberTexSoft = makeFiberTexture(0.18);
 
 function makeMaterial(key, color) {
-  const std = (o) => new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, ...o });
+  // forceSinglePass: um material translúcido de dupla face seria desenhado duas vezes (costas e frente); com a estrutura
+  // selecionada tudo o mais fica translúcido e o quadro custava até 12× mais (medido em tools/perf_click.js)
+  const std = (o) => new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, forceSinglePass: true, ...o });
   switch (key) {
     case 'bone': return std({ color: '#dccfae', roughness: 0.8 });
     case 'tooth': return std({ color: '#fbf8ee', roughness: 0.35 });
@@ -725,6 +727,25 @@ function buildList() {
   rows.set('__empty', empty);
 }
 
+/** Troca o ícone do olho só quando ele muda (reprocessar o SVG de cada linha a cada clique custava dezenas de ms no celular). */
+function setEye(el, off) {
+  const v = off ? '0' : '1';
+  if (el.dataset.eye === v) return;
+  el.dataset.eye = v;
+  el.innerHTML = off ? EYE_OFF : EYE_ON;
+}
+
+let layerItemsCache = null;
+let layerItemsCount = -1;
+function itemsOfLayer(layerId) {
+  if (!layerItemsCache || layerItemsCount !== ITEMS.length) {
+    layerItemsCache = new Map(LAYERS.map((l) => [l.id, []]));
+    for (const it of ITEMS) layerItemsCache.get(it.layer)?.push(it);
+    layerItemsCount = ITEMS.length;
+  }
+  return layerItemsCache.get(layerId) ?? [];
+}
+
 function syncList() {
   const q = norm(state.search.trim());
   let total = 0;
@@ -732,7 +753,7 @@ function syncList() {
     const sec = secs.get(layer.id);
     if (!sec) continue;
     let n = 0;
-    for (const item of ITEMS.filter((i) => i.layer === layer.id)) {
+    for (const item of itemsOfLayer(layer.id)) {
       const li = rows.get(item.id);
       const match = (!q || li.dataset.search.includes(q)) && regionOk(item);
       li.hidden = !match;
@@ -741,14 +762,14 @@ function syncList() {
       li.classList.toggle('fav', userData.isFavorite(item.id));
       const off = state.hidden.has(item.id) || !state.layers.has(layer.id);
       li.classList.toggle('off', off);
-      li.querySelector('.eye').innerHTML = state.hidden.has(item.id) ? EYE_OFF : EYE_ON;
+      setEye(li.querySelector('.eye'), state.hidden.has(item.id));
     }
     total += n;
     sec.hidden = n === 0;
     sec.classList.toggle('collapsed', state.collapsed.has(layer.id) && !q);
     sec.classList.toggle('off', !state.layers.has(layer.id));
     sec.querySelector('.sec-count').textContent = n;
-    sec.querySelector('.sec-head .eye').innerHTML = state.layers.has(layer.id) ? EYE_ON : EYE_OFF;
+    setEye(sec.querySelector('.sec-head .eye'), !state.layers.has(layer.id));
   }
   rows.get('__empty').hidden = total > 0;
   $('#count').textContent = `${total} estruturas`;
@@ -1635,6 +1656,24 @@ function swapSkin(geo) {
   skin.mats[0].needsUpdate = true;
 }
 
+/**
+ * Compila, em segundo plano, as variantes translúcidas dos shaders. Ao selecionar uma estrutura, todo o resto passa a ser
+ * translúcido (`transparent`/`depthWrite`), o que muda o programa de shader de cada tipo de material; sem isto, o primeiro
+ * clique compilava 4 programas PBR de uma vez (≈ 0,4 s só na verificação do compilador, no celular emulado).
+ */
+async function warmShaders() {
+  const mats = new Set();
+  scene.traverse((o) => { if (o.isMesh && o.material?.isMeshStandardMaterial) mats.add(o.material); });
+  const saved = [...mats].map((m) => [m, m.transparent, m.depthWrite]);
+  try {
+    for (const m of mats) { m.transparent = true; m.depthWrite = false; m.needsUpdate = true; }
+    await renderer.compileAsync(scene, camera);
+  } finally {
+    for (const [m, tr, dw] of saved) { m.transparent = tr; m.depthWrite = dw; m.needsUpdate = true; }
+    applyHighlight();
+  }
+}
+
 /** Script de um pacote de dados; resolve com `true` se carregou. */
 function loadScript(src) {
   return new Promise((resolve) => {
@@ -1729,6 +1768,7 @@ function loadBody() {
       studyController?.onModelUpdated();
       if (!setupEl.hidden) renderSetup();
       setBodyStatus(null);
+      warmShaders().then(() => { perf.shadersWarmMs = Math.round(performance.now() - perf.start); }, (err) => console.warn('[shaders]', err));
     } catch (err) {
       console.error(err);
       setBodyStatus(`Erro ao montar o corpo: ${err.message}`, true);
@@ -1750,6 +1790,7 @@ const perf = {
   bodyStructuresMs: 0,
   legDataMs: 0,
   legStructuresMs: 0,
+  shadersWarmMs: 0,
   nervesMs: 0,
   totalReadyMs: 0,
 };

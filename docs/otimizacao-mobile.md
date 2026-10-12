@@ -1,7 +1,29 @@
 # Otimização para celular — levantamento (2026-10-08)
 
-Por que o atlas pesa no celular, medido, e o que mudar, em ordem de retorno. Nada aqui foi implementado ainda: é o plano.
+Por que o atlas pesa no celular, medido, e o que mudar, em ordem de retorno. O que está na §0 foi implementado; o resto é o plano.
 As medições podem ser repetidas com `node tools/perf_mobile.js` (ver “Como medir” no fim).
+
+## 0. O clique que trava (2026-10-12) — corrigido
+
+Queixa: ao tocar num nervo, músculo ou osso o atlas travava. Medido com `node tools/perf_click.js 4` (CPU 4× mais lenta; o custo
+de quadro é medido com a GPU por software e `gl.finish`, só como régua relativa):
+
+| Estado | Antes | Depois |
+| --- | --- | --- |
+| Quadro com **nada** selecionado | 7 ms · 793 chamadas · 2,0 mi triângulos | 5–7 ms · 763 chamadas |
+| Quadro com **uma estrutura selecionada** | **79–89 ms** · 1 555 chamadas · 3,9 mi triângulos | **9 ms** · 778 chamadas · 1,9 mi |
+| `select()` em JS (CPU 4×) | 151–192 ms | 56–77 ms (o 1º clique, 133–171 ms: envio das geometrias à GPU) |
+| 1º clique: verificação do compilador de shaders (`getProgramInfoLog`) | **≈ 400 ms** | some do perfil |
+
+Causas, por ordem de peso: (1) ao selecionar, tudo o mais fica translúcido (opacidade 0,16) e **cada material translúcido de dupla face
+era desenhado duas vezes** (costas e frente, o padrão do three.js): dobrava chamadas e triângulos e, sem *early-Z* (nada escreve profundidade),
+o preenchimento explodia. Corrigido com `forceSinglePass: true` em `makeMaterial` (`src/main.js`). (2) A variante translúcida muda o
+programa de shader de cada tipo de material (4 programas PBR a compilar no 1º clique): agora `warmShaders()` os compila em segundo plano
+depois da carga, com `renderer.compileAsync`. (3) `syncList()` refazia o SVG do olho das 430 linhas e filtrava `ITEMS` 16 vezes a cada
+clique: agora só troca o ícone quando muda e usa um índice por camada.
+
+Ainda de pé (leva 1 desta nota): o laço redesenha 60 quadros/s com o modelo parado; fundir ou reduzir as 763 chamadas de desenho.
+Limite do método: GPU por software não é GPU de celular; confirmar em aparelho real.
 
 ## 1. O que foi medido
 
