@@ -6,7 +6,7 @@ import { loadAnatomy } from './anatomy.js';
 import { Surfaces, TORSO_PARTS } from './surfaces.js';
 import { buildProc, makeFiberTexture } from './proc.js';
 import { LM } from './landmarks.js';
-import { ITEMS as ALL_ITEMS, HEAD_IDS, BODY_ITEMS, LEG_ITEMS, CIRC_ITEMS, NERVES, INNERVATION, LAYERS, KIND_LABEL, REGIONS, inRegion, layersForDissect } from './catalog.js';
+import { ITEMS as ALL_ITEMS, HEAD_IDS, BODY_ITEMS, LEG_ITEMS, CIRC_ITEMS, RESP_ITEMS, NERVES, INNERVATION, LAYERS, KIND_LABEL, REGIONS, inRegion, layersForDissect } from './catalog.js';
 import { NerveBuilder } from './nerve-geo.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { SKULL_PARTS } from './surfaces.js';
@@ -42,6 +42,7 @@ const state = {
   bodyReady: false,
   legReady: false,
   circReady: false,
+  respReady: false,
   nervesReady: false,
   search: '',
   quiz: null,
@@ -140,6 +141,7 @@ function makeMaterial(key, color) {
     // circulatório (F5): paredes do coração, valvas e vasos
     case 'cardiac': return std({ color, roughness: 0.55 });
     case 'valve': return std({ color: '#ead9bd', roughness: 0.45 });
+    case 'lung': return std({ color, roughness: 0.65 });
     case 'pericardio': return std({ color, roughness: 0.35, transparent: true, opacity: 0.2, depthWrite: false });
     case 'artery':
     case 'vein': return std({ color, roughness: 0.4 });
@@ -149,7 +151,7 @@ function makeMaterial(key, color) {
 }
 
 /** Resolve disputas de profundidade entre superfícies quase coincidentes: camadas superficiais ganham. */
-const DEPTH_OFFSET = { nervo: -2.5, arteria: -2, veia: -2, coracao: -1, fascia: -3, mimica: -2, sup: -2, pescoco: -1.5, med: -1.5, mastigacao: -1, ligamento: -1, articulacao: -0.5, prof: -0.5, osso: 0.5 };
+const DEPTH_OFFSET = { nervo: -2.5, arteria: -2, veia: -2, coracao: -1, respiratorio: -0.5, fascia: -3, mimica: -2, sup: -2, pescoco: -1.5, med: -1.5, mastigacao: -1, ligamento: -1, articulacao: -0.5, prof: -0.5, osso: 0.5 };
 
 function jitter(hex, id) {
   const c = new THREE.Color(hex);
@@ -678,6 +680,9 @@ function geomBadge(item) {
   if (hasParts && hasPaths) {
     return '<span class="geom-badge real" title="Malha anatômica do BodyParts3D com ramos medidos no modelo">Malha real (BodyParts3D) + ramos</span>';
   }
+  if (hasParts && item.malha === 'hra') {
+    return '<span class="geom-badge real" title="Origem geométrica: Atlas de Referência Humano, HuBMAP/NIH (CC BY 4.0), ajustada ao corpo do atlas">Malha real (Atlas de Referência Humano)</span>';
+  }
   if (hasParts) {
     return '<span class="geom-badge real" title="Origem geométrica: BodyParts3D (CC BY-SA 2.1 JP)">Malha real (BodyParts3D)</span>';
   }
@@ -691,7 +696,7 @@ function sourcesHtml(item) {
 
 const ISO_LABEL = {
   nervo: 'Isolar com os músculos', articulacao: 'Isolar com ossos e ligamentos', ligamento: 'Isolar com os ossos',
-  cardiaco: 'Isolar com as relacionadas', arteria: 'Isolar com as relacionadas', veia: 'Isolar com as relacionadas',
+  cardiaco: 'Isolar com as relacionadas', arteria: 'Isolar com as relacionadas', veia: 'Isolar com as relacionadas', orgao: 'Isolar com as relacionadas',
 };
 
 function showInfo(id) {
@@ -1290,7 +1295,7 @@ $('#quizExit').onclick = stopQuiz;
 
 /* ── Quiz 2: localizar (aparece o nome; clique na estrutura no modelo) ── */
 const MAX_TRIES = 3;
-const kindGroup = (i) => (['musculo', 'osso', 'nervo', 'cardiaco', 'arteria', 'veia'].includes(i.kind) ? i.kind : 'outras');
+const kindGroup = (i) => (['musculo', 'osso', 'nervo', 'cardiaco', 'arteria', 'veia', 'orgao'].includes(i.kind) ? i.kind : 'outras');
 
 /** Estruturas que podem virar pergunta. Fáscias e ligamentos minúsculos (`label: false`) são ruins de clicar. */
 function locatePool({ region, kinds, smart = 'all' }) {
@@ -1547,7 +1552,7 @@ $('#locRestore').onclick = () => {
 /* ── Configuração ── */
 const SETUP_KEY = 'anatomia3d.quiz';
 const REGION_SHORT = { todos: 'Corpo', cabeca: 'Cabeça', tronco: 'Tronco', membro_sup: 'Braço', membro_inf: 'Perna' };
-const KIND_GROUPS = [['musculo', 'Músculos'], ['nervo', 'Nervos'], ['osso', 'Ossos'], ['cardiaco', 'Coração'], ['arteria', 'Artérias'], ['veia', 'Veias'], ['outras', 'Articulações, ligamentos e outras']];
+const KIND_GROUPS = [['musculo', 'Músculos'], ['nervo', 'Nervos'], ['osso', 'Ossos'], ['cardiaco', 'Coração'], ['arteria', 'Artérias'], ['veia', 'Veias'], ['orgao', 'Órgãos'], ['outras', 'Articulações, ligamentos e outras']];
 const COUNT_OPTS = [10, 20, 30, 0]; // 0 = todas
 const setup = { mode: 'locate', region: 'cabeca', kinds: KIND_GROUPS.map((k) => k[0]), count: 10, latin: false, smart: 'all' };
 try {
@@ -1556,7 +1561,7 @@ try {
   if (Array.isArray(s.kinds)) {
     const k = s.kinds.filter((x) => KIND_GROUPS.some((g) => g[0] === x));
     // quem tinha tudo marcado antes do circulatório (F5) continua com tudo marcado
-    if (['musculo', 'nervo', 'osso', 'outras'].every((x) => k.includes(x))) k.push(...['cardiaco', 'arteria', 'veia'].filter((x) => !k.includes(x)));
+    if (['musculo', 'nervo', 'osso', 'outras'].every((x) => k.includes(x))) k.push(...['cardiaco', 'arteria', 'veia', 'orgao'].filter((x) => !k.includes(x)));
     if (k.length) setup.kinds = k;
   }
   if (COUNT_OPTS.includes(s.count)) setup.count = s.count;
@@ -1868,6 +1873,33 @@ async function loadCirc(parts, S, landmarks) {
   console.info('[carga] circulatório', perf.circDataMs, 'ms · estruturas', perf.circStructuresMs, 'ms');
 }
 
+/**
+ * Sistema respiratório (F6.1). Mesmo molde do circulatório; carrega depois dele e antes dos nervos.
+ */
+async function loadResp(parts, S, landmarks) {
+  setBodyStatus('Carregando o sistema respiratório…');
+  if (!(await loadScript('dist/anatomy-resp.js'))) {
+    setBodyStatus('Não foi possível carregar o sistema respiratório (dist/anatomy-resp.js).', true);
+    await new Promise((r) => setTimeout(r, 2500));
+    return;
+  }
+  const t0 = performance.now();
+  const respParts = await loadAnatomy(window.__ANATOMY_RESP);
+  perf.respDataMs = Math.round(performance.now() - t0);
+  const tBuild = performance.now();
+  for (const [id, p] of respParts) parts.set(id, p);
+  buildItems(respParts, S, RESP_ITEMS, jointContext(parts, landmarks));
+  perf.respStructuresMs = Math.round(performance.now() - tBuild);
+  state.respReady = true;
+  document.body.classList.add('resp-ready');
+  buildList();
+  applyVisibility();
+  syncList();
+  studyController?.onModelUpdated();
+  if (!setupEl.hidden) renderSetup();
+  console.info('[carga] respiratório', perf.respDataMs, 'ms · estruturas', perf.respStructuresMs, 'ms');
+}
+
 function loadBody() {
   setBodyStatus('Carregando tronco e membros…');
   const sc = document.createElement('script');
@@ -1904,6 +1936,12 @@ function loadBody() {
         await loadCirc(parts, S2, lm);
       } catch (err) {
         console.error('[circulatório]', err);
+      }
+      // sistema respiratório (F6.1)
+      try {
+        await loadResp(parts, S2, lm);
+      } catch (err) {
+        console.error('[respiratório]', err);
       }
       // nervos: montados em segundo plano, depois que cabeça e corpo já estão na tela
       setBodyStatus('Montando os nervos…');
@@ -1950,6 +1988,8 @@ const perf = {
   legStructuresMs: 0,
   circDataMs: 0,
   circStructuresMs: 0,
+  respDataMs: 0,
+  respStructuresMs: 0,
   shadersWarmMs: 0,
   nervesMs: 0,
   totalReadyMs: 0,

@@ -798,6 +798,44 @@ async function runSmokeTest() {
       const app = window.__app;
       const sc = app.studyController;
       const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      for (let i = 0; i < 120 && !(app.state.nervesReady && app.state.respReady); i++) await sleep(250);
+      t(app.state.respReady, 'o pacote do respiratório não carregou');
+
+      // F6.1: os cinco lobos têm malha, ficha com a origem da malha e camada própria
+      const lobos = ['pulmao_d_lobo_superior', 'pulmao_d_lobo_medio', 'pulmao_d_lobo_inferior', 'pulmao_e_lobo_superior', 'pulmao_e_lobo_inferior'];
+      for (const id of lobos) t(app.M.has(id) && app.M.get(id).meshes.length > 0, 'sem malha no modelo: ' + id);
+      t([...document.querySelectorAll('#list .sec-name')].some((e) => e.textContent === 'Sistema respiratório'), 'a lista não tem a camada Sistema respiratório');
+      app.setRegion('tronco', { fly: false });
+      app.setDissect(5);
+      app.select('pulmao_d_lobo_medio', { fly: false });
+      const ficha = document.getElementById('infoBody').textContent;
+      t(/Lobo médio do pulmão direito/.test(ficha) && /lateral \(S4\) e medial \(S5\)/.test(ficha), 'a ficha do lobo médio não lista os segmentos S4 e S5');
+      t(/Atlas de Referência Humano/.test(document.getElementById('info').textContent), 'a ficha do lobo médio não diz que a malha é do Atlas de Referência Humano');
+      t(/Lobo superior do pulmão direito/.test(ficha), 'a ficha do lobo médio não leva ao lobo superior (relacionados)');
+      // a ligação com os vasos pulmonares vale nos dois sentidos
+      app.select('arteria_pulmonar_direita', { fly: false });
+      t(/Lobo médio do pulmão direito/.test(document.getElementById('infoBody').textContent), 'a artéria pulmonar direita não leva aos lobos do pulmão direito');
+      app.select(null, { fly: false });
+      // lados: o pulmão direito fica à direita do sujeito (x < 0), o esquerdo à esquerda
+      const cx = (id) => app.M.get(id).center.x;
+      t(cx('pulmao_d_lobo_inferior') < -0.3 && cx('pulmao_e_lobo_inferior') > 0.3, 'os pulmões estão do lado errado do corpo');
+      // o pulmão fica dentro da caixa torácica e acima do diafragma
+      const box = (id) => { const b = new app.THREE.Box3(); app.M.get(id).meshes.forEach((m) => b.union(m.geometry.boundingBox)); return b; };
+      const costelas = box('o_costelas_verdadeiras');
+      const pul = lobos.map(box).reduce((a, b) => a.union(b));
+      t(pul.min.x > costelas.min.x && pul.max.x < costelas.max.x, 'os pulmões saem da caixa torácica pelos lados');
+      t(pul.max.y < costelas.max.y + 0.6 && pul.max.y > costelas.max.y - 0.1, 'o ápice do pulmão está fora do lugar em relação à 1ª costela');
+      t(new app.THREE.Box3().union(box('ventriculo_esquerdo')).intersectsBox(box('pulmao_e_lobo_inferior')), 'o pulmão esquerdo deveria encostar no coração');
+      app.setDissect(1);
+      return f;
+    }, 'F6.1: pulmões (malhas do HRA, camada, fichas, vizinhas e posição no tórax)');
+
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
+      const sc = app.studyController;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       for (let i = 0; i < 120 && !app.state.nervesReady; i++) await sleep(250);
       await sleep(1200);
       const rs = app.renderStats;

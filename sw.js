@@ -15,6 +15,7 @@ const STATIC_ASSETS = [
   './dist/anatomy-body.js',
   './dist/anatomy-leg.js',
   './dist/anatomy-circ.js',
+  './dist/anatomy-resp.js',
   './assets/icon-192.png',
   './assets/icon-512.png',
   './assets/icon-maskable-512.png',

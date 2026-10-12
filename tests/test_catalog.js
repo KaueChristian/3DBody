@@ -201,18 +201,24 @@ function runTests() {
   // 6c. Circulatório (F5): peças do pacote ↔ fichas, camadas por tipo, vizinhas existentes e câmaras e valvas completas
   {
     const fs = require('fs');
-    const pack = fs.readFileSync(path.resolve(__dirname, '../dist/anatomy-circ.js'), 'utf8');
-    const pieces = new Set(JSON.parse(pack.slice(pack.indexOf('=') + 1).replace(/;\s*$/, '')).manifest.map((p) => p.id));
-    const circ = ITEMS.filter((i) => ['cardiaco', 'arteria', 'veia'].includes(i.kind));
+    const readPack = (name) => {
+      const pack = fs.readFileSync(path.resolve(__dirname, `../dist/anatomy-${name}.js`), 'utf8');
+      return new Set(JSON.parse(pack.slice(pack.indexOf('=') + 1).replace(/;\s*$/, '')).manifest.map((p) => p.id));
+    };
+    const circPieces = readPack('circ');
+    const respPieces = readPack('resp');
+    const pieces = new Set([...circPieces, ...respPieces]);
+    const circ = ITEMS.filter((i) => ['cardiaco', 'arteria', 'veia', 'orgao'].includes(i.kind) && i.parts?.length);
     const used = new Set();
     for (const i of circ) {
-      const want = { cardiaco: 'coracao', arteria: 'arteria', veia: 'veia' }[i.kind];
+      const want = { cardiaco: 'coracao', arteria: 'arteria', veia: 'veia', orgao: 'respiratorio' }[i.kind];
       if (i.layer !== want) logFail(`"${i.id}" (${i.kind}) deveria estar na camada "${want}", e não em "${i.layer}".`);
-      if (!i.parts?.length) logFail(`"${i.id}" do circulatório sem malha.`);
+      const home = i.kind === 'orgao' ? respPieces : circPieces;
       for (const p of i.parts ?? []) {
         used.add(p.id);
-        if (!pieces.has(p.id)) logFail(`"${i.id}" usa a peça "${p.id}", que não está em dist/anatomy-circ.js.`);
+        if (!home.has(p.id)) logFail(`"${i.id}" usa a peça "${p.id}", que não está no pacote do ${i.kind === 'orgao' ? 'respiratório' : 'circulatório'}.`);
       }
+      if (i.kind === 'orgao' && i.malha === 'hra' && !/Atlas de Referência Humano/.test(i.nota ?? '')) logFail(`"${i.id}" tem malha do HRA e a nota não diz de onde ela vem.`);
       for (const r of i.relacionados ?? []) {
         if (!itemMap.has(r)) logFail(`"${i.id}" relaciona estrutura inexistente "${r}".`);
         else if (!(itemMap.get(r).relacionados ?? []).includes(i.id)) logFail(`"${i.id}" cita "${r}", que não o cita de volta (o catálogo deveria completar a ligação).`);
