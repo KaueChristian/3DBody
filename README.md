@@ -11,7 +11,7 @@ ligamentos, glândulas, cartilagens, ossos e dentes em camadas. Cada estrutura t
 músculos, **ação, origem, inserção, inervação e os movimentos que realizam**; nos nervos, **origem, trajeto, ramos, sensibilidade,
 lesão e os músculos que inervam**; nas articulações, **tipo, superfícies, cápsula, ligamentos, movimentos com amplitude e músculos,
 inervação e irrigação**; nos ossos, localização, articulações, estruturas e função; nos ligamentos, fixações e função.
-O **membro inferior** está em construção (F4, em lotes): por enquanto, o esqueleto (fêmur, patela, tíbia, fíbula, tarso, metatarsais, falanges e sesamoides) e a pele inteira; os músculos, os nervos e as articulações entram nos próximos lotes.
+O **membro inferior** está em construção (F4, em lotes): por enquanto, o esqueleto (fêmur, patela, tíbia, fíbula, tarso, metatarsais, falanges e sesamoides), a pele inteira, os **24 músculos do quadril e da coxa** (glúteos, rotadores laterais, quadríceps, sartório, adutores e isquiotibiais) e os nervos que os inervam (femoral, obturatório, glúteos, isquiático…); a perna, o pé, os demais nervos e as articulações entram nos próximos lotes.
 
 ## Como abrir
 
@@ -62,7 +62,7 @@ Use a branch **`dev`** para trabalhar sem publicar; quando estiver bom, junte na
 
 Para gerar o executável localmente: `npm run exe` (usa o compilador C# do próprio Windows; resultado em `release/`).
 
-## O que tem (404 estruturas: 204 músculos, 100 nervos, 46 ossos, 13 articulações e 28 ligamentos, mais a medula espinal)
+## O que tem (428 estruturas: 228 músculos, 106 nervos, 46 ossos, 13 articulações e 28 ligamentos, mais a medula espinal)
 
 | Camada | Conteúdo |
 | --- | --- |
@@ -76,7 +76,7 @@ Para gerar o executável localmente: `npm run exe` (usa o compilador C# do próp
 | Músculos profundos (tronco e membros) | intercostais, subcostais, levantadores das costelas, transverso do tórax, diafragma, transverso do abdome, quadrado do lombo, psoas, ilíaco, eretores da espinha, semiespinais, multífido, rotadores, interespinais, intertransversários, suboccipitais, pré-vertebrais (longos da cabeça e do pescoço), assoalho pélvico, flexor profundo, pronador quadrado, interósseos |
 | Articulações (cápsulas) | membro superior: esternoclavicular, acromioclavicular, escapulotorácica (funcional), ombro, cotovelo, radiulnares proximal e distal, radiocarpal, intercarpais, carpometacarpais (polegar e 2º–5º), metacarpofalângicas e interfalângicas |
 | Ligamentos | 10 da cabeça (temporomandibular, estilomandibular, palpebrais…), linha alba, retináculo dos flexores e 16 do membro superior (esternoclaviculares, interclavicular, costoclavicular, acromioclavicular, coracoclavicular, coracoacromial, coracoumeral, glenoumerais, colaterais do cotovelo, anular do rádio, membrana interóssea, radiocarpais, colaterais do carpo, colaterais dos dedos, metacarpal transverso profundo) |
-| Nervos | 100 nervos e gânglios, mais a **medula espinal**, ligados a **todos** os 204 músculos (veja abaixo) |
+| Nervos | 106 nervos e gânglios, mais a **medula espinal**, ligados a **todos** os 228 músculos (veja abaixo) |
 | Glândulas e língua | parótida e ducto, submandibular, sublingual, língua |
 | Cartilagens e discos | nasais, orelha, costais, discos intervertebrais |
 | Ossos e dentes | crânio completo, mandíbula, hioide, coluna (atlas a sacro), costelas, esterno, quadril, clavícula, escápula, úmero, rádio, ulna, carpo, metacarpais, falanges, dentes; **membro inferior (F4.1):** fêmur, patela, tíbia, fíbula, tarso, metatarsais, falanges do pé e sesamoides |

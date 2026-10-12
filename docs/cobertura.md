@@ -2,8 +2,8 @@
 
 Auditoria feita ao fechar a **F2** do roteiro (`project_context.md`): para cada músculo da Terminologia Anatômica (TA) da
 cabeça, do pescoço, do tronco e do membro superior, a entrada correspondente no catálogo — ou a exclusão, com o motivo.
-Os músculos e os nervos dos membros inferiores ficam para a F4. Contagem atual: **204 músculos**, **100 nervos e gânglios**,
-mais a medula espinal (367 estruturas no atlas).
+Os músculos e os nervos dos membros inferiores entram na F4 (§2b abaixo). Contagem atual: **228 músculos** (204 da cabeça ao membro
+superior e 24 do quadril e da coxa), **106 nervos e gânglios**, mais a medula espinal (428 estruturas no atlas).
 
 Articulações e ligamentos (F3) têm o registro próprio em [`articulacoes.md`](articulacoes.md).
 
@@ -47,7 +47,7 @@ foi verificado no banco BodyParts3D (nome do conceito em `tools/isa_element_part
 | Partes dos constritores (pterigofaríngea, bucofaríngea, milofaríngea, glossofaríngea; tireofaríngea e cricofaríngea) | O atlas mostra cada constritor como um músculo só; as partes e o triângulo de Killian estão na ficha |
 | Levantador da glândula tireoide | Inconstante; entra com a tireoide (F6.6; o banco não tem a glândula, ver `project_context.md` §5) |
 | Cremaster | É do canal inguinal e do cordão espermático: entra com o sistema genital (F6.4) |
-| Piriforme, gêmeos, quadrado femoral, obturador externo e demais músculos do quadril e da coxa | Membro inferior (F4) |
+| Músculos da perna e do pé | Membro inferior (F4.3 e F4.4) |
 
 O número de músculos de uma região varia entre as fontes (cabeças e partes contadas à parte). Aqui cada parte com malha
 separada no BodyParts3D ou com inervação própria é uma entrada.
@@ -71,12 +71,31 @@ separada no BodyParts3D ou com inervação própria é uma entrada.
 
 | Item | Onde entra |
 | --- | --- |
-| Nervos motores do membro inferior (femoral na coxa, obturatório, glúteos, ciático e ramos) e os ramos curtos dos plexos lombar e sacral | F4.5 (núcleo do membro inferior) |
+| Nervos da perna e do pé (tibial, fibular comum, fibulares, plantares) e os ramos musculares deles | F4.5 (núcleo do membro inferior) |
 | Nervos cutâneos do membro inferior (safeno, sural, cutâneos femorais…), plexos lombar e sacral desenhados, dermátomos L1–S2 | Adiado: M09, M10 e M11 (`docs/pontos-de-melhoria.md`) |
 | Ramos cardíacos, pulmonares e esofágicos do vago, troncos vagais, plexos autonômicos do tórax e do abdome, tronco simpático torácico e lombar, nervos esplâncnicos | Adiado: M22 (`docs/pontos-de-melhoria.md`); a F6 cita a inervação em texto |
 | Ramos do trigêmeo de calibre pequeno: alveolares superiores, nasais posteriores, faríngeo (de Bock), meníngeo médio, nervos dentais | Ficam nos textos das fichas de V1–V3 (não são desenhados) |
 | Nervo timpânico (de Jacobson), petroso menor, nervo do canal pterigóideo, petroso profundo, ramo auricular do vago, nervo meníngeo | Descritos na ficha do nervo que os origina (IX, VII, X); fios curtos demais para o modelo |
 | Ramos cutâneos laterais e anteriores dos intercostais, nervos clúnios superiores | Descritos nas fichas de origem (intercostais, ramos posteriores) |
+
+## 2b. Membro inferior (F4, em andamento)
+
+| Grupo | Situação |
+| --- | --- |
+| Região glútea | ✅ **F4.2**: glúteos máximo, médio e mínimo, tensor da fáscia lata, piriforme, gêmeos superior e inferior, obturador externo, quadrado femoral (obturador interno e psoas/ilíaco já estavam) |
+| Coxa anterior | ✅ **F4.2**: sartório, reto femoral, vastos lateral, medial e intermédio, pectíneo |
+| Coxa medial | ✅ **F4.2**: adutores longo, curto, magno e mínimo (o mínimo é peça à parte no banco; Moore o inclui no magno) e grácil |
+| Coxa posterior | ✅ **F4.2**: bíceps femoral (cabeças longa e curta), semitendíneo e semimembranáceo |
+| Nervos do quadril e da coxa | ✅ **F4.2**: obturatório, glúteos superior e inferior, nervos do piriforme e do quadrado femoral (com o gêmeo inferior), isquiático (até a fossa poplítea), femoral prolongado pela coxa e gêmeo superior no nervo do obturador interno |
+| Perna e pé | ⬜ F4.3 e F4.4 |
+
+Exclusões e lacunas do banco (inventário completo em [`inventario-membro-inferior.md`](inventario-membro-inferior.md)):
+
+| Item | Motivo |
+| --- | --- |
+| Músculo articular do joelho | Sem malha no banco; por código, em M14 |
+| Extensor curto dos dedos e interósseos dorsais do pé | O banco só tem o extensor curto do hálux e os interósseos plantares (M14) |
+| Ramos cutâneos (cutâneos femorais, genitofemoral, safeno…) | Adiados (M09); as fichas dizem o território em texto |
 
 ## 3. Geometria e precisão
 

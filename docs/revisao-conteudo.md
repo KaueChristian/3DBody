@@ -1,6 +1,6 @@
 # Revisão de Conteúdo Anatômico — Músculos e Nervos
 
-> Documento de auditoria e referência bibliográfica para as 304 estruturas neuromusculares ativas (204 músculos e 100 nervos). Gerado por `node tools/gen_revisao.js`.
+> Documento de auditoria e referência bibliográfica para as 334 estruturas neuromusculares ativas (228 músculos e 106 nervos). Gerado por `node tools/gen_revisao.js`.
 > Cumpre o item **F0.4** do roteiro (`project_context.md`).
 
 ## 1. Referências Bibliográficas Primárias
@@ -11,7 +11,7 @@
 4. **Paulsen, F. & Waschke, J.** — *Sobotta: Atlas de Anatomia Humana* (24ª ed., Guanabara Koogan, 2018).
 5. **Terminologia Anatomica (TA2 / FIPAT, 2019)** e *Terminologia Anatômica da Sociedade Brasileira de Anatomia (SBA)*.
 
-## 2. Músculos (204 estruturas)
+## 2. Músculos (228 estruturas)
 
 | ID | Nome (PT-BR) | Latim (TA) | Região | Campos Validados | Variação / Nota Clínica | Status |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -219,8 +219,32 @@
 | `aritenoideo_obliquo` | Aritenóideo oblíquo | *M. arytenoideus obliquus* | Cabeça e pescoço | Ação, Origem, Inserção, Inervação | Os dois feixes se cruzam em X atrás do aritenóideo transverso. Prot... | 🟡 Nota clínica |
 | `tireoaritenoideo` | Tireoaritenóideo | *M. thyroarytenoideus* | Cabeça e pescoço | Ação, Origem, Inserção, Inervação | Lâmina larga, lateral à prega vocal. A parte medial dele, a mais pr... | 🟡 Nota clínica |
 | `vocal` | Vocal | *M. vocalis* | Cabeça e pescoço | Ação, Origem, Inserção, Inervação | É a parte medial do tireoaritenóideo, individualizada no BodyParts3... | 🟡 Nota clínica |
+| `gluteo_maximo` | Glúteo máximo | *M. gluteus maximus* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | É o músculo mais volumoso e superficial da região glútea e dá o con... | 🟡 Nota clínica |
+| `gluteo_medio` | Glúteo médio | *M. gluteus medius* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | Com o glúteo mínimo, é o principal estabilizador da pelve. A fraque... | 🟡 Nota clínica |
+| `gluteo_minimo` | Glúteo mínimo | *M. gluteus minimus* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | Fica sob o glúteo médio; o nervo e os vasos glúteos superiores corr... | 🟡 Nota clínica |
+| `tensor_fascia_lata` | Tensor da fáscia lata | *M. tensor fasciae latae* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | Com a parte superior do glúteo máximo, tensiona o trato iliotibial;... | 🟡 Nota clínica |
+| `piriforme` | Piriforme | *M. piriformis* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | Atravessa o forame isquiático maior e o divide em duas passagens: o... | 🟡 Nota clínica |
+| `gemeo_superior` | Gêmeo superior | *M. gemellus superior* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | Os dois gêmeos acompanham, por cima e por baixo, o tendão do obtura... | 🟡 Nota clínica |
+| `gemeo_inferior` | Gêmeo inferior | *M. gemellus inferior* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | — | ✅ Verificado |
+| `obturador_externo` | Obturador externo | *M. obturator externus* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | Contorna o colo do fêmur por baixo e por trás; o ramo posterior do ... | 🟡 Nota clínica |
+| `quadrado_femoral` | Quadrado femoral | *M. quadratus femoris* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | Fica entre o gêmeo inferior e o adutor magno; o nervo isquiático de... | 🟡 Nota clínica |
+| `sartorio` | Sartório | *M. sartorius* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | É o músculo mais longo do corpo. Forma o limite lateral do trígono ... | 🟡 Nota clínica |
+| `reto_femoral` | Reto femoral | *M. rectus femoris* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | A avulsão da espinha ilíaca anteroinferior, no local da origem, oco... | 🟡 Nota clínica |
+| `vasto_lateral` | Vasto lateral | *M. vastus lateralis* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | É o maior componente do quadríceps e local de injeção intramuscular... | 🟡 Nota clínica |
+| `vasto_medial` | Vasto medial | *M. vastus medialis* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | A fraqueza das fibras oblíquas inferiores favorece a luxação latera... | 🟡 Nota clínica |
+| `vasto_intermedio` | Vasto intermédio | *M. vastus intermedius* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | Fica sob o reto femoral. Algumas fibras profundas formam o músculo ... | 🟡 Nota clínica |
+| `pectineo` | Pectíneo | *M. pectineus* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | Participa do assoalho do trígono femoral. Pertence ao compartimento... | 🟡 Nota clínica |
+| `adutor_longo` | Adutor longo | *M. adductor longus* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | É o adutor mais anterior e forma o limite medial do trígono femoral... | 🟡 Nota clínica |
+| `adutor_curto` | Adutor curto | *M. adductor brevis* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | Fica atrás do pectíneo e do adutor longo e à frente do adutor magno... | 🟡 Nota clínica |
+| `adutor_magno` | Adutor magno | *M. adductor magnus* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | É um músculo híbrido, de dupla inervação. Entre as duas partes fica... | 🟡 Nota clínica |
+| `adutor_minimo` | Adutor mínimo | *M. adductor minimus* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | Muitos autores o descrevem como o feixe superior, mais horizontal, ... | 🟡 Nota clínica |
+| `gracil` | Grácil | *M. gracilis* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | É o único adutor que cruza o joelho. Seu tendão, com o do semitendí... | 🟡 Nota clínica |
+| `biceps_femoral_longa` | Bíceps femoral — cabeça longa | *M. biceps femoris, caput longum* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | As lesões dos isquiotibiais são comuns na corrida de velocidade; a ... | 🟡 Nota clínica |
+| `biceps_femoral_curta` | Bíceps femoral — cabeça curta | *M. biceps femoris, caput breve* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | É a única cabeça dos isquiotibiais inervada pela divisão fibular co... | 🟡 Nota clínica |
+| `semitendineo` | Semitendíneo | *M. semitendinosus* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | Seu tendão longo e cilíndrico ocupa a metade inferior do músculo; é... | 🟡 Nota clínica |
+| `semimembranaceo` | Semimembranáceo | *M. semimembranosus* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares | O cisto de Baker (poplíteo) se forma entre o gastrocnêmio medial e ... | 🟡 Nota clínica |
 
-## 3. Nervos (100 estruturas)
+## 3. Nervos (106 estruturas)
 
 | ID | Nome (PT-BR) | Latim (TA) | Região | Ramos Mapeados | Variação / Lesão Clínica | Status |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -255,31 +279,31 @@
 | `n_plexo_braquial` | Plexo braquial | *Plexus brachialis* | Cabeça e pescoço, Tronco, Membro superior | 1 músculo(s) | Erb-Duchenne (C5–C6; queda que afasta a cabeça do ombro, parto difí... | ✅ Verificado |
 | `n_dorsal_escapula` | Nervo dorsal da escápula | *N. dorsalis scapulae* | Tronco | 3 músculo(s) | Rara. A escápula do lado afetado se afasta da coluna (romboides fra... | ✅ Verificado |
 | `n_toracico_longo` | Nervo torácico longo | *N. thoracicus longus* | Tronco | 1 músculo(s) | É superficial na parede lateral do tórax (lesão em esvaziamento axi... | ✅ Verificado |
-| `n_supraescapular` | Nervo supraescapular | *N. suprascapularis* | Membro superior | 2 músculo(s) | Compressão na incisura da escápula (cisto, ligamento calcificado): ... | ✅ Verificado |
-| `n_subclavio` | Nervo subclávio | *N. subclavius* | Tronco | 1 músculo(s) | Pode dar o nervo frênico acessório. | ✅ Verificado |
-| `n_peitoral_lateral` | Nervo peitoral lateral | *N. pectoralis lateralis* | Tronco | 2 músculo(s) | O nome indica a origem no fascículo lateral, não a posição: na pare... | ✅ Verificado |
+| `n_supraescapular` | Nervo supraescapular | *N. suprascapularis* | Membro superior | 3 músculo(s) | Compressão na incisura da escápula (cisto, ligamento calcificado): ... | ✅ Verificado |
+| `n_subclavio` | Nervo subclávio | *N. subclavius* | Tronco | 2 músculo(s) | Pode dar o nervo frênico acessório. | ✅ Verificado |
+| `n_peitoral_lateral` | Nervo peitoral lateral | *N. pectoralis lateralis* | Tronco | 4 músculo(s) | O nome indica a origem no fascículo lateral, não a posição: na pare... | ✅ Verificado |
 | `n_peitoral_medial` | Nervo peitoral medial | *N. pectoralis medialis* | Tronco | 3 músculo(s) | — | ✅ Verificado |
 | `n_subescapular_sup` | Nervo subescapular superior | *N. subscapularis superior* | Membro superior | 1 músculo(s) | — | ✅ Verificado |
 | `n_toracodorsal` | Nervo toracodorsal | *N. thoracodorsalis* | Tronco | 1 músculo(s) | Pode ser lesado no esvaziamento axilar: fraqueza da adução e da ext... | ✅ Verificado |
 | `n_subescapular_inf` | Nervo subescapular inferior | *N. subscapularis inferior* | Membro superior | 2 músculo(s) | — | ✅ Verificado |
-| `n_axilar` | Nervo axilar | *N. axillaris* | Membro superior | 4 músculo(s) | Fratura do colo cirúrgico do úmero ou luxação anterior do ombro: ab... | ✅ Verificado |
-| `n_musculocutaneo` | Nervo musculocutâneo | *N. musculocutaneus* | Membro superior | 4 músculo(s) | Isolada é rara: flexão do cotovelo e supinação fracas (o braquiorra... | ✅ Verificado |
-| `n_radial` | Nervo radial | *N. radialis* | Membro superior | 7 músculo(s) | Fratura da diáfise do úmero ou “paralisia do sábado à noite”: mão c... | ✅ Verificado |
-| `n_interosseo_posterior` | Ramo profundo do nervo radial (nervo interósseo posterior) | *R. profundus n. radialis; N. interosseus antebrachii posterior* | Membro superior | 9 músculo(s) | Compressão na arcada de Frohse ou fratura da cabeça do rádio: dedos... | ✅ Verificado |
-| `n_mediano` | Nervo mediano | *N. medianus* | Membro superior | 8 músculo(s) | Síndrome do túnel do carpo: dormência noturna nos três primeiros de... | ✅ Verificado |
-| `n_interosseo_anterior` | Nervo interósseo anterior | *N. interosseus antebrachii anterior* | Membro superior | 3 músculo(s) | Não consegue fazer o sinal de “OK”: a pinça vira um “bico de pato”,... | ✅ Verificado |
-| `n_ulnar` | Nervo ulnar | *N. ulnaris* | Membro superior | 4 músculo(s) | No cotovelo (“osso do cotovelo”, túnel cubital): formigamento no 4º... | ✅ Verificado |
-| `n_ulnar_profundo` | Ramo profundo do nervo ulnar | *R. profundus n. ulnaris* | Membro superior | 9 músculo(s) | Compressão no canal de Guyon (ciclistas, ferramentas): fraqueza dos... | ✅ Verificado |
+| `n_axilar` | Nervo axilar | *N. axillaris* | Membro superior | 6 músculo(s) | Fratura do colo cirúrgico do úmero ou luxação anterior do ombro: ab... | ✅ Verificado |
+| `n_musculocutaneo` | Nervo musculocutâneo | *N. musculocutaneus* | Membro superior | 6 músculo(s) | Isolada é rara: flexão do cotovelo e supinação fracas (o braquiorra... | ✅ Verificado |
+| `n_radial` | Nervo radial | *N. radialis* | Membro superior | 9 músculo(s) | Fratura da diáfise do úmero ou “paralisia do sábado à noite”: mão c... | ✅ Verificado |
+| `n_interosseo_posterior` | Ramo profundo do nervo radial (nervo interósseo posterior) | *R. profundus n. radialis; N. interosseus antebrachii posterior* | Membro superior | 12 músculo(s) | Compressão na arcada de Frohse ou fratura da cabeça do rádio: dedos... | ✅ Verificado |
+| `n_mediano` | Nervo mediano | *N. medianus* | Membro superior | 9 músculo(s) | Síndrome do túnel do carpo: dormência noturna nos três primeiros de... | ✅ Verificado |
+| `n_interosseo_anterior` | Nervo interósseo anterior | *N. interosseus antebrachii anterior* | Membro superior | 6 músculo(s) | Não consegue fazer o sinal de “OK”: a pinça vira um “bico de pato”,... | ✅ Verificado |
+| `n_ulnar` | Nervo ulnar | *N. ulnaris* | Membro superior | 5 músculo(s) | No cotovelo (“osso do cotovelo”, túnel cubital): formigamento no 4º... | ✅ Verificado |
+| `n_ulnar_profundo` | Ramo profundo do nervo ulnar | *R. profundus n. ulnaris* | Membro superior | 11 músculo(s) | Compressão no canal de Guyon (ciclistas, ferramentas): fraqueza dos... | ✅ Verificado |
 | `n_intercostais` | Nervos intercostais (T1–T6) | *Nn. intercostales* | Tronco | 5 músculo(s) | O herpes-zóster segue um dermátomo intercostal. Toracocentese e blo... | ✅ Verificado |
 | `n_toracoabdominais` | Nervos toracoabdominais (T7–T11) | *Nn. thoracoabdominales* | Tronco | 10 músculo(s) | Incisões verticais na margem lateral do reto podem seccioná-los e d... | ✅ Verificado |
 | `n_subcostal` | Nervo subcostal (T12) | *N. subcostalis* | Tronco | 7 músculo(s) | — | ✅ Verificado |
 | `n_ilio_hipogastrico` | Nervo ílio-hipogástrico (L1) | *N. iliohypogastricus* | Tronco | 2 músculo(s) | Pode ser lesado em incisões baixas (apendicectomia, Pfannenstiel): ... | ✅ Verificado |
 | `n_ilioinguinal` | Nervo ilioinguinal (L1) | *N. ilioinguinalis* | Tronco | 2 músculo(s) | Neuralgia após hernioplastia inguinal (aprisionamento por tela ou s... | ✅ Verificado |
 | `n_plexo_lombar` | Plexo lombar — ramos musculares | *Plexus lumbalis, rami musculares* | Tronco | 3 músculo(s) | — | ✅ Verificado |
-| `n_femoral` | Nervo femoral | *N. femoralis* | Tronco | 1 músculo(s) | Na pelve pode ser comprimido por hematoma do psoas (anticoagulação)... | ✅ Verificado |
+| `n_femoral` | Nervo femoral | *N. femoralis* | Tronco, Membro inferior | 7 músculo(s) | Na pelve pode ser comprimido por hematoma do psoas (anticoagulação)... | ✅ Verificado |
 | `n_levantador_anus` | Nervos do levantador do ânus e do coccígeo (S3–S5) | *N. musculi levatoris ani; plexus coccygeus* | Tronco | 4 músculo(s) | Lesões no parto vaginal podem enfraquecer o assoalho pélvico, contr... | ✅ Verificado |
 | `n_pudendo` | Nervo pudendo | *N. pudendus* | Tronco | 8 músculo(s) | O bloqueio do pudendo, junto à espinha isquiática, é usado no parto... | ✅ Verificado |
-| `n_obturador_interno` | Nervo para o obturador interno e gêmeo superior | *N. musculi obturatorii interni* | Tronco | 1 músculo(s) | Raramente é lesado sozinho; faz parte das lesões do plexo sacral (f... | ✅ Verificado |
+| `n_obturador_interno` | Nervo para o obturador interno e gêmeo superior | *N. musculi obturatorii interni* | Tronco | 2 músculo(s) | Raramente é lesado sozinho; faz parte das lesões do plexo sacral (f... | ✅ Verificado |
 | `n_olfatorio` | Nervo olfatório (I) | *N. olfactorius* | Cabeça e pescoço | 0 músculo(s) | Anosmia, unilateral ou bilateral. Traumatismo craniano (os filetes ... | ✅ Verificado |
 | `n_vestibulococlear` | Nervo vestibulococlear (VIII) | *N. vestibulocochlearis* | Cabeça e pescoço | 0 músculo(s) | Perda auditiva neurossensorial, zumbido (tinnitus), vertigem e nist... | ✅ Verificado |
 | `n_glossofaringeo` | Nervo glossofaríngeo (IX) | *N. glossopharyngeus* | Cabeça e pescoço | 1 músculo(s) | Perda do reflexo do vômito (aferência IX, eferência X) e da sensibi... | ✅ Verificado |
@@ -304,7 +328,7 @@
 | `n_occipital_menor` | Nervo occipital menor (C2–C3) | *N. occipitalis minor* | Cabeça e pescoço | 0 músculo(s) | Dormência atrás da orelha após cirurgias retroauriculares e da mast... | ✅ Verificado |
 | `n_auricular_magno` | Nervo auricular magno (C2–C3) | *N. auricularis magnus* | Cabeça e pescoço | 0 músculo(s) | É o nervo cervical mais lesado em cirurgias (parotidectomia, ritido... | ✅ Verificado |
 | `n_cervical_transverso` | Nervo cervical transverso (C2–C3) | *N. transversus colli* | Cabeça e pescoço | 0 músculo(s) | Dormência na face anterior do pescoço após tireoidectomia, esvaziam... | ✅ Verificado |
-| `n_supraclaviculares` | Nervos supraclaviculares (C3–C4) | *Nn. supraclaviculares (mediais, intermédios e laterais)* | Cabeça e pescoço, Tronco | 0 músculo(s) | Dormência na pele subclavicular após fratura ou cirurgia da clavícu... | ✅ Verificado |
+| `n_supraclaviculares` | Nervos supraclaviculares (C3–C4) | *Nn. supraclaviculares (mediais, intermédios e laterais)* | Cabeça e pescoço, Tronco | 2 músculo(s) | Dormência na pele subclavicular após fratura ou cirurgia da clavícu... | ✅ Verificado |
 | `n_intercostobraquial` | Nervo intercostobraquial (T2) | *N. intercostobrachialis* | Tronco, Membro superior | 0 músculo(s) | Pode ser seccionado ou lesado no esvaziamento axilar (câncer de mam... | ✅ Verificado |
 | `n_cutaneo_medial_braco` | Nervo cutâneo medial do braço (C8–T1) | *N. cutaneus brachii medialis* | Membro superior | 0 músculo(s) | Dormência na face medial do braço, em geral com outros nervos do fa... | ✅ Verificado |
 | `n_cutaneo_medial_antebraco` | Nervo cutâneo medial do antebraço (C8–T1) | *N. cutaneus antebrachii medialis* | Membro superior | 0 músculo(s) | Pode ser lesado em punções da veia basílica ou da mediana cubital: ... | ✅ Verificado |
@@ -316,11 +340,17 @@
 | `n_radial_superficial` | Ramo superficial do nervo radial | *R. superficialis n. radialis* | Membro superior | 0 músculo(s) | Neurite de Wartenberg (“cheiralgia parestésica”): compressão sob o ... | ✅ Verificado |
 | `n_ramo_palmar_mediano` | Ramo cutâneo palmar do nervo mediano | *R. palmaris n. mediani* | Membro superior | 0 músculo(s) | É poupado na síndrome do túnel do carpo (passa por cima do retinácu... | ✅ Verificado |
 | `n_ramo_palmar_ulnar` | Ramo cutâneo palmar do nervo ulnar | *R. palmaris n. ulnaris* | Membro superior | 0 músculo(s) | É poupado na compressão do nervo ulnar no canal de Guyon (sai antes... | ✅ Verificado |
-| `n_ramo_dorsal_ulnar` | Ramo cutâneo dorsal do nervo ulnar | *R. dorsalis n. ulnaris* | Membro superior | 0 músculo(s) | Poupado na lesão do ulnar no punho (sai antes do canal de Guyon), m... | ✅ Verificado |
-| `n_digitais_palmares` | Nervos digitais palmares (comuns e próprios) | *Nn. digitales palmares communes et proprii* | Membro superior | 1 músculo(s) | Lesões por corte (vidro, facas) são comuns e deixam um lado do dedo... | ✅ Verificado |
+| `n_ramo_dorsal_ulnar` | Ramo cutâneo dorsal do nervo ulnar | *R. dorsalis n. ulnaris* | Membro superior | 2 músculo(s) | Poupado na lesão do ulnar no punho (sai antes do canal de Guyon), m... | ✅ Verificado |
+| `n_digitais_palmares` | Nervos digitais palmares (comuns e próprios) | *Nn. digitales palmares communes et proprii* | Membro superior | 3 músculo(s) | Lesões por corte (vidro, facas) são comuns e deixam um lado do dedo... | ✅ Verificado |
 | `n_digitais_dorsais` | Nervos digitais dorsais | *Nn. digitales dorsales* | Membro superior | 0 músculo(s) | Lesões do dorso da mão (cortes, cirurgia) deixam áreas de dormência... | ✅ Verificado |
 | `n_espinais_cervicais` | Nervos espinais cervicais (C1–C8) | *Nn. spinales cervicales* | Cabeça e pescoço, Tronco | 0 músculo(s) | Radiculopatia cervical (hérnia de disco ou osteófitos): dor irradia... | ✅ Verificado |
 | `n_espinais_toracicos` | Nervos espinais torácicos (T1–T12) | *Nn. spinales thoracici* | Tronco | 0 músculo(s) | O herpes-zóster segue o dermátomo (cinturão de vesículas). A compre... | ✅ Verificado |
 | `n_espinais_lombares` | Nervos espinais lombares (L1–L5) | *Nn. spinales lumbales* | Tronco | 0 músculo(s) | Radiculopatia lombar (hérnia de disco, em geral L4–L5 e L5–S1, que ... | ✅ Verificado |
 | `n_espinais_sacrais` | Nervos espinais sacrais e coccígeo (S1–S5 e Co1) | *Nn. spinales sacrales et n. coccygeus* | Tronco | 0 músculo(s) | A lesão de S2–S4 (cone medular, cauda equina ou sacro) causa disfun... | ✅ Verificado |
 | `cauda_equina` | Cauda equina e filo terminal | *Cauda equina; Filum terminale* | Tronco | 0 músculo(s) | Síndrome da cauda equina (hérnia de disco volumosa, tumor, hematoma... | ✅ Verificado |
+| `n_obturatorio` | Nervo obturatório | *N. obturatorius* | Tronco, Membro inferior | 7 músculo(s) | Fraturas pélvicas, cirurgia do quadril e parto laborioso podem lesá... | ✅ Verificado |
+| `n_gluteo_superior` | Nervo glúteo superior | *N. gluteus superior* | Tronco, Membro inferior | 3 músculo(s) | Pode ser lesado em injeções glúteas mal localizadas, em cirurgias d... | ✅ Verificado |
+| `n_gluteo_inferior` | Nervo glúteo inferior | *N. gluteus inferior* | Tronco, Membro inferior | 1 músculo(s) | A lesão dificulta levantar-se da posição sentada, subir escadas e c... | ✅ Verificado |
+| `n_piriforme` | Nervo para o piriforme | *N. musculi piriformis* | Tronco, Membro inferior | 1 músculo(s) | Sem importância clínica isolada; a síndrome do piriforme envolve o ... | ✅ Verificado |
+| `n_quadrado_femoral` | Nervo para o quadrado femoral e gêmeo inferior | *N. musculi quadrati femoris* | Tronco, Membro inferior | 2 músculo(s) | — | ✅ Verificado |
+| `n_isquiatico` | Nervo isquiático (ciático) | *N. ischiadicus* | Tronco, Membro inferior | 5 músculo(s) | Injeção glútea fora do quadrante superior lateral, luxação posterio... | ✅ Verificado |

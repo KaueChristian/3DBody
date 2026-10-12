@@ -1,6 +1,6 @@
 # Miótomos: segmento medular → músculos e nervos
 
-> Gerado por `node tools/gen_miotomos.js` a partir do campo `segmentos` do catálogo (`src/segments.js`). Cumpre o item **F2.14**. 132 músculos e 58 nervos/estruturas têm segmentos; 72 músculos são inervados só por nervos cranianos (face, língua, palato, faringe, laringe, olho, ouvido médio) e não têm segmento.
+> Gerado por `node tools/gen_miotomos.js` a partir do campo `segmentos` do catálogo (`src/segments.js`). Cumpre o item **F2.14**. 156 músculos e 64 nervos/estruturas têm segmentos; 72 músculos são inervados só por nervos cranianos (face, língua, palato, faringe, laringe, olho, ouvido médio) e não têm segmento.
 
 **Como ler.** O miótomo de um segmento é o conjunto de músculos que recebem fibras dele. Os valores seguem Moore, Dalley & Agur (8ª ed.) e o Gray’s Anatomy (42ª ed.), com Kendall et al. para os miótomos clínicos; **as fontes divergem em vários músculos** (a nota de cada ficha diz quais). Os músculos próprios do dorso e os curtos da coluna (marcados com †) são inervados por ramos posteriores em vários níveis: o intervalo é o da região, e não um miótomo clínico. Os músculos marcados com ‡ (ECM e trapézio) têm segmentos só proprioceptivos: a parte motora é do nervo acessório (XI).
 
@@ -134,45 +134,45 @@
 
 ### L2
 
-- **Músculos (3):** Quadrado do lombo; Psoas maior; Ilíaco
+- **Músculos (14):** Quadrado do lombo; Psoas maior; Ilíaco; Sartório; Reto femoral; Vasto lateral; Vasto medial; Vasto intermédio; Pectíneo; Adutor longo; Adutor curto; Adutor magno; Adutor mínimo; Grácil
 - **Também, por inervação regional (7):** Iliocostal lombar †; Longuíssimo torácico †; Rotadores lombares †; Interespinais lombares †; Intertransversários lombares mediais †; Intertransversários lombares laterais †; Multífido †
-- **Nervos e estruturas (6):** Ramos posteriores dos nervos espinais; Plexo lombar — ramos musculares; Nervo femoral; Medula espinal; Nervos espinais lombares (L1–L5); Cauda equina e filo terminal
+- **Nervos e estruturas (7):** Ramos posteriores dos nervos espinais; Plexo lombar — ramos musculares; Nervo femoral; Medula espinal; Nervos espinais lombares (L1–L5); Cauda equina e filo terminal; Nervo obturatório
 
 ### L3
 
-- **Músculos (3):** Quadrado do lombo; Psoas maior; Ilíaco
+- **Músculos (15):** Quadrado do lombo; Psoas maior; Ilíaco; Obturador externo; Sartório; Reto femoral; Vasto lateral; Vasto medial; Vasto intermédio; Pectíneo; Adutor longo; Adutor curto; Adutor magno; Adutor mínimo; Grácil
 - **Também, por inervação regional (7):** Iliocostal lombar †; Longuíssimo torácico †; Rotadores lombares †; Interespinais lombares †; Intertransversários lombares mediais †; Intertransversários lombares laterais †; Multífido †
-- **Nervos e estruturas (6):** Ramos posteriores dos nervos espinais; Plexo lombar — ramos musculares; Nervo femoral; Medula espinal; Nervos espinais lombares (L1–L5); Cauda equina e filo terminal
+- **Nervos e estruturas (7):** Ramos posteriores dos nervos espinais; Plexo lombar — ramos musculares; Nervo femoral; Medula espinal; Nervos espinais lombares (L1–L5); Cauda equina e filo terminal; Nervo obturatório
 
 ### L4
 
-- **Músculos (2):** Quadrado do lombo; Ilíaco
+- **Músculos (16):** Quadrado do lombo; Ilíaco; Glúteo médio; Glúteo mínimo; Tensor da fáscia lata; Gêmeo inferior; Obturador externo; Quadrado femoral; Reto femoral; Vasto lateral; Vasto medial; Vasto intermédio; Adutor longo; Adutor curto; Adutor magno; Adutor mínimo
 - **Também, por inervação regional (7):** Iliocostal lombar †; Longuíssimo torácico †; Rotadores lombares †; Interespinais lombares †; Intertransversários lombares mediais †; Intertransversários lombares laterais †; Multífido †
-- **Nervos e estruturas (6):** Ramos posteriores dos nervos espinais; Plexo lombar — ramos musculares; Nervo femoral; Medula espinal; Nervos espinais lombares (L1–L5); Cauda equina e filo terminal
+- **Nervos e estruturas (10):** Ramos posteriores dos nervos espinais; Plexo lombar — ramos musculares; Nervo femoral; Medula espinal; Nervos espinais lombares (L1–L5); Cauda equina e filo terminal; Nervo obturatório; Nervo glúteo superior; Nervo para o quadrado femoral e gêmeo inferior; Nervo isquiático (ciático)
 
 ### L5
 
-- **Músculos (1):** Obturador interno
+- **Músculos (11):** Obturador interno; Glúteo máximo; Glúteo médio; Glúteo mínimo; Tensor da fáscia lata; Gêmeo superior; Gêmeo inferior; Quadrado femoral; Bíceps femoral — cabeça curta; Semitendíneo; Semimembranáceo
 - **Também, por inervação regional (6):** Iliocostal lombar †; Longuíssimo torácico †; Rotadores lombares †; Interespinais lombares †; Intertransversários lombares mediais †; Multífido †
-- **Nervos e estruturas (5):** Ramos posteriores dos nervos espinais; Nervo para o obturador interno e gêmeo superior; Medula espinal; Nervos espinais lombares (L1–L5); Cauda equina e filo terminal
+- **Nervos e estruturas (9):** Ramos posteriores dos nervos espinais; Nervo para o obturador interno e gêmeo superior; Medula espinal; Nervos espinais lombares (L1–L5); Cauda equina e filo terminal; Nervo glúteo superior; Nervo glúteo inferior; Nervo para o quadrado femoral e gêmeo inferior; Nervo isquiático (ciático)
 
 ### S1
 
-- **Músculos (1):** Obturador interno
+- **Músculos (13):** Obturador interno; Glúteo máximo; Glúteo médio; Glúteo mínimo; Tensor da fáscia lata; Piriforme; Gêmeo superior; Gêmeo inferior; Quadrado femoral; Bíceps femoral — cabeça longa; Bíceps femoral — cabeça curta; Semitendíneo; Semimembranáceo
 - **Também, por inervação regional (1):** Multífido †
-- **Nervos e estruturas (4):** Nervo para o obturador interno e gêmeo superior; Medula espinal; Nervos espinais sacrais e coccígeo (S1–S5 e Co1); Cauda equina e filo terminal
+- **Nervos e estruturas (9):** Nervo para o obturador interno e gêmeo superior; Medula espinal; Nervos espinais sacrais e coccígeo (S1–S5 e Co1); Cauda equina e filo terminal; Nervo glúteo superior; Nervo glúteo inferior; Nervo para o piriforme; Nervo para o quadrado femoral e gêmeo inferior; Nervo isquiático (ciático)
 
 ### S2
 
-- **Músculos (7):** Esfíncter externo do ânus; Obturador interno; Bulboesponjoso; Isquiocavernoso; Transverso superficial do períneo; Transverso profundo do períneo; Esfíncter externo da uretra
+- **Músculos (13):** Esfíncter externo do ânus; Obturador interno; Bulboesponjoso; Isquiocavernoso; Transverso superficial do períneo; Transverso profundo do períneo; Esfíncter externo da uretra; Glúteo máximo; Piriforme; Bíceps femoral — cabeça longa; Bíceps femoral — cabeça curta; Semitendíneo; Semimembranáceo
 - **Também, por inervação regional (1):** Multífido †
-- **Nervos e estruturas (5):** Nervo pudendo; Nervo para o obturador interno e gêmeo superior; Medula espinal; Nervos espinais sacrais e coccígeo (S1–S5 e Co1); Cauda equina e filo terminal
+- **Nervos e estruturas (8):** Nervo pudendo; Nervo para o obturador interno e gêmeo superior; Medula espinal; Nervos espinais sacrais e coccígeo (S1–S5 e Co1); Cauda equina e filo terminal; Nervo glúteo inferior; Nervo para o piriforme; Nervo isquiático (ciático)
 
 ### S3
 
-- **Músculos (9):** Pubococcígeo; Iliococcígeo; Esfíncter externo do ânus; Puborretal; Bulboesponjoso; Isquiocavernoso; Transverso superficial do períneo; Transverso profundo do períneo; Esfíncter externo da uretra
+- **Músculos (10):** Pubococcígeo; Iliococcígeo; Esfíncter externo do ânus; Puborretal; Bulboesponjoso; Isquiocavernoso; Transverso superficial do períneo; Transverso profundo do períneo; Esfíncter externo da uretra; Bíceps femoral — cabeça longa
 - **Também, por inervação regional (1):** Multífido †
-- **Nervos e estruturas (5):** Nervos do levantador do ânus e do coccígeo (S3–S5); Nervo pudendo; Medula espinal; Nervos espinais sacrais e coccígeo (S1–S5 e Co1); Cauda equina e filo terminal
+- **Nervos e estruturas (6):** Nervos do levantador do ânus e do coccígeo (S3–S5); Nervo pudendo; Medula espinal; Nervos espinais sacrais e coccígeo (S1–S5 e Co1); Cauda equina e filo terminal; Nervo isquiático (ciático)
 
 ### S4
 
@@ -325,6 +325,30 @@
 | `interosseos_dorsais` | Interósseos dorsais da mão | C8–T1 |
 | `interosseos_palmares` | Interósseos palmares da mão | C8–T1 |
 | `lumbricais` | Lumbricais da mão | C8–T1 |
+| `gluteo_maximo` | Glúteo máximo | L5–S2 |
+| `gluteo_medio` | Glúteo médio | L4–S1 |
+| `gluteo_minimo` | Glúteo mínimo | L4–S1 |
+| `tensor_fascia_lata` | Tensor da fáscia lata | L4–S1 |
+| `piriforme` | Piriforme | S1–S2 |
+| `gemeo_superior` | Gêmeo superior | L5–S1 |
+| `gemeo_inferior` | Gêmeo inferior | L4–S1 |
+| `obturador_externo` | Obturador externo | L3–L4 |
+| `quadrado_femoral` | Quadrado femoral | L4–S1 |
+| `sartorio` | Sartório | L2–L3 |
+| `reto_femoral` | Reto femoral | L2–L4 |
+| `vasto_lateral` | Vasto lateral | L2–L4 |
+| `vasto_medial` | Vasto medial | L2–L4 |
+| `vasto_intermedio` | Vasto intermédio | L2–L4 |
+| `pectineo` | Pectíneo | L2–L3 |
+| `adutor_longo` | Adutor longo | L2–L4 |
+| `adutor_curto` | Adutor curto | L2–L4 |
+| `adutor_magno` | Adutor magno | L2–L4 |
+| `adutor_minimo` | Adutor mínimo | L2–L4 |
+| `gracil` | Grácil | L2–L3 |
+| `biceps_femoral_longa` | Bíceps femoral — cabeça longa | S1–S3 |
+| `biceps_femoral_curta` | Bíceps femoral — cabeça curta | L5–S2 |
+| `semitendineo` | Semitendíneo | L5–S2 |
+| `semimembranaceo` | Semimembranáceo | L5–S2 |
 
 ## 3. Músculos sem segmento medular (72)
 

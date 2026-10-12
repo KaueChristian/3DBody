@@ -23,7 +23,8 @@ fora, quanto isso pesa e como o pacote de dados foi decidido. Gerado em 2026-10-
 
 | Pacote | Peças | Triângulos (teto) | `.js` |
 | --- | --- | --- | --- |
-| `anatomy-leg.js` **hoje** (ossos, sesamoides e pele inteira) | 32 | ≈ 54 mil + 155 mil | **1,85 MB** (ossos ≈ 0,45 MB, pele ≈ 1,4 MB) |
+| `anatomy-leg.js` após a F4.1 (ossos, sesamoides e pele inteira) | 32 | ≈ 54 mil + 155 mil | 1,85 MB (ossos ≈ 0,45 MB, pele ≈ 1,4 MB) |
+| `anatomy-leg.js` **hoje**, com o lote A (24 músculos) | 56 | + 122 mil (real) | **2,9 MB** (os músculos do lote A: 1,05 MB, contra 1,36 MB nos tetos) |
 | Mais os músculos e a membrana interóssea (lotes A, B e C), nos tetos da tabela | +52 | +278 mil | **+≤ 2,5 MB** (o real tende a ficar abaixo: várias peças já têm menos triângulos que o teto) |
 | Pacote final previsto | 84 | ≈ 490 mil | **≈ 4,4 MB** no pior caso |
 
@@ -48,12 +49,16 @@ que os 19 s medidos em 2026-10-08 (hoje há 100 nervos, não 55, e a máquina te
 passar de **35 000 ms** nesta medição, a otimização do celular (**M37**) passa na frente dos próximos lotes. A medição deve ser
 repetida ao fim do lote A (F4.2) e, de novo, depois dos nervos da F4.5, que acrescentam ao laço mais caro (17,6 s).
 
-No computador (navegador embutido, sem emulação): `legDataMs` 59 ms, `legStructuresMs` 93 ms, `totalReadyMs` 3 603 ms.
+Após o lote A (F4.2), duas execuções: `legDataMs` 1 163 · 1 368, `legStructuresMs` 602 · 698, `nervesMs` 20 218 · 20 312 e `totalReadyMs` **31 739 · 32 739**.
+Os 7 nervos novos custaram ≈ 2,6 s (≈ 0,37 s cada; a média dos 100 anteriores é 0,18 s). A F4.5 acrescenta ≈ 7 nervos longos com dezenas de
+ramos: previsão de 35–38 s. **A otimização da carga dos nervos (M37, leva 1) deve vir antes da F4.5.**
+
+No computador (navegador embutido, sem emulação), após a F4.1: `legDataMs` 59 ms, `legStructuresMs` 93 ms, `totalReadyMs` 3 603 ms.
 
 ## 4. Peças definidas (84, todas com elementos no banco)
 
 Tetos de triângulos por peça como no pacote `body` (músculos de 1 500 a 11 000; ossos e sesamoides menores). “Lote” diz quando a
-peça é baixada, convertida e catalogada; as do F4.1 já estão em `dist/anatomy-leg.js`. Comandos, dentro de `tools/`:
+peça é baixada, convertida e catalogada; as do F4.1 e do lote A (F4.2) já estão em `dist/anatomy-leg.js` (2,9 MB). Comandos, dentro de `tools/`:
 `python fetch_body.py --pack leg <ids>` e `python convert_body.py --pack leg [--append] <ids>`.
 
 | Lote | Tipo | Id da peça | Conceito do banco | Elementos | zip (KB) | Teto de triângulos |

@@ -46,9 +46,9 @@ Dados (raramente necessário; baixa ~60 MB e regenera arquivos grandes — só c
 | --- | --- | --- |
 | `src/catalog.js` | Junta os catálogos; camadas, regiões, `INNERVATION`, **guardas** | Guardas lançam erro na carga: não as enfraqueça para “fazer passar” |
 | `src/catalog-muscles.js` | Músculos da cabeça e do pescoço | |
-| `src/catalog-body-muscles.js` | Músculos do tronco e do membro superior | |
+| `src/catalog-body-muscles.js`, `catalog-leg-muscles.js` | Músculos do tronco e do membro superior; o segundo, do quadril e da coxa (pacote `anatomy-leg.js`) | |
 | `src/catalog-bones.js`, `catalog-body-bones.js`, `catalog-leg-bones.js` | Ossos, dentes, cartilagens, discos (o último é do membro inferior, pacote `anatomy-leg.js`) | |
-| `src/catalog-nerves.js` | 55 nervos: textos, trajetos, `ramos` (fonte única músculo ↔ nervo) | Pontos medidos no modelo; ver §8 |
+| `src/catalog-nerves.js`, `catalog-nerves-leg.js` | Nervos: textos, trajetos, `ramos` (fonte única músculo ↔ nervo); o segundo, os do membro inferior | Pontos medidos no modelo; ver §8 |
 | `src/catalog-other.js` | Ligamentos, fáscias, glândulas, pele | |
 | `src/catalog-joints.js` | Articulações e ligamentos do membro superior; `movimentos` (fonte única músculo ↔ articulação) e `nervos` (ramos articulares) | Ver `docs/articulacoes.md` |
 | `src/joint-geo.js`, `joint-links.js` | Cápsulas, colaterais e membrana interóssea medidas nos ossos; seções da ficha ligadas às articulações | |
@@ -112,7 +112,7 @@ node -e "const c=require(process.env.TEMP+'/cat.cjs'); console.log(c.ITEMS.lengt
 
 Se lançar `Identificador duplicado…`, `Nervo aponta para estrutura inexistente…` ou `Músculos sem nervo…`, o catálogo está
 errado — corrija os dados. As articulações têm guardas próprias (`Articulação … cita osso inexistente`, `Cápsula de … usa peças
-fora dos ossos citados`, `Movimento … cita músculo inexistente`…). Contagens esperadas hoje: 404 estruturas (204 músculos, 100 nervos
+fora dos ossos citados`, `Movimento … cita músculo inexistente`…). Contagens esperadas hoje: 428 estruturas (228 músculos, 106 nervos
 e gânglios, 46 ossos, 28 ligamentos, 13 articulações, 3 fáscias, 3 glândulas, 7 estruturas, entre elas a medula espinal).
 
 ### 6.2 Verificação visual (obrigatória para qualquer mudança de geometria ou interface)

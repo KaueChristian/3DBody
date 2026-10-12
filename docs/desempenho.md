@@ -18,7 +18,7 @@
 | `dist/anatomy-data.js` | Malhas 3D compactadas da cabeça e pescoço (BodyParts3D) | ~3.37 MB | Síncrono inicial |
 | `dist/anatomy-nerves.js` | Malhas 3D compactadas dos nervos da órbita (oftálmico, frontal, lacrimal, nasociliar…) | ~0.37 MB | Em segundo plano com os nervos |
 | `dist/anatomy-body.js` | Malhas 3D compactadas do tronco e membros superiores, mais língua, palato, faringe, laringe e músculos curtos do pescoço e da pelve (F2) | ~8.31 MB | Assíncrono (segundo plano) |
-| `dist/anatomy-leg.js` | Malhas do membro inferior (31 peças ósseas) e a pele inteira com as pernas (F4.1); carrega depois do corpo | ~1.85 MB | Assíncrono, depois do corpo e antes dos nervos |
+| `dist/anatomy-leg.js` | Malhas do membro inferior (31 peças ósseas, 24 músculos do quadril e da coxa) e a pele inteira com as pernas (F4.1 e F4.2); carrega depois do corpo | ~2.9 MB | Assíncrono, depois do corpo e antes dos nervos |
 | **Total inicial (Cabeça visível)** | Dados para primeira renderização | **~4.37 MB** | **Imediato (< 1s)** |
 | **Total completo (Corpo + Nervos)** | Modelo 3D integral com todas as estruturas | **~12.05 MB** (era 11.64 MB antes da F2) | **Gradual (~1.5s)** |
 | `release/app.zip` | Pacote compactado de atualização do lançador | ~8.5 MB | Sob demanda em releases |
@@ -68,6 +68,16 @@ emulado (`node tools/perf_mobile.js 4`): `legDataMs` 926 e `legStructuresMs` 368
 medido duas vezes no HEAD, para 28,4 s); no computador, 59 ms + 93 ms. A pele passa de 110 mil para 155 mil triângulos. O tempo
 dos nervos não mudou. A tabela completa, as decisões e o limite que aciona a otimização (35 s no celular emulado → M37) estão em
 [`inventario-membro-inferior.md`](inventario-membro-inferior.md). Repetir a medição ao fim do lote A (F4.2) e depois dos nervos da F4.5.
+
+---
+
+### 1.6 Efeito do lote A da F4 (F4.2, 2026-10-12)
+
+Mais 24 músculos (+1,05 MB: o pacote do membro inferior vai a 2,9 MB, dados em ≈ 15 MB) e 6 nervos novos. Celular emulado
+(`node tools/perf_mobile.js 4`, duas execuções): `legDataMs` 1 163 e 1 368, `legStructuresMs` 602 e 698, `nervesMs` **20 218 e 20 312**
+(17 656 antes) e `totalReadyMs` **31 739 e 32 739** (28 439 após a F4.1). Cada nervo novo custou ≈ 0,37 s, o dobro da média dos
+100 anteriores (0,18 s), porque seus ramos consultam músculos de malha grande. Limite que aciona o M37: 35 000 ms. A F4.5 (≈ 7
+nervos longos) deve chegar a 35–38 s: **fazer a otimização da carga dos nervos antes dela**.
 
 ---
 

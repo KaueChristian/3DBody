@@ -98,7 +98,7 @@ clínica curta, com fonte) e quizzes de localizar e escolher o nome. Ficam para 
 | M34 | Estruturas esquemáticas da F2: intrínsecos da língua, músculos do ouvido médio e lisos do olho; cartilagens da laringe e ossículos ausentes | F2 (pendências) | G | C |
 | M35 | **Busca com sinônimos e inglês** (“flexiona” × “flete”, “ulnar”); nome em inglês e epônimos nas fichas (C6) | Bateria de 2026-10-08 | M | B |
 | M36 | `hid=` do hash cresce sem limite ao ocultar muitas estruturas uma a uma | Bateria de 2026-10-08 | P | C |
-| M37 | **Desempenho no celular**: leva 1 de `docs/otimizacao-mobile.md` (renderização sob demanda, resolução adaptativa, nervos mais leves, sem leitura de layout no laço) | Levantamento de 2026-10-08 | M | **A (condicional)** |
+| M37 | **Desempenho no celular**: leva 1 de `docs/otimizacao-mobile.md` (renderização sob demanda, resolução adaptativa, nervos mais leves, sem leitura de layout no laço) | Levantamento de 2026-10-08 | M | **A: antes da F4.5** (medição do lote A: 31,7–32,7 s; limite 35 s) |
 | M38 | Revisão de fontes dos textos dos 6 tours; plano de corte sem “tampa” (as malhas são cascas) | F1 | M | C |
 | M39 | Medir o site e a atualização do PWA em aparelhos reais; marcar *Enforce HTTPS* no Pages | `docs/publicacao-web.md` | P | B |
 | M40 | **Retirar a `pele_corpo` do pacote `anatomy-body.js`** (≈ 1 MB e 55 mil vértices que a `pele_inteira` do pacote do membro inferior deixa sem uso) e, junto, voltar a decimar a pele inteira só uma vez; exige regenerar o pacote do corpo (baixar ≈ 60 MB) | F4.1 | M | C |
@@ -106,7 +106,7 @@ clínica curta, com fonte) e quizzes de localizar e escolher o nome. Ficam para 
 **M37 é condicional:** o membro inferior soma ≈ 4,4 MB de malhas (previsto, `docs/inventario-membro-inferior.md`) e dezenas de nervos novos, e a
 carga no celular já era o ponto mais frágil. Medição de 2026-10-12 (`node tools/perf_mobile.js 4`): 26,3–26,8 s antes da F4.1 e **28,4 s com ela**
 (os 19 s de 2026-10-08 eram com 55 nervos). **Limite: 35 000 ms** em `totalReadyMs` nessa medição; passou disso, M37 passa na frente de
-qualquer outro item. Repetir ao fim do lote A (F4.2) e depois dos nervos da F4.5 (que acrescentam ao laço de 17,6 s).
+qualquer outro item. **Atualização do fim do lote A (F4.2): 31,7–32,7 s**, com os nervos em 20,2–20,3 s (≈ 0,37 s por nervo novo). A F4.5 deve levar a 35–38 s, então **M37 entra antes da F4.5** (prioridade A, não mais condicional). Repetir a medição depois da F4.3 e da F4.4.
 
 ## 7. Como este registro é mantido
 
