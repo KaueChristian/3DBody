@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { buildCapsule, buildWeb, collateralPoints } from './joint-geo.js';
+import { buildHull } from './hull-geo.js';
 
 /**
  * Geração procedural de estruturas (músculos, fáscias, ligamentos) coladas na anatomia real.
@@ -311,6 +312,7 @@ export function buildProc(spec, side, S, lm, ctx) {
   if (spec.kind === 'torus') return buildTorus(spec, side);
   if (spec.kind === 'capsule') return buildCapsule(spec, side, ctx.geo);
   if (spec.kind === 'web') return buildWeb(spec, side, ctx.geo);
+  if (spec.kind === 'hull') return buildHull(spec, ctx.geo);
   return spec.kind === 'tube' ? buildTube(spec, side, lm, S, ctx) : buildSurfacePart(spec, side, S);
 }
 

@@ -198,6 +198,38 @@ function runTests() {
     }
   }
 
+  // 6c. Circulatório (F5): peças do pacote ↔ fichas, camadas por tipo, vizinhas existentes e câmaras e valvas completas
+  {
+    const fs = require('fs');
+    const pack = fs.readFileSync(path.resolve(__dirname, '../dist/anatomy-circ.js'), 'utf8');
+    const pieces = new Set(JSON.parse(pack.slice(pack.indexOf('=') + 1).replace(/;\s*$/, '')).manifest.map((p) => p.id));
+    const circ = ITEMS.filter((i) => ['cardiaco', 'arteria', 'veia'].includes(i.kind));
+    const used = new Set();
+    for (const i of circ) {
+      const want = { cardiaco: 'coracao', arteria: 'arteria', veia: 'veia' }[i.kind];
+      if (i.layer !== want) logFail(`"${i.id}" (${i.kind}) deveria estar na camada "${want}", e não em "${i.layer}".`);
+      if (!i.parts?.length) logFail(`"${i.id}" do circulatório sem malha.`);
+      for (const p of i.parts ?? []) {
+        used.add(p.id);
+        if (!pieces.has(p.id)) logFail(`"${i.id}" usa a peça "${p.id}", que não está em dist/anatomy-circ.js.`);
+      }
+      for (const r of i.relacionados ?? []) {
+        if (!itemMap.has(r)) logFail(`"${i.id}" relaciona estrutura inexistente "${r}".`);
+        else if (!(itemMap.get(r).relacionados ?? []).includes(i.id)) logFail(`"${i.id}" cita "${r}", que não o cita de volta (o catálogo deveria completar a ligação).`);
+      }
+    }
+    for (const p of pieces) if (!used.has(p)) logFail(`A peça "${p}" do pacote do circulatório não é usada por nenhuma ficha.`);
+    for (const id of ['atrio_direito', 'atrio_esquerdo', 'ventriculo_direito', 'ventriculo_esquerdo', 'valva_tricuspide', 'valva_mitral', 'valva_aortica', 'valva_pulmonar']) {
+      if (itemMap.get(id)?.kind !== 'cardiaco') logFail(`Câmara ou valva "${id}" ausente do coração.`);
+    }
+    for (const id of ['aorta_ascendente', 'arco_aorta', 'aorta_toracica', 'aorta_abdominal', 'tronco_pulmonar', 'coronaria_direita', 'ramo_interventricular_anterior', 'ramo_circunflexo']) {
+      if (itemMap.get(id)?.kind !== 'arteria') logFail(`Artéria "${id}" ausente.`);
+    }
+    for (const id of ['veia_cava_superior', 'veia_cava_inferior', 'seio_coronario', 'veia_azigo']) {
+      if (itemMap.get(id)?.kind !== 'veia') logFail(`Veia "${id}" ausente.`);
+    }
+  }
+
   // 7. Ferramentas de estudo que dependem do catálogo: tours e grupos musculares
   const { TOURS, TOUR_VIEWS } = loadModule('../src/study/tours.js');
   const { GROUPS, MUSCLE_GROUP } = loadModule('../src/study/groups.js');

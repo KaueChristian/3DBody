@@ -349,7 +349,7 @@ async function runSmokeTest() {
       document.getElementById('btnStudy').click();
       t(!document.getElementById('studyModal').hidden, 'o modal de estudo não abriu');
       const cards = [...document.querySelectorAll('.tour-card')];
-      t(cards.length === 6, `esperava 6 tours, veio ${cards.length}`);
+      t(cards.length === 8, `esperava 8 tours, veio ${cards.length}`);
       for (const c of cards) {
         t(!/undefined|null|NaN/.test(c.innerText), `cartão de tour com texto quebrado: ${c.innerText.slice(0, 60)}`);
         t((c.querySelector('.tour-desc')?.innerText.length ?? 0) > 20, 'cartão de tour sem descrição');
@@ -372,7 +372,7 @@ async function runSmokeTest() {
       const app = window.__app;
       const sc = app.studyController;
       const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-      for (const id of ['manguito', 'plexo_braquial', 'nervo_radial', 'mastigacao_v3', 'facial_mimica', 'parede_abdominal']) {
+      for (const id of ['manguito', 'plexo_braquial', 'nervo_radial', 'mastigacao_v3', 'facial_mimica', 'parede_abdominal', 'circulacao', 'circulacao_fetal']) {
         sc.startTour(id);
         const n = sc.activeTour.steps.length;
         for (let i = 0; i < n; i++) {
@@ -394,7 +394,7 @@ async function runSmokeTest() {
       }
       if (!document.getElementById('tourBox').hidden) f.push('o painel do tour continua aberto depois de sair');
       return f;
-    }, 'os 24 passos dos 6 tours destacam e enquadram a estrutura');
+    }, 'os 38 passos dos 8 tours destacam e enquadram a estrutura');
 
     await run(async () => {
       const f = [];
@@ -716,6 +716,81 @@ async function runSmokeTest() {
       sc.syncColorUi();
       return f;
     }, 'F4.2: músculos do quadril e da coxa, nervos, segmentos e grupos');
+
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
+      const sc = app.studyController;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      for (let i = 0; i < 120 && !(app.state.nervesReady && app.state.circReady); i++) await sleep(250);
+      t(app.state.circReady, 'o pacote do circulatório não carregou');
+
+      // F5: coração e vasos têm malha, camada própria e ficha
+      const ids = ['atrio_direito', 'atrio_esquerdo', 'ventriculo_direito', 'ventriculo_esquerdo', 'valva_tricuspide', 'valva_mitral', 'valva_aortica',
+        'valva_pulmonar', 'papilares_vd', 'coronaria_direita', 'ramo_interventricular_anterior', 'ramo_circunflexo', 'seio_coronario', 'aorta_ascendente',
+        'arco_aorta', 'tronco_pulmonar', 'veia_cava_superior', 'veia_cava_inferior', 'arteria_femoral', 'arteria_braquial', 'veia_jugular_interna'];
+      for (const id of ids) t(app.M.has(id) && app.M.get(id).meshes.length > 0, 'sem malha no modelo: ' + id);
+      const semMalha = [...app.catalogItems].filter((i) => ['cardiaco', 'arteria', 'veia'].includes(i.kind) && !app.M.has(i.id)).map((i) => i.id);
+      t(!semMalha.length, 'estruturas do circulatório sem malha: ' + semMalha.join(', '));
+      const secoes = [...document.querySelectorAll('#list .sec-name')].map((e) => e.textContent);
+      for (const nome of ['Coração', 'Artérias', 'Veias']) t(secoes.includes(nome), 'a lista não tem a camada ' + nome);
+
+      // cores convencionais: tronco e artérias pulmonares azuis, veias pulmonares vermelhas
+      const rgb = (id) => app.M.get(id).color;
+      t(rgb('tronco_pulmonar').b > rgb('tronco_pulmonar').r, 'o tronco pulmonar deveria ser azulado');
+      t(rgb('veia_pulmonar_superior_esquerda').r > rgb('veia_pulmonar_superior_esquerda').b, 'as veias pulmonares deveriam ser avermelhadas');
+      t(rgb('arco_aorta').r > rgb('arco_aorta').b && rgb('veia_cava_superior').b > rgb('veia_cava_superior').r, 'aorta vermelha e veia cava azul');
+
+      // tronco: o coração aparece nas camadas profundas e a pele opaca o esconde
+      app.setRegion('tronco', { fly: false });
+      app.setDissect(5);
+      let vis = [...app.M.values()].filter((m) => m.group.visible).map((m) => m.item.id);
+      t(vis.includes('ventriculo_esquerdo') && vis.includes('arco_aorta') && vis.includes('veia_cava_superior'), 'o tronco não mostra o coração e os grandes vasos');
+      t(!vis.includes('arteria_femoral') && !vis.includes('arteria_braquial'), 'o tronco mostra vasos dos membros');
+      app.setRegion('membro_sup', { fly: false });
+      vis = [...app.M.values()].filter((m) => m.group.visible).map((m) => m.item.id);
+      t(vis.includes('arteria_braquial') && vis.includes('veia_axilar') && !vis.includes('atrio_direito'), 'o braço deveria mostrar os vasos do braço, e não o coração');
+      app.setDissect(0);
+      t(![...app.M.values()].some((m) => m.item.id !== 'pele' && m.group.visible), 'com a pele opaca nada devia aparecer por baixo dela');
+      app.setRegion('tronco', { fly: false });
+      app.setDissect(5);
+
+      // ficha: chip de uma estrutura relacionada leva a ela; o hash guarda a seleção
+      app.select('atrio_direito', { fly: false });
+      const ficha = document.getElementById('infoBody').textContent;
+      t(/Átrio direito/.test(ficha) && /Atrium dextrum/.test(ficha) && /Malha real/.test(document.getElementById('info').textContent), 'a ficha do átrio direito não abriu como malha real');
+      t(/Estruturas relacionadas/.test(ficha) && /Veia cava superior/.test(ficha) && /Valva tricúspide/.test(ficha), 'a ficha do átrio direito não lista as estruturas relacionadas');
+      t(/sel=atrio_direito/.test(sc.currentHash()), 'o hash não guarda a seleção: ' + sc.currentHash());
+      const chip = [...document.querySelectorAll('#infoBody button.lchip')].find((b) => b.dataset.go === 'valva_tricuspide');
+      t(!!chip, 'sem o chip da valva tricúspide na ficha do átrio direito');
+      chip?.click();
+      t(app.state.selected === 'valva_tricuspide', 'o chip não selecionou a valva tricúspide');
+      app.select('veia_cava_inferior', { fly: false });
+      t(/Formação/.test(document.getElementById('infoBody').textContent) && /Território drenado/.test(document.getElementById('infoBody').textContent), 'a ficha de uma veia não tem Formação e Território drenado');
+      app.select('aorta_ascendente', { fly: false });
+      t(/Território irrigado/.test(document.getElementById('infoBody').textContent), 'a ficha de uma artéria não tem Território irrigado');
+      app.select(null, { fly: false });
+
+      // quiz de localizar: o circulatório do tronco entra no sorteio
+      const pool = app.locatePool({ region: 'tronco', kinds: ['cardiaco', 'arteria', 'veia'] });
+      t(pool.length > 40, 'o quiz de localizar tem poucas estruturas do circulatório no tronco: ' + pool.length);
+      t(app.locatePool({ region: 'tronco', kinds: ['musculo'] }).every((i) => i.kind === 'musculo'), 'o filtro de tipo do quiz misturou tipos');
+
+      // tour da circulação: cada passo destaca uma estrutura que existe e o texto muda
+      sc.startTour('circulacao');
+      const textos = new Set();
+      for (let i = 0; i < 8; i++) {
+        const passo = sc.activeTour.steps[sc.tourStepIndex];
+        t(app.state.selected === passo.highlight, `o passo ${i + 1} do tour não destacou ${passo.highlight}`);
+        textos.add(sc.tourBox.textContent);
+        if (i < 7) sc.tourStep(1);
+      }
+      t(textos.size === 8, 'os 8 passos do tour da circulação deveriam ter textos diferentes');
+      sc.stopTour();
+      app.select(null, { fly: false });
+      return f;
+    }, 'F5: coração e vasos (malhas, camadas, fichas, cores, quiz e tour da circulação)');
 
     await run(async () => {
       const f = [];
