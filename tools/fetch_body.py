@@ -1,6 +1,6 @@
 import json, os, struct, sys, time, urllib.request, zlib
 from concurrent.futures import ThreadPoolExecutor
-from body_parts import resolve, idx, BODY
+from body_parts import resolve, idx, BODY, elems
 URL = "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/isa_BP3D_4.0_obj_99.zip"
 os.makedirs("obj", exist_ok=True)
 res = resolve()
@@ -17,6 +17,8 @@ if "--pack" in args:
 # com ids na linha de comando, baixa só os elementos dessas peças (ex.: ao acrescentar músculos com convert_body.py --append)
 only = set(args)
 todo = sorted({e for k, v in res.items() if BODY[k]["pack"] == pack and (not only or k in only) for e in v})
+# a parede dos ventrículos é dividida pela cavidade mais próxima (convert_body.split_wall): as cavidades também precisam estar em disco
+todo = sorted(set(todo) | {e for k in res if BODY[k]["pack"] == pack and (not only or k in only) and BODY[k].get("split") for n in BODY[k]["split"] for e in elems(f"cavity of {n}")})
 print("elementos:", len(todo), "compactados:", sum(idx[e][1] for e in todo)//1000, "KB", flush=True)
 done = 0; total = 0; t0 = time.time()
 def fetch(e):

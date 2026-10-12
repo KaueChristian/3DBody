@@ -15,11 +15,12 @@ for line in open("zip_index.tsv"):
     idx[f.split("/")[-1][:-4]] = (int(fs), int(cs), int(off))
 
 
-def elems(pattern):
-    """União dos elementos de todos os conceitos cujo nome casa (fullmatch) com o padrão."""
+def elems(pattern, maxel=8):
+    """União dos elementos de todos os conceitos cujo nome casa (fullmatch) com o padrão. `maxel` descarta conceitos que
+    reúnem elementos demais (agregados genéricos); as coronárias e as veias cardíacas precisam de um limite maior."""
     out = []
     for c, n in names.items():
-        if re.fullmatch(pattern, n, re.I) and 1 <= len(m.get(c, [])) <= 8:
+        if re.fullmatch(pattern, n, re.I) and 1 <= len(m.get(c, [])) <= maxel:
             for e in m[c]:
                 if e not in out:
                     out.append(e)
@@ -33,11 +34,11 @@ R = LR  # atalho
 BODY = {}
 
 
-def add(pid, cat, pattern, smooth=4, tris=9000, region="tronco", mirror=False, exclude=(), pack="body"):
+def add(pid, cat, pattern, smooth=4, tris=9000, region="tronco", mirror=False, exclude=(), pack="body", maxel=8):
     """mirror=True: o banco só tem um lado; o conversor acrescenta a cópia espelhada (x → −x).
     exclude: elementos a ignorar (o banco repete alguns como `…M`, cópia espelhada do outro lado que já existe).
     pack: pacote de dados em que a peça entra ('body' = dist/anatomy-body.js, 'leg' = dist/anatomy-leg.js, F4)."""
-    BODY[pid] = dict(cat=cat, pattern=pattern, smooth=smooth, tris=tris, region=region, mirror=mirror, exclude=tuple(exclude), pack=pack)
+    BODY[pid] = dict(cat=cat, pattern=pattern, smooth=smooth, tris=tris, region=region, mirror=mirror, exclude=tuple(exclude), pack=pack, maxel=maxel)
 
 
 # ───────── Ossos ─────────
@@ -271,10 +272,96 @@ for k, pat, tris in [
     addl(k, "musculo", LR + pat, 4, tris)
 
 
+# ───────── F5 — circulatório (pacote `circ`, dist/anatomy-circ.js) ─────────
+# Coração (paredes, cavidades, valvas, músculos papilares, coronárias e veias cardíacas) e os vasos principais do corpo todo.
+# O banco não tem pericárdio, cordas tendíneas, septos nem aurículas como peças (as aurículas estão nas paredes dos átrios).
+def addc(pid, cat, pattern, smooth=4, tris=2500, region="tronco", exclude=(), maxel=8):
+    add(pid, cat, pattern, smooth, tris, region, False, exclude, "circ", maxel)
+
+
+# coração: as paredes são peças únicas (átrio direito, átrio esquerdo e os dois ventrículos juntos)
+addc("cor_parede_atrio_d", "orgao", r"wall of right atrium", 4, 6000)
+addc("cor_parede_atrio_e", "orgao", r"wall of left atrium", 4, 4000)
+# a parede dos dois ventrículos é uma peça só no banco; o conversor a divide pela cavidade mais próxima (ver `split_wall` em convert_body.py)
+addc("cor_parede_ventriculo_d", "orgao", r"wall of ventricle", 4, 7000)
+addc("cor_parede_ventriculo_e", "orgao", r"wall of ventricle", 4, 7000)
+BODY["cor_parede_ventriculo_d"]["split"] = ("right ventricle", "left ventricle")
+BODY["cor_parede_ventriculo_e"]["split"] = ("left ventricle", "right ventricle")
+# as cavidades (moldes de sangue de cada câmara) existem no banco, mas coincidem com a face interna das paredes (z-fighting no corte)
+# e não acrescentam nada ao estudo; só servem de referência para dividir a parede dos ventrículos (`split_wall`)
+# valvas (folhetos e válvulas)
+addc("valva_mitral", "orgao", r"(?:anterior|posterior) leaflet of mitral valve", 3, 2500)
+addc("valva_tricuspide", "orgao", r"(?:anterior|posterior|septal) leaflet of tricuspid valve", 3, 3000)
+addc("valva_aortica", "orgao", r"(?:anterior|left posterior|right posterior) cusp of aortic valve", 3, 1500)
+addc("valva_pulmonar", "orgao", r"(?:left anterior|right anterior|posterior) cusp of pulmonary valve", 3, 1500)
+# músculos papilares
+for k, pat in [("papilar_anterior_vd", "anterior papillary muscle of right ventricle"), ("papilar_posterior_vd", "posterior papillary muscle of right ventricle"),
+               ("papilar_septal_vd", "septal papillary muscle of right ventricle"), ("papilar_lateral_ve", "lateral papillary muscle of left ventricle")]:
+    addc(k, "orgao", pat, 3, 800)
+# artérias coronárias: o banco as tem inteiras por conceitos agregados (tronco + ramos); os ramos nomeados saem à parte
+_ip = elems(r"posterior interventricular branch of right coronary artery", 40)
+_marg = elems(r"marginal branch of right coronary artery", 40)
+addc("coronaria_direita", "arteria", r"trunk of right coronary artery|branch of right coronary artery", 3, 4000, exclude=_ip + _marg, maxel=40)
+addc("ramo_interventricular_posterior", "arteria", r"posterior interventricular branch of right coronary artery", 3, 1800, maxel=40)
+addc("ramo_marginal_direito", "arteria", r"marginal branch of right coronary artery", 3, 1200, maxel=40)
+addc("coronaria_esquerda", "arteria", r"trunk of left coronary artery", 3, 800)
+addc("ramo_interventricular_anterior", "arteria", r"trunk of anterior interventricular branch of left coronary artery|branch of anterior interventricular branch of left coronary artery", 3, 4500, maxel=40)
+addc("ramo_circunflexo", "arteria", r"circumflex branch of left coronary artery", 3, 2500, maxel=40)
+# veias do coração
+addc("seio_coronario", "veia", r"coronary sinus", 3, 1200)
+addc("veia_cardiaca_magna", "veia", r"great cardiac vein|anterior interventricular vein", 3, 2500, maxel=20)
+addc("veia_cardiaca_media", "veia", r"middle cardiac vein", 3, 2500, maxel=20)
+addc("veia_cardiaca_pequena", "veia", r"small cardiac vein", 3, 800)
+addc("veia_posterior_ventriculo_e", "veia", r"posterior vein of left ventricle", 3, 2000, maxel=20)
+addc("veias_cardiacas_anteriores", "veia", r"anterior cardiac vein", 3, 800)
+
+# grandes vasos da base do coração
+addc("aorta_ascendente", "arteria", r"ascending aorta", 4, 1800)
+addc("arco_aorta", "arteria", r"arch of aorta", 4, 2200)
+addc("aorta_toracica", "arteria", r"descending aorta", 4, 3500)
+addc("aorta_abdominal", "arteria", r"abdominal aorta", 4, 2800, region="tronco")
+addc("tronco_pulmonar", "arteria", r"pulmonary trunk", 4, 1800)
+addc("arteria_pulmonar_direita", "arteria", r"right pulmonary artery", 4, 900)
+addc("arteria_pulmonar_esquerda", "arteria", r"left pulmonary artery", 4, 2500)
+for k, pat, tris in [("sup_d", "right superior pulmonary vein", 700), ("inf_d", "right inferior pulmonary vein", 500),
+                     ("sup_e", "left superior pulmonary vein", 1200), ("inf_e", "left inferior pulmonary vein", 1400)]:
+    addc("veia_pulmonar_" + k, "veia", pat, 3, tris)
+addc("veia_cava_superior", "veia", r"superior vena cava", 4, 1500)
+addc("veia_cava_inferior", "veia", r"inferior vena cava", 4, 3500)
+addc("veia_braquiocefalica", "veia", r"(?:left |right )?brachiocephalic vein", 4, 1500)
+addc("veia_azigo", "veia", r"azygos vein", 4, 3500)
+addc("veia_hemiazigo", "veia", r"hemiazygos vein", 4, 1500)
+
+# artérias e veias principais do pescoço, tronco e membros (as da perna e do pé ficam para a F4.3 em diante; as do abdome, para o digestório)
+addc("tronco_braquiocefalico", "arteria", r"brachiocephalic artery", 4, 1000)
+for k, pat, tris, reg in [
+    ("carotida_comum", "common carotid artery", 1800, "cabeca"), ("carotida_interna", "internal carotid artery", 2200, "cabeca"),
+    ("subclavia", "subclavian artery", 1800, "membro_sup"), ("vertebral", "vertebral artery", 2200, "cabeca"),
+    ("toracica_interna", "internal thoracic artery", 2800, "tronco"), ("axilar", "axillary artery", 2400, "membro_sup"),
+    ("braquial", "brachial artery", 3000, "membro_sup"), ("radial", "radial artery", 3500, "membro_sup"), ("ulnar", "ulnar artery", 3500, "membro_sup"),
+]:
+    addc("arteria_" + k, "arteria", LR + pat, 4, tris, region=reg)
+for k, pat, tris, reg in [
+    ("tronco_celiaco", "celiac trunk", 700, "tronco"), ("mesenterica_superior", "superior mesenteric artery", 1500, "tronco"),
+    ("mesenterica_inferior", "inferior mesenteric artery", 800, "tronco"), ("renal", "renal artery", 900, "tronco"),
+    ("iliaca_comum", "common iliac artery", 1000, "tronco"), ("iliaca_externa", "external iliac artery", 1000, "membro_inf"),
+    ("iliaca_interna", "internal iliac artery", 1000, "tronco"), ("femoral", "femoral artery", 1800, "membro_inf"),
+]:
+    addc("arteria_" + k, "arteria", LR + pat, 4, tris, region=reg)
+for k, pat, tris, reg in [
+    ("jugular_interna", "internal jugular vein", 1200, "cabeca"), ("subclavia", "subclavian vein", 1200, "membro_sup"),
+    ("axilar", "axillary vein", 2200, "membro_sup"), ("braquial", "brachial vein", 3000, "membro_sup"),
+    ("iliaca_comum", "common iliac vein", 1200, "tronco"), ("iliaca_externa", "external iliac vein", 1500, "membro_inf"),
+    ("iliaca_interna", "internal iliac vein", 1500, "tronco"), ("femoral", "femoral vein", 1800, "membro_inf"),
+    ("renal", "renal vein", 2500, "tronco"),
+]:
+    addc("veia_" + k, "veia", LR + pat, 4, tris, region=reg, maxel=12)
+
+
 def resolve():
     out = {}
     for pid, d in BODY.items():
-        es = [e for e in elems(d["pattern"]) if e not in d["exclude"]]
+        es = [e for e in elems(d["pattern"], d["maxel"]) if e not in d["exclude"]]
         out[pid] = es
     return out
 

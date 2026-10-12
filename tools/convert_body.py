@@ -9,7 +9,7 @@ import numpy as np
 
 from bp import load, to_site
 from convert import weld, crop_below, smooth, remove_small_components, ORIGIN, SCALE
-from body_parts import BODY
+from body_parts import BODY, elems
 
 HEAD_Y = 1375.0  # acima disso (cabeça/pescoço) a pele mantém a resolução original
 
@@ -101,6 +101,56 @@ def process_skin(elems, full=False, target=110000):
     return v2, f2
 
 
+def smooth_labels(f, lab, rounds=5):
+    """Filtro de maioria sobre as faces vizinhas (que dividem uma aresta): tira os dentes do limite entre as duas metades."""
+    e = np.concatenate([f[:, [0, 1]], f[:, [1, 2]], f[:, [2, 0]]])
+    fid = np.tile(np.arange(len(f)), 3)
+    key = np.sort(e, axis=1)
+    key = key[:, 0] * (int(f.max()) + 1) + key[:, 1]
+    order = np.argsort(key, kind="stable")
+    ks, fs = key[order], fid[order]
+    same = ks[1:] == ks[:-1]
+    a, b = fs[:-1][same], fs[1:][same]
+    lab = lab.astype(np.int64)
+    for _ in range(rounds):
+        votes = lab.copy()
+        count = np.ones(len(lab), dtype=np.int64)
+        np.add.at(votes, a, lab[b])
+        np.add.at(votes, b, lab[a])
+        np.add.at(count, a, 1)
+        np.add.at(count, b, 1)
+        lab = (votes * 2 > count).astype(np.int64)
+    return lab.astype(bool)
+
+
+def split_wall(v, f, mine, other, bias=0.55):
+    """Parte de uma parede única (os dois ventrículos juntos): fica com as faces mais próximas da cavidade `mine` do que da `other`.
+    A parede direita é fina e a esquerda, grossa: sem `bias`, o limite cairia sobre o lado esquerdo do sulco interventricular.
+    `bias` < 1 favorece a cavidade `mine` quando ela é a do ventrículo esquerdo (parede grossa)."""
+    def cloud(names):
+        cv, cf = load_elems(elems(f"cavity of {names}"))
+        return np.concatenate([cv, cv[cf].mean(1)])
+
+    pm, po = cloud(mine), cloud(other)
+    cent = v[f].mean(1)
+
+    def nearest(points):
+        out = np.empty(len(cent))
+        for i in range(0, len(cent), 1500):
+            d = np.linalg.norm(cent[i:i + 1500, None, :] - points[None, :, :], axis=2)
+            out[i:i + 1500] = d.min(1)
+        return out
+
+    w = bias if mine == "left ventricle" else 1.0
+    keep = nearest(pm) * w <= nearest(po) * (bias if other == "left ventricle" else 1.0)
+    keep = smooth_labels(f, keep)
+    f = f[keep]
+    used = np.unique(f)
+    remap = -np.ones(len(v), dtype=np.int64)
+    remap[used] = np.arange(len(used))
+    return v[used], remap[f]
+
+
 def mirror_x(v, f):
     """Acrescenta a cópia espelhada (x → −x) com a ordem dos vértices invertida, para as normais continuarem para fora."""
     m = v.copy()
@@ -144,9 +194,13 @@ def main():
             if spec["cat"] == "osso" and pid.startswith("costela"):
                 pass
             v, f = remove_small_components(v, f, 0.02)
-            if len(f) > spec["tris"]:
-                v, f = decimate_to(v, f, spec["tris"])
+            split = spec.get("split")
+            budget = spec["tris"] * 2 if split else spec["tris"]
+            if len(f) > budget:
+                v, f = decimate_to(v, f, budget)
             v = smooth(v, f, spec["smooth"])
+            if split:
+                v, f = split_wall(v, f, *split)
         if spec.get("mirror"):
             v, f = mirror_x(v, f)
         v = (v - ORIGIN) * SCALE
