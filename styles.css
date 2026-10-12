@@ -447,6 +447,7 @@ body.quiz-locate .toolbar button[data-region] { pointer-events: none; }
 .toolbar .sep { width: 1px; height: 18px; background: var(--line); margin: 0 2px; flex: none; }
 .toolbar button { white-space: nowrap; }
 body:not(.body-ready) .needs-body { opacity: 0.38; pointer-events: none; }
+body:not(.leg-ready) .needs-leg { opacity: 0.38; pointer-events: none; }
 .body-status {
   position: absolute; top: calc(66px + var(--safe-top)); left: 50%; transform: translateX(-50%); z-index: 4; padding: 5px 12px; border-radius: 999px;
   font-size: 12px; color: var(--muted); background: rgba(15, 24, 40, 0.88); border: 1px solid var(--line); pointer-events: none;

@@ -6,7 +6,7 @@ import { esc } from './util.js';
 import { summarize, dueForecast, getWeakStructureIds, recentPerformance } from './sm2.js';
 
 const MODE_LABEL = { locate: 'Localizar', choice: 'Escolher o nome', text: 'Quiz teórico' };
-const REGION_LABEL = { todos: 'Corpo', cabeca: 'Cabeça', tronco: 'Tronco', membro_sup: 'Braço' };
+const REGION_LABEL = { todos: 'Corpo', cabeca: 'Cabeça', tronco: 'Tronco', membro_sup: 'Braço', membro_inf: 'Perna' };
 const GLYPH = (q) => (q >= 4 ? ['✔', 'ok', 'acertou'] : q === 3 ? ['◐', 'half', 'acertou com ajuda'] : ['✘', 'miss', 'errou']);
 const pct = (x) => `${Math.round(x * 100)}%`;
 

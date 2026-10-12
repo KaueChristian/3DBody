@@ -6,7 +6,7 @@ import { loadAnatomy } from './anatomy.js';
 import { Surfaces, TORSO_PARTS } from './surfaces.js';
 import { buildProc, makeFiberTexture } from './proc.js';
 import { LM } from './landmarks.js';
-import { ITEMS as ALL_ITEMS, HEAD_IDS, BODY_ITEMS, NERVES, INNERVATION, LAYERS, KIND_LABEL, REGIONS, inRegion, layersForDissect } from './catalog.js';
+import { ITEMS as ALL_ITEMS, HEAD_IDS, BODY_ITEMS, LEG_ITEMS, NERVES, INNERVATION, LAYERS, KIND_LABEL, REGIONS, inRegion, layersForDissect } from './catalog.js';
 import { NerveBuilder } from './nerve-geo.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { SKULL_PARTS } from './surfaces.js';
@@ -40,6 +40,7 @@ const state = {
   collapsed: new Set(),
   region: 'cabeca',
   bodyReady: false,
+  legReady: false,
   nervesReady: false,
   search: '',
   quiz: null,
@@ -478,6 +479,7 @@ const REGION_VIEW = {
   cabeca: { target: [0, -0.4, 0], dist: 7.4 },
   tronco: { target: [0, -3.7, 0.15], dist: 11.5 },
   membro_sup: { target: [0, -5.3, 0.25], dist: 17 },
+  membro_inf: { target: [0, -11.3, 0.1], dist: 23 },
 };
 let currentView = 'three';
 function viewPreset(name) {
@@ -491,8 +493,14 @@ controls.addEventListener('start', () => {
   document.querySelectorAll('.toolbar button[data-view]').forEach((b) => b.classList.remove('on'));
 });
 
+/** A região já pode ser mostrada? (o corpo e o membro inferior chegam em segundo plano; “Corpo” mostra o que já carregou) */
+function regionReady(r) {
+  if (r === 'cabeca' || r === 'todos') return true;
+  return r === 'membro_inf' ? state.legReady : state.bodyReady;
+}
+
 function setRegion(r, { fly = true } = {}) {
-  if (r !== 'cabeca' && r !== 'todos' && !state.bodyReady) return;
+  if (!regionReady(r)) return;
   state.region = r;
   document.querySelectorAll('.toolbar button[data-region]').forEach((b) => b.classList.toggle('on', b.dataset.region === r));
   const sel = state.selected && M.get(state.selected);
@@ -1424,7 +1432,7 @@ $('#locRestore').onclick = () => {
 
 /* ── Configuração ── */
 const SETUP_KEY = 'anatomia3d.quiz';
-const REGION_SHORT = { todos: 'Corpo', cabeca: 'Cabeça', tronco: 'Tronco', membro_sup: 'Braço' };
+const REGION_SHORT = { todos: 'Corpo', cabeca: 'Cabeça', tronco: 'Tronco', membro_sup: 'Braço', membro_inf: 'Perna' };
 const KIND_GROUPS = [['musculo', 'Músculos'], ['nervo', 'Nervos'], ['osso', 'Ossos'], ['outras', 'Articulações, ligamentos e outras']];
 const COUNT_OPTS = [10, 20, 30, 0]; // 0 = todas
 const setup = { mode: 'locate', region: 'cabeca', kinds: KIND_GROUPS.map((k) => k[0]), count: 10, latin: false, smart: 'all' };
@@ -1467,10 +1475,11 @@ function renderSetup() {
   $('#qsTipText').hidden = mode !== 'text';
   $('#qsTipChoice').hidden = mode !== 'choice';
 
-  if (!state.bodyReady && setup.region !== 'cabeca') setup.region = 'cabeca';
+  const quizRegionReady = (r) => r === 'cabeca' || (r === 'membro_inf' ? state.legReady : state.bodyReady);
+  if (!quizRegionReady(setup.region)) setup.region = 'cabeca';
   if (setup.smart.startsWith('list:') && !userData.getList(setup.smart.slice(5))) setup.smart = 'all';
   $('#qsRegion').querySelectorAll('button').forEach((b) => {
-    b.disabled = b.dataset.v !== 'cabeca' && !state.bodyReady;
+    b.disabled = !quizRegionReady(b.dataset.v);
     b.setAttribute('aria-pressed', String(b.dataset.v === setup.region));
   });
   $('#qsKinds').querySelectorAll('button').forEach((b) => {
@@ -1618,13 +1627,54 @@ function setBodyStatus(text, error = false) {
   el.classList.toggle('error', error);
 }
 
-function swapSkin(parts) {
+function swapSkin(geo) {
   const skin = M.get('pele');
-  const geo = parts.get('pele_corpo').geometry;
   ensureBVH(geo);
   skin.meshes[0].geometry = geo;
   skin.mats[0].clippingPlanes = null;
   skin.mats[0].needsUpdate = true;
+}
+
+/** Script de um pacote de dados; resolve com `true` se carregou. */
+function loadScript(src) {
+  return new Promise((resolve) => {
+    const sc = document.createElement('script');
+    sc.src = src;
+    sc.onload = () => resolve(true);
+    sc.onerror = () => resolve(false);
+    document.head.appendChild(sc);
+  });
+}
+
+/**
+ * Membro inferior e pele inteira (F4). As peças entram no mesmo mapa do corpo (`parts`), então nervos e articulações as
+ * encontram pelo id. Devolve a geometria da pele inteira, ou `null` se o pacote não carregou (o corpo continua como estava).
+ */
+async function loadLeg(parts, S, landmarks) {
+  setBodyStatus('Carregando membros inferiores…');
+  if (!(await loadScript('dist/anatomy-leg.js'))) {
+    setBodyStatus('Não foi possível carregar o membro inferior (dist/anatomy-leg.js).', true);
+    await new Promise((r) => setTimeout(r, 2500));
+    return null;
+  }
+  const t0 = performance.now();
+  const legParts = await loadAnatomy(window.__ANATOMY_LEG);
+  perf.legDataMs = Math.round(performance.now() - t0);
+  const tBuild = performance.now();
+  for (const [id, p] of legParts) parts.set(id, p);
+  buildItems(legParts, S, LEG_ITEMS, jointContext(parts, landmarks));
+  const skin = legParts.get('pele_inteira').geometry;
+  swapSkin(skin);
+  perf.legStructuresMs = Math.round(performance.now() - tBuild);
+  state.legReady = true;
+  document.body.classList.add('leg-ready');
+  buildList();
+  applyVisibility();
+  syncList();
+  studyController?.onModelUpdated();
+  if (!setupEl.hidden) renderSetup();
+  console.info('[carga] membro inferior', perf.legDataMs, 'ms · estruturas', perf.legStructuresMs, 'ms');
+  return skin;
 }
 
 function loadBody() {
@@ -1642,7 +1692,7 @@ function loadBody() {
       const S2 = new Surfaces(parts, { skin: 'pele_corpo', bones: TORSO_PARTS });
       buildItems(parts, S2, BODY_ITEMS, jointContext(parts, lm));
       perf.bodyStructuresMs = Math.round(performance.now() - tBuild);
-      swapSkin(parts);
+      swapSkin(parts.get('pele_corpo').geometry);
       state.bodyReady = true;
       document.body.classList.add('body-ready');
       buildList();
@@ -1651,12 +1701,19 @@ function loadBody() {
       studyController?.onModelUpdated();
       if (!setupEl.hidden) renderSetup();
       console.info('[carga] corpo', perf.bodyStructuresMs, 'ms');
+      // membro inferior (F4): outro pacote, carregado antes dos nervos para eles já nascerem sobre a pele inteira
+      let skinGeo = parts.get('pele_corpo').geometry;
+      try {
+        skinGeo = await loadLeg(parts, S2, lm) ?? skinGeo;
+      } catch (err) {
+        console.error('[membro inferior]', err);
+      }
       // nervos: montados em segundo plano, depois que cabeça e corpo já estão na tela
       setBodyStatus('Montando os nervos…');
       const t1 = performance.now();
       try {
         const nerveParts = window.__ANATOMY_NERVES ? await loadAnatomy(window.__ANATOMY_NERVES) : new Map();
-        await buildNerves(nerveParts, [parts.get('pele_corpo').geometry]);
+        await buildNerves(nerveParts, [skinGeo]);
       } catch (err) {
         console.error('[nervos]', err);
       }
@@ -1691,6 +1748,8 @@ const perf = {
   ttfiMs: 0,
   bodyDataMs: 0,
   bodyStructuresMs: 0,
+  legDataMs: 0,
+  legStructuresMs: 0,
   nervesMs: 0,
   totalReadyMs: 0,
 };

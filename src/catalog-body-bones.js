@@ -1,6 +1,6 @@
 /** Esqueleto do tronco e do membro superior (malhas reais do BodyParts3D). */
 
-const bone = (id, name, latin, region, partIds, d, extra = {}) => ({
+export const bone = (id, name, latin, region, partIds, d, extra = {}) => ({
   kind: 'osso',
   id,
   name,
@@ -17,7 +17,7 @@ const bone = (id, name, latin, region, partIds, d, extra = {}) => ({
   nota: d.nota,
 });
 
-const range = (prefix, a, b) => Array.from({ length: b - a + 1 }, (_, i) => `${prefix}${a + i}`);
+export const range = (prefix, a, b) => Array.from({ length: b - a + 1 }, (_, i) => `${prefix}${a + i}`);
 
 export const BODY_BONES = [
   /* ───────── Tórax ───────── */
@@ -75,7 +75,7 @@ export const BODY_BONES = [
     funcao: 'Transmite o peso do tronco aos membros inferiores e protege os nervos sacrais. Dá origem a parte do glúteo máximo, do multífido e do piriforme.',
     nota: 'O hiato sacral é usado para a anestesia caudal.',
   }),
-  bone('o_osso_quadril', 'Osso do quadril', 'Os coxae', 'tronco', ['osso_quadril'], {
+  bone('o_osso_quadril', 'Osso do quadril', 'Os coxae', ['tronco', 'membro_inf'], ['osso_quadril'], {
     local: 'Lateral da pelve; resulta da fusão de ílio, ísquio e púbis.',
     artic: 'Sacro (sacroilíaca), osso do quadril oposto (sínfise púbica) e fêmur (articulação do quadril).',
     estruturas: 'Crista ilíaca, espinhas ilíacas ântero-superior e póstero-superior, acetábulo, túber isquiático, ramo púbico, forame obturado e incisura isquiática maior.',

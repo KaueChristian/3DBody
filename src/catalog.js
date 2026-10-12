@@ -4,6 +4,7 @@ import { LIGAMENTS, FASCIAS, GLANDS, SKIN } from './catalog-other.js';
 import { BODY_MUSCLES } from './catalog-body-muscles.js';
 import { ORAL_MUSCLES } from './catalog-muscles-oral.js';
 import { BODY_BONES } from './catalog-body-bones.js';
+import { LEG_BONES } from './catalog-leg-bones.js';
 import { NERVES as NERVES_BASE } from './catalog-nerves.js';
 import { NERVES_CRANIAL } from './catalog-nerves-cranial.js';
 import { NERVES_SENSORY } from './catalog-nerves-sensory.js';
@@ -55,6 +56,7 @@ export const REGIONS = {
   cabeca: 'Cabeça e pescoço',
   tronco: 'Tronco',
   membro_sup: 'Membro superior',
+  membro_inf: 'Membro inferior',
 };
 
 /** A estrutura pertence à região? (`region` pode ser uma lista, como nos nervos que cruzam regiões.) */
@@ -69,8 +71,10 @@ const HEAD_ITEMS = [SKIN, ...FASCIAS, ...MUSCLES, ...LIGAMENTS, ...GLANDS, ...OT
 }));
 export const HEAD_IDS = new Set(HEAD_ITEMS.map((i) => i.id));
 export const BODY_ITEMS = [...BODY_MUSCLES, ...ORAL_MUSCLES, ...BODY_BONES, ...JOINTS, ...JOINT_LIGAMENTS];
+/** Estruturas do membro inferior (F4): vêm do pacote `anatomy-leg.js`, carregado depois do corpo. */
+export const LEG_ITEMS = [...LEG_BONES];
 export const NERVES = [...NERVES_BASE, ...NERVES_CRANIAL, ...NERVES_SENSORY, ...NERVES_SPINAL];
-export const ITEMS = [...HEAD_ITEMS, ...BODY_ITEMS, ...NERVES];
+export const ITEMS = [...HEAD_ITEMS, ...BODY_ITEMS, ...LEG_ITEMS, ...NERVES];
 
 // ramos articulares (F3): a articulação diz quais nervos a inervam e o nervo ganha o ramo (sem desenhar: é só o vínculo)
 {

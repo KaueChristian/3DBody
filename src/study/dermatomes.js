@@ -10,7 +10,8 @@
  * O mapa é **esquemático**: ver `docs/dermatomos.md`. Os dermátomos reais se sobrepõem e variam entre as pessoas e entre as
  * fontes (Keegan e Garrett, Foerster, os mapas de Moore e do Netter diferem); aqui se segue o mapa de Moore/Netter, e as
  * bordas são linhas nítidas por simplicidade. No tronco, cada faixa desce da coluna para a frente (acompanha a costela);
- * nos membros, as faixas seguem a sequência C5–T2 do lado radial para o ulnar. Não há membros inferiores no modelo.
+ * nos membros, as faixas seguem a sequência C5–T2 do lado radial para o ulnar. Abaixo da cintura (pelve e membros inferiores,
+ * que entram com a F4) a pele fica sem cor: os dermátomos L1–S2 estão adiados (M11 em `docs/pontos-de-melhoria.md`).
  *
  * O que o modelo cobre: cabeça (divisões do trigêmeo V1–V3, e C2–C3 atrás), pescoço (C2–C4), ombro (C4–C5), braço, antebraço
  * e mão (C5–T2), tronco (T2–L1 na frente; T2–S3 atrás).
@@ -26,6 +27,10 @@ export const dermColor = (d) => V_COLOR[d] ?? segmentColor(d);
 
 /** Rótulos possíveis, na ordem em que viram índice no vetor de rótulos. */
 const NAMES = ['C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12', 'L1', 'L2', 'L3', 'L4', 'L5', 'S1', 'S2', 'S3', 'V1', 'V2', 'V3'];
+
+/** Abaixo da cintura e dentro dos braços (|x| < LOW_X): pelve e pernas, ainda sem dermátomos. A pele do pacote body termina em y = −6,75. */
+const LOW_Y = -6.75;
+const LOW_X = 1.95;
 
 const smooth = (t) => t * t * (3 - 2 * t);
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -117,6 +122,8 @@ function limb(p, ax) {
 /** Classifica um vértice da pele do corpo. `p` em coordenadas do modelo (lado esquerdo e direito). */
 export function dermatomeOf(x, y, z, tmp = new THREE.Vector3()) {
   const ax = Math.abs(x);
+  // abaixo da cintura (a pele inteira, com as pernas, vem da F4): sem dermátomo; os braços ficam fora (|x| ≥ 1,95)
+  if (y < LOW_Y && ax < LOW_X) return null;
   if (y > -1.15 || (y > -1.5 && z < -0.15 && ax < 0.9)) return head(ax, y, z);
   tmp.set(ax, y, z);
   // ombro: acima da cabeça do úmero, junto ao pescoço, C4; mais lateral e abaixo, C5
@@ -156,7 +163,7 @@ export class DermatomeOverlay {
     const tmp = new THREE.Vector3();
     for (let i = 0; i < pos.count; i++) {
       const d = dermatomeOf(pos.getX(i), pos.getY(i), pos.getZ(i), tmp);
-      labels[i] = idx.get(d) ?? 0;
+      labels[i] = d ? idx.get(d) ?? 0 : names.length; // índice `names.length` = sem dermátomo
     }
     this.labels = labels;
     this.names = names;
@@ -189,6 +196,7 @@ export class DermatomeOverlay {
       if (segment && d !== segment) c.lerp(new THREE.Color('#c9b8a8'), 0.8); // esmaece as outras (cor da pele)
       return c;
     });
+    palette.push(new THREE.Color('#c9b8a8')); // sem dermátomo (cor da pele)
     for (let i = 0; i < this.labels.length; i++) {
       const c = palette[this.labels[i]];
       col.setXYZ(i, c.r, c.g, c.b);

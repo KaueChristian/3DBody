@@ -8,8 +8,8 @@ import * as THREE from 'three';
 import { GROUPS, MUSCLE_GROUP, GROUP_LABEL, groupColor } from './groups.js';
 import { SEGMENT_ORDER, principalSegment, segRegion } from '../segments.js';
 
-const REGION_ORDER = ['cabeca', 'tronco', 'membro_sup'];
-const REGION_COLORS = { cabeca: '#4d88e6', tronco: '#42b883', membro_sup: '#e68a3e', varias: '#9c7be6' };
+const REGION_ORDER = ['cabeca', 'tronco', 'membro_sup', 'membro_inf'];
+const REGION_COLORS = { cabeca: '#4d88e6', tronco: '#42b883', membro_sup: '#e68a3e', membro_inf: '#d4647a', varias: '#9c7be6' };
 
 export const MODES = [
   ['camada', 'Por camada (padrão)'],
@@ -141,7 +141,7 @@ export class ColoringManager {
   }
 
   regionLabel(key) {
-    return { cabeca: 'Cabeça e pescoço', tronco: 'Tronco', membro_sup: 'Membro superior' }[key] ?? key;
+    return { cabeca: 'Cabeça e pescoço', tronco: 'Tronco', membro_sup: 'Membro superior', membro_inf: 'Membro inferior' }[key] ?? key;
   }
 
   /** Índice estável de cada nervo que inerva ao menos um músculo (ordem do mapa `INNERVATION`, que é fixa). */

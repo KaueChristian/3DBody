@@ -80,7 +80,7 @@ function ready(app, st) {
     || (st.selected && !M.has(st.selected))
     || (st.hidden ?? []).some((id) => !M.has(id));
   if (!needsBody) return true;
-  return state.bodyReady && state.nervesReady;
+  return state.bodyReady && state.nervesReady && (st.region !== 'membro_inf' || state.legReady);
 }
 
 /**

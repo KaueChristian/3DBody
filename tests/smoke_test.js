@@ -624,6 +624,55 @@ async function runSmokeTest() {
       const app = window.__app;
       const sc = app.studyController;
       const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      for (let i = 0; i < 120 && !app.state.legReady; i++) await sleep(250);
+
+      // F4.1: o pacote do membro inferior carrega, a região abre e a pele passa a ter pernas
+      t(app.state.legReady && document.body.classList.contains('leg-ready'), 'o membro inferior não terminou de carregar');
+      for (const id of ['o_femur', 'o_patela', 'o_tibia', 'o_fibula', 'o_tarso', 'o_metatarsais', 'o_falanges_pe', 'o_sesamoides_pe']) {
+        t(app.M.has(id) && app.M.get(id).meshes.length > 0, 'osso do membro inferior sem malha: ' + id);
+      }
+      const geo = app.M.get('pele').meshes[0].geometry;
+      geo.computeBoundingBox();
+      t(geo.boundingBox.min.y < -15, 'a pele não tem as pernas (y mínimo ' + geo.boundingBox.min.y.toFixed(2) + ')');
+      const btn = document.querySelector('.toolbar button[data-region="membro_inf"]');
+      t(btn && getComputedStyle(btn).pointerEvents !== 'none', 'o botão “Perna” continua desativado');
+      app.setRegion('membro_inf', { fly: false });
+      app.setDissect(6);
+      t(app.state.region === 'membro_inf', 'a região “Perna” não abriu');
+      const visiveis = [...app.M.values()].filter((m) => m.group.visible).map((m) => m.item.id);
+      t(visiveis.includes('o_femur') && visiveis.includes('o_osso_quadril'), 'a região “Perna” não mostra o fêmur e o osso do quadril');
+      t(!visiveis.includes('o_umero'), 'a região “Perna” mostra o úmero');
+      app.select('o_femur', { fly: false });
+      const ficha = document.getElementById('infoBody').textContent;
+      t(/Fêmur/.test(ficha) && /Malha real/.test(document.getElementById('info').textContent), 'a ficha do fêmur não abriu como malha real');
+      t(/reg=membro_inf/.test(sc.currentHash()), 'o hash não guarda a região “Perna”: ' + sc.currentHash());
+      app.select(null, { fly: false });
+
+      // dermátomos: abaixo da cintura (pelve e pernas) a pele fica sem cor de dermátomo
+      app.setRegion('todos', { fly: false });
+      sc.setDermatomes(true);
+      const pos = geo.attributes.position;
+      const col = geo.attributes.color;
+      let baixo = 0;
+      const cores = new Set();
+      for (let i = 0; i < pos.count; i += 7) {
+        if (pos.getY(i) < -7.2 && Math.abs(pos.getX(i)) < 1.9) {
+          baixo++;
+          cores.add(`${col.getX(i).toFixed(3)},${col.getY(i).toFixed(3)},${col.getZ(i).toFixed(3)}`);
+        }
+      }
+      t(baixo > 500, 'a pele inteira tem poucos vértices abaixo da cintura: ' + baixo);
+      t(cores.size === 1, 'a pele das pernas deveria ter uma cor só (sem dermátomo), mas tem ' + cores.size);
+      sc.setDermatomes(false);
+      return f;
+    }, 'F4.1: membro inferior (pacote, região, pele inteira) e pernas sem dermátomo');
+
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
+      const sc = app.studyController;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
       // uma vista com bastante coisa
       app.setRegion('tronco', { fly: false });
