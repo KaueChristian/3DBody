@@ -15,7 +15,9 @@ const server = http.createServer((req, res) => {
   let p = decodeURIComponent(req.url.split('?')[0]);
   if (p === '/') p = '/index.html';
   if (p === '/sw.js') { res.writeHead(404); return res.end(); }
-  fs.readFile(path.join(ROOT, p), (e, d) => {
+  // APPJS=<arquivo>: serve outro app.js (ex.: sem minificar, para o perfil mostrar nomes de função)
+  const file = process.env.APPJS && p === '/dist/app.js' ? process.env.APPJS : path.join(ROOT, p);
+  fs.readFile(file, (e, d) => {
     if (e) { res.writeHead(404); return res.end(); }
     res.writeHead(200, { 'Content-Type': MIME[path.extname(p)] ?? 'application/octet-stream', 'Cache-Control': 'no-store' });
     res.end(d);
@@ -96,6 +98,91 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   // quadro parado com uma estrutura selecionada (o resto fica translúcido)
   await ev(`window.__app.select('o_femur', { fly: false }); new Promise((r) => setTimeout(r, 600))`);
   out.comSelecao = await ev(frameCost);
+  // PROFILE=1: perfil do toque como o aluno faz (select com voo de câmera), do toque até 2,5 s depois, com a CPU lenta.
+  // Com APPJS=<app.js sem minificar> os nomes das funções saem legíveis.
+  if (process.env.PROFILE) {
+    const alvo = process.env.ALVO ?? 'gluteo_maximo';
+    await ev(`window.__app.select(null, { fly: false }); window.__app.setRegion('membro_inf', { fly: false }); window.__app.setDissect(2); window.__app.jump(); new Promise((r) => setTimeout(r, 800))`);
+    await send('Emulation.setCPUThrottlingRate', { rate: THROTTLE });
+    await send('Profiler.setSamplingInterval', { interval: 200 });
+    await send('Profiler.start');
+    const marcas = await ev(`(async () => {
+      const A = window.__app; const t0 = performance.now(); const f0 = A.renderStats.frames();
+      A.select(${JSON.stringify(alvo)});
+      const sync = Math.round(performance.now() - t0);
+      const quadros = []; let ultimo = A.renderStats.frames();
+      while (performance.now() - t0 < 2500) { await new Promise((r) => requestAnimationFrame(() => r())); const f = A.renderStats.frames(); if (f !== ultimo) { quadros.push(Math.round(performance.now() - t0)); ultimo = f; } }
+      return { syncMs: sync, instantesDosQuadrosDesenhados: quadros, total: A.renderStats.frames() - f0 };
+    })()`);
+    const prof = (await send('Profiler.stop')).result.profile;
+    await send('Emulation.setCPUThrottlingRate', { rate: 1 });
+    const byId = new Map(prof.nodes.map((n) => [n.id, n]));
+    const parent = new Map();
+    prof.nodes.forEach((n) => (n.children ?? []).forEach((c) => parent.set(c, n.id)));
+    const self = new Map(); const incl = new Map();
+    prof.samples.forEach((sid, i) => {
+      const dt = (prof.timeDeltas[i] ?? 0) / 1000;
+      const n = byId.get(sid);
+      const k = `${n.callFrame.functionName || '(anon)'}`;
+      self.set(k, (self.get(k) ?? 0) + dt);
+      const seen = new Set();
+      for (let cur = sid; cur != null; cur = parent.get(cur)) {
+        const nm = byId.get(cur).callFrame.functionName || '(anon)';
+        if (seen.has(nm)) continue; seen.add(nm);
+        incl.set(nm, (incl.get(nm) ?? 0) + dt);
+      }
+    });
+    const top = (m, n) => [...m.entries()].filter(([k]) => !['(idle)', '(program)', '(root)'].includes(k)).sort((a, b) => b[1] - a[1]).slice(0, n).map(([k, v]) => `${k}: ${Math.round(v)} ms`);
+    console.log(JSON.stringify({ throttle: THROTTLE, alvo, ...marcas, topProprio: top(self, 14), topInclusivo: top(incl, 30) }, null, 1));
+    chrome.kill(); server.close(); process.exit(0);
+  }
+  // EXP2=1: o toque com a câmera perto (como no vídeo do iPhone). Mede quadros por segundo REAIS (renderiza a cada rAF, o que inclui a
+  // GPU por software) por variante de “fantasma”. `gl.finish` não serve aqui: não espera o rasterizador.
+  if (process.env.EXP2) {
+    const alvo = process.env.ALVO ?? 'gluteo_maximo';
+    const reg = process.env.REGIAO ?? 'membro_inf';
+    const r = await ev(`(async () => {
+      const A = window.__app, R = A.renderer, T = A.THREE;
+      A.renderStats.keepAlive(0);
+      const fps = async () => { await new Promise((r) => setTimeout(r, 500)); const f0 = A.renderStats.frames(); const t0 = performance.now(); await new Promise((r) => setTimeout(r, 2500)); return +((A.renderStats.frames() - f0) / ((performance.now() - t0) / 1000)).toFixed(1); };
+      A.setRegion(${JSON.stringify(reg)}, { fly: false }); A.setDissect(2);
+      A.select(${JSON.stringify(alvo)}, { fly: true });
+      for (let i = 0; i < 60 && A.cameraGoal(); i++) await new Promise((r) => setTimeout(r, 100));
+      A.jump();
+      const out = { visiveis: [...A.M.values()].filter((m) => m.group.visible).length, pixelRatio: R.getPixelRatio() };
+      out.fps_selecionadoPerto = await fps();
+      A.select(null, { fly: false });
+      out.fps_semSelecaoPerto = await fps();
+      A.select(${JSON.stringify(alvo)}, { fly: false });
+      const dim = [...A.M.values()].filter((m) => m.group.visible && m.mats.every((x) => x.opacity < 0.2) && m.item.id !== 'pele');
+      out.fantasmas = dim.length;
+      dim.forEach((m) => (m.group.visible = false)); out.fps_fantasmasOcultos = await fps(); dim.forEach((m) => (m.group.visible = true));
+      // fantasmas com escrita de profundidade e ordenados do mais perto para o mais longe: só a camada da frente é sombreada
+      const dimMats = dim.flatMap((m) => m.mats);
+      const frente = (a, b) => a.groupOrder - b.groupOrder || a.renderOrder - b.renderOrder || a.z - b.z || a.id - b.id;
+      R.setTransparentSort(frente); dimMats.forEach((x) => { x.depthWrite = true; });
+      out.fps_fantasmasPrimeiraCamada = await fps();
+      const saved = [];
+      dim.forEach((m) => m.meshes.forEach((me) => { saved.push([me, me.material]); me.material = new T.MeshBasicMaterial({ color: me.material.color, transparent: true, opacity: 0.16, depthWrite: true, side: T.DoubleSide }); me.material.forceSinglePass = true; }));
+      out.fps_primeiraCamada_semLuz = await fps();
+      saved.forEach(([me, mt]) => { me.material.dispose(); me.material = mt; }); saved.length = 0;
+      dim.forEach((m) => m.meshes.forEach((me) => { saved.push([me, me.material]); me.material = new T.MeshLambertMaterial({ color: me.material.color, transparent: true, opacity: 0.16, depthWrite: true, side: T.DoubleSide }); me.material.forceSinglePass = true; }));
+      out.fps_primeiraCamada_lambert = await fps();
+      saved.forEach(([me, mt]) => { me.material.dispose(); me.material = mt; }); saved.length = 0;
+      R.setTransparentSort(null); dimMats.forEach((x) => { x.depthWrite = false; });
+      dim.forEach((m) => m.meshes.forEach((me) => { saved.push([me, me.material]); me.material = new T.MeshBasicMaterial({ color: me.material.color, transparent: true, opacity: 0.16, depthWrite: false, side: T.DoubleSide }); me.material.forceSinglePass = true; }));
+      out.fps_fantasmasSemLuz = await fps();
+      saved.forEach(([me, mt]) => { me.material.dispose(); me.material = mt; });
+      const pr = R.getPixelRatio();
+      for (const p of [1.5, 1]) { R.setPixelRatio(p); out['fps_pixelRatio_' + p] = await fps(); }
+      R.setPixelRatio(pr);
+      A.renderStats.keepAlive(2000);
+      return out; })()`);
+    const shot = await send('Page.captureScreenshot', { format: 'png' });
+    fs.writeFileSync(process.env.SHOT ?? path.join(ROOT, 'perf_click_shot.png'), Buffer.from(shot.result.data, 'base64'));
+    console.log(JSON.stringify({ alvo, regiao: reg, ...r }, null, 1));
+    chrome.kill(); server.close(); process.exit(0);
+  }
   // experimentos sobre o quadro com seleção (o que custa mais?). Cada variante parte do mesmo estado e é desfeita no fim.
   if (process.env.EXP) {
     out.experimentos = await ev(`(async () => {

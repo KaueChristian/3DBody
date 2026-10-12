@@ -42,6 +42,34 @@ A queda do tempo de carga vem de o laço não competir mais com a montagem dos n
 ≤ 4 quadros em 3,3 s e que cada tipo de mudança (selecionar, dissecação, região, pele, camada, ocultar, cor, corte, dermátomos, rótulos, voo)
 pede o seu quadro com a rede de segurança desligada; um teste de mutação (tirar o `invalidate()` de `setSkin`) o derruba.
 
+### O toque no iPhone 11 (2026-10-12) — fantasmas baratos e resolução adaptativa
+
+Vídeo de tela do iPhone 11 enviado pelo responsável: o atlas gira bem; ao tocar num músculo a tela **fica parada por ≈ 5 quadros e
+“pula” para a estrutura**, em vez de voar suavemente (o voo e a abertura do painel, que deviam durar ≈ 0,5 s, aparecem em 3 ou 4 quadros). Os
+trechos parados do vídeo são a leitura da ficha e, no fim, a Central de Controle do iOS aberta para parar a gravação, não o atlas.
+
+Causa (a que sobrou depois das correções acima): ao selecionar, os ≈ 40 a 430 músculos e nervos restantes viravam **fantasmas PBR translúcidos
+empilhados** (5 luzes, mapa de fibras e de relevo, sem escrita de profundidade): no iPhone (GPU de blocos, que descarta o que está atrás sem
+custo só para superfícies opacas) o parado roda bem e a seleção multiplica o preenchimento, sobretudo com a câmera perto, como no vídeo. Medido
+com `EXP2=1 node tools/perf_click.js 1` (quadros por segundo reais, GPU por software, câmera junto do glúteo máximo, 38 fantasmas):
+
+| Variante dos fantasmas | quadros/s |
+| --- | --- |
+| PBR translúcido empilhado (era assim) | **4,4** |
+| sem seleção (referência) | 8,3 |
+| só a camada da frente (escreve profundidade, do mais perto ao mais longe) | 8,9 |
+| Lambert, camada da frente | 19,6 |
+| sem iluminação, camada da frente | 21 |
+| fantasmas ocultos | 46 |
+| resolução 1,5× / 1× em vez de 2× | 6,4 / 10,5 |
+
+**Feito:** os fantasmas agora são `MeshLambertMaterial` que escrevem profundidade e são desenhados do mais perto para o mais longe
+(`ghostFor`/`orderGhosts` em `src/main.js`; a malha guarda o material original em `mesh.userData.orig` e o recebe de volta ao tirar a seleção):
+**4,4 → 18,3 quadros/s** perto do glúteo máximo, **3,9 → 12,4** na vista “Corpo” com o fêmur selecionado, no mesmo ruler; sem trocar `transparent`
+dos materiais PBR (acabou o `needsUpdate` em centenas de materiais por clique). **Resolução adaptativa:** durante o arrasto, o zoom e os voos a
+tela é desenhada com no máximo 1,25× e volta a 2× 160 ms depois de parar (no iPhone 11, 2,56× menos pixels em movimento).
+Limite do método: GPU por software não é a GPU de um iPhone; repetir o vídeo depois da atualização.
+
 Ainda de pé: reduzir as ≈ 780 chamadas de desenho (fundir malhas estáticas), nervos pré-calculados, pacotes por região com compressão meshopt.
 Limite do método: GPU por software não é GPU de celular; confirmar em aparelho real.
 

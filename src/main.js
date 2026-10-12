@@ -56,6 +56,11 @@ const state = {
 let dirty = true;
 let lastRender = 0;
 let keepAliveMs = 2000;
+// resolução adaptativa: ver `frame()`
+const FULL_DPR = Math.min(window.devicePixelRatio || 1, 2);
+const MOTION_DPR = Math.min(FULL_DPR, 1.25);
+let lowRes = false;
+let lastMotion = 0;
 function invalidate() { dirty = true; }
 
 /* ───────────────────────── Cena ───────────────────────── */
@@ -65,7 +70,7 @@ const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true,
   let planes = renderer.clippingPlanes;
   Object.defineProperty(renderer, 'clippingPlanes', { get: () => planes, set: (v) => { planes = v; invalidate(); } });
 }
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setPixelRatio(FULL_DPR);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.0;
 renderer.localClippingEnabled = true;
@@ -270,6 +275,7 @@ function buildItems(parts, S, items, ctx) {
       ensureBVH(geometry);
       const mesh = new THREE.Mesh(geometry, mat);
       mesh.userData.id = item.id;
+      mesh.userData.orig = mat;
       group.add(mesh);
       meshes.push(mesh);
       if (an) anchors.push(...an);
@@ -358,6 +364,7 @@ async function buildNerves(nerveParts, skins) {
       ensureBVH(geometry);
       const mesh = new THREE.Mesh(geometry, mat);
       mesh.userData.id = item.id;
+      mesh.userData.orig = mat;
       group.add(mesh);
       meshes.push(mesh);
       if (pickGeo) {
@@ -436,6 +443,39 @@ function setColorOverrides(map) {
 
 const FLASH = { ok: new THREE.Color('#86D36B'), bad: new THREE.Color('#ff4a5c') };
 
+/**
+ * Fantasmas. Com uma estrutura selecionada, todo o resto fica esmaecido. Antes cada uma dessas estruturas era um material PBR
+ * translúcido (5 luzes, mapa de fibras e de relevo), todas desenhadas umas sobre as outras: o preenchimento explodia, sobretudo com a
+ * câmera perto (o travamento do toque no iPhone). Agora o fantasma é um material Lambert barato, que escreve profundidade, e os
+ * fantasmas são desenhados do mais perto para o mais longe: só a camada da frente é sombreada (medido: 4,4 → 19,6 quadros/s na GPU
+ * por software, com a câmera perto de uma seleção entre 38 fantasmas). O material original volta intacto ao tirar a seleção.
+ */
+const ghostCache = new Map();
+function ghostFor(orig) {
+  let g = ghostCache.get(orig);
+  if (!g) {
+    g = new THREE.MeshLambertMaterial({ color: orig.color, side: THREE.DoubleSide, forceSinglePass: true, transparent: true, opacity: 0.16, depthWrite: true });
+    g.clippingPlanes = orig.clippingPlanes;
+    g.polygonOffset = orig.polygonOffset;
+    g.polygonOffsetFactor = orig.polygonOffsetFactor;
+    g.polygonOffsetUnits = orig.polygonOffsetUnits;
+    g.userData.baseColor = orig.userData.baseColor;
+    ghostCache.set(orig, g);
+  }
+  return g;
+}
+/** Estruturas esmaecidas no último `applyHighlight`; o laço as ordena do mais perto para o mais longe. */
+let ghostItems = [];
+/** Ordem de desenho da pele translúcida: depois de tudo (a mistura com o que está atrás só é correta nessa ordem). */
+const SKIN_ORDER = 100000;
+const GHOST_ORDER = 100;
+function orderGhosts() {
+  if (!ghostItems.length) return;
+  const cam = camera.position;
+  const ranked = ghostItems.map((m) => [m, m.center.distanceToSquared(cam)]).sort((a, b) => a[1] - b[1]);
+  ranked.forEach(([m], i) => { m.group.renderOrder = GHOST_ORDER + i; });
+}
+
 function applyHighlight() {
   const sel = state.selected;
   const dimTo = state.quiz ? 0.09 : 0.16;
@@ -443,39 +483,57 @@ function applyHighlight() {
   const related = new Set(sel && !state.quiz ? relatedIds(sel) : []);
   // com um nervo em foco, os músculos dele ficam semitransparentes para o trajeto aparecer por dentro deles
   const selNerve = !!sel && M.get(sel)?.item.kind === 'nervo';
+  const ghosts = [];
   for (const m of M.values()) {
     const isSel = m.item.id === sel;
     const isRel = related.has(m.item.id);
     const isHover = m.item.id === state.hover && canHover;
     const fb = state.flash.get(m.item.id);
     const dim = !!sel && !isSel && !isRel;
+    const skin = isSkin(m);
+    const ghost = dim && !skin;
+    if (ghost) ghosts.push(m);
+    const baseColor = (mat) => colorOverrides?.get(m.item.id) ?? mat.userData.baseColor;
+    const emis = fb ? 0.5 : isSel ? 0.42 : isHover ? (state.quiz ? 0.34 : 0.2) : isRel ? 0.18 : 0;
+    for (const me of m.meshes) {
+      const want = ghost ? ghostFor(me.userData.orig) : me.userData.orig;
+      if (me.material !== want) me.material = want;
+      if (ghost) {
+        const g = me.material;
+        const c = fb ? FLASH[fb] : baseColor(me.userData.orig);
+        g.opacity = Math.min(me.userData.orig.userData.base.opacity, dimTo);
+        g.color.copy(c);
+        g.emissive.copy(c).multiplyScalar(emis);
+      }
+    }
     m.mats.forEach((mat, mi) => {
       const b = mat.userData.base;
       let op = b.opacity;
       let tr = b.transparent;
       let dw = b.depthWrite;
-      if (isSkin(m)) {
+      if (skin) {
         op = mi === 1 ? Math.min(1, state.skin * 1.4) : state.skin;
         tr = op < 0.985;
         dw = !tr;
         if (dim) op *= 0.35;
-      } else if (dim) {
-        op = Math.min(op, dimTo);
-        tr = true;
-        dw = false;
       } else if (isRel && selNerve) {
         op = Math.min(op, 0.45);
         tr = true;
         dw = false;
       }
-      if (mat.transparent !== tr || mat.depthWrite !== dw) { mat.transparent = tr; mat.depthWrite = dw; mat.needsUpdate = true; }
+      // `depthWrite` não muda o programa de shader: só `transparent` (e a cor, a opacidade e o brilho são uniformes)
+      if (mat.transparent !== tr) { mat.transparent = tr; mat.needsUpdate = true; }
+      mat.depthWrite = dw;
       mat.opacity = op;
-      const base = colorOverrides?.get(m.item.id) ?? mat.userData.baseColor;
-      mat.color.copy(fb ? FLASH[fb] : base);
-      mat.emissive.copy(fb ? FLASH[fb] : base).multiplyScalar(fb ? 0.5 : isSel ? 0.42 : isHover ? (state.quiz ? 0.34 : 0.2) : isRel ? 0.18 : 0);
+      const c = fb ? FLASH[fb] : baseColor(mat);
+      mat.color.copy(c);
+      mat.emissive.copy(c).multiplyScalar(emis);
     });
-    m.group.renderOrder = isSkin(m) ? 5 : 0;
+    // os músculos de um nervo selecionado (translúcidos, sem profundidade) vão depois dos fantasmas: ficam por cima deles
+    m.group.renderOrder = skin ? SKIN_ORDER : isRel && selNerve ? SKIN_ORDER - 1 : 0;
   }
+  ghostItems = ghosts;
+  orderGhosts();
   document.body.classList.toggle('has-sel', !!sel && !state.quiz);
   invalidate();
 }
@@ -1657,11 +1715,21 @@ function frame() {
     applyView();
     moving = true;
   }
-  controls.update(); // dispara `change` (→ invalidate) quando a câmera se mexeu, inclusive o amortecimento depois do arrasto
+  const camChanged = controls.update(); // dispara `change` (→ invalidate) quando a câmera se mexeu, inclusive o amortecimento depois do arrasto
   const now = performance.now();
+  // resolução adaptativa: durante o movimento (arrasto, zoom, voo) desenha com menos pixels; parado, volta à resolução cheia
+  if (moving || camChanged) {
+    lastMotion = now;
+    if (!lowRes && FULL_DPR > MOTION_DPR) { renderer.setPixelRatio(MOTION_DPR); lowRes = true; }
+  } else if (lowRes && now - lastMotion > 160) {
+    renderer.setPixelRatio(FULL_DPR);
+    lowRes = false;
+    dirty = true;
+  }
   if (dirty || moving || now - lastRender > keepAliveMs) {
     dirty = false;
     lastRender = now;
+    if (camChanged) orderGhosts();
     headlight.position.copy(camera.position);
     headlight.target.position.copy(controls.target);
     renderer.render(scene, camera);
@@ -1694,13 +1762,21 @@ function swapSkin(geo) {
  */
 async function warmShaders() {
   const mats = new Set();
-  scene.traverse((o) => { if (o.isMesh && o.material?.isMeshStandardMaterial) mats.add(o.material); });
+  const meshes = [];
+  scene.traverse((o) => {
+    if (!o.isMesh || !o.userData.orig) return;
+    meshes.push(o);
+    if (o.material?.isMeshStandardMaterial) mats.add(o.material);
+  });
   const saved = [...mats].map((m) => [m, m.transparent, m.depthWrite]);
   try {
+    // variante translúcida do PBR (músculos de um nervo selecionado) e o material dos fantasmas (Lambert)
     for (const m of mats) { m.transparent = true; m.depthWrite = false; m.needsUpdate = true; }
+    for (const o of meshes) o.material = ghostFor(o.userData.orig);
     await renderer.compileAsync(scene, camera);
   } finally {
     for (const [m, tr, dw] of saved) { m.transparent = tr; m.depthWrite = dw; m.needsUpdate = true; }
+    for (const o of meshes) o.material = o.userData.orig;
     applyHighlight();
   }
 }
