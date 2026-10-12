@@ -78,8 +78,10 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       const A = window.__app;
       const t0 = performance.now(); A.select(${JSON.stringify(alvo)}, { fly: false }); const sync = performance.now() - t0;
       const frames = [];
-      for (let i = 0; i < 4; i++) { const s = performance.now(); await new Promise((r) => requestAnimationFrame(() => r())); frames.push(Math.round(performance.now() - s)); }
-      return { syncMs: Math.round(sync), primeirosQuadrosMs: frames, programas: A.renderer.info.programs.length };
+      const r0 = A.renderStats.frames(); const rend = [];
+      for (let i = 0; i < 4; i++) { const s = performance.now(); await new Promise((r) => requestAnimationFrame(() => r())); frames.push(Math.round(performance.now() - s)); rend.push(A.renderStats.frames() - r0); }
+      const f0 = A.renderStats.frames(); await new Promise((r) => setTimeout(r, 2500)); const depois = A.renderStats.frames() - f0;
+      return { syncMs: Math.round(sync), primeirosQuadrosMs: frames, rendersAcumulados: rend, quadrosDesenhadosEm2500ms: depois, programas: A.renderer.info.programs.length };
     })()`);
     const prof = (await send('Profiler.stop')).result.profile;
     await send('Emulation.setCPUThrottlingRate', { rate: 1 });

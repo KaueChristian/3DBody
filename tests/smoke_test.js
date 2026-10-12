@@ -723,6 +723,74 @@ async function runSmokeTest() {
       const app = window.__app;
       const sc = app.studyController;
       const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      for (let i = 0; i < 120 && !app.state.nervesReady; i++) await sleep(250);
+      await sleep(1200);
+      const rs = app.renderStats;
+      const frames = () => rs.frames();
+
+      // parado, o atlas quase não desenha (rede de segurança: 1 quadro a cada 2 s)
+      app.setRegion('todos', { fly: false });
+      app.setDissect(3);
+      app.jump();
+      await sleep(900);
+      const f0 = frames();
+      await sleep(3300);
+      const idle = frames() - f0;
+      t(idle <= 4, 'parado, o atlas desenhou ' + idle + ' quadros em 3,3 s (esperado ≤ 4)');
+
+      // sem a rede de segurança, cada tipo de mudança precisa pedir o próprio quadro
+      rs.keepAlive(1e9);
+      const casos = {
+        'selecionar': () => app.select('masseter', { fly: false }),
+        'limpar a seleção': () => app.select(null, { fly: false }),
+        'dissecação': () => app.setDissect(2),
+        'região': () => app.setRegion('tronco', { fly: false }),
+        'opacidade da pele': () => app.setSkin(0.6),
+        'camada': () => { app.state.layers.delete('osso'); app.syncLayers(); },
+        'ocultar uma estrutura': () => { app.state.hidden.add('trapezio_desc'); app.syncLayers(); },
+        'cor por grupo': () => sc.coloring.setMode('grupo'),
+        'voltar à cor por camada': () => sc.coloring.setMode('camada'),
+        'plano de corte': () => { sc.clipping.setAxis('axial'); sc.clipping.setOffset(0.2); },
+        'mover o corte': () => sc.clipping.setOffset(-0.2),
+        'tirar o corte': () => sc.resetClip(),
+        'dermátomos ligados': () => sc.setDermatomes(true),
+        'dermátomos desligados': () => sc.setDermatomes(false),
+        'rótulos': () => { const b = document.getElementById('optLabels'); b.checked = true; b.dispatchEvent(new Event('change')); },
+        'voo da câmera': () => app.flyTo([0.5, 0.1, 1], 6, new app.THREE.Vector3(0, -3, 0)),
+        'pular a câmera': () => { app.flyTo([1, 0.1, 0], 9, new app.THREE.Vector3(0, -4, 0)); app.jump(); },
+      };
+      app.setRegion('todos', { fly: false });
+      app.setDissect(3);
+      app.state.layers.add('osso');
+      app.state.hidden.delete('trapezio_desc');
+      app.syncLayers();
+      app.jump();
+      await sleep(1500);
+      for (const [nome, fn] of Object.entries(casos)) {
+        await sleep(450); // deixa qualquer animação anterior assentar
+        const a = frames();
+        fn();
+        await sleep(350);
+        if (frames() === a) f.push('sem quadro depois de: ' + nome);
+      }
+      // voo termina e para: depois de assentar, nenhum quadro novo
+      await sleep(3500);
+      const b = frames();
+      await sleep(1200);
+      t(frames() === b, 'a câmera parou mas o atlas seguiu desenhando');
+      const cb = document.getElementById('optLabels');
+      cb.checked = false;
+      cb.dispatchEvent(new Event('change'));
+      rs.keepAlive(2000);
+      return f;
+    }, 'renderização sob demanda: parado quase não desenha e cada mudança pede um quadro');
+
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
+      const sc = app.studyController;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
       // uma vista com bastante coisa
       app.setRegion('tronco', { fly: false });

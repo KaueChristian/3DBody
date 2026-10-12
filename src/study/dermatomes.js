@@ -188,6 +188,7 @@ export class DermatomeOverlay {
     if (!this.on || !this.prepare()) {
       mat.vertexColors = false;
       mat.needsUpdate = true;
+      this.app.invalidate?.();
       return;
     }
     const col = this.geo.attributes.color;
@@ -204,5 +205,6 @@ export class DermatomeOverlay {
     col.needsUpdate = true;
     mat.vertexColors = true;
     mat.needsUpdate = true;
+    this.app.invalidate?.();
   }
 }

@@ -48,8 +48,23 @@ const state = {
   flash: new Map(),
 };
 
+/* ───────────────────────── Renderização sob demanda ─────────────────────────
+ * O laço só redesenha quando algo mudou: câmera (OrbitControls dispara `change`), animação de voo, painel que desloca a vista,
+ * ou qualquer alteração de cena (`invalidate()`: realce, visibilidade, camadas, pele, corte, cores, carga de estruturas…).
+ * Como rede de segurança, um quadro a cada KEEPALIVE_MS mesmo sem pedido (um `invalidate` esquecido se corrige sozinho).
+ * Parado, o atlas passa de 60 quadros por segundo a 0,5: poupa bateria e deixa a thread livre para o toque. */
+let dirty = true;
+let lastRender = 0;
+let keepAliveMs = 2000;
+function invalidate() { dirty = true; }
+
 /* ───────────────────────── Cena ───────────────────────── */
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+{
+  // o plano de corte (src/study/clipping.js) troca `renderer.clippingPlanes`: qualquer troca pede um quadro
+  let planes = renderer.clippingPlanes;
+  Object.defineProperty(renderer, 'clippingPlanes', { get: () => planes, set: (v) => { planes = v; invalidate(); } });
+}
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.0;
@@ -69,6 +84,7 @@ camera.position.set(1.9, 0.2, 7).sub(TARGET0).setLength(7.6).add(TARGET0);
 
 const controls = new OrbitControls(camera, canvas);
 controls.target.copy(TARGET0);
+controls.addEventListener('change', invalidate);
 controls.enableDamping = true;
 controls.dampingFactor = 0.09;
 controls.minDistance = 1.2;
@@ -289,6 +305,7 @@ function buildItems(parts, S, items, ctx) {
     M.set(item.id, { item, group, meshes, mats: [...mats.values()], anchors, color, radius: sph.radius, center: sph.center });
     ITEMS.push(item);
   }
+  invalidate();
 }
 
 /* ───────────────────────── Nervos ───────────────────────── */
@@ -378,6 +395,7 @@ async function buildNerves(nerveParts, skins) {
     modelRoot.add(group);
     M.set(item.id, { item, group, meshes, pick, mats: [mat], anchors, color, radius: sph.radius, center: sph.center });
     ITEMS.push(item);
+    invalidate();
   }
 }
 
@@ -459,6 +477,7 @@ function applyHighlight() {
     m.group.renderOrder = isSkin(m) ? 5 : 0;
   }
   document.body.classList.toggle('has-sel', !!sel && !state.quiz);
+  invalidate();
 }
 
 /* ───────────────────────── Câmera ───────────────────────── */
@@ -808,6 +827,7 @@ const DISSECT_NAMES = ['Pele opaca', 'Pele translúcida', 'Fáscias e aponeurose
 
 function setSkin(v) {
   state.skin = v;
+  invalidate();
   $('#optSkin').value = Math.round(v * 100);
   $('#skinVal').textContent = `${Math.round(v * 100)}%`;
 }
@@ -849,7 +869,7 @@ stage.addEventListener('click', (e) => { if (e.target === stage && document.body
 }
 
 /* ───────────────────────── Controles do palco ───────────────────────── */
-$('#optLabels').addEventListener('change', (e) => { state.labels = e.target.checked; });
+$('#optLabels').addEventListener('change', (e) => { state.labels = e.target.checked; invalidate(); });
 $('#optSkin').addEventListener('input', (e) => {
   setSkin(e.target.value / 100);
   applyVisibility();
@@ -1610,18 +1630,22 @@ function resize() {
   camera.fov = w / h < 0.9 ? 40 : 30;
   camera.updateProjectionMatrix();
   applyView();
+  invalidate();
 }
 new ResizeObserver(resize).observe(stage);
+document.addEventListener('visibilitychange', invalidate);
 
 const clock = new THREE.Clock();
 function frame() {
-  const dt = Math.min(clock.getDelta(), 0.05);
+  // dt até 0,25 s: com quadros lentos (celular) a animação converge em poucos quadros em vez de arrastar dezenas de quadros caros
+  const dt = Math.min(clock.getDelta(), 0.25);
   if (goal) {
     const k = 1 - Math.exp(-dt * 6);
     controls.target.lerp(goal.target, k);
     camera.position.lerp(goal.pos, k);
     if (camera.position.distanceTo(goal.pos) < 0.005 && controls.target.distanceTo(goal.target) < 0.005) goal = null;
   }
+  let moving = !!goal;
   const open = infoEl.classList.contains('open');
   const wide = stage.clientWidth > 860;
   const wantShift = open && wide ? (infoEl.offsetWidth + 28) / 2 : 0;
@@ -1631,12 +1655,18 @@ function frame() {
     viewShift += (wantShift - viewShift) * k;
     viewShiftY += (wantShiftY - viewShiftY) * k;
     applyView();
+    moving = true;
   }
-  controls.update();
-  headlight.position.copy(camera.position);
-  headlight.target.position.copy(controls.target);
-  renderer.render(scene, camera);
-  updateLabels(stage.clientWidth, stage.clientHeight);
+  controls.update(); // dispara `change` (→ invalidate) quando a câmera se mexeu, inclusive o amortecimento depois do arrasto
+  const now = performance.now();
+  if (dirty || moving || now - lastRender > keepAliveMs) {
+    dirty = false;
+    lastRender = now;
+    headlight.position.copy(camera.position);
+    headlight.target.position.copy(controls.target);
+    renderer.render(scene, camera);
+    updateLabels(stage.clientWidth, stage.clientHeight);
+  }
   requestAnimationFrame(frame);
 }
 
@@ -1654,6 +1684,7 @@ function swapSkin(geo) {
   skin.meshes[0].geometry = geo;
   skin.mats[0].clippingPlanes = null;
   skin.mats[0].needsUpdate = true;
+  invalidate();
 }
 
 /**
@@ -1822,6 +1853,8 @@ async function init() {
     const api = {
       state, M, ITEMS, INNERVATION, LAYERS, inRegion, perf, setup, S, THREE,
       catalogItems: ALL_ITEMS,
+      invalidate,
+      renderStats: { frames: () => renderer.info.render.frame, keepAlive: (ms) => { if (ms != null) keepAliveMs = ms; return keepAliveMs; } },
       catalog: new Map(ALL_ITEMS.map((i) => [i.id, i])),
       camera, controls, renderer, scene, jump, flyTo, viewPreset, cameraGoal: () => goal,
       select, focusItem, setRegion, setDissect, setSkin, syncLayers, syncList, setColorOverrides, applyHighlight,
