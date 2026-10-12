@@ -124,7 +124,7 @@ for (const n of NERVES) {
   const semNervo = ITEMS.filter((i) => i.kind === 'musculo' && !INNERVATION.has(i.id)).map((i) => i.id);
   if (semNervo.length) throw new Error(`Músculos sem nervo no catálogo: ${semNervo.join(', ')}`);
   // circulatório (F5): `relacionados` só cita estruturas do catálogo, e toda artéria e veia diz de onde vem, por onde vai e o que irriga ou drena
-  const CIRC_KINDS = new Set(['cardiaco', 'arteria', 'veia', 'estrutura', 'orgao']);
+  const CIRC_KINDS = new Set(['cardiaco', 'arteria', 'veia', 'estrutura', 'orgao', 'osso']);
   for (const i of [...CIRC_ITEMS, ...RESP_ITEMS]) {
     if (!CIRC_KINDS.has(i.kind)) throw new Error(`Tipo inesperado no circulatório: ${i.id} (${i.kind})`);
     for (const r of i.relacionados ?? []) if (!seen.has(r)) throw new Error(`Estrutura relacionada inexistente em ${i.id}: ${r}`);

@@ -209,13 +209,13 @@ function runTests() {
     const respPieces = readPack('resp');
     const pieces = new Set([...circPieces, ...respPieces]);
     const circ = ITEMS.filter((i) => ['cardiaco', 'arteria', 'veia', 'orgao'].includes(i.kind) && i.parts?.length);
-    const used = new Set();
+    // peças usadas por qualquer ficha (as cartilagens da laringe são fichas de osso no pacote do respiratório)
+    const used = new Set(ITEMS.flatMap((i) => (i.parts ?? []).map((p) => p.id)));
     for (const i of circ) {
       const want = { cardiaco: 'coracao', arteria: 'arteria', veia: 'veia', orgao: 'respiratorio' }[i.kind];
       if (i.layer !== want) logFail(`"${i.id}" (${i.kind}) deveria estar na camada "${want}", e não em "${i.layer}".`);
       const home = i.kind === 'orgao' ? respPieces : circPieces;
       for (const p of i.parts ?? []) {
-        used.add(p.id);
         if (!home.has(p.id)) logFail(`"${i.id}" usa a peça "${p.id}", que não está no pacote do ${i.kind === 'orgao' ? 'respiratório' : 'circulatório'}.`);
       }
       if (i.kind === 'orgao' && i.malha === 'hra' && !/Atlas de Referência Humano/.test(i.nota ?? '')) logFail(`"${i.id}" tem malha do HRA e a nota não diz de onde ela vem.`);

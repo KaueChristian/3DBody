@@ -349,7 +349,7 @@ async function runSmokeTest() {
       document.getElementById('btnStudy').click();
       t(!document.getElementById('studyModal').hidden, 'o modal de estudo não abriu');
       const cards = [...document.querySelectorAll('.tour-card')];
-      t(cards.length === 8, `esperava 8 tours, veio ${cards.length}`);
+      t(cards.length === 9, `esperava 9 tours, veio ${cards.length}`);
       for (const c of cards) {
         t(!/undefined|null|NaN/.test(c.innerText), `cartão de tour com texto quebrado: ${c.innerText.slice(0, 60)}`);
         t((c.querySelector('.tour-desc')?.innerText.length ?? 0) > 20, 'cartão de tour sem descrição');
@@ -372,7 +372,7 @@ async function runSmokeTest() {
       const app = window.__app;
       const sc = app.studyController;
       const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-      for (const id of ['manguito', 'plexo_braquial', 'nervo_radial', 'mastigacao_v3', 'facial_mimica', 'parede_abdominal', 'circulacao', 'circulacao_fetal']) {
+      for (const id of ['manguito', 'plexo_braquial', 'nervo_radial', 'mastigacao_v3', 'facial_mimica', 'parede_abdominal', 'circulacao', 'circulacao_fetal', 'respiratorio']) {
         sc.startTour(id);
         const n = sc.activeTour.steps.length;
         for (let i = 0; i < n; i++) {
@@ -394,7 +394,7 @@ async function runSmokeTest() {
       }
       if (!document.getElementById('tourBox').hidden) f.push('o painel do tour continua aberto depois de sair');
       return f;
-    }, 'os 38 passos dos 8 tours destacam e enquadram a estrutura');
+    }, 'os 45 passos dos 9 tours destacam e enquadram a estrutura');
 
     await run(async () => {
       const f = [];
@@ -826,9 +826,34 @@ async function runSmokeTest() {
       t(pul.min.x > costelas.min.x && pul.max.x < costelas.max.x, 'os pulmões saem da caixa torácica pelos lados');
       t(pul.max.y < costelas.max.y + 0.6 && pul.max.y > costelas.max.y - 0.1, 'o ápice do pulmão está fora do lugar em relação à 1ª costela');
       t(new app.THREE.Box3().union(box('ventriculo_esquerdo')).intersectsBox(box('pulmao_e_lobo_inferior')), 'o pulmão esquerdo deveria encostar no coração');
+      // vias aéreas (BodyParts3D): traqueia, brônquios, 20 segmentares, cartilagens da laringe e as pleuras (esquema)
+      const vias = ['traqueia', 'bronquio_principal_d', 'bronquio_principal_e', 'pleura_d', 'pleura_e', 'cartilagem_tireoidea', 'cartilagem_cricoidea',
+        'cartilagens_aritenoides', 'epiglote', 'cartilagens_corniculadas', 'cartilagens_cuneiformes'];
+      for (const id of vias) t(app.M.has(id) && app.M.get(id).meshes.length > 0, 'sem malha no modelo: ' + id);
+      const segmentares = [...app.M.keys()].filter((id) => id.startsWith('bronquio_seg_'));
+      t(segmentares.length === 20, 'esperava 20 brônquios segmentares, veio ' + segmentares.length);
+      t(segmentares.filter((id) => id.startsWith('bronquio_seg_d_')).length === 10 && segmentares.filter((id) => id.startsWith('bronquio_seg_e_')).length === 10, 'cada pulmão deveria ter 10 brônquios segmentares');
+      t(segmentares.every((id) => (id.includes('_d_') ? cx(id) < 0.3 : cx(id) > -0.3)), 'um brônquio segmentar está do lado errado do corpo');
+      t(Math.abs(cx('traqueia')) < 0.3 && app.M.get('traqueia').center.y > app.M.get('pulmao_d_lobo_inferior').center.y, 'a traqueia está fora da linha mediana ou abaixo dos pulmões');
+      app.select('bronquio_seg_d_apical', { fly: false });
+      const fb = document.getElementById('infoBody').textContent;
+      t(/B1/.test(fb) && /apical \(S1\)/.test(fb) && /Lobo superior do pulmão direito/.test(fb), 'a ficha do brônquio apical direito não cita B1, S1 e o lobo superior');
+      app.select('pleura_d', { fly: false });
+      t(/ESQUEMA/.test(document.getElementById('infoBody').textContent) && /Modelada por código/.test(document.getElementById('info').textContent), 'a ficha da pleura não se declara esquema');
+      app.select('cartilagem_cricoidea', { fly: false });
+      t(/único anel cartilagíneo completo/.test(document.getElementById('infoBody').textContent), 'a ficha da cricóidea perdeu o texto sobre o anel completo');
+      app.select(null, { fly: false });
+      // tour do respiratório: cada passo destaca uma estrutura que existe
+      sc.startTour('respiratorio');
+      for (let i = 0; i < sc.activeTour.steps.length; i++) {
+        t(app.state.selected === sc.activeTour.steps[i].highlight, `o passo ${i + 1} do tour do respiratório não destacou ${sc.activeTour.steps[i].highlight}`);
+        if (i < sc.activeTour.steps.length - 1) sc.tourStep(1);
+      }
+      sc.stopTour();
+      app.setRegion('tronco', { fly: false });
       app.setDissect(1);
       return f;
-    }, 'F6.1: pulmões (malhas do HRA, camada, fichas, vizinhas e posição no tórax)');
+    }, 'F6.1: pulmões e vias aéreas (malhas, camada, fichas, vizinhas, posição no tórax e tour)');
 
     await run(async () => {
       const f = [];

@@ -142,6 +142,7 @@ function makeMaterial(key, color) {
     case 'cardiac': return std({ color, roughness: 0.55 });
     case 'valve': return std({ color: '#ead9bd', roughness: 0.45 });
     case 'lung': return std({ color, roughness: 0.65 });
+    case 'airway': return std({ color, roughness: 0.5 });
     case 'pericardio': return std({ color, roughness: 0.35, transparent: true, opacity: 0.2, depthWrite: false });
     case 'artery':
     case 'vein': return std({ color, roughness: 0.4 });

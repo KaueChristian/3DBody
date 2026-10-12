@@ -5,6 +5,8 @@
  * `relacionados` liga cada estrutura às vizinhas (a ligação vale nos dois sentidos; ver `catalog.js`).
  */
 
+import { AIRWAY_ITEMS } from './catalog-resp-airways.js';
+
 const T = 'tronco';
 const part = (id) => ({ id, mat: 'lung' });
 
@@ -30,7 +32,7 @@ const resp = (id, name, latin, parts, d, extra = {}) => ({
 const MODELO = 'A malha é do Atlas de Referência Humano (um indivíduo diferente do corpo do atlas) e foi ajustada ao tórax por escala e posição: o encaixe com o coração e as costelas é aproximado.';
 const ARTERIA = { d: 'arteria_pulmonar_direita', e: 'arteria_pulmonar_esquerda' };
 
-export const RESP_ITEMS = [
+const LUNG_ITEMS = [
   /* ═════════════ Pulmão direito ═════════════ */
   resp('pulmao_d_lobo_superior', 'Lobo superior do pulmão direito', 'Lobus superior pulmonis dextri', ['pulmao_d_lobo_superior'], {
     local: 'Parte superior do pulmão direito, acima da fissura horizontal e à frente da parte alta da fissura oblíqua; inclui o ápice do pulmão, que sobe até a cúpula da pleura, 2 a 3 cm acima da clavícula.',
@@ -85,3 +87,6 @@ export const RESP_ITEMS = [
     relacionados: ['pulmao_e_lobo_superior', ARTERIA.e, 'veia_pulmonar_inferior_esquerda'],
   }),
 ];
+
+/** Pulmões (Atlas de Referência Humano) e vias aéreas (BodyParts3D): ver `catalog-resp-airways.js`. */
+export const RESP_ITEMS = [...LUNG_ITEMS, ...AIRWAY_ITEMS];
