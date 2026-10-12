@@ -51,7 +51,7 @@ repetida ao fim do lote A (F4.2) e, de novo, depois dos nervos da F4.5, que acre
 
 Após o lote A (F4.2), duas execuções: `legDataMs` 1 163 · 1 368, `legStructuresMs` 602 · 698, `nervesMs` 20 218 · 20 312 e `totalReadyMs` **31 739 · 32 739**.
 Os 7 nervos novos custaram ≈ 2,6 s (≈ 0,37 s cada; a média dos 100 anteriores é 0,18 s). A F4.5 acrescenta ≈ 7 nervos longos com dezenas de
-ramos: previsão de 35–38 s. **A otimização da carga dos nervos (M37, leva 1) deve vir antes da F4.5.**
+ramos: previsão de 35–38 s. **A otimização da carga dos nervos (M37, leva 1) deve vir antes da F4.5.** *(Feita em 2026-10-12: com a renderização sob demanda o `totalReadyMs` caiu para 22,6–24,0 s; ver `otimizacao-mobile.md` §0.)*
 
 No computador (navegador embutido, sem emulação), após a F4.1: `legDataMs` 59 ms, `legStructuresMs` 93 ms, `totalReadyMs` 3 603 ms.
 

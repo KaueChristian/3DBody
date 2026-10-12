@@ -81,6 +81,14 @@ nervos longos) deve chegar a 35–38 s: **fazer a otimização da carga dos nerv
 
 ---
 
+### 1.7 Efeito da renderização sob demanda (2026-10-12)
+
+Celular emulado (`node tools/perf_mobile.js 4`, 2 execuções): quadros por segundo com o modelo parado de 60 para **0,33**; `nervesMs`
+de 20,2–20,3 s para **13,3–14,0 s**; `totalReadyMs` de 31,7–32,7 s para **22,6–24,0 s**. O laço de desenho deixou de competir com a montagem
+dos nervos. A folga até o limite de 35 s do M37 voltou a ≈ 11 s. Detalhes e o que ainda falta: [`otimizacao-mobile.md`](otimizacao-mobile.md) §0.
+
+---
+
 ## 2. Regras de Orçamento para Novas Fases e Pacotes
 
 Para preservar o princípio de funcionamento offline rápido e abertura em segundos (especialmente em conexões lentas ou computadores escolares):

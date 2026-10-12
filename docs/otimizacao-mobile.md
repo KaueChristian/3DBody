@@ -22,7 +22,27 @@ programa de shader de cada tipo de material (4 programas PBR a compilar no 1º c
 depois da carga, com `renderer.compileAsync`. (3) `syncList()` refazia o SVG do olho das 430 linhas e filtrava `ITEMS` 16 vezes a cada
 clique: agora só troca o ícone quando muda e usa um índice por camada.
 
-Ainda de pé (leva 1 desta nota): o laço redesenha 60 quadros/s com o modelo parado; fundir ou reduzir as 763 chamadas de desenho.
+### Renderização sob demanda (2026-10-12) — feita
+
+O laço (`frame()` em `src/main.js`) só redesenha quando há motivo: a câmera mexeu (`OrbitControls` dispara `change`, inclusive no
+amortecimento depois do arrasto), há voo de câmera ou deslocamento da vista pelo painel, ou alguma mudança de cena chamou
+`invalidate()` (realce e hover, visibilidade, camadas, pele, plano de corte, cores, dermátomos, rótulos, carga de estruturas, redimensionamento).
+Rede de segurança: um quadro a cada 2 s (`__app.renderStats.keepAlive(ms)`), para um `invalidate` esquecido se corrigir sozinho. O passo da
+animação passou a usar o tempo real (até 0,25 s) em vez de 0,05 s: com quadros lentos o voo e o deslize do painel convergem em poucos quadros,
+e não em dezenas de quadros caros.
+
+| Medida (`tools/perf_mobile.js 4`, 2 execuções) | Antes | Depois |
+| --- | --- | --- |
+| Quadros desenhados por segundo, modelo parado | 60 | **0,33** |
+| Nervos (`nervesMs`) | 20,2–20,3 s | **13,3–14,0 s** |
+| Tudo pronto (`totalReadyMs`) | 31,7–32,7 s | **22,6–24,0 s** |
+| Primeira imagem (`ttfiMs`) | 3,7–3,9 s | 3,5 s |
+
+A queda do tempo de carga vem de o laço não competir mais com a montagem dos nervos. O teste de fumaça garante que, parado, o atlas faz
+≤ 4 quadros em 3,3 s e que cada tipo de mudança (selecionar, dissecação, região, pele, camada, ocultar, cor, corte, dermátomos, rótulos, voo)
+pede o seu quadro com a rede de segurança desligada; um teste de mutação (tirar o `invalidate()` de `setSkin`) o derruba.
+
+Ainda de pé: reduzir as ≈ 780 chamadas de desenho (fundir malhas estáticas), nervos pré-calculados, pacotes por região com compressão meshopt.
 Limite do método: GPU por software não é GPU de celular; confirmar em aparelho real.
 
 ## 1. O que foi medido

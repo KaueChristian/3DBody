@@ -214,6 +214,7 @@ Este é um material de estudo: **um fato errado prejudica quem estuda**. Por iss
   mesmo na abertura seguinte. Teste a troca (`npm run exe`) antes de publicar; um lançador quebrado afeta todos.
 - **O atualizador apaga versões antigas** (`RemoveOldVersions`): não há volta local. Daí a importância de não publicar com o
   catálogo quebrado.
+- **Renderização sob demanda:** o laço só desenha quando algo pede (câmera, voo, `invalidate()`). Quem mudar a cena **sem passar por** `applyHighlight`/`applyVisibility`/`setSkin`/`resize`/`select` (material, geometria, visibilidade, `renderer.*`) deve chamar `app.invalidate()` (ou `invalidate()` no `main.js`); sem isso a tela só atualiza no quadro de segurança, a cada 2 s. O teste de fumaça “renderização sob demanda” cobre os caminhos conhecidos: acrescente o seu a ele.
 - **Bundle é IIFE.** Funciona de `file://`; trocar o formato ou usar `type="module"` quebra a abertura por duplo clique.
 - **Ordem de scripts em `index.html`:** `version.js` → `anatomy-data.js` → `anatomy-nerves.js` → `app.js` (o corpo é carregado
   depois, em segundo plano), e o pacote do membro inferior (`anatomy-leg.js`) vem depois do corpo e antes dos nervos; ele traz
