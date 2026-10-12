@@ -673,6 +673,56 @@ async function runSmokeTest() {
       const app = window.__app;
       const sc = app.studyController;
       const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      for (let i = 0; i < 120 && !app.state.nervesReady; i++) await sleep(250);
+
+      // F4.2: quadril e coxa, com os nervos que os inervam
+      const musculos = ['gluteo_maximo', 'gluteo_medio', 'gluteo_minimo', 'tensor_fascia_lata', 'piriforme', 'gemeo_superior', 'gemeo_inferior',
+        'obturador_externo', 'quadrado_femoral', 'sartorio', 'reto_femoral', 'vasto_lateral', 'vasto_medial', 'vasto_intermedio', 'pectineo',
+        'adutor_longo', 'adutor_curto', 'adutor_magno', 'adutor_minimo', 'gracil', 'biceps_femoral_longa', 'biceps_femoral_curta', 'semitendineo',
+        'semimembranaceo'];
+      const nervos = ['n_obturatorio', 'n_gluteo_superior', 'n_gluteo_inferior', 'n_piriforme', 'n_quadrado_femoral', 'n_isquiatico', 'n_femoral'];
+      for (const id of [...musculos, ...nervos]) t(app.M.has(id) && app.M.get(id).meshes.length > 0, 'sem malha no modelo: ' + id);
+      t(!app.M.has('articular_joelho'), 'o articular do joelho não tem malha no banco e não devia existir');
+
+      app.setRegion('membro_inf', { fly: false });
+      app.setDissect(2);
+      const vis = [...app.M.values()].filter((m) => m.group.visible).map((m) => m.item.id);
+      t(vis.includes('sartorio') && vis.includes('n_isquiatico'), 'a região “Perna” não mostra o sartório e o isquiático');
+      app.setDissect(0);
+      t(![...app.M.values()].some((m) => m.item.id !== 'pele' && m.group.visible), 'com a pele opaca nada devia aparecer por baixo dela');
+      app.setDissect(6);
+
+      // fichas: músculo → nervo e segmentos; nervo → músculos
+      app.select('adutor_magno', { fly: false });
+      let ficha = document.getElementById('infoBody').textContent;
+      t(/obturat/i.test(ficha) && /isqui/i.test(ficha), 'a ficha do adutor magno não mostra os dois nervos (obturatório e isquiático)');
+      t(/Segmentos medulares/.test(ficha) && /L2–L4/.test(ficha), 'a ficha do adutor magno perdeu os segmentos L2–L4');
+      app.select('biceps_femoral_curta', { fly: false });
+      ficha = document.getElementById('infoBody').textContent;
+      t(/fibular comum/i.test(ficha) && /L5–S2/.test(ficha), 'a ficha da cabeça curta do bíceps não diz fibular comum e L5–S2');
+      app.select('n_isquiatico', { fly: false });
+      ficha = document.getElementById('infoBody').textContent;
+      t(/Semitendíneo/.test(ficha) && /Semimembranáceo/.test(ficha) && /L4–S3/.test(ficha), 'a ficha do nervo isquiático não lista os isquiotibiais e os segmentos L4–S3');
+      app.select(null, { fly: false });
+
+      // cor por grupo: cada compartimento da coxa tem a sua
+      app.setRegion('todos', { fly: false });
+      sc.coloring.setMode('grupo');
+      const cor = (id) => sc.coloring.overrides.get(id);
+      t(cor('gluteo_maximo') && cor('sartorio') && cor('adutor_longo') && cor('semitendineo'), 'o modo grupo não coloriu os músculos da coxa');
+      const cores = new Set(['gluteo_maximo', 'sartorio', 'adutor_longo', 'semitendineo'].map((id) => cor(id)?.getHexString()));
+      t(cores.size === 4, 'os quatro compartimentos deveriam ter cores diferentes, mas há ' + cores.size);
+      sc.coloring.setMode('camada');
+      sc.syncColorUi();
+      return f;
+    }, 'F4.2: músculos do quadril e da coxa, nervos, segmentos e grupos');
+
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
+      const sc = app.studyController;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
       // uma vista com bastante coisa
       app.setRegion('tronco', { fly: false });

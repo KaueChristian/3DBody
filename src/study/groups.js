@@ -5,7 +5,7 @@
  * aqui: ao acrescentar um músculo, escolha o grupo dele (ou crie um novo em `GROUPS`).
  */
 
-/** Ordem de exibição na legenda: cabeça e pescoço → tronco → membro superior. */
+/** Ordem de exibição na legenda: cabeça e pescoço → tronco → membro superior → membro inferior. */
 export const GROUPS = [
   { id: 'mimica', label: 'Mímica facial' },
   { id: 'olho', label: 'Músculos do olho e das pálpebras' },
@@ -30,6 +30,10 @@ export const GROUPS = [
   { id: 'mao_tenar', label: 'Mão: eminência tenar e adutor do polegar' },
   { id: 'mao_hipotenar', label: 'Mão: eminência hipotenar' },
   { id: 'mao_central', label: 'Mão: lumbricais e interósseos' },
+  { id: 'quadril', label: 'Quadril: glúteos e rotadores laterais' },
+  { id: 'coxa_ant', label: 'Compartimento anterior da coxa (quadríceps e sartório)' },
+  { id: 'coxa_med', label: 'Compartimento medial da coxa (adutores)' },
+  { id: 'coxa_post', label: 'Compartimento posterior da coxa (isquiotibiais)' },
 ];
 
 const BY_GROUP = {
@@ -56,6 +60,10 @@ const BY_GROUP = {
   mao_tenar: 'abdutor_polegar_curto flexor_polegar_curto oponente_polegar adutor_polegar_obliquo adutor_polegar_transverso',
   mao_hipotenar: 'palmar_curto abdutor_minimo flexor_minimo_curto oponente_minimo',
   mao_central: 'interosseos_dorsais interosseos_palmares lumbricais',
+  quadril: 'gluteo_maximo gluteo_medio gluteo_minimo tensor_fascia_lata piriforme gemeo_superior gemeo_inferior obturador_externo quadrado_femoral',
+  coxa_ant: 'sartorio reto_femoral vasto_lateral vasto_medial vasto_intermedio pectineo',
+  coxa_med: 'adutor_longo adutor_curto adutor_magno adutor_minimo gracil',
+  coxa_post: 'biceps_femoral_longa biceps_femoral_curta semitendineo semimembranaceo',
 };
 
 /** id do músculo → id do grupo. */

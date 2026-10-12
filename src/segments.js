@@ -55,6 +55,12 @@ export const SEGMENTOS_MUSCULO = {
   // pelve e períneo
   pubococcigeo: R('S3', 'S4'), iliococcigeo: R('S3', 'S4'), puborretal: R('S3', 'S4'), coccigeo: R('S4', 'S5'), esfincter_anal_ext: R('S2', 'S4'),
   obturador_interno: cat(R('L5'), R('S1', 'S2')),
+  // membro inferior (Moore): região glútea e coxa
+  gluteo_maximo: R('L5', 'S2'), gluteo_medio: R('L4', 'S1'), gluteo_minimo: R('L4', 'S1'), tensor_fascia_lata: R('L4', 'S1'),
+  piriforme: R('S1', 'S2'), gemeo_superior: R('L5', 'S1'), gemeo_inferior: R('L4', 'S1'), obturador_externo: R('L3', 'L4'), quadrado_femoral: R('L4', 'S1'),
+  sartorio: R('L2', 'L3'), reto_femoral: R('L2', 'L4'), vasto_lateral: R('L2', 'L4'), vasto_medial: R('L2', 'L4'), vasto_intermedio: R('L2', 'L4'),
+  pectineo: R('L2', 'L3'), adutor_longo: R('L2', 'L4'), adutor_curto: R('L2', 'L4'), adutor_magno: R('L2', 'L4'), adutor_minimo: R('L2', 'L4'), gracil: R('L2', 'L3'),
+  biceps_femoral_longa: R('S1', 'S3'), biceps_femoral_curta: R('L5', 'S2'), semitendineo: R('L5', 'S2'), semimembranaceo: R('L5', 'S2'),
   bulboesponjoso: R('S2', 'S4'), isquiocavernoso: R('S2', 'S4'), transverso_superficial_perineo: R('S2', 'S4'),
   transverso_profundo_perineo: R('S2', 'S4'), esfincter_uretra: R('S2', 'S4'),
   // membro superior
@@ -95,6 +101,8 @@ export const SEGMENTOS_NERVO = {
   n_intercostais: R('T1', 'T6'), n_toracoabdominais: R('T7', 'T11'), n_subcostal: R('T12'), n_ilio_hipogastrico: R('L1'), n_ilioinguinal: R('L1'),
   n_plexo_lombar: R('T12', 'L4'), n_femoral: R('L2', 'L4'), n_levantador_anus: R('S3', 'S5'), n_pudendo: R('S2', 'S4'),
   n_obturador_interno: cat(R('L5'), R('S1', 'S2')),
+  n_obturatorio: R('L2', 'L4'), n_gluteo_superior: R('L4', 'S1'), n_gluteo_inferior: R('L5', 'S2'), n_piriforme: R('S1', 'S2'),
+  n_quadrado_femoral: R('L4', 'S1'), n_isquiatico: R('L4', 'S3'),
   medula_espinal: SEGMENT_ORDER, n_espinais_cervicais: R('C1', 'C8'), n_espinais_toracicos: R('T1', 'T12'), n_espinais_lombares: R('L1', 'L5'),
   n_espinais_sacrais: R('S1', 'Co1'), cauda_equina: R('L2', 'Co1'),
 };

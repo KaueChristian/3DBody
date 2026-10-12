@@ -797,19 +797,26 @@ export const NERVES = [
   }, {
     origem: 'Ramos anteriores de T12 e L1–L4, que formam o plexo lombar dentro do psoas maior.',
     trajeto: 'Ramos musculares curtos saem das raízes diretamente para o psoas maior (L1–L3), o quadrado do lombo (T12–L4) e os intertransversários laterais lombares.',
-    ramos: 'O plexo lombar também forma os nervos ílio-hipogástrico, ilioinguinal, genitofemoral, cutâneo femoral lateral, femoral e obturatório (os do membro inferior ficam para a próxima etapa).',
+    ramos: 'O plexo lombar também forma os nervos ílio-hipogástrico, ilioinguinal, genitofemoral, cutâneo femoral lateral, femoral e obturatório (o genitofemoral e o cutâneo femoral lateral não estão desenhados: M09).',
   }),
-  nervo('n_femoral', 'Nervo femoral', 'N. femoralis', 'tronco', {
+  nervo('n_femoral', 'Nervo femoral', 'N. femoralis', ['tronco', 'membro_inf'], {
     paths: [
-      { pts: [{ sec: 'psoas_maior', y: -5.95, at: 'c' }, { sec: 'psoas_maior', y: -6.25, at: 'lat', d: 0.01 }, { between: ['psoas_maior', 'iliaco'], y: -6.6 }, { between: ['psoas_maior', 'iliaco'], y: -7.0 }, [0.86, -7.38, 0.46]], r: 0.0095 },
+      { pts: [{ sec: 'psoas_maior', y: -5.95, at: 'c' }, { sec: 'psoas_maior', y: -6.25, at: 'lat', d: 0.01 }, { between: ['psoas_maior', 'iliaco'], y: -6.6 }, { between: ['psoas_maior', 'iliaco'], y: -7.0 }, [0.86, -7.38, 0.46], [0.9, -7.7, 0.42], [0.92, -8.0, 0.36]], r: 0.0095, r1: 0.0075 },
       ...['L2', 'L3', 'L4'].map((n) => ({ pts: [foramen(n), { sec: 'psoas_maior', y: -5.95, at: 'c' }], r: 0.006 })),
     ],
-    ramos: [{ m: 'iliaco' }],
+    ramos: [
+      { m: 'iliaco' },
+      { m: 'pectineo', obs: 'L2–L3', path: 0, t: [0.7, 1] }, { m: 'sartorio', obs: 'L2–L3', path: 0, t: [0.7, 1] },
+      { m: 'reto_femoral', path: 0, t: [0.7, 1] }, { m: 'vasto_lateral', path: 0, t: [0.7, 1] },
+      { m: 'vasto_medial', path: 0, t: [0.7, 1] }, { m: 'vasto_intermedio', path: 0, t: [0.7, 1] },
+    ],
   }, {
     origem: 'Divisões posteriores dos ramos anteriores de L2, L3 e L4, dentro do psoas maior. É o maior ramo do plexo lombar.',
     trajeto: 'Emerge da margem lateral do psoas, desce no sulco entre o psoas e o ilíaco (dá os ramos do ilíaco) e passa sob o ligamento inguinal, lateral à artéria femoral, para a coxa.',
     lesao: 'Na pelve pode ser comprimido por hematoma do psoas (anticoagulação) ou lesado em cirurgias pélvicas: flexão do quadril fraca e perda da extensão do joelho.',
-    nota: 'Na coxa inerva o quadríceps, o sartório e o pectíneo e dá o nervo safeno (membros inferiores: próxima etapa).',
+    ramos: 'Dentro da pelve, o ramo do ilíaco; na coxa, os ramos do pectíneo, do sartório, do reto femoral e dos três vastos, que também mandam ramos articulares ao quadril e ao joelho, e os ramos cutâneos anteriores da coxa e o nervo safeno (os cutâneos, não desenhados: M09).',
+    sensibilidade: 'Pele da face anterior da coxa (ramos cutâneos anteriores) e, pelo nervo safeno, da face medial da perna e do pé (não desenhados).',
+    nota: 'O pectíneo recebe também, com frequência, um ramo do obturatório. Os ramos musculares saem logo abaixo do ligamento inguinal, no trígono femoral.',
   }),
   nervo('n_levantador_anus', 'Nervos do levantador do ânus e do coccígeo (S3–S5)', 'N. musculi levatoris ani; plexus coccygeus', 'tronco', {
     paths: [
@@ -849,11 +856,11 @@ export const NERVES = [
   }),
   nervo('n_obturador_interno', 'Nervo para o obturador interno e gêmeo superior', 'N. musculi obturatorii interni', 'tronco', {
     paths: [{ pts: [[0.27, -6.62, -0.3], [0.4, -6.78, -0.44], [0.5, -6.94, -0.55], [0.57, -7.08, -0.45]], r: 0.0055 }],
-    ramos: [{ m: 'obturador_interno' }],
+    ramos: [{ m: 'obturador_interno' }, { m: 'gemeo_superior' }],
   }, {
     origem: 'Plexo sacral (ramos anteriores de L5, S1 e S2).',
     trajeto: 'Sai da pelve pelo forame isquiático maior, abaixo do piriforme, contorna a espinha isquiática, reentra pelo forame isquiático menor, lateral ao nervo pudendo, e entra no obturador interno pela face pélvica. Dá antes um ramo para o gêmeo superior.',
     lesao: 'Raramente é lesado sozinho; faz parte das lesões do plexo sacral (fraqueza leve da rotação lateral da coxa). Pode ser aprisionado na síndrome do piriforme, por contiguidade.',
-    nota: 'O plexo sacral completo e o gêmeo superior fazem parte da etapa dos membros inferiores. Aqui só o ramo que supre um músculo já modelado.',
+    nota: 'Os demais ramos do plexo sacral estão nos nervos glúteo superior e inferior, do piriforme, do quadrado femoral e isquiático.',
   }),
 ];
