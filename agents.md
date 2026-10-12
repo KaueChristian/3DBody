@@ -47,7 +47,7 @@ Dados (raramente necessário; baixa ~60 MB e regenera arquivos grandes — só c
 | `src/catalog.js` | Junta os catálogos; camadas, regiões, `INNERVATION`, **guardas** | Guardas lançam erro na carga: não as enfraqueça para “fazer passar” |
 | `src/catalog-muscles.js` | Músculos da cabeça e do pescoço | |
 | `src/catalog-body-muscles.js` | Músculos do tronco e do membro superior | |
-| `src/catalog-bones.js`, `catalog-body-bones.js` | Ossos, dentes, cartilagens, discos | |
+| `src/catalog-bones.js`, `catalog-body-bones.js`, `catalog-leg-bones.js` | Ossos, dentes, cartilagens, discos (o último é do membro inferior, pacote `anatomy-leg.js`) | |
 | `src/catalog-nerves.js` | 55 nervos: textos, trajetos, `ramos` (fonte única músculo ↔ nervo) | Pontos medidos no modelo; ver §8 |
 | `src/catalog-other.js` | Ligamentos, fáscias, glândulas, pele | |
 | `src/catalog-joints.js` | Articulações e ligamentos do membro superior; `movimentos` (fonte única músculo ↔ articulação) e `nervos` (ramos articulares) | Ver `docs/articulacoes.md` |
@@ -112,8 +112,8 @@ node -e "const c=require(process.env.TEMP+'/cat.cjs'); console.log(c.ITEMS.lengt
 
 Se lançar `Identificador duplicado…`, `Nervo aponta para estrutura inexistente…` ou `Músculos sem nervo…`, o catálogo está
 errado — corrija os dados. As articulações têm guardas próprias (`Articulação … cita osso inexistente`, `Cápsula de … usa peças
-fora dos ossos citados`, `Movimento … cita músculo inexistente`…). Contagens esperadas hoje: 396 estruturas (204 músculos, 100 nervos
-e gânglios, 38 ossos, 28 ligamentos, 13 articulações, 3 fáscias, 3 glândulas, 7 estruturas, entre elas a medula espinal).
+fora dos ossos citados`, `Movimento … cita músculo inexistente`…). Contagens esperadas hoje: 404 estruturas (204 músculos, 100 nervos
+e gânglios, 46 ossos, 28 ligamentos, 13 articulações, 3 fáscias, 3 glândulas, 7 estruturas, entre elas a medula espinal).
 
 ### 6.2 Verificação visual (obrigatória para qualquer mudança de geometria ou interface)
 
@@ -179,7 +179,7 @@ Este é um material de estudo: **um fato errado prejudica quem estuda**. Por iss
 1. Novo pacote de dados `dist/anatomy-<nome>.js` carregado em segundo plano, **dentro do orçamento de tamanho** do roteiro.
 2. Novo valor em `REGIONS`/botões/quiz; camadas novas em `LAYERS` com profundidade coerente.
 3. Guardas equivalentes às de `catalog.js` para o novo vínculo (ex.: todo músculo com irrigação).
-4. Atualize `index.html` (ordem dos scripts), `tools/build_exe.py` (`FILES`) e o README.
+4. Atualize `index.html` (ordem dos scripts, se o pacote não for carregado por `main.js`), `tools/build_exe.py` (`FILES`), `sw.js` (lista de cache) e o README.
 
 **Funcionalidade de interface**
 1. Módulo novo em `src/` (não inflar `main.js`); estilos em `styles.css`; texto em PT-BR.
@@ -216,7 +216,8 @@ Este é um material de estudo: **um fato errado prejudica quem estuda**. Por iss
   catálogo quebrado.
 - **Bundle é IIFE.** Funciona de `file://`; trocar o formato ou usar `type="module"` quebra a abertura por duplo clique.
 - **Ordem de scripts em `index.html`:** `version.js` → `anatomy-data.js` → `anatomy-nerves.js` → `app.js` (o corpo é carregado
-  depois, em segundo plano).
+  depois, em segundo plano), e o pacote do membro inferior (`anatomy-leg.js`) vem depois do corpo e antes dos nervos; ele traz
+  a `pele_inteira`, que **substitui** a `pele_corpo` do pacote do corpo assim que carrega.
 - **Heredocs com crases no shell** quebram; escreva scripts Python/JS em arquivos temporários (use o diretório de rascunho da
   sessão) em vez de embuti-los no comando.
 - **PowerShell vs Bash:** sintaxes diferentes (`$env:VAR` vs `$VAR`, `&&` só no PowerShell 7). Caminhos com espaços entre aspas.

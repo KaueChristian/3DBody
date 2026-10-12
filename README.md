@@ -11,12 +11,12 @@ ligamentos, glândulas, cartilagens, ossos e dentes em camadas. Cada estrutura t
 músculos, **ação, origem, inserção, inervação e os movimentos que realizam**; nos nervos, **origem, trajeto, ramos, sensibilidade,
 lesão e os músculos que inervam**; nas articulações, **tipo, superfícies, cápsula, ligamentos, movimentos com amplitude e músculos,
 inervação e irrigação**; nos ossos, localização, articulações, estruturas e função; nos ligamentos, fixações e função.
-Membros inferiores ficam para uma próxima etapa.
+O **membro inferior** está em construção (F4, em lotes): por enquanto, o esqueleto (fêmur, patela, tíbia, fíbula, tarso, metatarsais, falanges e sesamoides) e a pele inteira; os músculos, os nervos e as articulações entram nos próximos lotes.
 
 ## Como abrir
 
 Dê dois cliques em `index.html` (Chrome, Edge ou Firefox). Não precisa de internet nem de servidor.
-A cabeça aparece primeiro; o tronco e os membros são carregados em segundo plano (`dist/anatomy-body.js`).
+A cabeça aparece primeiro; o tronco e os membros são carregados em segundo plano (`dist/anatomy-body.js` e, depois dele, o membro inferior em `dist/anatomy-leg.js`).
 
 Para editar o código:
 
@@ -62,7 +62,7 @@ Use a branch **`dev`** para trabalhar sem publicar; quando estiver bom, junte na
 
 Para gerar o executável localmente: `npm run exe` (usa o compilador C# do próprio Windows; resultado em `release/`).
 
-## O que tem (396 estruturas: 204 músculos, 100 nervos, 13 articulações e 28 ligamentos, mais a medula espinal)
+## O que tem (404 estruturas: 204 músculos, 100 nervos, 46 ossos, 13 articulações e 28 ligamentos, mais a medula espinal)
 
 | Camada | Conteúdo |
 | --- | --- |
@@ -79,7 +79,7 @@ Para gerar o executável localmente: `npm run exe` (usa o compilador C# do próp
 | Nervos | 100 nervos e gânglios, mais a **medula espinal**, ligados a **todos** os 204 músculos (veja abaixo) |
 | Glândulas e língua | parótida e ducto, submandibular, sublingual, língua |
 | Cartilagens e discos | nasais, orelha, costais, discos intervertebrais |
-| Ossos e dentes | crânio completo, mandíbula, hioide, coluna (atlas a sacro), costelas, esterno, quadril, clavícula, escápula, úmero, rádio, ulna, carpo, metacarpais, falanges, dentes |
+| Ossos e dentes | crânio completo, mandíbula, hioide, coluna (atlas a sacro), costelas, esterno, quadril, clavícula, escápula, úmero, rádio, ulna, carpo, metacarpais, falanges, dentes; **membro inferior (F4.1):** fêmur, patela, tíbia, fíbula, tarso, metatarsais, falanges do pé e sesamoides |
 
 Recursos: **regiões** (corpo, cabeça, tronco, braço), controle de **dissecação** (da pele aos ossos), opacidade da pele,
 liga/desliga por camada ou por estrutura, busca, rótulos com linhas de chamada, câmera que enquadra a estrutura escolhida,
@@ -220,7 +220,7 @@ e “colados” sobre a pele e o esqueleto reais (`src/proc.js`), com posições
 - sistema nervoso: todos os nervos, exceto os da órbita (malhas reais), e a medula espinal (esquemática: não há meninges nem substância cinzenta).
 
 São aproximações didáticas. Por causa da licença **Share-Alike**, os arquivos `dist/anatomy-data.js`,
-`dist/anatomy-body.js` e `dist/anatomy-nerves.js` (malhas derivadas) devem manter a atribuição acima e a mesma licença CC BY-SA ao serem redistribuídos.
+`dist/anatomy-body.js`, `dist/anatomy-leg.js` e `dist/anatomy-nerves.js` (malhas derivadas) devem manter a atribuição acima e a mesma licença CC BY-SA ao serem redistribuídos.
 
 ### Regenerar os dados
 
@@ -234,6 +234,8 @@ python fetch_parts.py     # cabeça: baixa os elementos usados (pasta obj/)
 python convert.py         # cabeça: converte e empacota → anatomy-data.js
 python fetch_body.py      # tronco e membros: baixa os elementos usados
 python convert_body.py    # tronco e membros: converte e empacota → anatomy-body.js
+python fetch_body.py --pack leg     # membro inferior (F4): baixa os elementos do pacote leg
+python convert_body.py --pack leg   # membro inferior: converte e empacota → anatomy-leg.js (com a pele inteira)
 python fetch_nerves.py    # nervos da órbita: baixa os elementos usados
 python convert_nerves.py  # nervos da órbita: converte e empacota → anatomy-nerves.js
 ```
@@ -249,6 +251,9 @@ python fetch_body.py id1 id2            # só os elementos dessas peças
 python convert_body.py --append id1 id2 # lê ../dist/anatomy-body.js e acrescenta as peças → anatomy-body.js
 ```
 
+O pacote do membro inferior funciona igual, com `--pack leg` (`fetch_body.py --pack leg id1 id2` e `convert_body.py --pack leg --append id1
+id2`); as peças dele (`pack="leg"` em `addl(...)`) e o que o banco não tem estão em [`docs/inventario-membro-inferior.md`](docs/inventario-membro-inferior.md).
+
 `mirror=True` em `add(...)` cria o lado que falta no banco (cópia espelhada em x).
 
 ## Estrutura
@@ -262,6 +267,7 @@ python convert_body.py --append id1 id2 # lê ../dist/anatomy-body.js e acrescen
 | `src/nerve-geo.js` | Geometria dos nervos: resolve os pontos dos trajetos e gera os ramos até os músculos |
 | `src/landmarks.js` | Pontos de referência ósseos usados por músculos profundos e ligamentos |
 | `src/proc.js` | Geração das malhas procedurais (fita, lâmina, anel, tubo; cápsula, lâmina entre ossos, colaterais e grupos via `joint-geo.js`) |
+| `src/catalog-leg-bones.js` | **Ossos do membro inferior** (pacote `dist/anatomy-leg.js`, carregado depois do corpo) |
 | `src/catalog-joints.js` | **Articulações e ligamentos do membro superior**: fichas, ossos, ligamentos, movimentos (fonte da ligação músculo ↔ articulação) e nervos |
 | `src/joint-geo.js`, `src/joint-links.js` | Geometria das cápsulas e ligamentos medida nos ossos; seções da ficha ligadas às articulações |
 | `src/surfaces.js` | Projeção de pontos sobre a pele e o esqueleto (BVH) |

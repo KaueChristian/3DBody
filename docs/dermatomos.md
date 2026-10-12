@@ -28,7 +28,9 @@ a cor de vértice dá o melhor custo-benefício. O desenho é mais “faixa” q
 - **Membro superior:** braço (C5 lateral; T2 e T1 medial), antebraço (C6 radial; C7 no centro; T1 medial proximal e C8 medial
   distal), mão (C6 no polegar e no indicador, C7 no médio, C8 no anular e no mínimo).
 
-Não há dermátomos dos membros inferiores porque o modelo ainda não tem a pele deles (a pele termina na altura da cintura).
+Não há dermátomos dos membros inferiores: desde a F4.1 o modelo tem a pele inteira, mas os dermátomos L1–S2 ficaram adiados (M11 em
+`pontos-de-melhoria.md`). Abaixo da cintura (`y < −6,75`, fora dos braços) a pele fica de uma cor só, sem dermátomo: `dermatomeOf` devolve
+`null`. Antes disso a pele terminava na cintura e o problema não existia; sem o corte, as pernas seriam classificadas pelo ramo do membro superior.
 Quando houver, as regras entram em `src/study/dermatomes.js` junto com a F4.
 
 ## Como usar

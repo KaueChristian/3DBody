@@ -51,10 +51,10 @@ ligamentos principais (quadril, joelho, tornozelo, sacroilíaca, púbica). Ficam
 | --- | --- | --- | --- | --- | --- | --- |
 | M09 | **Nervos cutâneos** do membro inferior, da região glútea e da virilha: cutâneo sural, safeno, cutâneos femorais lateral, posterior e medial, genitofemoral, clúnios, fibular superficial sensitivo, cutâneos do obturatório | F4.5 | Os nervos motores têm o território sensitivo descrito no texto da ficha; sem trajeto desenhado | Depois dos sistemas do cronograma | G | B |
 | M10 | **Plexos lombar e sacral** desenhados (raízes, trajeto intrapélvico, ramos curtos um a um) | F4.5 | Cada músculo recebe o ramo curto como ramo do plexo, **sem trajeto próprio**; os segmentos medulares entram (a guarda os exige) | Junto de M09 | M | B |
-| M11 | **Dermátomos L1–S2** sobre a pele do membro inferior | F4.5 | Dermátomos só até o membro superior, como hoje (a ficha avisa) | Junto de M09 | P | B |
+| M11 | **Dermátomos L1–S2** sobre a pele do membro inferior | F4.5 | Dermátomos só até o membro superior; desde a F4.1 a pele das pernas e da pelve fica sem cor de dermátomo (`dermatomeOf` devolve `null` abaixo da cintura) | Junto de M09 | P | B |
 | M12 | Articulações menores do pé e ligamentos secundários: talocalcaneonavicular, calcaneocubóidea, transversa do tarso, tarsometatarsais, metatarsofalângicas, interfalângicas; ligamentos plantar longo e mola; **arcos do pé** | F4.6 | Tornozelo e subtalar com os ligamentos principais (colaterais lateral e medial/deltóideo) | Depois dos sistemas do cronograma | G | B |
-| M13 | **Aponeurose plantar**, trato iliotibial em detalhe, retináculos do tornozelo e da patela, bursas do joelho e do quadril | F4.4, F3.7 | Citados em notas | Junto de M05 | M | C |
-| M14 | Músculos do pé que **não tenham malha** no banco e exijam modelagem por código (a lista sai do inventário da F4.1) | F4.4 | Os que têm malha entram; os demais ficam listados em `docs/cobertura.md` com o motivo | Depois do inventário da F4.1 | M | B |
+| M13 | **Aponeurose plantar**, trato iliotibial em detalhe (o banco o tem: conceito “iliotibial tract”, ≈ 2,3 MB de OBJ, pesado), retináculos do tornozelo e da patela, bursas do joelho e do quadril | F4.4, F3.7 | Citados em notas | Junto de M05 | M | C |
+| M14 | Músculos do membro inferior **sem malha** no banco, por código: **articular do joelho**, **extensor curto dos dedos** (o banco só tem o extensor curto do hálux) e os **interósseos dorsais do pé** (o banco só tem os plantares) — lista do inventário da F4.1 (`docs/inventario-membro-inferior.md`) | F4.2, F4.4 | Os que têm malha entram; os demais ficam listados em `docs/cobertura.md` com o motivo | Depois dos lotes A a C | M | B |
 
 ## 4. Coração e vasos (origem: F5)
 
@@ -101,10 +101,12 @@ clínica curta, com fonte) e quizzes de localizar e escolher o nome. Ficam para 
 | M37 | **Desempenho no celular**: leva 1 de `docs/otimizacao-mobile.md` (renderização sob demanda, resolução adaptativa, nervos mais leves, sem leitura de layout no laço) | Levantamento de 2026-10-08 | M | **A (condicional)** |
 | M38 | Revisão de fontes dos textos dos 6 tours; plano de corte sem “tampa” (as malhas são cascas) | F1 | M | C |
 | M39 | Medir o site e a atualização do PWA em aparelhos reais; marcar *Enforce HTTPS* no Pages | `docs/publicacao-web.md` | P | B |
+| M40 | **Retirar a `pele_corpo` do pacote `anatomy-body.js`** (≈ 1 MB e 55 mil vértices que a `pele_inteira` do pacote do membro inferior deixa sem uso) e, junto, voltar a decimar a pele inteira só uma vez; exige regenerar o pacote do corpo (baixar ≈ 60 MB) | F4.1 | M | C |
 
-**M37 é condicional:** o membro inferior soma ≈ 7 MB de malhas e dezenas de nervos novos, e a carga no celular já era o ponto mais
-frágil. A F4.1 manda medir com `tools/perf_mobile.js` ao fim do lote A; se o tempo até o modelo pronto piorar de forma
-sensível em relação aos 19 s medidos em 2026-10-08 (meta do roteiro: §3, item 5), M37 passa na frente de qualquer outro item.
+**M37 é condicional:** o membro inferior soma ≈ 4,4 MB de malhas (previsto, `docs/inventario-membro-inferior.md`) e dezenas de nervos novos, e a
+carga no celular já era o ponto mais frágil. Medição de 2026-10-12 (`node tools/perf_mobile.js 4`): 26,3–26,8 s antes da F4.1 e **28,4 s com ela**
+(os 19 s de 2026-10-08 eram com 55 nervos). **Limite: 35 000 ms** em `totalReadyMs` nessa medição; passou disso, M37 passa na frente de
+qualquer outro item. Repetir ao fim do lote A (F4.2) e depois dos nervos da F4.5 (que acrescentam ao laço de 17,6 s).
 
 ## 7. Como este registro é mantido
 
