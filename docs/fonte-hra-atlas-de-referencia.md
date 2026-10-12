@@ -71,7 +71,13 @@ só ficha, ou outra fonte).
 | Lojas (CGTrader, TurboSquid, RenderHub) | proprietária | Descartadas (licença incompatível). |
 | BodyParts3D feminino | — | Não encontrado: o banco é masculino e o índice local não tem estas estruturas. |
 
-## 6. Próximos passos propostos (dependem de confirmação do responsável)
+## 6. Situação (2026-10-12)
+
+- **Pulmões (F6.1): baixados e em uso** (`lung-male` v1.4, 10,9 MB, com autorização). O arquivo traz, além do que a tabela anuncia, os **lobos, os 20 segmentos
+  broncopulmonares, os brônquios lobares e segmentares e as cartilagens brônquicas**; o atlas usa os lobos (ver [`respiratorio.md`](respiratorio.md)).
+- Útero, tubas, ovários, mama, placenta e pelve feminina (F6.5): **ainda não baixados**.
+
+## 7. Próximos passos propostos (dependem de confirmação do responsável)
 
 1. Aprovar o download dos arquivos da seção 3 que a F6.5 e a F6.1 usam (lista e tamanhos acima) — a F6.5 só ocorre em 17/11, então a
    urgência é baixa; os pulmões (F6.1, 22/10) vêm antes.
