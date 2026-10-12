@@ -48,7 +48,7 @@ Dados (raramente necessário; baixa ~60 MB e regenera arquivos grandes — só c
 | `src/catalog-muscles.js` | Músculos da cabeça e do pescoço | |
 | `src/catalog-body-muscles.js`, `catalog-leg-muscles.js` | Músculos do tronco e do membro superior; o segundo, do quadril e da coxa (pacote `anatomy-leg.js`) | |
 | `src/catalog-bones.js`, `catalog-body-bones.js`, `catalog-leg-bones.js` | Ossos, dentes, cartilagens, discos (o último é do membro inferior, pacote `anatomy-leg.js`) | |
-| `src/catalog-resp.js` | Pulmões (pacote `anatomy-resp.js`, malhas do Atlas de Referência Humano ajustadas ao tórax por `tools/fit_hra.py`) | Ver `docs/respiratorio.md`; a ficha cita a origem da malha (`malha: 'hra'`) |
+| `src/catalog-resp.js`, `catalog-resp-airways.js` | Pulmões (malhas do Atlas de Referência Humano ajustadas ao tórax por `tools/fit_hra.py`) e vias aéreas, pleuras e cartilagens da laringe (BodyParts3D e esquema); pacote `anatomy-resp.js` | Ver `docs/respiratorio.md`; a ficha cita a origem da malha (`malha: 'hra'`) |
 | `src/catalog-circ.js` | Coração, artérias e veias (pacote `anatomy-circ.js`); `relacionados` liga as vizinhas (o catálogo completa a ligação nos dois sentidos) | Ver `docs/circulatorio.md`; o pericárdio é esquema (`src/hull-geo.js`) |
 | `src/catalog-nerves.js`, `catalog-nerves-leg.js` | Nervos: textos, trajetos, `ramos` (fonte única músculo ↔ nervo); o segundo, os do membro inferior | Pontos medidos no modelo; ver §8 |
 | `src/catalog-other.js` | Ligamentos, fáscias, glândulas, pele | |
@@ -114,8 +114,8 @@ node -e "const c=require(process.env.TEMP+'/cat.cjs'); console.log(c.ITEMS.lengt
 
 Se lançar `Identificador duplicado…`, `Nervo aponta para estrutura inexistente…` ou `Músculos sem nervo…`, o catálogo está
 errado — corrija os dados. As articulações têm guardas próprias (`Articulação … cita osso inexistente`, `Cápsula de … usa peças
-fora dos ossos citados`, `Movimento … cita músculo inexistente`…). Contagens esperadas hoje: 505 estruturas (228 músculos, 106 nervos
-e gânglios, 46 ossos, 28 ligamentos, 13 articulações, 31 artérias, 24 veias, 10 cardíacas, 5 lobos pulmonares, 3 fáscias, 3 glândulas, 8 estruturas, entre elas a medula espinal e o pericárdio).
+fora dos ossos citados`, `Movimento … cita músculo inexistente`…). Contagens esperadas hoje: 536 estruturas (228 músculos, 106 nervos
+e gânglios, 52 ossos e cartilagens, 28 ligamentos, 13 articulações, 31 artérias, 24 veias, 10 cardíacas, 28 do respiratório (5 lobos, traqueia e brônquios), 3 fáscias, 3 glândulas, 8 estruturas, entre elas a medula espinal e o pericárdio).
 
 ### 6.2 Verificação visual (obrigatória para qualquer mudança de geometria ou interface)
 

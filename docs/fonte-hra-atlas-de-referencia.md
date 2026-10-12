@@ -74,7 +74,7 @@ só ficha, ou outra fonte).
 ## 6. Situação (2026-10-12)
 
 - **Pulmões (F6.1): baixados e em uso** (`lung-male` v1.4, 10,9 MB, com autorização). O arquivo traz, além do que a tabela anuncia, os **lobos, os 20 segmentos
-  broncopulmonares, os brônquios lobares e segmentares e as cartilagens brônquicas**; o atlas usa os lobos (ver [`respiratorio.md`](respiratorio.md)).
+  broncopulmonares, os brônquios lobares e segmentares e as cartilagens brônquicas**; o atlas usa os lobos e, para o alinhamento, os brônquios (ver [`respiratorio.md`](respiratorio.md)).
 - Útero, tubas, ovários, mama, placenta e pelve feminina (F6.5): **ainda não baixados**.
 
 ## 7. Próximos passos propostos (dependem de confirmação do responsável)
