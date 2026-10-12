@@ -1,0 +1,13 @@
+{
+ "scale": [
+  9.1596,
+  11.0106,
+  7.5063
+ ],
+ "translation": [
+  -0.0066,
+  -8.3183,
+  0.1831
+ ],
+ "nota": "ajustado por fit_hra.py (escala por eixo): diafragma, costelas, conten\u00e7\u00e3o na caixa tor\u00e1cica, cora\u00e7\u00e3o e hilos"
+}

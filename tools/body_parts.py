@@ -358,6 +358,38 @@ for k, pat, tris, reg in [
     addc("veia_" + k, "veia", LR + pat, 4, tris, region=reg, maxel=12)
 
 
+# ───────── F6.1 — respiratório (pacote `resp`, dist/anatomy-resp.js) ─────────
+# Traqueia, brônquios principais e a árvore brônquica por segmento broncopulmonar, mais as cartilagens da laringe, do BodyParts3D.
+# Os pulmões não existem no banco: vêm do Atlas de Referência Humano (`convert_hra.py`, mesmo pacote). As 20 árvores segmentares
+# repartem exatamente os 98 elementos de “segment of bronchial tree”, sem sobra nem repetição.
+def addp(pid, cat, pattern, smooth=3, tris=2500, exclude=(), maxel=40):
+    add(pid, cat, pattern, smooth, tris, "tronco", False, exclude, "resp", maxel)
+
+
+addp("traqueia", "orgao", r"trachea", 4, 5000)
+addp("bronquio_principal_e", "orgao", r"left main bronchus", 4, 3000)
+addp("bronquio_principal_d", "orgao", r"bronchus", 4, 3000, exclude=tuple(elems(r"left main bronchus")))
+BRONQUIOS_SEG = {
+    "d_apical": "right apical segmental bronchial tree", "d_posterior": "right posterior segmental bronchial tree",
+    "d_anterior": "right anterior segmental bronchial tree", "d_lateral": "lateral segmental bronchial tree",
+    "d_medial": "medial segmental bronchial tree", "d_superior": "right superior segmental bronchial tree",
+    "d_basal_medial": "right medial basal segmental bronchial tree", "d_basal_anterior": "right anterior basal segmental bronchial tree",
+    "d_basal_lateral": "right lateral basal segmental bronchial tree", "d_basal_posterior": "right posterior basal segmental bronchial tree",
+    "e_apical": "left apical segmental bronchial tree", "e_posterior": "left posterior segmental bronchial tree",
+    "e_anterior": "left anterior segmental bronchial tree", "e_lingular_superior": "superior lingular bronchial tree",
+    "e_lingular_inferior": "inferior lingular bronchial tree", "e_superior": "left superior segmental bronchial tree",
+    "e_basal_medial": "left medial basal segmental bronchial tree", "e_basal_anterior": "left anterior basal segmental bronchial tree",
+    "e_basal_lateral": "left lateral basal segmental bronchial tree", "e_basal_posterior": "left posterior basal segmental bronchial tree",
+}
+for k, nome in BRONQUIOS_SEG.items():
+    kb = sum(idx[e][1] for e in elems(nome, 40) if e in idx) / 1000
+    addp("bronq_seg_" + k, "orgao", nome, 3, int(min(4500, max(700, kb * 24))))
+for pid, nome, tris in [("cartilagem_tireoidea", "thyroid cartilage", 3000), ("cartilagem_cricoidea", "cricoid cartilage", 2500),
+                        ("cartilagens_aritenoides", "arytenoid cartilage", 1200), ("epiglote", "epiglottis", 3000),
+                        ("cartilagens_corniculadas", "corniculate cartilage", 500), ("cartilagens_cuneiformes", "cuneiform cartilage", 500)]:
+    addp(pid, "cartilagem", nome, 3, tris)
+
+
 def resolve():
     out = {}
     for pid, d in BODY.items():

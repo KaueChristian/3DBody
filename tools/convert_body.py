@@ -165,6 +165,48 @@ def load_pack(path):
     return d["manifest"], bytearray(gzip.decompress(base64.b64decode(d["data"])))
 
 
+def write_pack(out, pack, append=False):
+    """Empacota as peças (`dict(id, cat, region, v, f, elems)`, vértices já em unidades do atlas) em anatomy-<pacote>.js e
+    parts_<pacote>.npz. Com `append`, lê ../dist/anatomy-<pacote>.js e acrescenta as peças às que já existem."""
+    pack_js = f"anatomy-{pack}.js"
+    blob = bytearray()
+    manifest = []
+    if append:
+        manifest, blob = load_pack(f"../dist/{pack_js}")
+        dup = {m["id"] for m in manifest} & {p["id"] for p in out}
+        if dup:
+            sys.exit(f"já estão no pacote: {sorted(dup)}")
+    for p in out:
+        v, f = p["v"], p["f"]
+        lo, hi = v.min(0), v.max(0)
+        span = np.maximum(hi - lo, 1e-9)
+        q = np.round((v - lo) / span * 65535).astype(np.uint16)
+        i32 = len(v) >= 65536
+        idx = f.astype(np.uint32 if i32 else np.uint16).reshape(-1)
+        while len(blob) % 4:
+            blob.append(0)
+        o_v = len(blob)
+        blob += q.tobytes()
+        while len(blob) % 4:
+            blob.append(0)
+        o_i = len(blob)
+        blob += idx.tobytes()
+        manifest.append(dict(id=p["id"], cat=p["cat"], region=p["region"], nv=int(len(v)), ni=int(len(idx)),
+                             lo=lo.round(5).tolist(), hi=hi.round(5).tolist(), ov=o_v, oi=o_i, i32=bool(i32)))
+    gz = gzip.compress(bytes(blob), 9)
+    print("blob", len(blob) // 1024, "KB; gzip", len(gz) // 1024, "KB")
+    js = f"window.__ANATOMY_{pack.upper()}=" + json.dumps({"manifest": manifest, "data": base64.b64encode(gz).decode()}) + ";"
+    open(pack_js, "w").write(js)
+    print(pack_js, len(js) // 1024, "KB")
+    npz = {}
+    if append and __import__("os").path.exists(f"parts_{pack}.npz"):
+        old = np.load(f"parts_{pack}.npz")
+        npz.update({k: old[k] for k in old.files})
+    npz.update({p["id"] + "__v": p["v"] for p in out})
+    npz.update({p["id"] + "__f": p["f"] for p in out})
+    np.savez_compressed(f"parts_{pack}.npz", **npz)
+
+
 def main():
     res = json.load(open("body_elems.json"))
     args = sys.argv[1:]
@@ -173,7 +215,6 @@ def main():
         i = args.index("--pack")
         pack = args[i + 1]
         del args[i:i + 2]
-    pack_js = f"anatomy-{pack}.js"
     # --append: converte só as peças pedidas e as acrescenta ao pacote atual (../dist/anatomy-<pacote>.js) sem tocar nas outras,
     # que continuam idênticas byte a byte (regenerar tudo exigiria baixar ~60 MB e mudaria malhas já validadas)
     append = "--append" in args
@@ -206,37 +247,7 @@ def main():
         v = (v - ORIGIN) * SCALE
         out.append(dict(id=pid, cat=spec["cat"], region=spec["region"], v=v, f=f, elems=elems))
         print(f"{pid:28s} elems={len(elems):2d} v={len(v):6d} f={len(f):6d}", flush=True)
-    # empacotar
-    blob = bytearray()
-    manifest = []
-    if append:
-        manifest, blob = load_pack(f"../dist/{pack_js}")
-        dup = {m["id"] for m in manifest} & {p["id"] for p in out}
-        if dup:
-            sys.exit(f"já estão no pacote: {sorted(dup)}")
-    for p in out:
-        v, f = p["v"], p["f"]
-        lo, hi = v.min(0), v.max(0)
-        span = np.maximum(hi - lo, 1e-9)
-        q = np.round((v - lo) / span * 65535).astype(np.uint16)
-        i32 = len(v) >= 65536
-        idx = f.astype(np.uint32 if i32 else np.uint16).reshape(-1)
-        while len(blob) % 4:
-            blob.append(0)
-        o_v = len(blob)
-        blob += q.tobytes()
-        while len(blob) % 4:
-            blob.append(0)
-        o_i = len(blob)
-        blob += idx.tobytes()
-        manifest.append(dict(id=p["id"], cat=p["cat"], region=p["region"], nv=int(len(v)), ni=int(len(idx)),
-                             lo=lo.round(5).tolist(), hi=hi.round(5).tolist(), ov=o_v, oi=o_i, i32=bool(i32)))
-    gz = gzip.compress(bytes(blob), 9)
-    print("blob", len(blob) // 1024, "KB; gzip", len(gz) // 1024, "KB")
-    js = f"window.__ANATOMY_{pack.upper()}=" + json.dumps({"manifest": manifest, "data": base64.b64encode(gz).decode()}) + ";"
-    open(pack_js, "w").write(js)
-    print(pack_js, len(js) // 1024, "KB")
-    np.savez_compressed(f"parts_{pack}.npz", **{p["id"] + "__v": p["v"] for p in out}, **{p["id"] + "__f": p["f"] for p in out})
+    write_pack(out, pack, append)
 
 
 if __name__ == "__main__":

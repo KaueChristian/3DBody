@@ -2,6 +2,7 @@ node_modules/
 build/
 release/
 tools/obj/
+tools/hra/
 *.npz
 *.log
 __pycache__/
