@@ -16,7 +16,7 @@ O **membro inferior** está em construção (F4, em lotes): por enquanto, o esqu
 ## Como abrir
 
 Dê dois cliques em `index.html` (Chrome, Edge ou Firefox). Não precisa de internet nem de servidor.
-A cabeça aparece primeiro; o tronco e os membros são carregados em segundo plano (`dist/anatomy-body.js` e, depois dele, o membro inferior em `dist/anatomy-leg.js`).
+A cabeça aparece primeiro; o tronco e os membros são carregados em segundo plano (`dist/anatomy-body.js` e, depois dele, o membro inferior em `dist/anatomy-leg.js` e o coração e os vasos em `dist/anatomy-circ.js`).
 
 Para editar o código:
 
@@ -62,7 +62,7 @@ Use a branch **`dev`** para trabalhar sem publicar; quando estiver bom, junte na
 
 Para gerar o executável localmente: `npm run exe` (usa o compilador C# do próprio Windows; resultado em `release/`).
 
-## O que tem (428 estruturas: 228 músculos, 106 nervos, 46 ossos, 13 articulações e 28 ligamentos, mais a medula espinal)
+## O que tem (500 estruturas: 228 músculos, 106 nervos, 46 ossos, 13 articulações, 28 ligamentos, 31 artérias, 24 veias e 10 estruturas do coração, mais o pericárdio e a medula espinal)
 
 | Camada | Conteúdo |
 | --- | --- |
@@ -77,6 +77,8 @@ Para gerar o executável localmente: `npm run exe` (usa o compilador C# do próp
 | Articulações (cápsulas) | membro superior: esternoclavicular, acromioclavicular, escapulotorácica (funcional), ombro, cotovelo, radiulnares proximal e distal, radiocarpal, intercarpais, carpometacarpais (polegar e 2º–5º), metacarpofalângicas e interfalângicas |
 | Ligamentos | 10 da cabeça (temporomandibular, estilomandibular, palpebrais…), linha alba, retináculo dos flexores e 16 do membro superior (esternoclaviculares, interclavicular, costoclavicular, acromioclavicular, coracoclavicular, coracoacromial, coracoumeral, glenoumerais, colaterais do cotovelo, anular do rádio, membrana interóssea, radiocarpais, colaterais do carpo, colaterais dos dedos, metacarpal transverso profundo) |
 | Nervos | 106 nervos e gânglios, mais a **medula espinal**, ligados a **todos** os 228 músculos (veja abaixo) |
+| Coração (F5) | átrios, ventrículos, as 4 valvas, músculos papilares e o **pericárdio** (envoltório esquemático, declarado na ficha) |
+| Artérias e Veias (F5) | coronárias e veias do coração, aorta (ascendente, arco, torácica e abdominal), tronco e artérias pulmonares, veias pulmonares, cavas, ázigo, ramos do arco, carótidas, vertebral, subclávia, torácica interna, axilar, braquial, radial e ulnar, ramos da aorta abdominal, ilíacas, femorais e jugular interna ([`docs/circulatorio.md`](docs/circulatorio.md)) |
 | Glândulas e língua | parótida e ducto, submandibular, sublingual, língua |
 | Cartilagens e discos | nasais, orelha, costais, discos intervertebrais |
 | Ossos e dentes | crânio completo, mandíbula, hioide, coluna (atlas a sacro), costelas, esterno, quadril, clavícula, escápula, úmero, rádio, ulna, carpo, metacarpais, falanges, dentes; **membro inferior (F4.1):** fêmur, patela, tíbia, fíbula, tarso, metatarsais, falanges do pé e sesamoides |
@@ -220,7 +222,7 @@ e “colados” sobre a pele e o esqueleto reais (`src/proc.js`), com posições
 - sistema nervoso: todos os nervos, exceto os da órbita (malhas reais), e a medula espinal (esquemática: não há meninges nem substância cinzenta).
 
 São aproximações didáticas. Por causa da licença **Share-Alike**, os arquivos `dist/anatomy-data.js`,
-`dist/anatomy-body.js`, `dist/anatomy-leg.js` e `dist/anatomy-nerves.js` (malhas derivadas) devem manter a atribuição acima e a mesma licença CC BY-SA ao serem redistribuídos.
+`dist/anatomy-body.js`, `dist/anatomy-leg.js`, `dist/anatomy-circ.js` e `dist/anatomy-nerves.js` (malhas derivadas) devem manter a atribuição acima e a mesma licença CC BY-SA ao serem redistribuídos.
 
 ### Regenerar os dados
 
@@ -236,6 +238,8 @@ python fetch_body.py      # tronco e membros: baixa os elementos usados
 python convert_body.py    # tronco e membros: converte e empacota → anatomy-body.js
 python fetch_body.py --pack leg     # membro inferior (F4): baixa os elementos do pacote leg
 python convert_body.py --pack leg   # membro inferior: converte e empacota → anatomy-leg.js (com a pele inteira)
+python fetch_body.py --pack circ    # coração e vasos (F5): baixa os elementos do pacote circ
+python convert_body.py --pack circ  # coração e vasos: converte e empacota → anatomy-circ.js (a parede dos ventrículos é dividida em direita e esquerda)
 python fetch_nerves.py    # nervos da órbita: baixa os elementos usados
 python convert_nerves.py  # nervos da órbita: converte e empacota → anatomy-nerves.js
 ```
@@ -268,6 +272,7 @@ id2`); as peças dele (`pack="leg"` em `addl(...)`) e o que o banco não tem est
 | `src/landmarks.js` | Pontos de referência ósseos usados por músculos profundos e ligamentos |
 | `src/proc.js` | Geração das malhas procedurais (fita, lâmina, anel, tubo; cápsula, lâmina entre ossos, colaterais e grupos via `joint-geo.js`) |
 | `src/catalog-leg-bones.js` | **Ossos do membro inferior** (pacote `dist/anatomy-leg.js`, carregado depois do corpo) |
+| `src/catalog-circ.js`, `src/hull-geo.js` | **Coração e vasos** (pacote `dist/anatomy-circ.js`, carregado depois do membro inferior); o casco suavizado do pericárdio esquemático |
 | `src/catalog-joints.js` | **Articulações e ligamentos do membro superior**: fichas, ossos, ligamentos, movimentos (fonte da ligação músculo ↔ articulação) e nervos |
 | `src/joint-geo.js`, `src/joint-links.js` | Geometria das cápsulas e ligamentos medida nos ossos; seções da ficha ligadas às articulações |
 | `src/surfaces.js` | Projeção de pontos sobre a pele e o esqueleto (BVH) |

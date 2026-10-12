@@ -48,6 +48,7 @@ Dados (raramente necessário; baixa ~60 MB e regenera arquivos grandes — só c
 | `src/catalog-muscles.js` | Músculos da cabeça e do pescoço | |
 | `src/catalog-body-muscles.js`, `catalog-leg-muscles.js` | Músculos do tronco e do membro superior; o segundo, do quadril e da coxa (pacote `anatomy-leg.js`) | |
 | `src/catalog-bones.js`, `catalog-body-bones.js`, `catalog-leg-bones.js` | Ossos, dentes, cartilagens, discos (o último é do membro inferior, pacote `anatomy-leg.js`) | |
+| `src/catalog-circ.js` | Coração, artérias e veias (pacote `anatomy-circ.js`); `relacionados` liga as vizinhas (o catálogo completa a ligação nos dois sentidos) | Ver `docs/circulatorio.md`; o pericárdio é esquema (`src/hull-geo.js`) |
 | `src/catalog-nerves.js`, `catalog-nerves-leg.js` | Nervos: textos, trajetos, `ramos` (fonte única músculo ↔ nervo); o segundo, os do membro inferior | Pontos medidos no modelo; ver §8 |
 | `src/catalog-other.js` | Ligamentos, fáscias, glândulas, pele | |
 | `src/catalog-joints.js` | Articulações e ligamentos do membro superior; `movimentos` (fonte única músculo ↔ articulação) e `nervos` (ramos articulares) | Ver `docs/articulacoes.md` |
@@ -112,8 +113,8 @@ node -e "const c=require(process.env.TEMP+'/cat.cjs'); console.log(c.ITEMS.lengt
 
 Se lançar `Identificador duplicado…`, `Nervo aponta para estrutura inexistente…` ou `Músculos sem nervo…`, o catálogo está
 errado — corrija os dados. As articulações têm guardas próprias (`Articulação … cita osso inexistente`, `Cápsula de … usa peças
-fora dos ossos citados`, `Movimento … cita músculo inexistente`…). Contagens esperadas hoje: 428 estruturas (228 músculos, 106 nervos
-e gânglios, 46 ossos, 28 ligamentos, 13 articulações, 3 fáscias, 3 glândulas, 7 estruturas, entre elas a medula espinal).
+fora dos ossos citados`, `Movimento … cita músculo inexistente`…). Contagens esperadas hoje: 500 estruturas (228 músculos, 106 nervos
+e gânglios, 46 ossos, 28 ligamentos, 13 articulações, 31 artérias, 24 veias, 10 cardíacas, 3 fáscias, 3 glândulas, 8 estruturas, entre elas a medula espinal e o pericárdio).
 
 ### 6.2 Verificação visual (obrigatória para qualquer mudança de geometria ou interface)
 
@@ -218,8 +219,8 @@ Este é um material de estudo: **um fato errado prejudica quem estuda**. Por iss
 - **Renderização sob demanda:** o laço só desenha quando algo pede (câmera, voo, `invalidate()`). Quem mudar a cena **sem passar por** `applyHighlight`/`applyVisibility`/`setSkin`/`resize`/`select` (material, geometria, visibilidade, `renderer.*`) deve chamar `app.invalidate()` (ou `invalidate()` no `main.js`); sem isso a tela só atualiza no quadro de segurança, a cada 2 s. O teste de fumaça “renderização sob demanda” cobre os caminhos conhecidos: acrescente o seu a ele.
 - **Bundle é IIFE.** Funciona de `file://`; trocar o formato ou usar `type="module"` quebra a abertura por duplo clique.
 - **Ordem de scripts em `index.html`:** `version.js` → `anatomy-data.js` → `anatomy-nerves.js` → `app.js` (o corpo é carregado
-  depois, em segundo plano), e o pacote do membro inferior (`anatomy-leg.js`) vem depois do corpo e antes dos nervos; ele traz
-  a `pele_inteira`, que **substitui** a `pele_corpo` do pacote do corpo assim que carrega.
+  depois, em segundo plano), e os pacotes do membro inferior (`anatomy-leg.js`) e do circulatório (`anatomy-circ.js`) vêm, nessa ordem, depois do corpo
+  e antes dos nervos (`loadLeg` e `loadCirc` em `main.js`); o do membro inferior traz a `pele_inteira`, que **substitui** a `pele_corpo` do pacote do corpo assim que carrega.
 - **Heredocs com crases no shell** quebram; escreva scripts Python/JS em arquivos temporários (use o diretório de rascunho da
   sessão) em vez de embuti-los no comando.
 - **PowerShell vs Bash:** sintaxes diferentes (`$env:VAR` vs `$VAR`, `&&` só no PowerShell 7). Caminhos com espaços entre aspas.

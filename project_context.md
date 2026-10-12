@@ -163,11 +163,11 @@ Isso significa que **membros inferiores, vasos e a maioria das vísceras podem u
 | Sistema | Tem malha no banco | **Não** encontrado no índice (por código, fonte externa ou ficha de texto) |
 | --- | --- | --- |
 | Circulatório | coração (câmaras, valvas, músculos papilares, coronárias), tronco pulmonar, artérias e veias pulmonares, arco da aorta, veias cavas, árvore vascular | **pericárdio**; **placenta, cordão e estruturas fetais** (ducto arterioso, forame oval) |
-| Respiratório | brônquios (inclui segmentos pulmonares), traqueia, laringe, diafragma | **pulmões** (nenhum conceito “lung”), **pleuras**, **mediastino** |
+| Respiratório | brônquios (inclui segmentos pulmonares), traqueia, laringe, diafragma | **pulmões** (nenhum conceito “lung”; **há fonte aberta, o HRA, ver abaixo**), **pleuras**, **mediastino** |
 | Digestório | esôfago, estômago, duodeno, jejuno, íleo, cólon, apêndice, reto, fígado (com setores), vesícula biliar, pâncreas, baço, glândulas salivares, mesentérios do intestino delgado e grosso e regiões do peritônio (qualidade a conferir) | omentos e recessos peritoneais (não encontrados por nome) |
 | Sentidos e tegumentar | olho (córnea, cristalino, íris, corioide, esclera, retina, corpo vítreo), aparelho lacrimal, orelha externa, pele e anexos, cartilagens e ossos do nariz | **membrana timpânica, ossículos, cóclea e labirinto** |
 | Urinário e genital masculino | rins, ureteres, bexiga, uretra, próstata, vesículas seminais, testículo, epidídimo, pênis (corpos cavernoso e esponjoso) | ducto deferente, glândulas bulbouretrais |
-| Genital feminino | — | **útero, tubas, ovários, vagina, vulva, mama** (nenhum) |
+| Genital feminino | — | **útero, tubas, ovários, vagina, vulva, mama** (nenhum no BodyParts3D; **útero, tubas, ovários e mama existem no HRA, CC BY 4.0**; vagina e vulva por código) |
 | Endócrino | hipófise, pineal, hipotálamo, suprarrenais, timo | **tireoide e paratireoides** (a “tireoide” da lista antiga não existe como glândula no índice) |
 
 Antes de prometer qualquer item “fora do banco”, vale rodar o spike da F6.0 (outro índice do BodyParts3D, versão *part-of*, e
@@ -179,6 +179,11 @@ O que o BodyParts3D **não** traz (ou traz pouco) e continua sendo modelado por 
 pericárdio, aparelho genital feminino, ouvido médio e interno, tireoide). Fontes abertas derivadas do BodyParts3D com mais estruturas
 (por exemplo, o projeto Z-Anatomy) são **candidatas a avaliar**, com checagem de licença e de qualidade antes de qualquer
 uso (§9).
+
+**Fonte externa verificada em 2026-10-12 — Human Reference Atlas (HuBMAP), CC BY 4.0** ([`docs/fonte-hra-atlas-de-referencia.md`](docs/fonte-hra-atlas-de-referencia.md)): tem **útero (20 subestruturas),
+tubas, ovários, mama, placenta, pelve feminina e pulmões**, em GLB. Não tem vagina, vulva, ligamentos do útero, tireoide,
+paratireoides, estômago, pleuras, mediastino, pericárdio, ossículos nem cóclea. O Z-Anatomy foi avaliado e descartado como fonte
+principal (modelo masculino, peças de uso não comercial).
 
 ## 6. Roteiro em fases
 
@@ -195,7 +200,7 @@ Visão geral (a ordem é a recomendada; justificativa abaixo da tabela):
 | F1 | 2.1 | Ferramentas de estudo | G | F0 |
 | F2 | 2.2 | Fechar músculos e nervos das regiões atuais | G | F0 |
 | F3 | 2.3 | Articulações do membro superior (**F3a ✅**); o resto da F3 foi adiado → M01–M08 | M | F2 |
-| F4 | **3.0** | **Corpo inteiro**: membros inferiores e pelve, núcleo osteomuscular (ossos, músculos, nervos motores, grandes articulações) | GG | F3 |
+| F4 | **3.0** | **Corpo inteiro**: membros inferiores e pelve, núcleo osteomuscular (ossos, músculos, nervos motores, grandes articulações); **F4.1 e F4.2 ✅, F4.3 a F4.7 depois da F6** | GG | F3 |
 | F5 | 3.1 | **Coração e vasos principais** (circulatório) | G | F4 |
 | F6 | 3.2+ | **Sistemas da disciplina, um por release**, na ordem das aulas: respiratório → digestório → sentidos e tegumentar → urinário e genital masculino → genital feminino → endócrino → urogenital integrado | GG | F5 |
 | F7 | 3.x | Sistema nervoso central (encéfalo, meninges, vias) | GG | F5 |
@@ -215,6 +220,26 @@ os vasos acompanham os nervos e as vísceras; a irrigação detalhada em todos o
 tem menos reaproveitamento; o olho e o ouvido saíram da F7 e foram para a F6, onde a disciplina os cobra. F1, F8 e F10 podem ser
 intercalados com as fases de conteúdo para manter o ritmo entre lotes grandes de dados.
 
+**Inversão de ordem confirmada em 2026-10-12.** Os **sistemas das aulas (F5 e F6) vêm antes dos lotes restantes da perna e do pé
+(F4.3 a F4.7)**. Motivo: a N2 (26/11) cobre do circulatório ao urogenital, e a musculatura da perna e do pé não aparece no cronograma.
+F4.1 e F4.2 já estão prontas (ossos do membro inferior, pele inteira, quadril e coxa). F4.3 a F4.7 entram na janela do CONPEEX
+(10 e 12/11) e o que sobrar fica para depois da prova; não bloqueiam a N2.
+
+Meta por aula (é critério de prioridade, não promessa de data; cada release continua exigindo `npm test` verde e verificação visual):
+
+| Até | Entrega mínima na `main` |
+| --- | --- |
+| 15/10 | F5.1 coração (câmaras, valvas, coronárias) e F5.2 pericárdio esquemático; a aula teórica de 13/10 sai antes de haver tempo |
+| 20/10 | F5.3 a F5.6: artérias e veias principais, fichas, tour e quiz da circulação |
+| 27/10 | F6.1 respiratório: traqueia, brônquios, laringe e **pulmões (HRA)**, fichas, tour e quiz |
+| 03/11 | F6.2 digestório |
+| 05/11 | F6.3 sentidos e tegumentar |
+| 10 e 12/11 | CONPEEX: pendências, revisão de fichas e, se houver tempo, F4.3 a F4.5 |
+| 17/11 | F6.4 urinário e genital masculino e F6.5 genital feminino |
+| 19/11 | F6.6 endócrino |
+| 24/11 | F6.7 urogenital integrado (prática) |
+| 26/11 | N2: congelar, só correções |
+
 ### Mapa do cronograma da disciplina (Anatomia Humana) → fases
 
 Fonte: imagem do cronograma enviada pelo responsável em 2026-10-12 (a aula de genital feminino aparece sem data própria, logo
@@ -226,12 +251,12 @@ data: as aulas já começaram (08/10) e a F4 é GG.
 | 08/10 | Circulatório — generalidades | F5 (vasos principais) e tour da circulação | |
 | 13/10 | Coração, pericárdio, circulação fetal e anexos | F5.1 (coração), F5.2 (pericárdio esquemático) | Circulação fetal e anexos **não têm malha** → M21 (tour e ficha de texto no núcleo) |
 | 15/10, 20/10 | Circulatório — prática | F5 completa + quiz | |
-| 22/10, 27/10 | Respiratório — teórica e prática | F6.1 | Pulmões e pleuras **não estão no banco**: decidir no spike F6.0 |
+| 22/10, 27/10 | Respiratório — teórica e prática | F6.1 | Pulmões: malha do **HRA** (CC BY 4.0); pleuras **não estão no banco**: decidir no spike F6.0 |
 | 29/10, 03/11 | Digestório — teórica e prática | F6.2 | |
 | 05/11 | Órgãos dos sentidos e tegumentar | F6.3 | Ouvido médio e interno → M28 |
 | 10/11, 12/11 | CONPEEX (sem aula) | — | Janela para fechar pendências ou puxar um item de F10 |
-| 17/11 e seguinte | Urinário e masculino; genital feminino | F6.4 e F6.5 | Genital feminino **não está no banco** |
-| 19/11 | Endócrino | F6.6 | Tireoide e paratireoides **não estão no banco** |
+| 17/11 e seguinte | Urinário e masculino; genital feminino | F6.4 e F6.5 | Genital feminino **não está no BodyParts3D**: útero, tubas, ovários e mama vêm do **HRA**; vagina e vulva por código |
+| 19/11 | Endócrino | F6.6 | Tireoide e paratireoides **não estão no banco nem no HRA** |
 | 24/11 | Urogenital — prática | F6.7 | |
 | 26/11 | N2 — provas teórica e prática | — | Congelar: só correções |
 
@@ -386,7 +411,8 @@ da saída original (coluna, filtro por movimento, origem e inserção no osso) p
 
 Objetivo: **corpo inteiro** com ossos, **todos os músculos**, os nervos que ligam cada músculo e as grandes articulações com
 seus ligamentos principais. É a fase que destrava as demais (situar os sistemas no corpo) e **não se reduz abaixo do núcleo**:
-só os detalhes marcados “→ M…” saem dela. Quebrar em quatro lotes, cada um entregável.
+só os detalhes marcados “→ M…” saem dela. Quebrar em quatro lotes, cada um entregável. **Ordem (2026-10-12):** F4.1 e F4.2 feitas; **F4.3 a F4.7 passam para depois da F6**
+(calendário no início do §6).
 
 **Núcleo × adiado, em uma linha por lote:** A e B — tudo entra; C — o que tem malha entra, aponeurose plantar e músculos sem malha
 adiados; D — todos os nervos motores e os ramos musculares entram, os cutâneos, os plexos desenhados e os dermátomos adiados;
@@ -453,18 +479,31 @@ Objetivo: abrir o circulatório da disciplina (generalidades, coração, pericá
 completo da F4. **Núcleo:** o que dá para ver, selecionar, nomear e localizar; **adiado:** a irrigação detalhada de cada músculo,
 os linfáticos e a circulação fetal.
 
-- [ ] **F5.1** **Coração**: câmaras, valvas, músculos papilares e coronárias com malhas reais (o banco tem todas, ver §5);
+- [x] **F5.1** ✅ **Coração**: câmaras, valvas, músculos papilares e coronárias com malhas reais (o banco tem todas, ver §5);
   camada própria. **G**
-- [ ] **F5.2** **Pericárdio** (sacos fibroso e seroso) como envoltório **esquemático** por código, declarado na ficha (o banco não
+  ✅ **Entregue em 2026-10-12 (na `dev`):** pacote `dist/anatomy-circ.js` (1,12 MB, 67 peças), 4 câmaras (a parede única dos ventrículos foi dividida
+  em direito e esquerdo pela cavidade mais próxima), 4 valvas (as cordas tendíneas vêm na malha delas), músculos papilares, 6 ramos das coronárias e 6 veias do
+  coração; camada “Coração”, fichas e cores; o interior se vê com o plano de corte. Detalhes e decisões: [`docs/circulatorio.md`](docs/circulatorio.md).
+- [x] **F5.2** ✅ **Pericárdio** (sacos fibroso e seroso) como envoltório **esquemático** por código, declarado na ficha (o banco não
   tem pericárdio); seios do pericárdio → M26. **P**
+  ✅ **Entregue em 2026-10-12 (na `dev`):** `src/hull-geo.js` (casco convexo suavizado do coração e da raiz dos vasos), ficha com as camadas e os seios (texto) e
+  a nota “ESQUEMA”.
 - [ ] **F5.3** **Artérias e veias principais** com malhas reais (aorta e ramos principais, tronco e artérias pulmonares, cavas,
   jugulares, subclávias, axilares, braquiais, ilíacas, femorais…; confirmar nomes FMA e decimar); camadas “Artérias” e “Veias”,
   cores convencionais. Vasos de menor calibre → M20. **G**
+  ✅ **Entregue em 2026-10-12 (na `dev`):** 31 artérias e 24 veias (aorta e seus segmentos, tronco e artérias pulmonares, 4 veias pulmonares, cavas, braquiocefálicas, ázigo e
+  hemiázigo, ramos do arco, carótidas, vertebral, subclávia, torácica interna, membro superior, ramos da aorta abdominal, ilíacas, femorais, renais). **Fora, por ora:**
+  vasos da perna e do pé (F4.3+) e os do tubo digestório e das vísceras (F6).
 - [ ] **F5.4** **Ficha básica de vaso e do coração:** origem, trajeto, ramos principais, território irrigado ou drenado e relações
   importantes, com fonte. Pulsos, pontos de compressão e relações detalhadas → M16. **M**
-- [ ] **F5.5** **Tour “Circulação”** (grande e pequena circulação, 6 a 8 passos) e **quiz de localizar** vasos e câmaras. **P**
-- [ ] **F5.6** Guardas equivalentes às do catálogo para o novo vínculo (todo vaso nomeado com ramos válidos; coração com câmaras e
+  ✅ **Entregue em 2026-10-12 (na `dev`):** 65 fichas (origem ou formação, trajeto, ramos ou tributárias, território, nota clínica) e as vizinhas como chips, nos dois sentidos.
+- [x] **F5.5** ✅ **Tour “Circulação”** (grande e pequena circulação, 6 a 8 passos) e **quiz de localizar** vasos e câmaras. **P**
+  ✅ **Entregue em 2026-10-12 (na `dev`):** tour “Circulação: grande e pequena” (8 passos) e, adiantado do M21, o tour de texto “Circulação fetal e o nascimento” (6 passos); o quiz de
+  localizar e o de escolher o nome ganharam os tipos Coração, Artérias e Veias.
+- [x] **F5.6** ✅ Guardas equivalentes às do catálogo para o novo vínculo (todo vaso nomeado com ramos válidos; coração com câmaras e
   valvas listadas). **P**
+  ✅ **Entregue em 2026-10-12 (na `dev`):** guardas em `catalog.js` (relacionadas existentes e completadas nos dois sentidos, ficha completa nos vasos) e testes de integridade
+  (peças do pacote ↔ fichas, camadas por tipo, câmaras e valvas presentes).
 
 **Adiados desta fase:** irrigação em todos os músculos e a guarda “todo músculo tem ≥ 1 artéria” (**M15**, prioridade A); feixes
 neurovasculares (M17); linfonodos e ducto torácico (M18); quiz “o que irriga isto?” (M19); circulação fetal e anexos (**M21**,
@@ -481,12 +520,13 @@ partes, relações e nota clínica curta, com fonte), tour curto e quizzes de lo
 ramos. **Adiado de todos:** inervação autonômica detalhada (M22), irrigação e drenagem específicas (M23), subdivisões internas
 (M27), histologia e embriologia (M32).
 
-- [ ] **F6.0** **Spike de 1 dia, antes do primeiro sistema:** conferir no BodyParts3D (índice *part-of* e versão 4.0) e em fontes
+- [ ] **F6.0** *(parcial em 2026-10-12: genital feminino e pulmões resolvidos pelo HRA; faltam pleuras, mediastino, tireoide,
+  paratireoides, ossículos e cóclea)* **Spike de 1 dia, antes do primeiro sistema:** conferir no BodyParts3D (índice *part-of* e versão 4.0) e em fontes
   abertas compatíveis com CC BY-SA 2.1 JP (§9, item 3) o que falta em §5: **pulmões, pleuras, mediastino, útero, tubas, ovários,
   vagina, mama, tireoide, paratireoides, ossículos e cóclea**. Saída: decisão registrada em §10 para cada um (malha de outra
   fonte, esquema por código declarado, ou só ficha). **P**
 - [ ] **F6.1** **Respiratório** (22 e 27/10): traqueia e brônquios (malhas), cartilagens da laringe (os músculos e o diafragma já
-  existem no catálogo), pulmões e pleuras conforme o spike (esquemáticos se não houver malha), timo e mediastino simples. Pleuras e mediastino por compartimentos
+  existem no catálogo), **pulmões com malha real do HRA** (CC BY 4.0, ≈ 11 MB originais, decimar) e pleuras esquemáticas por código, timo e mediastino simples. Pleuras e mediastino por compartimentos
   → M26; mecânica da caixa torácica → M01. **G**
 - [ ] **F6.2** **Digestório** (29/10 e 03/11): esôfago, estômago, duodeno, jejuno, íleo, cólon, apêndice, reto, fígado e vesícula
   biliar, pâncreas, baço; glândulas salivares ligadas às da cabeça. Omentos e recessos → M24. **G**
@@ -496,9 +536,10 @@ ramos. **Adiado de todos:** inervação autonômica detalhada (M22), irrigação
 - [ ] **F6.4** **Urinário e genital masculino** (17/11): rins, ureteres, bexiga, uretra, próstata, vesículas seminais, testículo,
   epidídimo, pênis, e **canal inguinal com cremaster e cordão espermático** (por código); ducto deferente e glândulas
   bulbouretrais por código, esquemáticos. **G**
-- [ ] **F6.5** **Genital feminino** (17/11 e seguinte): útero, tubas, ovários, vagina, vulva e mama **conforme a decisão do spike
-  F6.0** — **sem malha no banco**; núcleo = esquema por código **declarado como tal na ficha** (ou fonte externa se a licença
-  permitir). Detalhes → M31. **G**
+- [ ] **F6.5** **Genital feminino** (17/11 e seguinte): **decidido em 2026-10-12 (spike F6.0): útero (fundo, corpo, colo e óstios),
+  tubas, ovários e mama com malha real do HRA (CC BY 4.0)**, posicionados por pontos de referência da pelve; **vagina, vulva e
+  ligamentos do útero por código, declarados esquemáticos na ficha**; botão opcional de pelve feminina (HRA). Se o registro no corpo
+  masculino ficar ruim, cai para esquema por código ([`docs/fonte-hra-atlas-de-referencia.md`](docs/fonte-hra-atlas-de-referencia.md) §4). Detalhes → M31. **M** (era G)
 - [ ] **F6.6** **Endócrino** (19/11): hipófise, pineal, hipotálamo e suprarrenais (malhas do banco); tireoide e paratireoides
   conforme o spike (por código, esquemáticas); pâncreas e gônadas ligados aos sistemas de origem; tour e quiz do sistema. **M**
 - [ ] **F6.7** **Urogenital integrado** (24/11, prática): períneo e pelve em corte sagital, relações entre bexiga, próstata, reto
@@ -584,7 +625,8 @@ Use a coluna “Observações” para anotar o que atrasou (ex.: geometria de ne
 4. **Modelo feminino e variações.** **Confirmado em 2026-10-12: o índice do BodyParts3D não tem útero, tubas, ovários, vagina,
    vulva nem mama.** A aula de genital feminino está no cronograma; decidir no spike F6.0 entre esquema por código declarado,
    outra fonte com licença compatível ou só ficha (F6.5). O mesmo vale para pulmões, pleuras, pericárdio, tireoide e ouvido
-   médio e interno (tabela de §5).
+   médio e interno (tabela de §5). **Atualização de 2026-10-12:** o HRA (CC BY 4.0) cobre útero, tubas, ovários, mama e pulmões ([`docs/fonte-hra-atlas-de-referencia.md`](docs/fonte-hra-atlas-de-referencia.md));
+   continuam sem fonte vagina, vulva, tireoide, paratireoides, pleuras, mediastino, pericárdio e ouvido médio e interno.
 5. **Direitos de texto e imagem.** Textos próprios a partir das referências; imagens de terceiros (radiologia, histologia)
    só de bancos com licença aberta, com crédito no dado.
 6. **Backend para contas/turmas.** Quebra o princípio offline-first. Preferir arquivos/URLs estáticos até haver necessidade real.
@@ -624,6 +666,8 @@ Use a coluna “Observações” para anotar o que atrasou (ex.: geometria de ne
 | 2026-10-12 | **F4.2 entregue na `dev` (sem publicar).** 24 músculos do quadril e da coxa com malha real (`catalog-leg-muscles.js`), 428 estruturas (228 músculos, 106 nervos). Nervos adiantados da F4.5, porque a guarda exige nervo para todo músculo: obturatório, glúteo superior, glúteo inferior, nervo do piriforme, nervo do quadrado femoral e gêmeo inferior e isquiático (até a fossa poplítea); o femoral foi prolongado pela coxa e o nervo do obturador interno ganhou o gêmeo superior. Segmentos medulares (Moore) e 4 grupos funcionais novos (quadril, coxa anterior, medial e posterior). **Decisões:** o articular do joelho fica de fora (sem malha: M14); o adutor mínimo é peça própria, com a divergência na nota; o isquiático termina no ápice da fossa poplítea e o tibial e o fibular comum entram na F4.5; glúteos, rotadores e demais músculos ficam só na região “Perna” (os nervos pélvicos, também em “Tronco”). **Medido:** nenhum nervo novo atravessa osso (obturatório 3,7 %; os trechos dentro da pelve); todos os ramos chegam a menos de 1,2 cm do músculo; carga no celular emulado **31,7–32,7 s** (antes 28,4 s). **Alerta:** os nervos custam ≈ 0,37 s cada no celular emulado; os ≈ 7 nervos longos da F4.5 (tibial, fibular comum, fibulares superficial e profundo, plantares), com dezenas de ramos, levariam o total a 35–38 s, no limite de 35 s: **fazer o M37 (carga dos nervos) antes da F4.5**. `docs/miotomos.md` e `docs/revisao-conteudo.md` regenerados. Testes: `npm test` verde, com um bloco novo no teste de fumaça. Baixados 3,2 MB do BodyParts3D. **Não feito:** músculos da perna e do pé (F4.3 e F4.4), os demais nervos (F4.5), articulações e ligamentos (F4.6), publicação. |
 | 2026-10-12 | **Desempenho do clique e renderização sob demanda (M37, parte feita).** Queixa: o atlas travava ao tocar numa estrutura. Medido com o novo `tools/perf_click.js` (celular emulado): com algo selecionado o quadro custava até 12× mais (79–89 ms contra 7 ms) porque todo o resto fica translúcido e cada material translúcido de dupla face era desenhado duas vezes. **Corrigido:** `forceSinglePass` (quadro com seleção: 9 ms), `warmShaders()` (o 1º clique compilava 4 programas PBR de uma vez), `syncList()` barata e, depois, **renderização sob demanda** (`invalidate()`, quadro de segurança a cada 2 s, passo de animação com o tempo real). Resultado no celular emulado: 60 → 0,33 quadros por segundo parado; nervos 20,2 → 13,3–14,0 s; tudo pronto 31,7–32,7 → **22,6–24,0 s** (a folga até o limite de 35 s volta a ≈ 11 s para a F4.5). Teste de fumaça novo para a renderização sob demanda (com teste de mutação). **Não medido:** aparelho real (a GPU por software só serve de régua relativa). |
 | 2026-10-12 | **Travamento do toque no iPhone 11 (vídeo do responsável).** O vídeo mostra o atlas girando bem e, ao tocar num músculo, ≈ 5 quadros parados e um pulo para a estrutura (sem o voo suave). Causa: a seleção transformava as outras estruturas em fantasmas PBR translúcidos empilhados, o que multiplica o preenchimento na GPU de blocos do iPhone. **Corrigido:** fantasmas viram Lambert baratos que escrevem profundidade e são ordenados do mais perto ao mais longe (4,4 → 18,3 quadros/s perto de uma seleção, na GPU por software), sem trocar `transparent` dos materiais PBR, e **resolução adaptativa** (≤ 1,25× em movimento, cheia em repouso). Carga no celular emulado: 21,8 s. Novos experimentos em `tools/perf_click.js` (`EXP2`, `PROFILE`, `APPJS`). **Não medido:** o iPhone de fato; o responsável confirma no aparelho. |
+| 2026-10-12 | **Ordem confirmada e fonte aberta para o aparelho genital feminino.** O responsável confirmou a inversão (F5 e F6 antes de F4.3 a F4.7) e aceitou esquemas por código declarados onde não houver malha; pediu para buscar fonte compatível para o aparelho genital feminino e **descartá-lo só se não houvesse fonte e o esquema por código fosse complexo demais**. **Resultado:** o Human Reference Atlas (HuBMAP, CC BY 4.0) tem útero (20 subestruturas), tubas, ovários, mama, placenta, pelve feminina e **pulmões** em GLB; **o aparelho genital feminino fica no escopo** (F6.5 cai de G para M), com vagina, vulva e ligamentos do útero por código esquemático; os pulmões da F6.1 também vêm do HRA. Z-Anatomy descartado como fonte principal. Calendário até a N2 no início do §6. **Não feito:** download (aguarda confirmação com nome, origem e tamanho); registro dos órgãos no corpo masculino (risco em [`docs/fonte-hra-atlas-de-referencia.md`](docs/fonte-hra-atlas-de-referencia.md) §4). **Ainda não recebido do responsável:** plano de ensino ou lista de estruturas por sistema, e o resultado do teste do toque no iPhone. |
+| 2026-10-12 | **F5 entregue na `dev` (sem publicar): coração e vasos principais.** Pacote `dist/anatomy-circ.js` (67 peças, 1,12 MB; baixados 5,8 MB do BodyParts3D com autorização), `src/catalog-circ.js` com 66 fichas (10 estruturas cardíacas, pericárdio esquemático, 31 artérias e 24 veias; o catálogo passa a 500 estruturas), camadas Coração, Artérias e Veias, tour da circulação (8 passos) e da circulação fetal (6 passos, texto), quiz com os novos tipos. **Decisões:** a parede dos dois ventrículos, única no banco, é dividida pela cavidade mais próxima; as cavidades (moldes de sangue) ficaram fora do pacote por brigarem com a face interna da parede; o pericárdio é um casco suavizado declarado como esquema; as coronárias, agregadas no banco, foram separadas nos ramos nomeados; cores: tronco e artérias pulmonares azulados, veias pulmonares avermelhadas. **Medido:** +0,66 s de carga no celular emulado. **Não feito:** vasos da perna e do pé, vasos das vísceras, irrigação por músculo (M15), placenta e cordão (M21), publicação; a nomenclatura das cúspides (TA × FMA) está dita nas fichas sem afirmar a correspondência. Detalhes: [`docs/circulatorio.md`](docs/circulatorio.md). |
 
 ## 11. Referências
 

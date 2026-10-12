@@ -69,7 +69,7 @@ real, com camadas, ficha básica (origem, trajeto, ramos principais, território
 | M18 | **Sistema linfático**: linfonodos regionais e ducto torácico (por código; o banco não tem) | F5.5 | Ausente; a ficha do sistema diz que não está coberto | Depois de M15 | G | B |
 | M19 | Quiz **“o que irriga isto?”** | F5.6 (restante) | Quiz de localizar os vasos | Depende de M15 | P | B |
 | M20 | Vasos de menor calibre: ramos distais, veias superficiais detalhadas, plexos venosos, seios venosos da dura-máter | F5.1 | Troncos e ramos principais | Seios venosos junto do encéfalo (F7.1) | G | C |
-| M21 | **Circulação fetal e anexos** (placenta, cordão, ducto arterioso, forame oval, ducto venoso): o BodyParts3D **não tem** nenhuma dessas estruturas; seria um **esquema por código**, declarado como tal | — (pedido da disciplina) | Tour e ficha de texto sobre a circulação fetal, sem modelo 3D | **Puxar se a avaliação cobrar**; a aula está no cronograma de 13/10 | M | A |
+| M21 | **Circulação fetal e anexos** (placenta, cordão, ducto arterioso, forame oval, ducto venoso): o BodyParts3D **não tem** nenhuma dessas estruturas; seria um **esquema por código**, declarado como tal | — (pedido da disciplina) | **Tour de texto da circulação fetal feito na F5** (6 passos), sem modelo 3D; falta o esquema da placenta e do cordão (a placenta existe no HRA, CC BY 4.0: `docs/fonte-hra-atlas-de-referencia.md`) | **Puxar se a avaliação cobrar**; a aula está no cronograma de 13/10 | M | A |
 
 ## 5. Vísceras e sistemas (origem: F6 e F7.4)
 
@@ -82,7 +82,7 @@ clínica curta, com fonte) e quizzes de localizar e escolher o nome. Ficam para 
 | M23 | **Irrigação e drenagem específicas** de cada víscera (artérias e veias de cada órgão, sistema porta) além dos troncos da F5 | F6 (cada sistema) | Troncos principais da F5 | Depende de M15 | G | B |
 | M24 | **Omentos, recessos e pregas do peritônio** (o banco tem os mesentérios e regiões do peritônio, a conferir) | F6.2 | Órgãos e mesentérios disponíveis, sem omentos nem recessos | Depois do digestório | M | B |
 | M25 | **Regiões e espaços clínicos**: triângulos do pescoço, fossas axilar e cubital, canal do carpo, trígono femoral, fossa poplítea, canal inguinal em detalhe | F6.5 antigo | Cremaster e cordão espermático entram no sistema genital masculino (F6.4) | Depois de M22 | M | B |
-| M26 | **Pleuras, seios do pericárdio e mediastino por compartimentos** | F6.1 | Pleura e pericárdio como envoltórios esquemáticos | Depois do respiratório | M | B |
+| M26 | **Pleuras, seios do pericárdio e mediastino por compartimentos** | F6.1 | Pericárdio como envoltório esquemático **feito na F5**; pleura com o respiratório | Depois do respiratório | M | B |
 | M27 | **Subdivisões internas** dos órgãos: segmentos pulmonares, hepáticos e renais, cálices e pirâmides (o banco tem segmentos pulmonares e setores do fígado) | F6 | Órgão inteiro | Quando houver folga | G | C |
 | M28 | **Ouvido médio e interno** em detalhe: ossículos, membrana timpânica, cóclea, labirinto, tuba auditiva (ausentes do banco; por código, esquemáticos) | F7.4 | Orelha externa com malha real; os músculos do ouvido médio já existem; ficha com esquema em texto | Depois dos sistemas do cronograma | G | B |
 | M29 | **Olho em detalhe**: túnicas, câmaras e aparelho lacrimal | F7.4 | Globo com córnea, cristalino, íris, corpo vítreo e retina (malhas do banco); a glândula lacrimal existe no banco e entra se couber | Depois dos sistemas do cronograma | M | B |

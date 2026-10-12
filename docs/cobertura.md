@@ -3,7 +3,8 @@
 Auditoria feita ao fechar a **F2** do roteiro (`project_context.md`): para cada músculo da Terminologia Anatômica (TA) da
 cabeça, do pescoço, do tronco e do membro superior, a entrada correspondente no catálogo — ou a exclusão, com o motivo.
 Os músculos e os nervos dos membros inferiores entram na F4 (§2b abaixo). Contagem atual: **228 músculos** (204 da cabeça ao membro
-superior e 24 do quadril e da coxa), **106 nervos e gânglios**, mais a medula espinal (428 estruturas no atlas).
+superior e 24 do quadril e da coxa), **106 nervos e gânglios**, mais a medula espinal. Com o coração e os vasos da F5 (66 fichas, ver
+[`circulatorio.md`](circulatorio.md)), o atlas tem **500 estruturas**.
 
 Articulações e ligamentos (F3) têm o registro próprio em [`articulacoes.md`](articulacoes.md).
 
