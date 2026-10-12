@@ -33,10 +33,11 @@ R = LR  # atalho
 BODY = {}
 
 
-def add(pid, cat, pattern, smooth=4, tris=9000, region="tronco", mirror=False, exclude=()):
+def add(pid, cat, pattern, smooth=4, tris=9000, region="tronco", mirror=False, exclude=(), pack="body"):
     """mirror=True: o banco só tem um lado; o conversor acrescenta a cópia espelhada (x → −x).
-    exclude: elementos a ignorar (o banco repete alguns como `…M`, cópia espelhada do outro lado que já existe)."""
-    BODY[pid] = dict(cat=cat, pattern=pattern, smooth=smooth, tris=tris, region=region, mirror=mirror, exclude=tuple(exclude))
+    exclude: elementos a ignorar (o banco repete alguns como `…M`, cópia espelhada do outro lado que já existe).
+    pack: pacote de dados em que a peça entra ('body' = dist/anatomy-body.js, 'leg' = dist/anatomy-leg.js, F4)."""
+    BODY[pid] = dict(cat=cat, pattern=pattern, smooth=smooth, tris=tris, region=region, mirror=mirror, exclude=tuple(exclude), pack=pack)
 
 
 # ───────── Ossos ─────────
@@ -193,6 +194,83 @@ for k, pat in [("intertransversarios_cerv_ant", r"set of anterior cervical inter
     add(k, "musculo", pat, 4, 4000, "cabeca")
 
 
+# ───────── F4 — membro inferior (pacote `leg`, dist/anatomy-leg.js) ─────────
+# Definidas todas de uma vez para o inventário (`python body_parts.py`) mostrar o que o banco tem e o que não tem; cada lote
+# só baixa e converte as suas peças (`fetch_body.py <ids>` e `convert_body.py --pack leg [--append] <ids>`).
+# O banco tem os dois lados em cada conceito (e também conceitos “left …/right …”); a união já dá o par.
+def addl(pid, cat, pattern, smooth=4, tris=7000, mirror=False, exclude=()):
+    add(pid, cat, pattern, smooth, tris, "membro_inf", mirror, exclude, "leg")
+
+
+# ossos (lote 0 = F4.1: o suficiente para provar o pacote, a região e a pele)
+for k, pat, tris in [("femur", r"femur", 7000), ("patela", r"patella", 1500), ("tibia", r"tibia", 7000), ("fibula", r"fibula", 5000)]:
+    addl(k, "osso", LR + pat, 4 if tris > 2000 else 3, tris)
+for k, pat in [("calcaneo", r"calcaneus"), ("talo", r"talus"), ("navicular", r"navicular bone of (?:left |right )?foot"),
+               ("cuboide", r"cuboid bone"), ("cuneiforme_medial", r"medial cuneiform bone"),
+               ("cuneiforme_intermedio", r"intermediate cuneiform bone"), ("cuneiforme_lateral", r"lateral cuneiform bone")]:
+    addl("tarso_" + k, "osso", LR + pat, 3, 2500 if k in ("calcaneo", "talo") else 1500)
+for i, o in enumerate(ORD[:5]):
+    addl(f"metatarsal_{i + 1}", "osso", LR + o + " metatarsal bone", 3, 1500)
+TOES = [("halux", "big toe"), ("segundo", "second toe"), ("terceiro", "third toe"), ("quarto", "fourth toe"), ("minimo", "little toe")]
+for kind, en in [("proximal", "proximal"), ("media", "middle"), ("distal", "distal")]:
+    for fi, fn in TOES:
+        if kind == "media" and fi == "halux":
+            continue
+        addl(f"falange_pe_{kind}_{fi}", "osso", en + " phalanx of " + LR + fn, 3, 900)
+addl("sesamoides_pe", "osso", r"sesamoid bone of foot", 3, 600)
+
+# pele inteira (com as pernas): o banco só tem a pele do corpo todo numa peça (FJ2810). O pacote `body` ficou com a parte de cima
+# (cintura para cima, com os braços); recortar as pernas e emendar deixaria frestas na cintura. Esta peça a substitui no
+# navegador quando o pacote do membro inferior carrega (`pele_corpo` fica sem uso no pacote body até ele ser regenerado)
+add("pele_inteira", "pele", r"skin", 6, 155000, "todos", pack="leg")
+
+# membrana interóssea da perna: o banco a tem como malha (a do antebraço foi gerada por código)
+addl("membrana_interossea_perna", "ligamento", LR + r"interosseous membrane of " + LR + "leg", 5, 6000)
+
+# quadril e coxa (lote A, F4.2)
+for k, pat, tris in [
+    ("gluteo_maximo", r"gluteus maximus", 9000), ("gluteo_medio", r"gluteus medius", 8000), ("gluteo_minimo", r"gluteus minimus", 7000),
+    ("tensor_fascia_lata", r"tensor fasciae latae", 5000), ("piriforme", r"piriformis", 4500),
+    ("gemeo_superior", r"gemellus superior", 3000), ("gemeo_inferior", r"gemellus inferior", 3000),
+    ("obturador_externo", r"obturator externus", 4500), ("quadrado_femoral", r"quadratus femoris", 4500),
+    ("sartorio", r"sartorius", 6000), ("reto_femoral", r"rectus femoris", 8000),
+    ("vasto_lateral", r"vastus lateralis", 9000), ("vasto_medial", r"vastus medialis", 8000), ("vasto_intermedio", r"vastus intermedius", 8000),
+    ("pectineo", r"pectineus", 4500), ("adutor_longo", r"adductor longus", 6000), ("adutor_curto", r"adductor brevis", 5000),
+    ("adutor_magno", r"adductor magnus", 11000), ("adutor_minimo", r"adductor minimus", 5000), ("gracil", r"gracilis", 5000),
+    ("biceps_femoral_longa", r"long head of biceps femoris", 7000), ("biceps_femoral_curta", r"short head of biceps femoris", 5000),
+    ("semitendineo", r"semitendinosus", 6000), ("semimembranaceo", r"semimembranosus", 7000),
+]:
+    addl(k, "musculo", LR + pat, 5, tris)
+
+# perna (lote B, F4.3)
+for k, pat, tris in [
+    ("tibial_anterior", r"tibialis anterior", 6000), ("extensor_longo_dedos", r"extensor digitorum longus", 7000),
+    ("extensor_longo_halux", r"extensor hallucis longus", 4500), ("fibular_terceiro", r"fibularis tertius", 3500),
+    ("fibular_longo", r"fibularis longus", 7000), ("fibular_curto", r"fibularis brevis", 4500),
+    ("gastrocnemio_medial", r"medial head of gastrocnemius", 6500), ("gastrocnemio_lateral", r"lateral head of gastrocnemius", 5500),
+    ("soleo", r"soleus", 8000), ("plantar", r"plantaris", 3500), ("popliteo", r"popliteus", 4000),
+    ("tibial_posterior", r"tibialis posterior", 8000), ("flexor_longo_dedos", r"flexor digitorum longus", 7000),
+    ("flexor_longo_halux", r"flexor hallucis longus", 6000),
+]:
+    addl(k, "musculo", LR + pat, 5, tris)
+
+# pé (lote C, F4.4): intrínsecos que o banco tem. Sem malha no banco: extensor curto dos dedos (só o do hálux existe) e os
+# interósseos dorsais (só os plantares) → M14 em docs/pontos-de-melhoria.md
+for k, pat, tris in [
+    ("extensor_curto_halux", r"extensor hallucis brevis", 3000), ("abdutor_halux", r"abductor hallucis", 4500),
+    ("flexor_curto_halux_medial", r"medial head of (?:left |right )?flexor hallucis brevis", 2500),
+    ("flexor_curto_halux_lateral", r"lateral head of (?:left |right )?flexor hallucis brevis", 2500),
+    ("adutor_halux_obliquo", r"oblique head of adductor hallucis", 3000), ("adutor_halux_transverso", r"transverse head of adductor hallucis", 3000),
+    ("abdutor_minimo_pe", r"abductor digiti minimi of (?:left |right )?foot", 4000),
+    ("flexor_curto_minimo_pe", r"flexor digiti minimi brevis of (?:left |right )?foot", 2500),
+    ("oponente_minimo_pe", r"opponens digiti minimi of (?:left |right )?foot", 1500),
+    ("flexor_curto_dedos", r"flexor digitorum brevis", 5000), ("quadrado_plantar", r"flexor accessorius", 3000),
+    ("lumbricais_pe", r"(?:first|second|third|fourth) lumbrical of (?:left |right )?foot", 3500),
+    ("interosseos_plantares", r"(?:first|second|third) plantar interosseous of (?:left |right )?foot", 4500),
+]:
+    addl(k, "musculo", LR + pat, 4, tris)
+
+
 def resolve():
     out = {}
     for pid, d in BODY.items():
@@ -202,13 +280,16 @@ def resolve():
 
 
 if __name__ == "__main__":
-    res = resolve()
+    import sys
+
+    pack = sys.argv[1] if len(sys.argv) > 1 else "body"
+    res = {k: v for k, v in resolve().items() if BODY[k]["pack"] == pack}
     miss = [k for k, v in res.items() if not v]
     tot = 0
     for k, v in res.items():
         sz = sum(idx[e][1] for e in v if e in idx)
         tot += sz
-    print("peças:", len(res), "sem elementos:", miss)
+    print("pacote:", pack, "· peças:", len(res), "· sem elementos:", miss)
     print("compactado total:", tot // 1000, "KB")
     big = sorted(((sum(idx[e][1] for e in v if e in idx), k, len(v)) for k, v in res.items()), reverse=True)[:12]
     print(big)

@@ -1,4 +1,5 @@
-"""Converte as peças do tronco e dos membros superiores em um pacote compacto (dist/anatomy-body.js)."""
+"""Converte as peças do corpo em pacotes compactos: tronco e membros superiores (dist/anatomy-body.js) e, com `--pack leg`,
+o membro inferior (dist/anatomy-leg.js, F4)."""
 import base64
 import gzip
 import json
@@ -66,31 +67,36 @@ def load_elems(elems):
     return np.concatenate(vs), np.concatenate(fs)
 
 
-def process_skin(elems):
+def process_skin(elems, full=False, target=110000):
+    """Pele do corpo. `full=False` (pacote body): corta na cintura e mantém os braços. `full=True` (F4.1, pacote leg): a pele
+    inteira, com as pernas — o recorte e a emenda de duas peças deixariam frestas na cintura, então a peça inteira substitui a
+    do pacote body no navegador assim que o pacote do membro inferior carrega."""
     v, f = load_elems(elems)
     v, f = weld(v, f)
     v = smooth(v, f, 14)
-    cx = v[f][:, :, 0].mean(1)
-    cy = v[f][:, :, 1].mean(1)
-    cut = 860.0
-    keep = (cy >= cut) | ((np.abs(cx) >= 195) & (cy >= 560))
-    f = f[keep]
-    used = np.unique(f)
-    remap = -np.ones(len(v), dtype=np.int64)
-    remap[used] = np.arange(len(used))
-    v, f = v[used], remap[f]
+    if not full:
+        cx = v[f][:, :, 0].mean(1)
+        cy = v[f][:, :, 1].mean(1)
+        cut = 860.0
+        keep = (cy >= cut) | ((np.abs(cx) >= 195) & (cy >= 560))
+        f = f[keep]
+        used = np.unique(f)
+        remap = -np.ones(len(v), dtype=np.int64)
+        remap[used] = np.arange(len(used))
+        v, f = v[used], remap[f]
     v, f = remove_small_components(v, f, 0.05)
-    # corte limpo da cintura/coxas: achata o que passou do plano (os braços ficam intactos)
-    low = (np.abs(v[:, 0]) < 195) & (v[:, 1] < cut)
-    v[low, 1] = cut
-    flat = low[f].all(axis=1)
-    f = f[~flat]
-    used = np.unique(f)
-    remap = -np.ones(len(v), dtype=np.int64)
-    remap[used] = np.arange(len(used))
-    v, f = v[used], remap[f]
+    if not full:
+        # corte limpo da cintura/coxas: achata o que passou do plano (os braços ficam intactos)
+        low = (np.abs(v[:, 0]) < 195) & (v[:, 1] < cut)
+        v[low, 1] = cut
+        flat = low[f].all(axis=1)
+        f = f[~flat]
+        used = np.unique(f)
+        remap = -np.ones(len(v), dtype=np.int64)
+        remap[used] = np.arange(len(used))
+        v, f = v[used], remap[f]
     # decimação quadrática global: preserva rosto e mãos (alta curvatura) e simplifica as áreas planas
-    v2, f2 = decimate_to(v, f, 110000)
+    v2, f2 = decimate_to(v, f, target)
     v2 = smooth(v2, f2, 2)
     return v2, f2
 
@@ -112,7 +118,13 @@ def load_pack(path):
 def main():
     res = json.load(open("body_elems.json"))
     args = sys.argv[1:]
-    # --append: converte só as peças pedidas e as acrescenta ao pacote atual (../dist/anatomy-body.js) sem tocar nas outras,
+    pack = "body"
+    if "--pack" in args:
+        i = args.index("--pack")
+        pack = args[i + 1]
+        del args[i:i + 2]
+    pack_js = f"anatomy-{pack}.js"
+    # --append: converte só as peças pedidas e as acrescenta ao pacote atual (../dist/anatomy-<pacote>.js) sem tocar nas outras,
     # que continuam idênticas byte a byte (regenerar tudo exigiria baixar ~60 MB e mudaria malhas já validadas)
     append = "--append" in args
     only = {a for a in args if not a.startswith("--")}
@@ -120,11 +132,13 @@ def main():
         sys.exit("--append exige os ids das peças")
     out = []
     for pid, spec in BODY.items():
-        if only and pid not in only:
+        if spec["pack"] != pack or (only and pid not in only):
             continue
         elems = res[pid]
         if pid == "pele_corpo":
             v, f = process_skin(elems)
+        elif pid == "pele_inteira":
+            v, f = process_skin(elems, full=True, target=spec["tris"])
         else:
             v, f = load_elems(elems)
             if spec["cat"] == "osso" and pid.startswith("costela"):
@@ -142,7 +156,7 @@ def main():
     blob = bytearray()
     manifest = []
     if append:
-        manifest, blob = load_pack("../dist/anatomy-body.js")
+        manifest, blob = load_pack(f"../dist/{pack_js}")
         dup = {m["id"] for m in manifest} & {p["id"] for p in out}
         if dup:
             sys.exit(f"já estão no pacote: {sorted(dup)}")
@@ -165,10 +179,10 @@ def main():
                              lo=lo.round(5).tolist(), hi=hi.round(5).tolist(), ov=o_v, oi=o_i, i32=bool(i32)))
     gz = gzip.compress(bytes(blob), 9)
     print("blob", len(blob) // 1024, "KB; gzip", len(gz) // 1024, "KB")
-    js = "window.__ANATOMY_BODY=" + json.dumps({"manifest": manifest, "data": base64.b64encode(gz).decode()}) + ";"
-    open("anatomy-body.js", "w").write(js)
-    print("anatomy-body.js", len(js) // 1024, "KB")
-    np.savez_compressed("parts_body.npz", **{p["id"] + "__v": p["v"] for p in out}, **{p["id"] + "__f": p["f"] for p in out})
+    js = f"window.__ANATOMY_{pack.upper()}=" + json.dumps({"manifest": manifest, "data": base64.b64encode(gz).decode()}) + ";"
+    open(pack_js, "w").write(js)
+    print(pack_js, len(js) // 1024, "KB")
+    np.savez_compressed(f"parts_{pack}.npz", **{p["id"] + "__v": p["v"] for p in out}, **{p["id"] + "__f": p["f"] for p in out})
 
 
 if __name__ == "__main__":

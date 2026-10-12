@@ -1,15 +1,22 @@
 import json, os, struct, sys, time, urllib.request, zlib
 from concurrent.futures import ThreadPoolExecutor
-from body_parts import resolve, idx
+from body_parts import resolve, idx, BODY
 URL = "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/isa_BP3D_4.0_obj_99.zip"
 os.makedirs("obj", exist_ok=True)
 res = resolve()
 miss = [k for k, v in res.items() if not v]
 print("sem elementos:", miss, flush=True)
 json.dump(res, open("body_elems.json", "w"))
+# --pack leg: peças do membro inferior (F4); sem a opção, as do pacote `body`
+args = sys.argv[1:]
+pack = "body"
+if "--pack" in args:
+    i = args.index("--pack")
+    pack = args[i + 1]
+    del args[i:i + 2]
 # com ids na linha de comando, baixa só os elementos dessas peças (ex.: ao acrescentar músculos com convert_body.py --append)
-only = set(sys.argv[1:])
-todo = sorted({e for k, v in res.items() if not only or k in only for e in v})
+only = set(args)
+todo = sorted({e for k, v in res.items() if BODY[k]["pack"] == pack and (not only or k in only) for e in v})
 print("elementos:", len(todo), "compactados:", sum(idx[e][1] for e in todo)//1000, "KB", flush=True)
 done = 0; total = 0; t0 = time.time()
 def fetch(e):
