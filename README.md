@@ -11,7 +11,7 @@ ligamentos, glândulas, cartilagens, ossos e dentes em camadas. Cada estrutura t
 músculos, **ação, origem, inserção, inervação e os movimentos que realizam**; nos nervos, **origem, trajeto, ramos, sensibilidade,
 lesão e os músculos que inervam**; nas articulações, **tipo, superfícies, cápsula, ligamentos, movimentos com amplitude e músculos,
 inervação e irrigação**; nos ossos, localização, articulações, estruturas e função; nos ligamentos, fixações e função.
-O **membro inferior** está em construção (F4, em lotes): por enquanto, o esqueleto (fêmur, patela, tíbia, fíbula, tarso, metatarsais, falanges e sesamoides), a pele inteira, os **24 músculos do quadril e da coxa** (glúteos, rotadores laterais, quadríceps, sartório, adutores e isquiotibiais) e os nervos que os inervam (femoral, obturatório, glúteos, isquiático…); a perna, o pé, os demais nervos e as articulações entram nos próximos lotes.
+O **membro inferior** (F4) tem o esqueleto (fêmur, patela, tíbia, fíbula, tarso, metatarsais, falanges e sesamoides), a pele inteira, os **24 músculos do quadril e da coxa**, os **14 da perna** (compartimentos anterior, lateral e posterior) e a membrana interóssea, os **13 do pé** que o banco tem (o extensor curto dos dedos e os interósseos dorsais não existem no banco) e os nervos que os inervam (femoral, obturatório, glúteos, isquiático, **tibial, fibulares comum, superficial e profundo, plantares medial e lateral**); as articulações e os ligamentos do quadril, do joelho e do tornozelo entram no próximo lote (F4.6).
 
 ## Como abrir
 
@@ -62,7 +62,7 @@ Use a branch **`dev`** para trabalhar sem publicar; quando estiver bom, junte na
 
 Para gerar o executável localmente: `npm run exe` (usa o compilador C# do próprio Windows; resultado em `release/`).
 
-## O que tem (672 estruturas: 228 músculos, 106 nervos, 52 ossos e cartilagens, 13 articulações, 28 ligamentos, 111 artérias, 56 veias, 14 estruturas do coração, 15 do sistema linfático e 28 do sistema respiratório, mais o pericárdio, as 2 pleuras, a placenta, o cordão umbilical, o ligamento arterial, a projeção do coração e os focos de ausculta e a medula espinal)
+## O que tem (706 estruturas: 255 músculos, 112 nervos, 52 ossos e cartilagens, 13 articulações, 29 ligamentos, 111 artérias, 56 veias, 14 estruturas do coração, 15 do sistema linfático e 28 do sistema respiratório, mais o pericárdio, as 2 pleuras, a placenta, o cordão umbilical, o ligamento arterial, a projeção do coração e os focos de ausculta e a medula espinal)
 
 | Camada | Conteúdo |
 | --- | --- |
@@ -281,6 +281,7 @@ id2`); as peças dele (`pack="leg"` em `addl(...)`) e o que o banco não tem est
 | `src/landmarks.js` | Pontos de referência ósseos usados por músculos profundos e ligamentos |
 | `src/proc.js` | Geração das malhas procedurais (fita, lâmina, anel, tubo; cápsula, lâmina entre ossos, colaterais e grupos via `joint-geo.js`) |
 | `src/catalog-leg-bones.js` | **Ossos do membro inferior** (pacote `dist/anatomy-leg.js`, carregado depois do corpo) |
+| `src/catalog-leg-muscles.js`, `src/catalog-leg-perna.js`, `src/catalog-leg-pe.js`, `src/catalog-nerves-leg.js` | **Músculos do quadril e da coxa, da perna e do pé**, a membrana interóssea da perna e os **nervos do membro inferior** (mesmo pacote) |
 | `src/catalog-resp.js`, `src/catalog-resp-airways.js` | **Pulmões** (a ficha diz que a malha é do Atlas de Referência Humano) e **vias aéreas** (traqueia, brônquios, pleuras, cartilagens da laringe); pacote `dist/anatomy-resp.js`, carregado depois do circulatório |
 | `src/catalog-circ.js`, `src/catalog-circ-ramos.js`, `src/hull-geo.js` | **Coração e vasos** (pacote `dist/anatomy-circ.js`, carregado depois do membro inferior); os vasos de menor calibre; o casco suavizado do pericárdio esquemático |
 | `src/catalog-circ-viscerais.js`, `src/catalog-circ-codigo.js` | Vasos do **encéfalo e das vísceras** (malhas do BodyParts3D) e vasos **por código** (carótida externa, veias da cabeça, ramos da ilíaca interna) |

@@ -137,7 +137,7 @@ Legenda — **Ganho**: o que melhora · **Esforço**: P (horas), M (1–2 dias),
 2. **Resolução adaptativa.** Em telas de toque, limitar a densidade de pixels a 1,5 (hoje 2) e baixar para 1 enquanto o
    dedo gira ou dá zoom, voltando ao soltar; sem antialiasing quando a densidade passa de 1,5 (os pixels já são
    pequenos). **Ganho:** −17 % parado, −37 % girando. **Esforço:** P. **Perde algo?** Nitidez levemente menor durante o gesto.
-3. **Nervos mais leves.** Em `nerve-geo.js`, um anel a cada 4 mm (hoje 2 mm) e 6 lados (hoje 8): de 314 mil para
+3. ✅ **Feito em 2026-10-15** (com a F4.3 a F4.5, que levaram a carga a 33,6–35,8 s): **Nervos mais leves.** Em `nerve-geo.js`, um anel a cada 4 mm (hoje 2 mm) e 6 lados (hoje 8): de 314 mil para
    ~120 mil triângulos, visualmente igual nesses diâmetros (1–3 mm). **Ganho:** ~−10 % por quadro e montagem dos
    nervos mais rápida. **Esforço:** P (conferir que ramos ainda chegam aos músculos). **Perde algo?** Não.
 4. **Nada de leitura de layout no laço.** `frame()` lê `offsetWidth`, `offsetHeight` e `clientWidth` a cada quadro, o

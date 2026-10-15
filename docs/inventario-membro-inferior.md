@@ -24,7 +24,8 @@ fora, quanto isso pesa e como o pacote de dados foi decidido. Gerado em 2026-10-
 | Pacote | Peças | Triângulos (teto) | `.js` |
 | --- | --- | --- | --- |
 | `anatomy-leg.js` após a F4.1 (ossos, sesamoides e pele inteira) | 32 | ≈ 54 mil + 155 mil | 1,85 MB (ossos ≈ 0,45 MB, pele ≈ 1,4 MB) |
-| `anatomy-leg.js` **hoje**, com o lote A (24 músculos) | 56 | + 122 mil (real) | **2,9 MB** (os músculos do lote A: 1,05 MB, contra 1,36 MB nos tetos) |
+| `anatomy-leg.js` com o lote A (24 músculos) | 56 | + 122 mil (real) | 2,9 MB (os músculos do lote A: 1,05 MB, contra 1,36 MB nos tetos) |
+| `anatomy-leg.js` **hoje**, com os lotes B e C (27 peças: 14 músculos da perna, a membrana interóssea e 13 peças de músculos do pé) | 83 | + ≈ 108 mil | **3,9 MB** (baixados 3,3 MB do BodyParts3D em 2026-10-15) |
 | Mais os músculos e a membrana interóssea (lotes A, B e C), nos tetos da tabela | +52 | +278 mil | **+≤ 2,5 MB** (o real tende a ficar abaixo: várias peças já têm menos triângulos que o teto) |
 | Pacote final previsto | 84 | ≈ 490 mil | **≈ 4,4 MB** no pior caso |
 
@@ -119,34 +120,34 @@ peça é baixada, convertida e catalogada; as do F4.1 e do lote A (F4.2) já est
 | F4.2 (lote A) | musculo | `vasto_intermedio` | vastus intermedius | 2 | 188 | 8 000 |
 | F4.2 (lote A) | musculo | `vasto_lateral` | vastus lateralis | 2 | 282 | 9 000 |
 | F4.2 (lote A) | musculo | `vasto_medial` | vastus medialis | 2 | 198 | 8 000 |
-| F4.3 (lote B) | ligamento | `membrana_interossea_perna` | interosseous membrane of leg | 2 | 279 | 6 000 |
-| F4.3 (lote B) | musculo | `extensor_longo_dedos` | extensor digitorum longus | 2 | 242 | 7 000 |
-| F4.3 (lote B) | musculo | `extensor_longo_halux` | extensor hallucis longus | 2 | 82 | 4 500 |
-| F4.3 (lote B) | musculo | `fibular_curto` | fibularis brevis | 2 | 90 | 4 500 |
-| F4.3 (lote B) | musculo | `fibular_longo` | fibularis longus | 2 | 189 | 7 000 |
-| F4.3 (lote B) | musculo | `fibular_terceiro` | fibularis tertius | 2 | 78 | 3 500 |
-| F4.3 (lote B) | musculo | `flexor_longo_dedos` | flexor digitorum longus | 2 | 199 | 7 000 |
-| F4.3 (lote B) | musculo | `flexor_longo_halux` | flexor hallucis longus | 2 | 126 | 6 000 |
-| F4.3 (lote B) | musculo | `gastrocnemio_lateral` | lateral head of gastrocnemius | 2 | 129 | 5 500 |
-| F4.3 (lote B) | musculo | `gastrocnemio_medial` | medial head of gastrocnemius | 2 | 163 | 6 500 |
-| F4.3 (lote B) | musculo | `plantar` | plantaris | 2 | 108 | 3 500 |
-| F4.3 (lote B) | musculo | `popliteo` | popliteus | 2 | 40 | 4 000 |
-| F4.3 (lote B) | musculo | `soleo` | soleus | 2 | 192 | 8 000 |
-| F4.3 (lote B) | musculo | `tibial_anterior` | tibialis anterior | 2 | 131 | 6 000 |
-| F4.3 (lote B) | musculo | `tibial_posterior` | tibialis posterior | 2 | 293 | 8 000 |
-| F4.4 (lote C) | musculo | `abdutor_halux` | abductor hallucis | 2 | 56 | 4 500 |
-| F4.4 (lote C) | musculo | `abdutor_minimo_pe` | abductor digiti minimi of foot | 2 | 73 | 4 000 |
-| F4.4 (lote C) | musculo | `adutor_halux_obliquo` | oblique head of adductor hallucis | 2 | 60 | 3 000 |
-| F4.4 (lote C) | musculo | `adutor_halux_transverso` | transverse head of adductor hallucis | 2 | 51 | 3 000 |
-| F4.4 (lote C) | musculo | `extensor_curto_halux` | extensor hallucis brevis | 2 | 67 | 3 000 |
-| F4.4 (lote C) | musculo | `flexor_curto_dedos` | flexor digitorum brevis | 2 | 145 | 5 000 |
-| F4.4 (lote C) | musculo | `flexor_curto_halux_lateral` | lateral head of flexor hallucis brevis | 2 | 107 | 2 500 |
-| F4.4 (lote C) | musculo | `flexor_curto_halux_medial` | medial head of flexor hallucis brevis | 2 | 59 | 2 500 |
-| F4.4 (lote C) | musculo | `flexor_curto_minimo_pe` | flexor digiti minimi brevis of foot | 2 | 43 | 2 500 |
-| F4.4 (lote C) | musculo | `interosseos_plantares` | first plantar interosseous of foot | 6 | 112 | 4 500 |
-| F4.4 (lote C) | musculo | `lumbricais_pe` | first lumbrical of foot | 8 | 100 | 3 500 |
-| F4.4 (lote C) | musculo | `oponente_minimo_pe` | opponens digiti minimi of foot | 2 | 13 | 1 500 |
-| F4.4 (lote C) | musculo | `quadrado_plantar` | flexor accessorius | 2 | 43 | 3 000 |
+| F4.3 (lote B, no pacote) | ligamento | `membrana_interossea_perna` | interosseous membrane of leg | 2 | 279 | 6 000 |
+| F4.3 (lote B, no pacote) | musculo | `extensor_longo_dedos` | extensor digitorum longus | 2 | 242 | 7 000 |
+| F4.3 (lote B, no pacote) | musculo | `extensor_longo_halux` | extensor hallucis longus | 2 | 82 | 4 500 |
+| F4.3 (lote B, no pacote) | musculo | `fibular_curto` | fibularis brevis | 2 | 90 | 4 500 |
+| F4.3 (lote B, no pacote) | musculo | `fibular_longo` | fibularis longus | 2 | 189 | 7 000 |
+| F4.3 (lote B, no pacote) | musculo | `fibular_terceiro` | fibularis tertius | 2 | 78 | 3 500 |
+| F4.3 (lote B, no pacote) | musculo | `flexor_longo_dedos` | flexor digitorum longus | 2 | 199 | 7 000 |
+| F4.3 (lote B, no pacote) | musculo | `flexor_longo_halux` | flexor hallucis longus | 2 | 126 | 6 000 |
+| F4.3 (lote B, no pacote) | musculo | `gastrocnemio_lateral` | lateral head of gastrocnemius | 2 | 129 | 5 500 |
+| F4.3 (lote B, no pacote) | musculo | `gastrocnemio_medial` | medial head of gastrocnemius | 2 | 163 | 6 500 |
+| F4.3 (lote B, no pacote) | musculo | `plantar` | plantaris | 2 | 108 | 3 500 |
+| F4.3 (lote B, no pacote) | musculo | `popliteo` | popliteus | 2 | 40 | 4 000 |
+| F4.3 (lote B, no pacote) | musculo | `soleo` | soleus | 2 | 192 | 8 000 |
+| F4.3 (lote B, no pacote) | musculo | `tibial_anterior` | tibialis anterior | 2 | 131 | 6 000 |
+| F4.3 (lote B, no pacote) | musculo | `tibial_posterior` | tibialis posterior | 2 | 293 | 8 000 |
+| F4.4 (lote C, no pacote) | musculo | `abdutor_halux` | abductor hallucis | 2 | 56 | 4 500 |
+| F4.4 (lote C, no pacote) | musculo | `abdutor_minimo_pe` | abductor digiti minimi of foot | 2 | 73 | 4 000 |
+| F4.4 (lote C, no pacote) | musculo | `adutor_halux_obliquo` | oblique head of adductor hallucis | 2 | 60 | 3 000 |
+| F4.4 (lote C, no pacote) | musculo | `adutor_halux_transverso` | transverse head of adductor hallucis | 2 | 51 | 3 000 |
+| F4.4 (lote C, no pacote) | musculo | `extensor_curto_halux` | extensor hallucis brevis | 2 | 67 | 3 000 |
+| F4.4 (lote C, no pacote) | musculo | `flexor_curto_dedos` | flexor digitorum brevis | 2 | 145 | 5 000 |
+| F4.4 (lote C, no pacote) | musculo | `flexor_curto_halux_lateral` | lateral head of flexor hallucis brevis | 2 | 107 | 2 500 |
+| F4.4 (lote C, no pacote) | musculo | `flexor_curto_halux_medial` | medial head of flexor hallucis brevis | 2 | 59 | 2 500 |
+| F4.4 (lote C, no pacote) | musculo | `flexor_curto_minimo_pe` | flexor digiti minimi brevis of foot | 2 | 43 | 2 500 |
+| F4.4 (lote C, no pacote) | musculo | `interosseos_plantares` | first plantar interosseous of foot | 6 | 112 | 4 500 |
+| F4.4 (lote C, no pacote) | musculo | `lumbricais_pe` | first lumbrical of foot | 8 | 100 | 3 500 |
+| F4.4 (lote C, no pacote) | musculo | `oponente_minimo_pe` | opponens digiti minimi of foot | 2 | 13 | 1 500 |
+| F4.4 (lote C, no pacote) | musculo | `quadrado_plantar` | flexor accessorius | 2 | 43 | 3 000 |
 
 Totais por lote (peças · zip em KB · teto de triângulos): **F4.1 (no pacote)** 32 · 5049 · 208 700; **F4.2 (lote A)** 24 · 3193 · 149 000; **F4.3 (lote B)** 15 · 2341 · 87 000; **F4.4 (lote C)** 13 · 929 · 42 500.
 
@@ -169,3 +170,9 @@ Buscado por nome no índice em 2026-10-12. Cada item aponta o ponto de melhoria 
 | Nervos | **nenhum** do membro inferior | F4.5 (pontos medidos no modelo) |
 
 Lembrete de licença: as malhas derivadas (`anatomy-leg.js`) seguem a CC BY-SA 2.1 Japão e a atribuição visível, como as demais.
+
+## 5. Lotes B e C entregues (2026-10-15)
+
+As 28 peças dos lotes B e C foram baixadas (66 elementos, 3,3 MB) e convertidas com `fetch_body.py --pack leg <ids>` e `convert_body.py --pack leg --append <ids>`; o pacote `anatomy-leg.js` passou de 2,9 para 3,9 MB. Fichas em `src/catalog-leg-perna.js` e `src/catalog-leg-pe.js`; nervos em `src/catalog-nerves-leg.js`.
+
+**Carga no celular emulado** (`node tools/perf_mobile.js`, duas execuções cada): antes dos lotes B e C, 29 s; com eles e os 6 nervos novos, **33,6 e 35,8 s**, na casa do limite de 35 s. Por isso a primeira medida foi a “Nervos mais leves” do item 3 de `otimizacao-mobile.md` (um anel a cada 4 mm em vez de 2 mm e 6 lados em vez de 8, nos nervos e nas áreas de clique): `nervesMs` caiu de 17–19 s para **13,5 s** e `totalReadyMs` para **29,6 e 29,7 s**. Os 6 nervos novos ficam a 0 a 1 % dentro de osso e cada ramo termina a menos de 0,4 cm do músculo.

@@ -2,9 +2,9 @@
 
 Auditoria feita ao fechar a **F2** do roteiro (`project_context.md`): para cada músculo da Terminologia Anatômica (TA) da
 cabeça, do pescoço, do tronco e do membro superior, a entrada correspondente no catálogo — ou a exclusão, com o motivo.
-Os músculos e os nervos dos membros inferiores entram na F4 (§2b abaixo). Contagem atual: **228 músculos** (204 da cabeça ao membro
-superior e 24 do quadril e da coxa), **106 nervos e gânglios**, mais a medula espinal. Com o coração, os vasos, os linfáticos e a circulação fetal da F5 (202 estruturas, ver
-[`circulatorio.md`](circulatorio.md)), o atlas tem **672 estruturas** (com o respiratório).
+Os músculos e os nervos dos membros inferiores estão na §2b abaixo. Contagem atual: **255 músculos** (204 da cabeça ao membro
+superior, 24 do quadril e da coxa, 14 da perna e 13 do pé), **112 nervos e gânglios**, mais a medula espinal. Com o coração, os vasos, os linfáticos e a circulação fetal da F5 (202 estruturas, ver
+[`circulatorio.md`](circulatorio.md)), o atlas tem **706 estruturas** (com o respiratório e a perna e o pé).
 
 Articulações e ligamentos (F3) têm o registro próprio em [`articulacoes.md`](articulacoes.md).
 
@@ -79,7 +79,7 @@ separada no BodyParts3D ou com inervação própria é uma entrada.
 | Nervo timpânico (de Jacobson), petroso menor, nervo do canal pterigóideo, petroso profundo, ramo auricular do vago, nervo meníngeo | Descritos na ficha do nervo que os origina (IX, VII, X); fios curtos demais para o modelo |
 | Ramos cutâneos laterais e anteriores dos intercostais, nervos clúnios superiores | Descritos nas fichas de origem (intercostais, ramos posteriores) |
 
-## 2b. Membro inferior (F4, em andamento)
+## 2b. Membro inferior (F4)
 
 | Grupo | Situação |
 | --- | --- |
@@ -88,7 +88,12 @@ separada no BodyParts3D ou com inervação própria é uma entrada.
 | Coxa medial | ✅ **F4.2**: adutores longo, curto, magno e mínimo (o mínimo é peça à parte no banco; Moore o inclui no magno) e grácil |
 | Coxa posterior | ✅ **F4.2**: bíceps femoral (cabeças longa e curta), semitendíneo e semimembranáceo |
 | Nervos do quadril e da coxa | ✅ **F4.2**: obturatório, glúteos superior e inferior, nervos do piriforme e do quadrado femoral (com o gêmeo inferior), isquiático (até a fossa poplítea), femoral prolongado pela coxa e gêmeo superior no nervo do obturador interno |
-| Perna e pé | ⬜ F4.3 e F4.4 |
+| Perna: compartimento anterior | ✅ **F4.3**: tibial anterior, extensor longo dos dedos, extensor longo do hálux, fibular terceiro |
+| Perna: compartimento lateral | ✅ **F4.3**: fibular longo e fibular curto |
+| Perna: compartimento posterior | ✅ **F4.3**: gastrocnêmio (cabeças medial e lateral), sóleo, plantar, poplíteo, tibial posterior, flexor longo dos dedos e flexor longo do hálux; **membrana interóssea da perna** |
+| Pé: dorso | ✅ **F4.4**: extensor curto do hálux (o extensor curto dos dedos não existe no banco) |
+| Pé: planta | ✅ **F4.4**: abdutor do hálux, flexor curto dos dedos, abdutor do dedo mínimo, quadrado plantar, lumbricais (4), flexor curto do hálux (cabeças medial e lateral), adutor do hálux (cabeças oblíqua e transversa), flexor curto do dedo mínimo, oponente do dedo mínimo e interósseos plantares (3) |
+| Nervos da perna e do pé | ✅ **F4.5**: tibial, fibular comum, fibulares superficial e profundo, plantares medial e lateral, com os ramos musculares e os segmentos medulares |
 
 Exclusões e lacunas do banco (inventário completo em [`inventario-membro-inferior.md`](inventario-membro-inferior.md)):
 

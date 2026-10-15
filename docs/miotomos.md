@@ -1,6 +1,6 @@
 # Miótomos: segmento medular → músculos e nervos
 
-> Gerado por `node tools/gen_miotomos.js` a partir do campo `segmentos` do catálogo (`src/segments.js`). Cumpre o item **F2.14**. 156 músculos e 64 nervos/estruturas têm segmentos; 72 músculos são inervados só por nervos cranianos (face, língua, palato, faringe, laringe, olho, ouvido médio) e não têm segmento.
+> Gerado por `node tools/gen_miotomos.js` a partir do campo `segmentos` do catálogo (`src/segments.js`). Cumpre o item **F2.14**. 183 músculos e 70 nervos/estruturas têm segmentos; 72 músculos são inervados só por nervos cranianos (face, língua, palato, faringe, laringe, olho, ouvido médio) e não têm segmento.
 
 **Como ler.** O miótomo de um segmento é o conjunto de músculos que recebem fibras dele. Os valores seguem Moore, Dalley & Agur (8ª ed.) e o Gray’s Anatomy (42ª ed.), com Kendall et al. para os miótomos clínicos; **as fontes divergem em vários músculos** (a nota de cada ficha diz quais). Os músculos próprios do dorso e os curtos da coluna (marcados com †) são inervados por ramos posteriores em vários níveis: o intervalo é o da região, e não um miótomo clínico. Os músculos marcados com ‡ (ECM e trapézio) têm segmentos só proprioceptivos: a parte motora é do nervo acessório (XI).
 
@@ -146,33 +146,33 @@
 
 ### L4
 
-- **Músculos (16):** Quadrado do lombo; Ilíaco; Glúteo médio; Glúteo mínimo; Tensor da fáscia lata; Gêmeo inferior; Obturador externo; Quadrado femoral; Reto femoral; Vasto lateral; Vasto medial; Vasto intermédio; Adutor longo; Adutor curto; Adutor magno; Adutor mínimo
+- **Músculos (19):** Quadrado do lombo; Ilíaco; Glúteo médio; Glúteo mínimo; Tensor da fáscia lata; Gêmeo inferior; Obturador externo; Quadrado femoral; Reto femoral; Vasto lateral; Vasto medial; Vasto intermédio; Adutor longo; Adutor curto; Adutor magno; Adutor mínimo; Tibial anterior; Poplíteo; Tibial posterior
 - **Também, por inervação regional (7):** Iliocostal lombar †; Longuíssimo torácico †; Rotadores lombares †; Interespinais lombares †; Intertransversários lombares mediais †; Intertransversários lombares laterais †; Multífido †
-- **Nervos e estruturas (10):** Ramos posteriores dos nervos espinais; Plexo lombar — ramos musculares; Nervo femoral; Medula espinal; Nervos espinais lombares (L1–L5); Cauda equina e filo terminal; Nervo obturatório; Nervo glúteo superior; Nervo para o quadrado femoral e gêmeo inferior; Nervo isquiático (ciático)
+- **Nervos e estruturas (14):** Ramos posteriores dos nervos espinais; Plexo lombar — ramos musculares; Nervo femoral; Medula espinal; Nervos espinais lombares (L1–L5); Cauda equina e filo terminal; Nervo obturatório; Nervo glúteo superior; Nervo para o quadrado femoral e gêmeo inferior; Nervo isquiático (ciático); Nervo tibial; Nervo fibular comum; Nervo fibular profundo; Nervo plantar medial
 
 ### L5
 
-- **Músculos (11):** Obturador interno; Glúteo máximo; Glúteo médio; Glúteo mínimo; Tensor da fáscia lata; Gêmeo superior; Gêmeo inferior; Quadrado femoral; Bíceps femoral — cabeça curta; Semitendíneo; Semimembranáceo
+- **Músculos (20):** Obturador interno; Glúteo máximo; Glúteo médio; Glúteo mínimo; Tensor da fáscia lata; Gêmeo superior; Gêmeo inferior; Quadrado femoral; Bíceps femoral — cabeça curta; Semitendíneo; Semimembranáceo; Tibial anterior; Extensor longo dos dedos; Extensor longo do hálux; Fibular terceiro; Fibular longo; Fibular curto; Poplíteo; Tibial posterior; Extensor curto do hálux
 - **Também, por inervação regional (6):** Iliocostal lombar †; Longuíssimo torácico †; Rotadores lombares †; Interespinais lombares †; Intertransversários lombares mediais †; Multífido †
-- **Nervos e estruturas (9):** Ramos posteriores dos nervos espinais; Nervo para o obturador interno e gêmeo superior; Medula espinal; Nervos espinais lombares (L1–L5); Cauda equina e filo terminal; Nervo glúteo superior; Nervo glúteo inferior; Nervo para o quadrado femoral e gêmeo inferior; Nervo isquiático (ciático)
+- **Nervos e estruturas (14):** Ramos posteriores dos nervos espinais; Nervo para o obturador interno e gêmeo superior; Medula espinal; Nervos espinais lombares (L1–L5); Cauda equina e filo terminal; Nervo glúteo superior; Nervo glúteo inferior; Nervo para o quadrado femoral e gêmeo inferior; Nervo isquiático (ciático); Nervo tibial; Nervo fibular comum; Nervo fibular superficial; Nervo fibular profundo; Nervo plantar medial
 
 ### S1
 
-- **Músculos (13):** Obturador interno; Glúteo máximo; Glúteo médio; Glúteo mínimo; Tensor da fáscia lata; Piriforme; Gêmeo superior; Gêmeo inferior; Quadrado femoral; Bíceps femoral — cabeça longa; Bíceps femoral — cabeça curta; Semitendíneo; Semimembranáceo
+- **Músculos (26):** Obturador interno; Glúteo máximo; Glúteo médio; Glúteo mínimo; Tensor da fáscia lata; Piriforme; Gêmeo superior; Gêmeo inferior; Quadrado femoral; Bíceps femoral — cabeça longa; Bíceps femoral — cabeça curta; Semitendíneo; Semimembranáceo; Extensor longo dos dedos; Extensor longo do hálux; Fibular terceiro; Fibular longo; Fibular curto; Gastrocnêmio — cabeça medial; Gastrocnêmio — cabeça lateral; Sóleo; Plantar; Poplíteo; Extensor curto do hálux; Flexor curto do hálux — cabeça medial; Flexor curto do hálux — cabeça lateral
 - **Também, por inervação regional (1):** Multífido †
-- **Nervos e estruturas (9):** Nervo para o obturador interno e gêmeo superior; Medula espinal; Nervos espinais sacrais e coccígeo (S1–S5 e Co1); Cauda equina e filo terminal; Nervo glúteo superior; Nervo glúteo inferior; Nervo para o piriforme; Nervo para o quadrado femoral e gêmeo inferior; Nervo isquiático (ciático)
+- **Nervos e estruturas (15):** Nervo para o obturador interno e gêmeo superior; Medula espinal; Nervos espinais sacrais e coccígeo (S1–S5 e Co1); Cauda equina e filo terminal; Nervo glúteo superior; Nervo glúteo inferior; Nervo para o piriforme; Nervo para o quadrado femoral e gêmeo inferior; Nervo isquiático (ciático); Nervo tibial; Nervo fibular comum; Nervo fibular superficial; Nervo fibular profundo; Nervo plantar medial; Nervo plantar lateral
 
 ### S2
 
-- **Músculos (13):** Esfíncter externo do ânus; Obturador interno; Bulboesponjoso; Isquiocavernoso; Transverso superficial do períneo; Transverso profundo do períneo; Esfíncter externo da uretra; Glúteo máximo; Piriforme; Bíceps femoral — cabeça longa; Bíceps femoral — cabeça curta; Semitendíneo; Semimembranáceo
+- **Músculos (33):** Esfíncter externo do ânus; Obturador interno; Bulboesponjoso; Isquiocavernoso; Transverso superficial do períneo; Transverso profundo do períneo; Esfíncter externo da uretra; Glúteo máximo; Piriforme; Bíceps femoral — cabeça longa; Bíceps femoral — cabeça curta; Semitendíneo; Semimembranáceo; Fibular longo; Fibular curto; Gastrocnêmio — cabeça medial; Gastrocnêmio — cabeça lateral; Sóleo; Plantar; Flexor longo dos dedos; Flexor longo do hálux; Abdutor do hálux; Flexor curto dos dedos; Abdutor do dedo mínimo do pé; Quadrado plantar; Lumbricais do pé (4); Flexor curto do hálux — cabeça medial; Flexor curto do hálux — cabeça lateral; Adutor do hálux — cabeça oblíqua; Adutor do hálux — cabeça transversa; Flexor curto do dedo mínimo do pé; Oponente do dedo mínimo do pé; Interósseos plantares do pé (3)
 - **Também, por inervação regional (1):** Multífido †
-- **Nervos e estruturas (8):** Nervo pudendo; Nervo para o obturador interno e gêmeo superior; Medula espinal; Nervos espinais sacrais e coccígeo (S1–S5 e Co1); Cauda equina e filo terminal; Nervo glúteo inferior; Nervo para o piriforme; Nervo isquiático (ciático)
+- **Nervos e estruturas (13):** Nervo pudendo; Nervo para o obturador interno e gêmeo superior; Medula espinal; Nervos espinais sacrais e coccígeo (S1–S5 e Co1); Cauda equina e filo terminal; Nervo glúteo inferior; Nervo para o piriforme; Nervo isquiático (ciático); Nervo tibial; Nervo fibular comum; Nervo fibular superficial; Nervo plantar medial; Nervo plantar lateral
 
 ### S3
 
-- **Músculos (10):** Pubococcígeo; Iliococcígeo; Esfíncter externo do ânus; Puborretal; Bulboesponjoso; Isquiocavernoso; Transverso superficial do períneo; Transverso profundo do períneo; Esfíncter externo da uretra; Bíceps femoral — cabeça longa
+- **Músculos (22):** Pubococcígeo; Iliococcígeo; Esfíncter externo do ânus; Puborretal; Bulboesponjoso; Isquiocavernoso; Transverso superficial do períneo; Transverso profundo do períneo; Esfíncter externo da uretra; Bíceps femoral — cabeça longa; Flexor longo dos dedos; Flexor longo do hálux; Abdutor do hálux; Flexor curto dos dedos; Abdutor do dedo mínimo do pé; Quadrado plantar; Lumbricais do pé (4); Adutor do hálux — cabeça oblíqua; Adutor do hálux — cabeça transversa; Flexor curto do dedo mínimo do pé; Oponente do dedo mínimo do pé; Interósseos plantares do pé (3)
 - **Também, por inervação regional (1):** Multífido †
-- **Nervos e estruturas (6):** Nervos do levantador do ânus e do coccígeo (S3–S5); Nervo pudendo; Medula espinal; Nervos espinais sacrais e coccígeo (S1–S5 e Co1); Cauda equina e filo terminal; Nervo isquiático (ciático)
+- **Nervos e estruturas (9):** Nervos do levantador do ânus e do coccígeo (S3–S5); Nervo pudendo; Medula espinal; Nervos espinais sacrais e coccígeo (S1–S5 e Co1); Cauda equina e filo terminal; Nervo isquiático (ciático); Nervo tibial; Nervo plantar medial; Nervo plantar lateral
 
 ### S4
 
@@ -349,6 +349,33 @@
 | `biceps_femoral_curta` | Bíceps femoral — cabeça curta | L5–S2 |
 | `semitendineo` | Semitendíneo | L5–S2 |
 | `semimembranaceo` | Semimembranáceo | L5–S2 |
+| `tibial_anterior` | Tibial anterior | L4–L5 |
+| `extensor_longo_dedos` | Extensor longo dos dedos | L5–S1 |
+| `extensor_longo_halux` | Extensor longo do hálux | L5–S1 |
+| `fibular_terceiro` | Fibular terceiro | L5–S1 |
+| `fibular_longo` | Fibular longo | L5–S2 |
+| `fibular_curto` | Fibular curto | L5–S2 |
+| `gastrocnemio_medial` | Gastrocnêmio — cabeça medial | S1–S2 |
+| `gastrocnemio_lateral` | Gastrocnêmio — cabeça lateral | S1–S2 |
+| `soleo` | Sóleo | S1–S2 |
+| `plantar` | Plantar | S1–S2 |
+| `popliteo` | Poplíteo | L4–S1 |
+| `tibial_posterior` | Tibial posterior | L4–L5 |
+| `flexor_longo_dedos` | Flexor longo dos dedos | S2–S3 |
+| `flexor_longo_halux` | Flexor longo do hálux | S2–S3 |
+| `extensor_curto_halux` | Extensor curto do hálux | L5–S1 |
+| `abdutor_halux` | Abdutor do hálux | S2–S3 |
+| `flexor_curto_dedos` | Flexor curto dos dedos | S2–S3 |
+| `abdutor_minimo_pe` | Abdutor do dedo mínimo do pé | S2–S3 |
+| `quadrado_plantar` | Quadrado plantar | S2–S3 |
+| `lumbricais_pe` | Lumbricais do pé (4) | S2–S3 |
+| `flexor_curto_halux_medial` | Flexor curto do hálux — cabeça medial | S1–S2 |
+| `flexor_curto_halux_lateral` | Flexor curto do hálux — cabeça lateral | S1–S2 |
+| `adutor_halux_obliquo` | Adutor do hálux — cabeça oblíqua | S2–S3 |
+| `adutor_halux_transverso` | Adutor do hálux — cabeça transversa | S2–S3 |
+| `flexor_curto_minimo_pe` | Flexor curto do dedo mínimo do pé | S2–S3 |
+| `oponente_minimo_pe` | Oponente do dedo mínimo do pé | S2–S3 |
+| `interosseos_plantares` | Interósseos plantares do pé (3) | S2–S3 |
 
 ## 3. Músculos sem segmento medular (72)
 
