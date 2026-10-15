@@ -416,6 +416,42 @@ for k, pat, tris, reg in _NOVAS_VEIA:
     addc("veia_" + k, "veia", LR + "(?:" + pat + ")", 4, tris, region=reg, maxel=12)
 
 
+# ───────── F5.2 — encéfalo, vísceras e veias que faltavam (mesmo pacote `circ`) ─────────
+# Artérias do polígono de Willis e da órbita; ramos do tronco celíaco e das mesentéricas; suprarrenais, bronquiais e esofágicas; veia porta
+# e seus afluentes; veias hepáticas; veias da pelve, da mão e do pé que o banco tem. A carótida externa e seus ramos, as glúteas, a
+# obturatória e a pudenda interna (artérias) o banco **não** tem: ficam por código (src/catalog-circ-codigo.js).
+_NOVAS2_ART = [
+    ("oftalmica", r"ophthalmic artery", 1500, "cabeca", 8), ("basilar", r"basilar artery", 600, "cabeca", 8),
+    ("cerebral_anterior", r"anterior cerebral artery", 600, "cabeca", 8),
+    ("cerebral_media", r"middle cerebral artery|insular part of (?:left |right )?middle cerebral artery", 3000, "cabeca", 12),
+    ("cerebral_posterior", r"(?:pre|post)communicating part of (?:left |right )?posterior cerebral artery", 800, "cabeca", 12),
+    ("comunicante_anterior", r"anterior communicating artery", 300, "cabeca", 8), ("comunicante_posterior", r"posterior communicating artery", 400, "cabeca", 8),
+    ("cerebelar_superior", r"superior cerebellar artery", 600, "cabeca", 8), ("cerebelar_inferior_anterior", r"anterior inferior cerebellar artery", 800, "cabeca", 8),
+    ("hepatica_comum", r"common hepatic artery", 400, "tronco", 8), ("hepatica_propria", r"hepatic artery proper", 400, "tronco", 8),
+    ("gastroduodenal", r"gastroduodenal artery|subdivision of gastroduodenal artery", 1500, "tronco", 8),
+    ("esplenica", r"splenic artery", 2500, "tronco", 8), ("gastrica_esquerda", r"left gastric artery", 800, "tronco", 8), ("gastrica_direita", r"right gastric artery", 400, "tronco", 8),
+    ("pancreaticoduodenais", r"(?:anterior |posterior )?(?:superior|inferior) pancreaticoduodenal artery", 1500, "tronco", 12),
+    ("ileocolica", r"ileocolic artery", 300, "tronco", 8), ("colica_media", r"middle colic artery", 900, "tronco", 8), ("colica_esquerda", r"left colic artery", 300, "tronco", 8),
+    ("apendicular", r"appendicular artery", 600, "tronco", 8), ("sigmoideas", r"sigmoid artery", 900, "tronco", 8), ("retal_superior", r"superior rectal artery", 400, "tronco", 8),
+    ("suprarrenais", r"(?:middle|inferior) suprarenal artery", 1500, "tronco", 8), ("bronquial", r"bronchial artery", 800, "tronco", 8),
+    ("esofagicas", r"esophageal artery|set of oesophageal branches of thoracic aorta", 1200, "tronco", 8),
+]
+for k, pat, tris, reg, mx in _NOVAS2_ART:
+    addc("arteria_" + k, "arteria", LR + "(?:" + pat + ")", 4, tris, region=reg, maxel=mx)
+_NOVAS2_VEIA = [
+    ("porta", r"hepatic portal vein|left portal vein|right portal vein", 4000, "tronco", 8), ("esplenica", r"splenic vein", 700, "tronco", 8),
+    ("mesenterica_superior", r"superior mesenteric vein", 500, "tronco", 8), ("mesenterica_inferior", r"inferior mesenteric vein", 700, "tronco", 8),
+    ("hepaticas", r"hepatic vein|right hepatic vein|middle hepatic vein|left hepatic vein", 3500, "tronco", 8), ("suprarrenal", r"suprarenal vein", 800, "tronco", 8),
+    ("lombar_ascendente", r"ascending lumbar vein", 3000, "tronco", 8), ("sacral_mediana", r"median sacral vein", 1800, "tronco", 8),
+    ("gluteas", r"(?:superior|inferior) gluteal vein", 4000, "tronco", 8), ("pudenda_interna", r"internal pudendal vein", 3000, "tronco", 8),
+    ("obturatoria", r"obturator vein", 2500, "tronco", 8), ("radial", r"radial vein", 3000, "membro_sup", 8),
+    ("rede_dorsal_mao", r"dorsal venous network of hand", 3000, "membro_sup", 8), ("arco_dorsal_pe", r"dorsal venous arch of foot", 2000, "membro_inf", 8),
+    ("hemiazigo_acessoria", r"accessory hemiazygos vein", 2000, "tronco", 8), ("toracica_interna", r"internal thoracic vein", 1500, "tronco", 8),
+]
+for k, pat, tris, reg, mx in _NOVAS2_VEIA:
+    addc("veia_" + k, "veia", LR + "(?:" + pat + ")", 4, tris, region=reg, maxel=mx)
+
+
 # ───────── F6.1 — respiratório (pacote `resp`, dist/anatomy-resp.js) ─────────
 # Traqueia, brônquios principais e a árvore brônquica por segmento broncopulmonar, mais as cartilagens da laringe, do BodyParts3D.
 # Os pulmões não existem no banco: vêm do Atlas de Referência Humano (`convert_hra.py`, mesmo pacote). As 20 árvores segmentares
