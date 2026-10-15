@@ -62,7 +62,7 @@ Use a branch **`dev`** para trabalhar sem publicar; quando estiver bom, junte na
 
 Para gerar o executável localmente: `npm run exe` (usa o compilador C# do próprio Windows; resultado em `release/`).
 
-## O que tem (536 estruturas: 228 músculos, 106 nervos, 52 ossos e cartilagens, 13 articulações, 28 ligamentos, 31 artérias, 24 veias, 10 estruturas do coração e 28 do sistema respiratório, mais o pericárdio, as 2 pleuras e a medula espinal)
+## O que tem (604 estruturas: 228 músculos, 106 nervos, 52 ossos e cartilagens, 13 articulações, 28 ligamentos, 70 artérias, 37 veias, 14 estruturas do coração, 9 do sistema linfático e 28 do sistema respiratório, mais o pericárdio, as 2 pleuras, a placenta, o cordão umbilical, o ligamento arterial e a medula espinal)
 
 | Camada | Conteúdo |
 | --- | --- |
@@ -79,7 +79,9 @@ Para gerar o executável localmente: `npm run exe` (usa o compilador C# do próp
 | Nervos | 106 nervos e gânglios, mais a **medula espinal**, ligados a **todos** os 228 músculos (veja abaixo) |
 | Coração (F5) | átrios, ventrículos, as 4 valvas, músculos papilares e o **pericárdio** (envoltório esquemático, declarado na ficha) |
 | Sistema respiratório (F6.1) | **pulmões** (5 lobos, malhas do Atlas de Referência Humano, CC BY 4.0, ajustadas ao tórax), **traqueia, brônquios principais e os 20 segmentares** (B1 a B10), **pleuras** (esquema) e as 6 **cartilagens da laringe** ([`docs/respiratorio.md`](docs/respiratorio.md)) |
-| Artérias e Veias (F5) | coronárias e veias do coração, aorta (ascendente, arco, torácica e abdominal), tronco e artérias pulmonares, veias pulmonares, cavas, ázigo, ramos do arco, carótidas, vertebral, subclávia, torácica interna, axilar, braquial, radial e ulnar, ramos da aorta abdominal, ilíacas, femorais e jugular interna ([`docs/circulatorio.md`](docs/circulatorio.md)) |
+| Artérias e Veias (F5) | coronárias e veias do coração, aorta (ascendente, arco, torácica e abdominal), tronco e artérias pulmonares, veias pulmonares, cavas, ázigo, carótidas, vertebral, subclávia e seus ramos, axilar e seus ramos, braço e antebraço até os arcos palmares, intercostais, lombares, epigástricas, ilíacas, femoral e femoral profunda, poplítea, tibiais, dorsal do pé e plantares; veias superficiais dos membros (cefálica, basílica, safenas) e profundas da perna. Cada músculo mostra as artérias que o irrigam, e a ficha da artéria, os músculos irrigados; pulsos, relações e 14 feixes neurovasculares ([`docs/circulatorio.md`](docs/circulatorio.md)) |
+| Sistema linfático (F5, esquemas) | cisterna do quilo, ducto torácico, ducto linfático direito e os principais grupos de linfonodos (cervicais profundos, axilares, traqueobrônquicos, lombares, ilíacos e inguinais); posição aproximada, declarada na ficha |
+| Circulação fetal (F5, esquemas; camada desligada por padrão) | placenta e cordão umbilical (malha do Atlas de Referência Humano, CC BY 4.0), veia e artérias umbilicais, ducto venoso; o ligamento arterial (ducto arterioso) fica na camada das artérias |
 | Glândulas e língua | parótida e ducto, submandibular, sublingual, língua |
 | Cartilagens e discos | nasais, orelha, costais, discos intervertebrais |
 | Ossos e dentes | crânio completo, mandíbula, hioide, coluna (atlas a sacro), costelas, esterno, quadril, clavícula, escápula, úmero, rádio, ulna, carpo, metacarpais, falanges, dentes; **membro inferior (F4.1):** fêmur, patela, tíbia, fíbula, tarso, metatarsais, falanges do pé e sesamoides |
@@ -223,7 +225,7 @@ e “colados” sobre a pele e o esqueleto reais (`src/proc.js`), com posições
 - sistema nervoso: todos os nervos, exceto os da órbita (malhas reais), e a medula espinal (esquemática: não há meninges nem substância cinzenta).
 
 São aproximações didáticas. Por causa da licença **Share-Alike**, os arquivos `dist/anatomy-data.js`,
-`dist/anatomy-body.js`, `dist/anatomy-leg.js`, `dist/anatomy-circ.js` e `dist/anatomy-nerves.js` (malhas derivadas do BodyParts3D; `dist/anatomy-resp.js` traz também os pulmões do Atlas de Referência Humano, CC BY 4.0, ajustados ao tórax) devem manter a atribuição acima e a mesma licença CC BY-SA ao serem redistribuídos.
+`dist/anatomy-body.js`, `dist/anatomy-leg.js`, `dist/anatomy-circ.js` e `dist/anatomy-nerves.js` (malhas derivadas do BodyParts3D; `dist/anatomy-resp.js` traz também os pulmões do Atlas de Referência Humano, CC BY 4.0, ajustados ao tórax, e `dist/anatomy-circ.js`, a placenta e o cordão do mesmo atlas) devem manter a atribuição acima e a mesma licença CC BY-SA ao serem redistribuídos.
 
 ### Regenerar os dados
 
@@ -241,6 +243,7 @@ python fetch_body.py --pack leg     # membro inferior (F4): baixa os elementos d
 python convert_body.py --pack leg   # membro inferior: converte e empacota → anatomy-leg.js (com a pele inteira)
 python fetch_body.py --pack circ    # coração e vasos (F5): baixa os elementos do pacote circ
 python convert_body.py --pack circ  # coração e vasos: converte e empacota → anatomy-circ.js (a parede dos ventrículos é dividida em direita e esquerda)
+python convert_placenta.py          # placenta e cordão do HRA (GLB em tools/hra/, ver o cabeçalho do script): acrescenta ao pacote circ
 # respiratório (F6.1): vias aéreas do BodyParts3D e, depois, os pulmões do Atlas de Referência Humano (baixe o GLB para tools/hra/; URL em convert_hra.py)
 python fetch_body.py --pack resp && python convert_body.py --pack resp   # → anatomy-resp.js (copie para ../dist/)
 python fit_hra.py                   # ajusta os pulmões ao tórax (escala por eixo) → hra_transform.json
@@ -278,7 +281,9 @@ id2`); as peças dele (`pack="leg"` em `addl(...)`) e o que o banco não tem est
 | `src/proc.js` | Geração das malhas procedurais (fita, lâmina, anel, tubo; cápsula, lâmina entre ossos, colaterais e grupos via `joint-geo.js`) |
 | `src/catalog-leg-bones.js` | **Ossos do membro inferior** (pacote `dist/anatomy-leg.js`, carregado depois do corpo) |
 | `src/catalog-resp.js`, `src/catalog-resp-airways.js` | **Pulmões** (a ficha diz que a malha é do Atlas de Referência Humano) e **vias aéreas** (traqueia, brônquios, pleuras, cartilagens da laringe); pacote `dist/anatomy-resp.js`, carregado depois do circulatório |
-| `src/catalog-circ.js`, `src/hull-geo.js` | **Coração e vasos** (pacote `dist/anatomy-circ.js`, carregado depois do membro inferior); o casco suavizado do pericárdio esquemático |
+| `src/catalog-circ.js`, `src/catalog-circ-ramos.js`, `src/hull-geo.js` | **Coração e vasos** (pacote `dist/anatomy-circ.js`, carregado depois do membro inferior); os vasos de menor calibre; o casco suavizado do pericárdio esquemático |
+| `src/catalog-circ-esquemas.js`, `src/catalog-circ-fetal.js` | **Linfáticos, sistema de condução, papilar posteromedial** e **circulação fetal** (esquemas por código, declarados na ficha; a placenta e o cordão vêm do HRA) |
+| `src/irrigation.js`, `src/vessel-clinical.js`, `src/neurovascular.js`, `src/vascular-links.js` | **Irrigação** de cada músculo (fonte única), pulsos e relações dos vasos, feixes neurovasculares e as seções da ficha que os mostram |
 | `src/catalog-joints.js` | **Articulações e ligamentos do membro superior**: fichas, ossos, ligamentos, movimentos (fonte da ligação músculo ↔ articulação) e nervos |
 | `src/joint-geo.js`, `src/joint-links.js` | Geometria das cápsulas e ligamentos medida nos ossos; seções da ficha ligadas às articulações |
 | `src/surfaces.js` | Projeção de pontos sobre a pele e o esqueleto (BVH) |
