@@ -75,7 +75,8 @@ só ficha, ou outra fonte).
 
 - **Pulmões (F6.1): baixados e em uso** (`lung-male` v1.4, 10,9 MB, com autorização). O arquivo traz, além do que a tabela anuncia, os **lobos, os 20 segmentos
   broncopulmonares, os brônquios lobares e segmentares e as cartilagens brônquicas**; o atlas usa os lobos e, para o alinhamento, os brônquios (ver [`respiratorio.md`](respiratorio.md)).
-- Útero, tubas, ovários, mama, placenta e pelve feminina (F6.5): **ainda não baixados**.
+- **Placenta (F5, M21): baixada e em uso** (2026-10-14, com autorização; `placenta-full-term-female` v1.1, 4,9 MB). O arquivo traz, além da placenta de termo (lâminas basal e coriônica, vasos da superfície e âmnio), um trecho de cerca de 9 cm do cordão com as duas artérias e a veia. O atlas usa as duas lâminas e a superfície do cordão (`tools/convert_placenta.py`, pacote circulatório) e põe o conjunto fora do corpo, à frente, ligado ao umbigo (o corpo é adulto e masculino); ver [`circulatorio.md`](circulatorio.md).
+- Útero, tubas, ovários, mama e pelve feminina (F6.5): **ainda não baixados**.
 
 ## 7. Próximos passos propostos (dependem de confirmação do responsável)
 

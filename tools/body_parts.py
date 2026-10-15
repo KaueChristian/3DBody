@@ -358,6 +358,64 @@ for k, pat, tris, reg in [
     addc("veia_" + k, "veia", LR + pat, 4, tris, region=reg, maxel=12)
 
 
+# ───────── F5.1 — vasos de menor calibre (mesmo pacote `circ`): ramos da subclávia e da axilar, braço, antebraço, tronco, coxa, perna e pé ─────────
+# Servem à irrigação de cada músculo (M15): o ramo que realmente irriga passa a existir como ficha e como malha.
+_NOVAS_ART = [
+    # (id, nome do conceito, triângulos, região, maxel)
+    ("supraescapular", r"suprascapular artery", 1200, "membro_sup", 8),
+    ("cervical_transversa", r"transverse cervical artery|subdivision of transverse cervical artery", 1800, "cabeca", 12),
+    ("escapular_dorsal", r"dorsal scapular artery", 1500, "membro_sup", 8),
+    ("tireoidea_inferior", r"inferior thyroid artery", 900, "cabeca", 8),
+    ("tronco_costocervical", r"costocervical trunk|subdivision of costocervical artery|deep cervical artery|supreme intercostal artery", 1200, "tronco", 12),
+    ("toracoacromial", r"(?:trunk|acromial branch|deltoid branch|pectoral branch) of (?:left |right )?thoraco-acromial artery|subdivision of thoraco-acromial artery", 2200, "membro_sup", 12),
+    ("toracica_lateral", r"lateral thoracic artery", 1500, "membro_sup", 8),
+    ("subescapular", r"subscapular artery", 900, "membro_sup", 8),
+    ("toracodorsal", r"thoracodorsal artery", 1200, "membro_sup", 8),
+    ("circunflexa_escapular", r"circumflex scapular artery", 900, "membro_sup", 8),
+    ("circunflexa_anterior_umero", r"anterior circumflex humeral artery", 1500, "membro_sup", 8),
+    ("circunflexa_posterior_umero", r"posterior circumflex humeral artery", 1500, "membro_sup", 8),
+    ("profunda_braco", r"deep brachial artery|(?:middle|radial) collateral branch of (?:left |right )?deep brachial artery|radial collateral artery|medial collateral artery", 2200, "membro_sup", 12),
+    ("colateral_ulnar_superior", r"superior ulnar collateral artery", 1200, "membro_sup", 8),
+    ("colateral_ulnar_inferior", r"inferior ulnar collateral artery", 1000, "membro_sup", 8),
+    ("recorrente_radial", r"radial recurrent artery", 1500, "membro_sup", 8),
+    ("recorrente_ulnar", r"ulnar recurrent artery|(?:anterior|posterior) ulnar recurrent artery", 900, "membro_sup", 12),
+    ("interossea_comum", r"common interosseous artery|recurrent interosseous artery", 1200, "membro_sup", 8),
+    ("interossea_anterior", r"anterior interosseous artery", 1500, "membro_sup", 8),
+    ("princeps_polegar", r"arteria princeps pollicis", 1200, "membro_sup", 8),
+    ("arco_palmar_superficial", r"superficial palmar arterial arch", 1800, "membro_sup", 8),
+    ("arco_palmar_profundo", r"deep palmar arterial arch", 1500, "membro_sup", 8),
+    ("intercostais_posteriores", r"(?:first |second )?posterior intercostal arter(?:y|ies)", 4000, "tronco", 40),
+    ("lombares", r"lumbar artery", 3000, "tronco", 8),
+    ("epigastrica_superior", r"superior epigastric artery", 1500, "tronco", 8),
+    ("epigastrica_inferior", r"inferior epigastric artery", 2200, "tronco", 8),
+    ("musculofrenica", r"musculophrenic artery", 1500, "tronco", 8),
+    ("frenica_inferior", r"inferior phrenic artery", 1500, "tronco", 20),
+    ("femoral_profunda", r"subdivision of deep femoral artery|set of perforating arteries", 3500, "membro_inf", 12),
+    ("circunflexa_femoral_lateral", r"lateral circumflex femoral artery|(?:descending )?branch of (?:left |right )?lateral circumflex femoral artery|descending branch of (?:left |right )?lateral circumflex femoral artery", 2500, "membro_inf", 12),
+    ("genicular_descendente", r"descending genicular artery", 1800, "membro_inf", 8),
+    ("poplitea", r"popliteal artery", 3500, "membro_inf", 8),
+    ("geniculares", r"(?:superior|inferior) (?:lateral|medial) genicular artery|middle genicular artery", 2500, "membro_inf", 12),
+    ("tibial_anterior", r"anterior tibial artery|subdivision of anterior tibial artery|segment of anterior tibial artery", 3500, "membro_inf", 12),
+    ("tibial_posterior", r"posterior tibial artery|subdivision of posterior tibial artery|branch of posterior tibial artery", 3500, "membro_inf", 12),
+    ("dorsal_pe", r"dorsalis pedis artery", 1200, "membro_inf", 8),
+    ("plantar_medial", r"medial plantar artery|superficial medial plantar artery|branch of medial plantar artery", 1200, "membro_inf", 12),
+    ("plantar_lateral", r"lateral plantar artery|branch of lateral plantar artery|deep plantar artery|plantar arch", 1800, "membro_inf", 12),
+]
+for k, pat, tris, reg, mx in _NOVAS_ART:
+    addc("arteria_" + k, "arteria", LR + "(?:" + pat + ")", 4, tris, region=reg, maxel=mx)
+_NOVAS_VEIA = [
+    ("cefalica", r"cephalic vein", 3500, "membro_sup"), ("basilica", r"basilic vein", 3000, "membro_sup"),
+    ("intermedia_cotovelo", r"median cubital vein", 1000, "membro_sup"),
+    ("safena_magna", r"great saphenous vein|tributary of great saphenous vein", 4500, "membro_inf"),
+    ("safena_parva", r"small saphenous vein", 3000, "membro_inf"), ("poplitea", r"popliteal vein", 3000, "membro_inf"),
+    ("tibial_anterior", r"anterior tibial vein", 2800, "membro_inf"), ("tibial_posterior", r"posterior tibial vein", 2800, "membro_inf"),
+    ("fibular", r"fibular vein", 2500, "membro_inf"), ("femoral_profunda", r"deep femoral vein", 1800, "membro_inf"),
+    ("circunflexas_femorais", r"(?:lateral|medial) circumflex femoral vein", 1800, "membro_inf"),
+]
+for k, pat, tris, reg in _NOVAS_VEIA:
+    addc("veia_" + k, "veia", LR + "(?:" + pat + ")", 4, tris, region=reg, maxel=12)
+
+
 # ───────── F6.1 — respiratório (pacote `resp`, dist/anatomy-resp.js) ─────────
 # Traqueia, brônquios principais e a árvore brônquica por segmento broncopulmonar, mais as cartilagens da laringe, do BodyParts3D.
 # Os pulmões não existem no banco: vêm do Atlas de Referência Humano (`convert_hra.py`, mesmo pacote). As 20 árvores segmentares
