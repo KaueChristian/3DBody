@@ -212,8 +212,8 @@ console.log('• plano de corte');
 /* ───────────── Quiz teórico ───────────── */
 console.log('• quiz teórico');
 {
-  const { ITEMS, INNERVATION, inRegion } = catalog;
-  const gen = new textQuiz.TextQuizGenerator(ITEMS, INNERVATION, inRegion);
+  const { ITEMS, INNERVATION, IRRIGATION, inRegion } = catalog;
+  const gen = new textQuiz.TextQuizGenerator(ITEMS, INNERVATION, inRegion, IRRIGATION);
   const seen = {};
   let asked = 0;
   let built = 0;
@@ -240,6 +240,12 @@ console.log('• quiz teórico');
           ok(mine.has(q.correctId), `a correta inerva o músculo (${where})`);
           ok(wrong.every((n) => !mine.has(n.id)), `nenhuma errada inerva o músculo (${where})`);
           ok(q.named, `enunciado nomeia o músculo (${where})`);
+        } else if (q.type === 'irrigacao') {
+          const mine = new Set(IRRIGATION.get(target.id) ?? []);
+          ok(mine.has(q.correctId), `a correta irriga o músculo (${where})`);
+          ok(wrong.every((a) => !mine.has(a.id)), `nenhuma errada irriga o músculo (${where})`);
+          ok(wrong.every((a) => a.kind === 'arteria'), `as erradas são artérias (${where})`);
+          ok(q.named, `enunciado nomeia o músculo (${where})`);
         } else if (q.type === 'musculos') {
           ok(INNERVATION.get(q.correctId)?.some((l) => l.nervo === target.id), `a correta é inervada pelo nervo (${where})`);
           ok(wrong.every((m) => !INNERVATION.get(m.id)?.some((l) => l.nervo === target.id)), `nenhuma errada é inervada pelo nervo (${where})`);
@@ -257,7 +263,7 @@ console.log('• quiz teórico');
     }
   }
   ok(built / asked > 0.9, `o gerador monta pergunta para mais de 90% das estruturas (${built}/${asked})`);
-  for (const type of ['nervo', 'acao', 'origem', 'insercao', 'nota', 'musculos', 'lesao', 'sensibilidade']) {
+  for (const type of ['nervo', 'irrigacao', 'acao', 'origem', 'insercao', 'nota', 'musculos', 'lesao', 'sensibilidade']) {
     ok(seen[type] > 0, `o tipo de pergunta "${type}" aparece`);
   }
   console.log('  tipos gerados:', JSON.stringify(seen));

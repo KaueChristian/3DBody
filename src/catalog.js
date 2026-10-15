@@ -7,13 +7,19 @@ import { BODY_BONES } from './catalog-body-bones.js';
 import { LEG_BONES } from './catalog-leg-bones.js';
 import { LEG_MUSCLES } from './catalog-leg-muscles.js';
 import { NERVES_LEG } from './catalog-nerves-leg.js';
-import { CIRC_ITEMS } from './catalog-circ.js';
+import { CIRC_ITEMS as CIRC_BASE } from './catalog-circ.js';
+import { CIRC_RAMOS } from './catalog-circ-ramos.js';
+import { CIRC_ESQUEMAS } from './catalog-circ-esquemas.js';
+import { CIRC_FETAL } from './catalog-circ-fetal.js';
 import { RESP_ITEMS } from './catalog-resp.js';
 import { NERVES as NERVES_BASE } from './catalog-nerves.js';
 import { NERVES_CRANIAL } from './catalog-nerves-cranial.js';
 import { NERVES_SENSORY } from './catalog-nerves-sensory.js';
 import { NERVES_SPINAL } from './catalog-spinal.js';
 import { JOINTS, JOINT_LIGAMENTS } from './catalog-joints.js';
+import { IRRIGACAO } from './irrigation.js';
+import { FEIXES } from './neurovascular.js';
+import { PULSOS, RELACOES } from './vessel-clinical.js';
 import { SEGMENTOS, SEGMENT_ORDER, AMPLOS, PROPRIOCEPTIVOS, segmentLabel } from './segments.js';
 
 /** Camadas, da mais superficial (depth 0) à mais profunda. */
@@ -31,6 +37,8 @@ export const LAYERS = [
   { id: 'nervo', label: 'Nervos', depth: 4, color: '#f2cf55' },
   { id: 'arteria', label: 'Artérias', depth: 4, color: '#d9453d' },
   { id: 'veia', label: 'Veias', depth: 4, color: '#4a74b8' },
+  { id: 'linfatico', label: 'Sistema linfático', depth: 4, color: '#6fbf8b' },
+  { id: 'fetal', label: 'Circulação fetal (esquema)', depth: 4, color: '#c46a8a', optional: true },
   { id: 'coracao', label: 'Coração', depth: 4, color: '#b83a4b' },
   { id: 'respiratorio', label: 'Sistema respiratório', depth: 4, color: '#d98f95' },
   { id: 'articulacao', label: 'Articulações (cápsulas)', depth: 4, color: '#7fb2e8' },
@@ -42,10 +50,11 @@ export const LAYERS = [
 
 /**
  * Camadas visíveis em cada nível de dissecação (0 = pele opaca … 6 = só ossos). Fonte única: a interface, o
- * estado salvo na URL e os testes usam esta mesma fórmula.
+ * estado salvo na URL e os testes usam esta mesma fórmula. Camadas `optional` (a circulação fetal, esquemática) ficam desligadas até
+ * o usuário ligá-las.
  */
 export function layersForDissect(v) {
-  return LAYERS.filter((l) => (v === 0 ? true : v === 1 ? l.id !== 'fascia' : l.depth >= v - 1)).map((l) => l.id);
+  return LAYERS.filter((l) => !l.optional && (v === 0 ? true : v === 1 ? l.id !== 'fascia' : l.depth >= v - 1)).map((l) => l.id);
 }
 
 export const KIND_LABEL = {
@@ -60,6 +69,7 @@ export const KIND_LABEL = {
   orgao: 'Órgão',
   arteria: 'Artéria',
   veia: 'Veia',
+  linfatico: 'Estrutura linfática',
   estrutura: 'Estrutura',
 };
 
@@ -85,7 +95,9 @@ export const HEAD_IDS = new Set(HEAD_ITEMS.map((i) => i.id));
 export const BODY_ITEMS = [...BODY_MUSCLES, ...ORAL_MUSCLES, ...BODY_BONES, ...JOINTS, ...JOINT_LIGAMENTS];
 /** Estruturas do membro inferior (F4): vêm do pacote `anatomy-leg.js`, carregado depois do corpo. */
 export const LEG_ITEMS = [...LEG_BONES, ...LEG_MUSCLES];
-export { CIRC_ITEMS, RESP_ITEMS };
+/** Circulatório (F5): coração, vasos principais e, no mesmo pacote, os ramos de menor calibre (F5.1). */
+export const CIRC_ITEMS = [...CIRC_BASE, ...CIRC_RAMOS, ...CIRC_ESQUEMAS, ...CIRC_FETAL];
+export { RESP_ITEMS };
 export const NERVES = [...NERVES_BASE, ...NERVES_CRANIAL, ...NERVES_SENSORY, ...NERVES_SPINAL, ...NERVES_LEG];
 export const ITEMS = [...HEAD_ITEMS, ...BODY_ITEMS, ...LEG_ITEMS, ...CIRC_ITEMS, ...RESP_ITEMS, ...NERVES];
 
@@ -124,7 +136,7 @@ for (const n of NERVES) {
   const semNervo = ITEMS.filter((i) => i.kind === 'musculo' && !INNERVATION.has(i.id)).map((i) => i.id);
   if (semNervo.length) throw new Error(`Músculos sem nervo no catálogo: ${semNervo.join(', ')}`);
   // circulatório (F5): `relacionados` só cita estruturas do catálogo, e toda artéria e veia diz de onde vem, por onde vai e o que irriga ou drena
-  const CIRC_KINDS = new Set(['cardiaco', 'arteria', 'veia', 'estrutura', 'orgao', 'osso']);
+  const CIRC_KINDS = new Set(['cardiaco', 'arteria', 'veia', 'linfatico', 'estrutura', 'orgao', 'osso']);
   for (const i of [...CIRC_ITEMS, ...RESP_ITEMS]) {
     if (!CIRC_KINDS.has(i.kind)) throw new Error(`Tipo inesperado no circulatório: ${i.id} (${i.kind})`);
     for (const r of i.relacionados ?? []) if (!seen.has(r)) throw new Error(`Estrutura relacionada inexistente em ${i.id}: ${r}`);
@@ -205,5 +217,61 @@ export const JOINTS_OF = new Map();
     // linha de texto da ficha (busca, impressão e quiz); a lista com os músculos é desenhada pela interface
     const txt = j.movimentos.map((m) => (m.amp ? `${m.mov} (${m.amp})` : m.mov)).join('; ');
     if (txt) j.campos.splice(4, 0, ['Movimentos e amplitude', `${txt}.`]);
+  }
+}
+
+/**
+ * Irrigação (F5 / M15): músculo → artérias do catálogo que o irrigam, e o inverso (artéria → músculos). O campo “Irrigação” da
+ * ficha do músculo nasce do texto de `irrigation.js`; a guarda exige que todo músculo tenha ao menos uma artéria.
+ * @type {Map<string, string[]>}
+ */
+export const IRRIGATION = new Map();
+/** @type {Map<string, string[]>} */
+export const IRRIGATED = new Map();
+{
+  const byId = new Map(ITEMS.map((i) => [i.id, i]));
+  for (const [muscles, arts, texto] of IRRIGACAO) {
+    if (!texto || !arts.length) throw new Error(`Irrigação sem texto ou sem artéria: ${muscles.join(', ')}`);
+    for (const a of arts) {
+      if (byId.get(a)?.kind !== 'arteria') throw new Error(`Irrigação cita artéria inexistente: ${a}`);
+    }
+    for (const m of muscles) {
+      const item = byId.get(m);
+      if (item?.kind !== 'musculo') throw new Error(`Irrigação de estrutura que não é músculo: ${m}`);
+      if (IRRIGATION.has(m)) throw new Error(`Irrigação repetida: ${m}`);
+      IRRIGATION.set(m, [...new Set(arts)]);
+      item.campos = [...item.campos, ['Irrigação', texto]];
+      for (const a of arts) {
+        if (!IRRIGATED.has(a)) IRRIGATED.set(a, []);
+        IRRIGATED.get(a).push(m);
+      }
+    }
+  }
+  const semArteria = ITEMS.filter((i) => i.kind === 'musculo' && !IRRIGATION.has(i.id)).map((i) => i.id);
+  if (semArteria.length) throw new Error(`Músculos sem artéria no catálogo: ${semArteria.join(', ')}`);
+}
+
+// feixes neurovasculares (F5 / M17): todo membro existe no catálogo, e cada feixe junta ao menos uma artéria e um nervo
+{
+  const byId = new Map(ITEMS.map((i) => [i.id, i]));
+  const ids = new Set();
+  for (const f of FEIXES) {
+    if (ids.has(f.id)) throw new Error(`Feixe repetido: ${f.id}`);
+    ids.add(f.id);
+    for (const m of f.membros) if (!byId.has(m)) throw new Error(`Feixe ${f.id} cita estrutura inexistente: ${m}`);
+    const kinds = new Set(f.membros.map((m) => byId.get(m).kind));
+    if (!kinds.has('arteria') || !kinds.has('nervo')) throw new Error(`Feixe ${f.id} sem artéria ou sem nervo`);
+  }
+}
+
+// ficha completa dos vasos (F5 / M16): pulso e compressão, relações
+{
+  const byId = new Map(ITEMS.map((i) => [i.id, i]));
+  for (const [campo, mapa] of [['Pulso e compressão', PULSOS], ['Relações', RELACOES]]) {
+    for (const [id, texto] of Object.entries(mapa)) {
+      const item = byId.get(id);
+      if (!item || (item.kind !== 'arteria' && item.kind !== 'veia')) throw new Error(`${campo} de vaso inexistente: ${id}`);
+      item.campos = [...item.campos, [campo, texto]];
+    }
   }
 }

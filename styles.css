@@ -470,6 +470,13 @@ button.lchip:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent)
 .lchip small { display: block; color: var(--muted); font-size: 11px; }
 .lchip.sens { border-style: dashed; }
 .links-note { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+.links details.irrig { padding: 11px 0 4px; }
+.links details.irrig > summary { cursor: pointer; list-style: none; margin-bottom: 8px; }
+.links details.irrig > summary h3 { display: inline; margin: 0; }
+.links details.irrig > summary::before { content: "▸ "; color: var(--muted); }
+.links details.irrig[open] > summary::before { content: "▾ "; }
+.links.bundle p { margin: 0 0 8px; font-size: 13px; line-height: 1.45; }
+.links.bundle .btn { margin-top: 8px; }
 .lchip.aux { opacity: 0.82; border-style: dotted; }
 .movs .mov { padding: 8px 0; border-top: 1px dashed var(--line); }
 .movs .mov:first-of-type { border-top: 0; padding-top: 0; }

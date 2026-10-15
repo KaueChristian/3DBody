@@ -6,7 +6,7 @@ import { loadAnatomy } from './anatomy.js';
 import { Surfaces, TORSO_PARTS } from './surfaces.js';
 import { buildProc, makeFiberTexture } from './proc.js';
 import { LM } from './landmarks.js';
-import { ITEMS as ALL_ITEMS, HEAD_IDS, BODY_ITEMS, LEG_ITEMS, CIRC_ITEMS, RESP_ITEMS, NERVES, INNERVATION, LAYERS, KIND_LABEL, REGIONS, inRegion, layersForDissect } from './catalog.js';
+import { ITEMS as ALL_ITEMS, HEAD_IDS, BODY_ITEMS, LEG_ITEMS, CIRC_ITEMS, RESP_ITEMS, NERVES, INNERVATION, IRRIGATION, LAYERS, KIND_LABEL, REGIONS, inRegion, layersForDissect } from './catalog.js';
 import { NerveBuilder } from './nerve-geo.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { SKULL_PARTS } from './surfaces.js';
@@ -15,6 +15,7 @@ import { sideSphere } from './framing.js';
 import { userData } from './study/storage.js';
 import { showDesktopDownload } from './get-app.js';
 import { functionLinksHtml, jointRelatedIds, shownFields } from './joint-links.js';
+import { vascularLinksHtml, bundleMembers } from './vascular-links.js';
 import { jointContext } from './joint-geo.js';
 
 let studyController = null;
@@ -152,7 +153,7 @@ function makeMaterial(key, color) {
 }
 
 /** Resolve disputas de profundidade entre superfícies quase coincidentes: camadas superficiais ganham. */
-const DEPTH_OFFSET = { nervo: -2.5, arteria: -2, veia: -2, coracao: -1, respiratorio: -0.5, fascia: -3, mimica: -2, sup: -2, pescoco: -1.5, med: -1.5, mastigacao: -1, ligamento: -1, articulacao: -0.5, prof: -0.5, osso: 0.5 };
+const DEPTH_OFFSET = { nervo: -2.5, arteria: -2, veia: -2, linfatico: -2, coracao: -1, respiratorio: -0.5, fascia: -3, mimica: -2, sup: -2, pescoco: -1.5, med: -1.5, mastigacao: -1, ligamento: -1, articulacao: -0.5, prof: -0.5, osso: 0.5 };
 
 function jitter(hex, id) {
   const c = new THREE.Color(hex);
@@ -423,7 +424,7 @@ function relatedIds(id) {
   if (!m) return [];
   if (m.item.kind === 'nervo') return (m.item.ramos ?? []).map((r) => r.m);
   if (m.item.relacionados) return m.item.relacionados;
-  return jointRelatedIds(m.item, CATALOG) ?? (INNERVATION.get(id) ?? []).map((r) => r.nervo);
+  return jointRelatedIds(m.item, CATALOG) ?? [...(INNERVATION.get(id) ?? []).map((r) => r.nervo), ...(IRRIGATION.get(id) ?? [])];
 }
 
 /* ───────────────────────── Visibilidade e destaque ───────────────────────── */
@@ -696,8 +697,8 @@ function sourcesHtml(item) {
 }
 
 const ISO_LABEL = {
-  nervo: 'Isolar com os músculos', articulacao: 'Isolar com ossos e ligamentos', ligamento: 'Isolar com os ossos',
-  cardiaco: 'Isolar com as relacionadas', arteria: 'Isolar com as relacionadas', veia: 'Isolar com as relacionadas', orgao: 'Isolar com as relacionadas',
+  nervo: 'Isolar com os músculos', musculo: 'Isolar com nervos e artérias', articulacao: 'Isolar com ossos e ligamentos', ligamento: 'Isolar com os ossos',
+  cardiaco: 'Isolar com as relacionadas', linfatico: 'Isolar com as relacionadas', arteria: 'Isolar com as relacionadas', veia: 'Isolar com as relacionadas', orgao: 'Isolar com as relacionadas',
 };
 
 function showInfo(id) {
@@ -714,6 +715,7 @@ function showInfo(id) {
     ${shownFields(item).map(([k, v], i) => `<div class="field${i === 0 ? ' act' : ''}"><h3>${esc(k)}</h3><p>${esc(v)}</p></div>`).join('')}
     ${functionLinksHtml(item, linkChip, esc)}
     ${linksHtml(item)}
+    ${vascularLinksHtml(item, linkChip, esc)}
     ${item.nota ? `<div class="note"><b>Para lembrar</b>${esc(item.nota)}</div>` : ''}
     ${sourcesHtml(item)}
     ${item.expressao ? `<div class="expr"><span>Expressão / função:</span><strong>${esc(item.expressao)}</strong></div>` : ''}
@@ -737,6 +739,7 @@ function showInfo(id) {
     if (rel.length) $('#btnIsoRel').onclick = () => isolate(new Set([id, ...rel]), true);
     $('#btnHideThis').onclick = () => { state.hidden.add(id); select(null, { fly: false }); applyVisibility(); syncList(); };
     $('#infoBody').querySelectorAll('button.lchip').forEach((b) => b.addEventListener('click', () => select(b.dataset.go)));
+    $('#infoBody').querySelectorAll('[data-bundle]').forEach((b) => b.addEventListener('click', () => isolate(new Set(bundleMembers(b.dataset.bundle)), true)));
     studyController?.renderCardExtensions(id, $('#infoBody'));
   }
   infoEl.classList.add('open');
@@ -1232,7 +1235,7 @@ function stopQuiz() {
 
 /** Todas as camadas menos a pele: o que o quiz de escolha e o teórico mostram. */
 function showAllLayersForQuiz() {
-  state.layers = new Set(LAYERS.filter((l) => l.id !== 'pele').map((l) => l.id));
+  state.layers = new Set(LAYERS.filter((l) => l.id !== 'pele' && !l.optional).map((l) => l.id));
   syncLayers();
 }
 
@@ -1296,7 +1299,7 @@ $('#quizExit').onclick = stopQuiz;
 
 /* ── Quiz 2: localizar (aparece o nome; clique na estrutura no modelo) ── */
 const MAX_TRIES = 3;
-const kindGroup = (i) => (['musculo', 'osso', 'nervo', 'cardiaco', 'arteria', 'veia', 'orgao'].includes(i.kind) ? i.kind : 'outras');
+const kindGroup = (i) => (['musculo', 'osso', 'nervo', 'cardiaco', 'arteria', 'veia', 'linfatico', 'orgao'].includes(i.kind) ? i.kind : 'outras');
 
 /** Estruturas que podem virar pergunta. Fáscias e ligamentos minúsculos (`label: false`) são ruins de clicar. */
 function locatePool({ region, kinds, smart = 'all' }) {
@@ -1553,7 +1556,7 @@ $('#locRestore').onclick = () => {
 /* ── Configuração ── */
 const SETUP_KEY = 'anatomia3d.quiz';
 const REGION_SHORT = { todos: 'Corpo', cabeca: 'Cabeça', tronco: 'Tronco', membro_sup: 'Braço', membro_inf: 'Perna' };
-const KIND_GROUPS = [['musculo', 'Músculos'], ['nervo', 'Nervos'], ['osso', 'Ossos'], ['cardiaco', 'Coração'], ['arteria', 'Artérias'], ['veia', 'Veias'], ['orgao', 'Órgãos'], ['outras', 'Articulações, ligamentos e outras']];
+const KIND_GROUPS = [['musculo', 'Músculos'], ['nervo', 'Nervos'], ['osso', 'Ossos'], ['cardiaco', 'Coração'], ['arteria', 'Artérias'], ['veia', 'Veias'], ['linfatico', 'Linfáticos'], ['orgao', 'Órgãos'], ['outras', 'Articulações, ligamentos e outras']];
 const COUNT_OPTS = [10, 20, 30, 0]; // 0 = todas
 const setup = { mode: 'locate', region: 'cabeca', kinds: KIND_GROUPS.map((k) => k[0]), count: 10, latin: false, smart: 'all' };
 try {
@@ -1562,7 +1565,7 @@ try {
   if (Array.isArray(s.kinds)) {
     const k = s.kinds.filter((x) => KIND_GROUPS.some((g) => g[0] === x));
     // quem tinha tudo marcado antes do circulatório (F5) continua com tudo marcado
-    if (['musculo', 'nervo', 'osso', 'outras'].every((x) => k.includes(x))) k.push(...['cardiaco', 'arteria', 'veia', 'orgao'].filter((x) => !k.includes(x)));
+    if (['musculo', 'nervo', 'osso', 'outras'].every((x) => k.includes(x))) k.push(...['cardiaco', 'arteria', 'veia', 'linfatico', 'orgao'].filter((x) => !k.includes(x)));
     if (k.length) setup.kinds = k;
   }
   if (COUNT_OPTS.includes(s.count)) setup.count = s.count;
@@ -2021,7 +2024,7 @@ async function init() {
     $('#loading').classList.add('done');
     const jump = () => { if (goal) { camera.position.copy(goal.pos); controls.target.copy(goal.target); goal = null; controls.update(); } };
     const api = {
-      state, M, ITEMS, INNERVATION, LAYERS, inRegion, perf, setup, S, THREE,
+      state, M, ITEMS, INNERVATION, IRRIGATION, LAYERS, inRegion, perf, setup, S, THREE,
       catalogItems: ALL_ITEMS,
       invalidate,
       renderStats: { frames: () => renderer.info.render.frame, keepAlive: (ms) => { if (ms != null) keepAliveMs = ms; return keepAliveMs; } },

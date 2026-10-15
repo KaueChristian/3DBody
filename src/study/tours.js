@@ -331,23 +331,23 @@ export const TOURS = [
     id: 'circulacao_fetal',
     title: 'Circulação fetal e o nascimento',
     subtitle: 'Placenta, ducto venoso, forame oval e ducto arterioso',
-    description: 'Como o feto, sem pulmões funcionantes, recebe o oxigênio da placenta, e o que muda no coração e nos vasos depois do nascimento. Texto de apoio: a placenta, o cordão e os ductos não existem no modelo 3D.',
+    description: 'Como o feto, sem pulmões funcionantes, recebe o oxigênio da placenta, e o que muda no coração e nos vasos depois do nascimento. A placenta, o cordão, a veia e as artérias umbilicais, o ducto venoso e o ducto arterioso são esquemas (camada “Circulação fetal”, desligada por padrão); o forame oval é só texto.',
     region: 'tronco',
     steps: [
       {
         title: 'Placenta e cordão umbilical',
-        text: 'Na vida fetal, a troca de gases acontece na placenta. Uma veia umbilical leva ao feto o sangue oxigenado (cerca de 80% de saturação); duas artérias umbilicais, ramos das artérias ilíacas internas, devolvem à placenta o sangue pobre em oxigênio. O cordão umbilical e a placenta não existem no modelo.',
+        text: 'Na vida fetal, a troca de gases acontece na placenta. Uma veia umbilical leva ao feto o sangue oxigenado (cerca de 80% de saturação); duas artérias umbilicais, ramos das artérias ilíacas internas, devolvem à placenta o sangue pobre em oxigênio. No modelo, a placenta aparece fora do corpo, à frente, ligada ao umbigo pelo cordão (esquema de posição).',
         dissect: 5,
         region: 'tronco',
-        highlight: 'arteria_iliaca_interna',
+        highlight: 'placenta',
         view: 'front',
       },
       {
         title: 'Veia umbilical, ducto venoso e veia cava inferior',
-        text: 'A veia umbilical chega ao fígado; cerca de metade do seu sangue passa direto à veia cava inferior pelo ducto venoso, sem atravessar o fígado, e o resto se mistura ao sangue da veia porta. O sangue da veia cava inferior, que já é uma mistura, vai ao átrio direito.',
+        text: 'A veia umbilical chega ao fígado; cerca de metade do seu sangue passa direto à veia cava inferior pelo ducto venoso, sem atravessar o fígado, e o resto se mistura ao sangue da veia porta. O sangue da veia cava inferior, que já é uma mistura, vai ao átrio direito. O desenho mostra a veia umbilical subindo pela parede anterior do abdome e o ducto venoso curto até a veia cava inferior (o fígado não está no modelo).',
         dissect: 5,
         region: 'tronco',
-        highlight: 'veia_cava_inferior',
+        highlight: 'veia_umbilical',
         view: 'front',
       },
       {
@@ -360,10 +360,10 @@ export const TOURS = [
       },
       {
         title: 'Ducto arterioso: o desvio dos pulmões',
-        text: 'A resistência dos vasos dos pulmões fetais é alta, e a maior parte do sangue do ventrículo direito, lançado no tronco pulmonar, passa pelo ducto arterioso à aorta, logo depois da origem da artéria subclávia esquerda. Só uma pequena parte vai aos pulmões.',
+        text: 'A resistência dos vasos dos pulmões fetais é alta, e a maior parte do sangue do ventrículo direito, lançado no tronco pulmonar, passa pelo ducto arterioso à aorta, logo depois da origem da artéria subclávia esquerda. Só uma pequena parte vai aos pulmões. No modelo, o desenho curto entre a artéria pulmonar esquerda e o arco da aorta é o ducto, que no adulto vira o ligamento arterial.',
         dissect: 5,
         region: 'tronco',
-        highlight: 'arteria_pulmonar_esquerda',
+        highlight: 'ligamento_arterial',
         view: 'front',
       },
       {
@@ -371,7 +371,7 @@ export const TOURS = [
         text: 'Com o primeiro choro, os pulmões se expandem, a resistência pulmonar cai e a pressão no átrio esquerdo passa a superar a do direito: o forame oval se fecha (vira a fossa oval). O ducto arterioso se contrai nas primeiras horas e dias e vira o ligamento arterial; o ducto venoso vira o ligamento venoso, a veia umbilical, o ligamento redondo do fígado, e as artérias umbilicais, os ligamentos umbilicais mediais.',
         dissect: 5,
         region: 'tronco',
-        highlight: 'arco_aorta',
+        highlight: 'arterias_umbilicais',
         view: 'front',
       },
       {

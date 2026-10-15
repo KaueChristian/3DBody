@@ -12,7 +12,7 @@ export class TextQuizRunner {
   constructor(ctl) {
     this.ctl = ctl;
     this.app = ctl.app;
-    this.generator = new TextQuizGenerator(this.app.catalogItems, this.app.INNERVATION, this.app.inRegion);
+    this.generator = new TextQuizGenerator(this.app.catalogItems, this.app.INNERVATION, this.app.inRegion, this.app.IRRIGATION);
     this.el = document.getElementById('textQuiz');
     this.promptEl = document.getElementById('tqPrompt');
     this.scoreEl = document.getElementById('tqScore');

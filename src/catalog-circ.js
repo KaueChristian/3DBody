@@ -48,8 +48,8 @@ const vaso = (kind, id, name, latin, region, parts, d, extra = {}) => ({
   nota: d.nota,
   ...extra,
 });
-const art = (...a) => vaso('arteria', ...a);
-const vein = (...a) => vaso('veia', ...a);
+export const art = (...a) => vaso('arteria', ...a);
+export const vein = (...a) => vaso('veia', ...a);
 
 const RED = '#d04a43'; // sangue oxigenado
 const BLUE = '#4f78bd'; // sangue pouco oxigenado
@@ -124,7 +124,7 @@ export const CIRC_ITEMS = [
     interno: 'Abre-se na sístole e se fecha na diástole, quando o refluxo enche as válvulas e impede a volta do sangue ao ventrículo. As artérias coronárias nascem dos seios direito e esquerdo; o seio posterior não dá origem a nenhuma artéria (válvula não coronariana).',
     k4: 'Posição na circulação',
     funcao: 'Separa o ventrículo esquerdo da aorta.',
-    nota: 'Os nomes das cúspides variam: direita, esquerda e posterior na Terminologia Anatômica; anterior, posterior esquerda e posterior direita no BodyParts3D. A valva aórtica bicúspide é a malformação cardíaca congênita mais comum e, com a calcificação da idade, uma das causas principais de estenose aórtica.',
+    nota: 'Os nomes das cúspides variam: direita, esquerda e posterior na Terminologia Anatômica; anterior, posterior esquerda e posterior direita no BodyParts3D. Na descrição clássica, a cúspide anterior é a direita (de onde nasce a coronária direita), a posterior esquerda é a esquerda (de onde nasce a coronária esquerda) e a posterior direita é a posterior, sem coronária. A valva aórtica bicúspide é a malformação cardíaca congênita mais comum e, com a calcificação da idade, uma das causas principais de estenose aórtica.',
   }, {
     relacionados: ['ventriculo_esquerdo', 'aorta_ascendente', 'coronaria_direita', 'coronaria_esquerda'],
   }),

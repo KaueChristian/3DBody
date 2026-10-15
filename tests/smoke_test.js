@@ -796,6 +796,56 @@ async function runSmokeTest() {
       const f = [];
       const t = (c, m) => { if (!c) f.push(m); };
       const app = window.__app;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      for (let i = 0; i < 120 && !(app.state.nervesReady && app.state.circReady); i++) await sleep(250);
+      app.setRegion('tronco', { fly: false });
+      app.setDissect(5);
+      const txt = () => document.getElementById('infoBody').textContent;
+
+      // M15: o músculo mostra a irrigação e as artérias; a artéria lista os músculos irrigados
+      app.select('triceps_longa', { fly: false, panel: true });
+      t(/Irrigação/.test(txt()) && /Artérias \(irrigação\)/.test(txt()), 'a ficha do tríceps não mostra a irrigação');
+      const chip = [...document.querySelectorAll('#infoBody button.lchip')].find((b) => b.dataset.go === 'arteria_profunda_braco');
+      t(!!chip, 'sem o chip da artéria profunda do braço na ficha do tríceps');
+      chip?.click();
+      t(app.state.selected === 'arteria_profunda_braco', 'o chip não levou à artéria profunda do braço');
+      t(/Músculos irrigados \(\d+\)/.test(txt()) && /Tríceps/.test(document.getElementById('infoBody').innerHTML), 'a ficha da artéria não lista os músculos irrigados');
+      t(/Território irrigado/.test(txt()), 'a ficha da artéria profunda do braço está incompleta');
+
+      // M17: feixe neurovascular com o botão de isolar
+      t(/Feixe neurovascular/.test(txt()), 'a ficha da artéria profunda do braço não mostra o feixe neurovascular');
+      document.querySelector('#infoBody [data-bundle]')?.click();
+      t(!app.state.hidden.has('arteria_profunda_braco') && app.state.hidden.has('biceps_longa'), 'isolar o feixe não escondeu o resto');
+      app.state.hidden.clear();
+      app.syncLayers();
+
+      // M16: pulso na ficha da artéria radial
+      app.select('arteria_radial', { fly: false });
+      t(/Pulso e compressão/.test(txt()) && /Relações/.test(txt()), 'a artéria radial não mostra pulso e relações');
+
+      // M18: linfáticos têm camada própria e ficha de esquema
+      t([...document.querySelectorAll('#list .sec-name')].some((e) => e.textContent === 'Sistema linfático'), 'a lista não tem a camada Sistema linfático');
+      app.select('ducto_toracico', { fly: false });
+      t(/ESQUEMA/.test(document.getElementById('infoBody').textContent) && /cisterna do quilo/i.test(txt()), 'a ficha do ducto torácico não diz que é esquema');
+      t(app.M.get('ducto_toracico').group.visible, 'o ducto torácico não ficou visível');
+
+      // M21: a circulação fetal vem desligada e liga ao selecionar
+      app.select(null, { fly: false });
+      app.setDissect(5);
+      t(!app.state.layers.has('fetal') && !app.M.get('placenta').group.visible, 'a camada fetal deveria vir desligada');
+      app.select('placenta', { fly: false });
+      t(app.state.layers.has('fetal') && app.M.get('placenta').group.visible, 'selecionar a placenta deveria ligar a camada fetal');
+      t(/Atlas de Referência Humano/.test(document.getElementById('info').textContent), 'a ficha da placenta não diz de onde vem a malha');
+      app.select(null, { fly: false });
+      app.setDissect(5);
+      t(!app.state.layers.has('fetal'), 'mudar a dissecação deveria desligar de novo a camada fetal');
+      return f;
+    }, 'F5.1: irrigação, pulsos, feixes neurovasculares, linfáticos e circulação fetal');
+
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
       const sc = app.studyController;
       const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       for (let i = 0; i < 120 && !(app.state.nervesReady && app.state.respReady); i++) await sleep(250);

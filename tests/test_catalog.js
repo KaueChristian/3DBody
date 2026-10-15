@@ -56,7 +56,7 @@ function runTests() {
     process.exit(1);
   }
 
-  const { ITEMS, INNERVATION, LAYERS, NERVES, KIND_LABEL, REGIONS } = mod.exports;
+  const { ITEMS, INNERVATION, IRRIGATION, IRRIGATED, LAYERS, NERVES, KIND_LABEL, REGIONS } = mod.exports;
 
   if (!Array.isArray(ITEMS) || ITEMS.length === 0) {
     logFail('ITEMS não exportado ou vazio.');
@@ -234,6 +234,27 @@ function runTests() {
     for (const id of ['veia_cava_superior', 'veia_cava_inferior', 'seio_coronario', 'veia_azigo']) {
       if (itemMap.get(id)?.kind !== 'veia') logFail(`Veia "${id}" ausente.`);
     }
+  }
+
+  // 6d. Irrigação (M15), ficha completa dos vasos (M16) e feixes neurovasculares (M17)
+  {
+    const { FEIXES } = loadModule('../src/neurovascular.js');
+    for (const m of muscles) {
+      const arts = IRRIGATION.get(m.id);
+      if (!arts?.length) { logFail(`Músculo "${m.id}" sem artéria em IRRIGATION.`); continue; }
+      const texto = m.campos.find(([k]) => k === 'Irrigação')?.[1];
+      if (!texto || texto.length < 15) logFail(`Músculo "${m.id}" sem o campo "Irrigação" na ficha.`);
+      for (const a of arts) {
+        if (itemMap.get(a)?.kind !== 'arteria') logFail(`"${m.id}" é irrigado por "${a}", que não é artéria do catálogo.`);
+        if (!(IRRIGATED.get(a) ?? []).includes(m.id)) logFail(`"${a}" não lista "${m.id}" entre os músculos irrigados.`);
+      }
+    }
+    for (const [a, ms] of IRRIGATED) for (const m of ms) if (!(IRRIGATION.get(m) ?? []).includes(a)) logFail(`IRRIGATED lista "${m}" para "${a}", sem volta em IRRIGATION.`);
+    for (const id of ['arteria_radial', 'arteria_femoral', 'arteria_carotida_comum', 'arteria_braquial', 'arteria_poplitea']) {
+      if (!itemMap.get(id)?.campos.some(([k]) => k === 'Pulso e compressão')) logFail(`"${id}" sem o campo "Pulso e compressão".`);
+      if (!itemMap.get(id)?.campos.some(([k]) => k === 'Relações')) logFail(`"${id}" sem o campo "Relações".`);
+    }
+    if (FEIXES.length < 10) logFail(`Esperados ao menos 10 feixes neurovasculares, há ${FEIXES.length}.`);
   }
 
   // 7. Ferramentas de estudo que dependem do catálogo: tours e grupos musculares

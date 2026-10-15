@@ -1,7 +1,7 @@
 /**
  * Quiz teórico (F1.5): perguntas de texto geradas a partir dos campos do catálogo, sem escrever pergunta à mão.
  *
- * Músculos: nervo que o inerva · ação · origem · inserção · observação clínica/funcional.
+ * Músculos: nervo que o inerva · artéria que o irriga · ação · origem · inserção · observação clínica/funcional.
  * Nervos:   qual músculo ele inerva · lesão · sensibilidade.
  *
  * Cuidados com a qualidade das perguntas:
@@ -13,7 +13,7 @@ import { shuffle, norm, esc } from './util.js';
 
 const GENERIC = new Set(['musculo', 'nervo', 'parte', 'ventre', 'cabeca', 'lateral', 'medial', 'superior', 'inferior', 'anterior', 'posterior', 'longo', 'curto', 'maior', 'menor', 'externo', 'interno', 'profundo', 'superficial']);
 
-const MUSCLE_TYPES = ['nervo', 'acao', 'origem', 'insercao', 'nota'];
+const MUSCLE_TYPES = ['nervo', 'irrigacao', 'acao', 'origem', 'insercao', 'nota'];
 const NERVE_TYPES = ['musculos', 'lesao', 'sensibilidade'];
 
 const FIELD = { acao: 'Ação', origem: 'Origem', insercao: 'Inserção', lesao: 'Lesão', sensibilidade: 'Sensibilidade' };
@@ -49,14 +49,19 @@ export class TextQuizGenerator {
    * @param {Array<object>} items catálogo completo (`ITEMS`)
    * @param {Map<string, Array<{nervo: string}>>} innervation mapa músculo → nervos
    * @param {(item: object, region: string) => boolean} inRegion
+   * @param {Map<string, string[]>} [irrigation] mapa músculo → artérias (sem ele, não há pergunta de irrigação)
    */
-  constructor(items, innervation, inRegion) {
+  constructor(items, innervation, inRegion, irrigation = new Map()) {
     this.items = items;
     this.innervation = innervation;
     this.inRegion = inRegion;
+    this.irrigation = irrigation;
     this.byId = new Map(items.map((i) => [i.id, i]));
     this.muscles = items.filter((i) => i.kind === 'musculo');
     this.nerves = items.filter((i) => i.kind === 'nervo');
+    // artérias que irrigam algum músculo: as alternativas de “qual artéria?” saem daqui (as coronárias não servem de distrator)
+    const usadas = new Set([...irrigation.values()].flat());
+    this.muscleArteries = items.filter((i) => i.kind === 'arteria' && usadas.has(i.id));
     // nervos que inervam músculos (as alternativas de "qual nervo?" saem daqui)
     this.motorNerves = this.nerves.filter((n) => (n.ramos ?? []).some((r) => this.byId.get(r.m)?.kind === 'musculo'));
     // nervo → conjunto de músculos que ele inerva (ids)
@@ -120,6 +125,7 @@ export class TextQuizGenerator {
 
   build(type, t, region) {
     if (type === 'nervo') return this.buildNerveOfMuscle(t, region);
+    if (type === 'irrigacao') return this.buildArteryOfMuscle(t, region);
     if (type === 'musculos') return this.buildMuscleOfNerve(t, region);
     if (type === 'nota') {
       const text = (t.nota || '').trim();
@@ -159,6 +165,21 @@ export class TextQuizGenerator {
       // sem "o músculo": muitos nomes são plurais (Intercostais externos, Lumbricais)
       prompt: `Qual nervo inerva <b>${esc(muscle.name)}</b>?${others.length ? '<br><small>(há mais de um; escolha o principal)</small>' : ''}`,
       explanation: `Inervação de ${esc(muscle.name)}: ${esc(all)}.`,
+      named: true,
+    });
+  }
+
+  /** Músculo → "qual artéria o irriga?" (nenhuma das erradas irriga o músculo; o texto da ficha explica os ramos). */
+  buildArteryOfMuscle(muscle, region) {
+    const ids = this.irrigation.get(muscle.id) ?? [];
+    const arts = ids.map((id) => this.byId.get(id)).filter(Boolean);
+    if (!arts.length) return null;
+    const correct = arts[Math.floor(Math.random() * arts.length)];
+    const wrong = this.distractors(correct, this.muscleArteries, region, (i) => i.name, new Set(ids));
+    if (!wrong) return null;
+    return this.make('irrigacao', muscle, correct, wrong, {
+      prompt: `Qual artéria irriga <b>${esc(muscle.name)}</b>?${arts.length > 1 ? '<br><small>(há mais de uma; escolha uma delas)</small>' : ''}`,
+      explanation: `Irrigação de ${esc(muscle.name)}: ${esc(field(muscle, 'Irrigação'))}`,
       named: true,
     });
   }
