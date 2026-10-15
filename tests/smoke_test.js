@@ -349,7 +349,7 @@ async function runSmokeTest() {
       document.getElementById('btnStudy').click();
       t(!document.getElementById('studyModal').hidden, 'o modal de estudo não abriu');
       const cards = [...document.querySelectorAll('.tour-card')];
-      t(cards.length === 14, `esperava 14 tours, veio ${cards.length}`);
+      t(cards.length === 15, `esperava 15 tours, veio ${cards.length}`);
       for (const c of cards) {
         t(!/undefined|null|NaN/.test(c.innerText), `cartão de tour com texto quebrado: ${c.innerText.slice(0, 60)}`);
         t((c.querySelector('.tour-desc')?.innerText.length ?? 0) > 20, 'cartão de tour sem descrição');
@@ -372,7 +372,7 @@ async function runSmokeTest() {
       const app = window.__app;
       const sc = app.studyController;
       const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-      for (const id of ['manguito', 'plexo_braquial', 'nervo_radial', 'mastigacao_v3', 'facial_mimica', 'parede_abdominal', 'circulacao', 'circulacao_fetal', 'circulatorio_generalidades', 'coracao_superficie', 'arterias_cabeca_pescoco', 'poligono_willis', 'sistema_porta', 'respiratorio']) {
+      for (const id of ['manguito', 'plexo_braquial', 'nervo_radial', 'mastigacao_v3', 'facial_mimica', 'parede_abdominal', 'circulacao', 'circulacao_fetal', 'circulatorio_generalidades', 'coracao_superficie', 'arterias_cabeca_pescoco', 'poligono_willis', 'sistema_porta', 'perna_pe', 'respiratorio']) {
         sc.startTour(id);
         const n = sc.activeTour.steps.length;
         for (let i = 0; i < n; i++) {
@@ -394,7 +394,7 @@ async function runSmokeTest() {
       }
       if (!document.getElementById('tourBox').hidden) f.push('o painel do tour continua aberto depois de sair');
       return f;
-    }, 'os passos dos 14 tours destacam e enquadram a estrutura');
+    }, 'os passos dos 15 tours destacam e enquadram a estrutura');
 
     await run(async () => {
       const f = [];
@@ -853,6 +853,41 @@ async function runSmokeTest() {
       t(!app.state.layers.has('fetal'), 'mudar a dissecação deveria desligar de novo a camada fetal');
       return f;
     }, 'F5.1: irrigação, pulsos, feixes neurovasculares, linfáticos e circulação fetal');
+
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      for (let i = 0; i < 120 && !(app.state.nervesReady && app.state.legReady); i++) await sleep(250);
+      const txt = () => document.getElementById('infoBody').textContent;
+
+      // F4.3 a F4.5: os músculos da perna e do pé têm malha, ficha, nervo, segmentos e irrigação
+      const perna = ['tibial_anterior', 'extensor_longo_dedos', 'extensor_longo_halux', 'fibular_terceiro', 'fibular_longo', 'fibular_curto', 'gastrocnemio_medial',
+        'gastrocnemio_lateral', 'soleo', 'plantar', 'popliteo', 'tibial_posterior', 'flexor_longo_dedos', 'flexor_longo_halux'];
+      const pe = ['extensor_curto_halux', 'abdutor_halux', 'flexor_curto_dedos', 'abdutor_minimo_pe', 'quadrado_plantar', 'lumbricais_pe', 'flexor_curto_halux_medial',
+        'flexor_curto_halux_lateral', 'adutor_halux_obliquo', 'adutor_halux_transverso', 'flexor_curto_minimo_pe', 'oponente_minimo_pe', 'interosseos_plantares'];
+      for (const id of [...perna, ...pe, 'membrana_interossea_perna', 'n_tibial', 'n_fibular_comum', 'n_fibular_superficial', 'n_fibular_profundo', 'n_plantar_medial', 'n_plantar_lateral']) {
+        t(app.M.has(id) && app.M.get(id).meshes.length > 0, 'sem malha no modelo: ' + id);
+      }
+      app.setRegion('membro_inf', { fly: false });
+      app.setDissect(3);
+      const vis = [...app.M.values()].filter((m) => m.group.visible).map((m) => m.item.id);
+      t(vis.includes('soleo') && vis.includes('gastrocnemio_medial') && !vis.includes('atrio_direito'), 'a região Perna não mostra a panturrilha');
+
+      // ficha do fibular longo: nervo, segmentos e irrigação; o nervo leva aos músculos
+      app.select('fibular_longo', { fly: false });
+      t(/Nervo fibular superficial/.test(txt()) && /L5–S2/.test(txt()) && /Irrigação/.test(txt()), 'a ficha do fibular longo não mostra nervo, segmentos e irrigação');
+      app.select('n_fibular_comum', { fly: false });
+      t(/pé caído/.test(txt()) && /colo da fíbula/.test(txt()), 'a ficha do nervo fibular comum não fala do pé caído');
+      app.select('n_plantar_lateral', { fly: false });
+      const chips = [...document.querySelectorAll('#infoBody button.lchip')].map((b) => b.dataset.go);
+      t(chips.includes('interosseos_plantares') && chips.includes('adutor_halux_obliquo'), 'o plantar lateral não leva aos músculos que inerva');
+      app.select('tibial_posterior', { fly: false });
+      t([...document.querySelectorAll('#infoBody button.lchip')].some((b) => b.dataset.go === 'n_tibial') && /inverte|inverte/i.test(txt()), 'a ficha do tibial posterior não leva ao nervo tibial');
+      app.select(null, { fly: false });
+      return f;
+    }, 'F4.3 a F4.5: músculos da perna e do pé, nervos tibial, fibulares e plantares');
 
     await run(async () => {
       const f = [];

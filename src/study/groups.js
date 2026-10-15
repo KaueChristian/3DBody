@@ -34,6 +34,11 @@ export const GROUPS = [
   { id: 'coxa_ant', label: 'Compartimento anterior da coxa (quadríceps e sartório)' },
   { id: 'coxa_med', label: 'Compartimento medial da coxa (adutores)' },
   { id: 'coxa_post', label: 'Compartimento posterior da coxa (isquiotibiais)' },
+  { id: 'perna_ant', label: 'Compartimento anterior da perna (extensores)' },
+  { id: 'perna_lat', label: 'Compartimento lateral da perna (fibulares)' },
+  { id: 'perna_post_sup', label: 'Compartimento posterior da perna: tríceps sural' },
+  { id: 'perna_post_prof', label: 'Compartimento posterior da perna: camada profunda' },
+  { id: 'pe', label: 'Pé: músculos intrínsecos' },
 ];
 
 const BY_GROUP = {
@@ -64,6 +69,11 @@ const BY_GROUP = {
   coxa_ant: 'sartorio reto_femoral vasto_lateral vasto_medial vasto_intermedio pectineo',
   coxa_med: 'adutor_longo adutor_curto adutor_magno adutor_minimo gracil',
   coxa_post: 'biceps_femoral_longa biceps_femoral_curta semitendineo semimembranaceo',
+  perna_ant: 'tibial_anterior extensor_longo_dedos extensor_longo_halux fibular_terceiro',
+  perna_lat: 'fibular_longo fibular_curto',
+  perna_post_sup: 'gastrocnemio_medial gastrocnemio_lateral soleo plantar',
+  perna_post_prof: 'popliteo tibial_posterior flexor_longo_dedos flexor_longo_halux',
+  pe: 'extensor_curto_halux abdutor_halux flexor_curto_dedos abdutor_minimo_pe quadrado_plantar lumbricais_pe flexor_curto_halux_medial flexor_curto_halux_lateral adutor_halux_obliquo adutor_halux_transverso flexor_curto_minimo_pe oponente_minimo_pe interosseos_plantares',
 };
 
 /** id do músculo → id do grupo. */

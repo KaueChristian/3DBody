@@ -61,6 +61,15 @@ export const SEGMENTOS_MUSCULO = {
   sartorio: R('L2', 'L3'), reto_femoral: R('L2', 'L4'), vasto_lateral: R('L2', 'L4'), vasto_medial: R('L2', 'L4'), vasto_intermedio: R('L2', 'L4'),
   pectineo: R('L2', 'L3'), adutor_longo: R('L2', 'L4'), adutor_curto: R('L2', 'L4'), adutor_magno: R('L2', 'L4'), adutor_minimo: R('L2', 'L4'), gracil: R('L2', 'L3'),
   biceps_femoral_longa: R('S1', 'S3'), biceps_femoral_curta: R('L5', 'S2'), semitendineo: R('L5', 'S2'), semimembranaceo: R('L5', 'S2'),
+  // perna (F4.3) e pé (F4.4)
+  tibial_anterior: R('L4', 'L5'), extensor_longo_dedos: R('L5', 'S1'), extensor_longo_halux: R('L5', 'S1'), fibular_terceiro: R('L5', 'S1'),
+  fibular_longo: R('L5', 'S2'), fibular_curto: R('L5', 'S2'),
+  gastrocnemio_medial: R('S1', 'S2'), gastrocnemio_lateral: R('S1', 'S2'), soleo: R('S1', 'S2'), plantar: R('S1', 'S2'), popliteo: R('L4', 'S1'),
+  tibial_posterior: R('L4', 'L5'), flexor_longo_dedos: R('S2', 'S3'), flexor_longo_halux: R('S2', 'S3'),
+  extensor_curto_halux: R('L5', 'S1'), abdutor_halux: R('S2', 'S3'), flexor_curto_dedos: R('S2', 'S3'), abdutor_minimo_pe: R('S2', 'S3'),
+  quadrado_plantar: R('S2', 'S3'), lumbricais_pe: R('S2', 'S3'), flexor_curto_halux_medial: R('S1', 'S2'), flexor_curto_halux_lateral: R('S1', 'S2'),
+  adutor_halux_obliquo: R('S2', 'S3'), adutor_halux_transverso: R('S2', 'S3'), flexor_curto_minimo_pe: R('S2', 'S3'), oponente_minimo_pe: R('S2', 'S3'),
+  interosseos_plantares: R('S2', 'S3'),
   bulboesponjoso: R('S2', 'S4'), isquiocavernoso: R('S2', 'S4'), transverso_superficial_perineo: R('S2', 'S4'),
   transverso_profundo_perineo: R('S2', 'S4'), esfincter_uretra: R('S2', 'S4'),
   // membro superior
@@ -103,6 +112,8 @@ export const SEGMENTOS_NERVO = {
   n_obturador_interno: cat(R('L5'), R('S1', 'S2')),
   n_obturatorio: R('L2', 'L4'), n_gluteo_superior: R('L4', 'S1'), n_gluteo_inferior: R('L5', 'S2'), n_piriforme: R('S1', 'S2'),
   n_quadrado_femoral: R('L4', 'S1'), n_isquiatico: R('L4', 'S3'),
+  n_tibial: R('L4', 'S3'), n_fibular_comum: R('L4', 'S2'), n_fibular_superficial: R('L5', 'S2'), n_fibular_profundo: R('L4', 'S1'),
+  n_plantar_medial: R('L4', 'S3'), n_plantar_lateral: R('S1', 'S3'),
   medula_espinal: SEGMENT_ORDER, n_espinais_cervicais: R('C1', 'C8'), n_espinais_toracicos: R('T1', 'T12'), n_espinais_lombares: R('L1', 'L5'),
   n_espinais_sacrais: R('S1', 'Co1'), cauda_equina: R('L2', 'Co1'),
 };

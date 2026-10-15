@@ -212,10 +212,11 @@ export class NerveBuilder {
     return new THREE.CatmullRomCurve3(pts, false, 'centripetal');
   }
 
-  tube(curve, r0, r1 = r0) {
+  /** `passo`: distância entre anéis (0,04 = 4 mm); nos diâmetros dos nervos (1 a 3 mm) a diferença para 2 mm não se vê e o custo cai a um terço. */
+  tube(curve, r0, r1 = r0, passo = 0.04) {
     const len = curve.getLength();
-    const seg = Math.max(4, Math.ceil(len / 0.02));
-    const radial = 8;
+    const seg = Math.max(4, Math.ceil(len / passo));
+    const radial = 6;
     const g = new THREE.TubeGeometry(curve, seg, 1, radial, false);
     // raio variável ao longo do tubo (afina em direção à ponta)
     const pos = g.attributes.position;
@@ -267,7 +268,7 @@ export class NerveBuilder {
       const r = path.r ?? spec.r ?? 0.01;
       curves.push({ c, r });
       tubes.push(this.tube(c, r, path.r1 ?? r));
-      picks.push(this.tube(c, Math.max(r * 2.2, 0.02)));
+      picks.push(this.tube(c, Math.max(r * 2.2, 0.02), undefined, 0.08));
     }
     // ramos até os músculos
     for (const ram of spec.ramos ?? []) {
@@ -277,7 +278,7 @@ export class NerveBuilder {
       const br = this.branch(curves, list, ram, side, mirror, !!spec.superficial);
       if (!br) continue;
       tubes.push(this.tube(br.curve, br.r, br.r * 0.7));
-      picks.push(this.tube(br.curve, 0.014));
+      picks.push(this.tube(br.curve, 0.014, undefined, 0.08));
     }
     const geometry = tubes.length ? mergeGeometries(tubes) : null;
     if (geometry) {

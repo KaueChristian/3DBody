@@ -6,6 +6,8 @@ import { ORAL_MUSCLES } from './catalog-muscles-oral.js';
 import { BODY_BONES } from './catalog-body-bones.js';
 import { LEG_BONES } from './catalog-leg-bones.js';
 import { LEG_MUSCLES } from './catalog-leg-muscles.js';
+import { LEG_PERNA, LEG_LIGS } from './catalog-leg-perna.js';
+import { LEG_PE } from './catalog-leg-pe.js';
 import { NERVES_LEG } from './catalog-nerves-leg.js';
 import { CIRC_ITEMS as CIRC_BASE } from './catalog-circ.js';
 import { CIRC_RAMOS } from './catalog-circ-ramos.js';
@@ -98,7 +100,7 @@ const HEAD_ITEMS = [SKIN, ...FASCIAS, ...MUSCLES, ...LIGAMENTS, ...GLANDS, ...OT
 export const HEAD_IDS = new Set(HEAD_ITEMS.map((i) => i.id));
 export const BODY_ITEMS = [...BODY_MUSCLES, ...ORAL_MUSCLES, ...BODY_BONES, ...JOINTS, ...JOINT_LIGAMENTS];
 /** Estruturas do membro inferior (F4): vêm do pacote `anatomy-leg.js`, carregado depois do corpo. */
-export const LEG_ITEMS = [...LEG_BONES, ...LEG_MUSCLES];
+export const LEG_ITEMS = [...LEG_BONES, ...LEG_MUSCLES, ...LEG_PERNA, ...LEG_PE, ...LEG_LIGS];
 /** Circulatório (F5): coração, vasos principais e, no mesmo pacote, os ramos de menor calibre (F5.1). */
 export const CIRC_ITEMS = [...CIRC_BASE, ...CIRC_RAMOS, ...CIRC_VISCERAIS, ...CIRC_CODIGO, ...CIRC_ESQUEMAS, ...CIRC_SUPERFICIE, ...CIRC_FETAL];
 export { RESP_ITEMS };

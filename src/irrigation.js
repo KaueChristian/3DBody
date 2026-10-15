@@ -159,4 +159,18 @@ export const IRRIGACAO = [
   [['gracil'], ['arteria_femoral_profunda', 'arteria_femoral'], 'Ramos musculares da femoral profunda e da femoral.'],
   [['biceps_femoral_longa', 'semitendineo', 'semimembranaceo'], ['arteria_femoral_profunda', 'arteria_poplitea', 'arteria_glutea_inferior'], 'Perfurantes da femoral profunda, glútea inferior (parte proximal) e ramos musculares da poplítea.'],
   [['biceps_femoral_curta'], ['arteria_femoral_profunda', 'arteria_poplitea'], 'Perfurantes da femoral profunda e ramos musculares da poplítea.'],
+
+  /* ═════════ Perna e pé ═════════ */
+  [['tibial_anterior', 'extensor_longo_dedos'], ['arteria_tibial_anterior'], 'Artéria tibial anterior (ramos musculares) e artéria recorrente tibial anterior, na parte proximal.'],
+  [['extensor_longo_halux', 'fibular_terceiro'], ['arteria_tibial_anterior', 'arteria_fibular'], 'Artéria tibial anterior (ramos musculares) e ramo perfurante da artéria fibular.'],
+  [['fibular_longo', 'fibular_curto'], ['arteria_fibular', 'arteria_tibial_anterior'], 'Artéria fibular, por ramos musculares e perfurantes; na parte proximal, também ramos da tibial anterior.'],
+  [['gastrocnemio_medial', 'gastrocnemio_lateral', 'plantar'], ['arteria_poplitea'], 'Artérias surais, ramos da artéria poplítea.'],
+  [['soleo'], ['arteria_poplitea', 'arteria_tibial_posterior', 'arteria_fibular'], 'Artérias surais (da poplítea) e ramos musculares da tibial posterior e da fibular.'],
+  [['popliteo'], ['arteria_geniculares', 'arteria_tibial_posterior'], 'Artérias geniculares inferiores (da poplítea) e ramos da tibial posterior.'],
+  [['tibial_posterior', 'flexor_longo_halux'], ['arteria_fibular', 'arteria_tibial_posterior'], 'Artéria fibular (a principal, sobretudo para o flexor longo do hálux) e ramos musculares da tibial posterior.'],
+  [['flexor_longo_dedos'], ['arteria_tibial_posterior'], 'Ramos musculares da artéria tibial posterior.'],
+  [['extensor_curto_halux'], ['arteria_dorsal_pe'], 'Artéria dorsal do pé (e ramos da társica lateral).'],
+  [['abdutor_halux', 'flexor_curto_dedos', 'flexor_curto_halux_medial', 'flexor_curto_halux_lateral'], ['arteria_plantar_medial', 'arteria_plantar_lateral'], 'Artéria plantar medial (principal) e ramos da plantar lateral e do arco plantar.'],
+  [['abdutor_minimo_pe', 'quadrado_plantar', 'flexor_curto_minimo_pe', 'oponente_minimo_pe'], ['arteria_plantar_lateral'], 'Artéria plantar lateral.'],
+  [['adutor_halux_obliquo', 'adutor_halux_transverso', 'interosseos_plantares', 'lumbricais_pe'], ['arteria_plantar_lateral', 'arteria_dorsal_pe'], 'Arco plantar profundo (da plantar lateral e do ramo plantar profundo da dorsal do pé) e artérias metatarsais plantares.'],
 ];
