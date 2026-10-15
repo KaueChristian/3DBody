@@ -429,6 +429,8 @@ body.quiz-locate .toolbar button[data-region] { pointer-events: none; }
 .sec-toggle { width: 22px; height: 22px; border: 0; background: none; color: var(--muted); display: grid; place-items: center; border-radius: 6px; transition: transform 0.15s; flex: none; padding: 0; }
 .sec.collapsed .sec-toggle { transform: rotate(-90deg); }
 .sec.collapsed .sec-items { display: none; }
+.sec.collapsed.has-active .sec-name { color: var(--c); font-weight: 700; }
+.sec.collapsed.has-active .sec-count::after { content: ' ●'; color: var(--c); }
 .sec.off .sec-name { opacity: 0.5; }
 .sec-head .eye { width: 28px; height: 28px; border-radius: 8px; border: 0; background: none; color: var(--muted); display: grid; place-items: center; flex: none; }
 .sec-head .eye:hover { background: rgba(255, 255, 255, 0.07); color: var(--text); }

@@ -893,6 +893,48 @@ async function runSmokeTest() {
       const f = [];
       const t = (c, m) => { if (!c) f.push(m); };
       const app = window.__app;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      for (let i = 0; i < 120 && !(app.state.nervesReady && app.state.legReady); i++) await sleep(250);
+      const secs = () => [...document.querySelectorAll('#list .sec:not([hidden])')];
+      const abertas = () => secs().filter((s) => !s.classList.contains('collapsed')).length;
+
+      // lista lateral: as seções começam fechadas e a pessoa abre só as que quer
+      app.state.opened.clear();
+      app.select(null, { fly: false });
+      app.syncList();
+      t(secs().length > 3, 'a lista não tem seções');
+      t(abertas() === 0, 'as seções da lista deveriam começar fechadas, mas ' + abertas() + ' estão abertas');
+      const head = document.querySelector('#list .sec:not([hidden]) .sec-name');
+      head?.click();
+      t(abertas() === 1, 'abrir uma seção deveria abrir só ela (' + abertas() + ' abertas)');
+      t(document.querySelector('#list .sec:not([hidden]):not(.collapsed) .sec-toggle')?.getAttribute('aria-expanded') === 'true', 'o botão da seção aberta não diz aria-expanded=true');
+      head?.click();
+      t(abertas() === 0, 'a seção não fechou de novo');
+
+      // selecionar algo de uma seção fechada a destaca no cabeçalho, sem abri-la
+      app.setRegion('membro_inf', { fly: false });
+      app.setDissect(3);
+      app.select('soleo', { fly: false });
+      const destaque = document.querySelectorAll('#list .sec.collapsed.has-active').length;
+      t(destaque === 1 && abertas() === 0, 'a seção fechada que guarda a seleção não foi destacada (' + destaque + ' destacadas, ' + abertas() + ' abertas)');
+      app.select(null, { fly: false });
+
+      // a busca abre as seções que têm resultado
+      const busca = document.getElementById('search');
+      busca.value = 'soleo';
+      busca.dispatchEvent(new Event('input', { bubbles: true }));
+      t(abertas() >= 1 && document.querySelector('#list .item:not([hidden])')?.offsetParent !== null, 'a busca não abriu a seção do resultado');
+      busca.value = '';
+      busca.dispatchEvent(new Event('input', { bubbles: true }));
+      t(abertas() === 0, 'ao limpar a busca as seções deveriam voltar a fechar');
+      app.setRegion('todos', { fly: false });
+      return f;
+    }, 'lista lateral: seções fechadas por padrão, abertas uma a uma, destaque da seleção e busca');
+
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
       const sc = app.studyController;
       const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       for (let i = 0; i < 120 && !(app.state.nervesReady && app.state.respReady); i++) await sleep(250);

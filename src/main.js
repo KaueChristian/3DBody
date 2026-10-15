@@ -38,7 +38,7 @@ const state = {
   dissect: 1,
   layers: new Set(),
   hidden: new Set(),
-  collapsed: new Set(),
+  opened: new Set(), // seções da lista lateral que a pessoa abriu: todas começam fechadas
   region: 'cabeca',
   bodyReady: false,
   legReady: false,
@@ -769,10 +769,10 @@ function buildList() {
     const sec = document.createElement('li');
     sec.className = 'sec';
     sec.style.setProperty('--c', layer.color);
-    sec.innerHTML = `<div class="sec-head"><button class="sec-toggle" aria-label="Recolher ${esc(layer.label)}">${CHEV}</button><span class="dot"></span><span class="sec-name">${esc(layer.label)}</span><span class="sec-count"></span><button class="eye" aria-label="Mostrar ou ocultar a camada ${esc(layer.label)}"></button></div><ul class="sec-items"></ul>`;
+    sec.innerHTML = `<div class="sec-head"><button class="sec-toggle" aria-label="Abrir ou fechar ${esc(layer.label)}">${CHEV}</button><span class="dot"></span><span class="sec-name">${esc(layer.label)}</span><span class="sec-count"></span><button class="eye" aria-label="Mostrar ou ocultar a camada ${esc(layer.label)}"></button></div><ul class="sec-items"></ul>`;
     const ul = sec.querySelector('.sec-items');
     const toggle = () => {
-      if (state.collapsed.has(layer.id)) state.collapsed.delete(layer.id); else state.collapsed.add(layer.id);
+      if (state.opened.has(layer.id)) state.opened.delete(layer.id); else state.opened.add(layer.id);
       syncList();
     };
     sec.querySelector('.sec-toggle').onclick = toggle;
@@ -867,7 +867,11 @@ function syncList() {
     }
     total += n;
     sec.hidden = n === 0;
-    sec.classList.toggle('collapsed', state.collapsed.has(layer.id) && !q);
+    const closed = !state.opened.has(layer.id) && !q;
+    sec.classList.toggle('collapsed', closed);
+    // fechada, a seção avisa que guarda a estrutura selecionada (o cabeçalho ganha o destaque)
+    sec.classList.toggle('has-active', closed && !!state.selected && itemsOfLayer(layer.id).some((i) => state.selected === i.id));
+    sec.querySelector('.sec-toggle').setAttribute('aria-expanded', String(!closed));
     sec.classList.toggle('off', !state.layers.has(layer.id));
     sec.querySelector('.sec-count').textContent = n;
     setEye(sec.querySelector('.sec-head .eye'), !state.layers.has(layer.id));
