@@ -49,8 +49,8 @@ Dados (raramente necessário; baixa ~60 MB e regenera arquivos grandes — só c
 | `src/catalog-body-muscles.js`, `catalog-leg-muscles.js` | Músculos do tronco e do membro superior; o segundo, do quadril e da coxa (pacote `anatomy-leg.js`) | |
 | `src/catalog-bones.js`, `catalog-body-bones.js`, `catalog-leg-bones.js` | Ossos, dentes, cartilagens, discos (o último é do membro inferior, pacote `anatomy-leg.js`) | |
 | `src/catalog-resp.js`, `catalog-resp-airways.js` | Pulmões (malhas do Atlas de Referência Humano ajustadas ao tórax por `tools/fit_hra.py`) e vias aéreas, pleuras e cartilagens da laringe (BodyParts3D e esquema); pacote `anatomy-resp.js` | Ver `docs/respiratorio.md`; a ficha cita a origem da malha (`malha: 'hra'`) |
-| `src/catalog-circ.js`, `catalog-circ-ramos.js` | Coração, artérias e veias principais e os vasos de menor calibre (pacote `anatomy-circ.js`); `relacionados` liga as vizinhas (o catálogo completa a ligação nos dois sentidos) | Ver `docs/circulatorio.md`; o pericárdio é esquema (`src/hull-geo.js`) |
-| `src/catalog-circ-esquemas.js`, `catalog-circ-fetal.js` | Linfáticos, sistema de condução, papilar posteromedial, circulação fetal e ligamento arterial: **esquemas por código** (a placenta e o cordão vêm do HRA, `tools/convert_placenta.py`) | A ficha tem de dizer que é esquema (`nota: 'ESQUEMA…'`); a camada `fetal` é `optional` (desligada por padrão) |
+| `src/catalog-circ.js`, `catalog-circ-ramos.js`, `catalog-circ-viscerais.js` | Coração, artérias e veias principais e os vasos de menor calibre (pacote `anatomy-circ.js`); `relacionados` liga as vizinhas (o catálogo completa a ligação nos dois sentidos) | Ver `docs/circulatorio.md`; o pericárdio é esquema (`src/hull-geo.js`) |
+| `src/catalog-circ-codigo.js`, `catalog-circ-esquemas.js`, `catalog-circ-superficie.js`, `catalog-circ-fetal.js`, `cardio-extras.js` | Carótida externa e outros vasos por código, linfáticos, sistema de condução, papilar posteromedial, projeção do coração, focos de ausculta, circulação fetal e ligamento arterial: **esquemas por código** (a placenta e o cordão vêm do HRA, `tools/convert_placenta.py`) | A ficha tem de dizer que é esquema (`nota: 'ESQUEMA…'`); a camada `fetal` é `optional` (desligada por padrão) |
 | `src/irrigation.js`, `vessel-clinical.js`, `neurovascular.js`, `vascular-links.js` | Irrigação de cada músculo (fonte única de `IRRIGATION` e do campo “Irrigação”), pulsos e relações dos vasos, feixes neurovasculares e as seções da ficha | **Todo músculo novo precisa de uma linha em `irrigation.js`** (a guarda lança erro); os atlas divergem nos ramos, ver o cabeçalho do arquivo |
 | `src/catalog-nerves.js`, `catalog-nerves-leg.js` | Nervos: textos, trajetos, `ramos` (fonte única músculo ↔ nervo); o segundo, os do membro inferior | Pontos medidos no modelo; ver §8 |
 | `src/catalog-other.js` | Ligamentos, fáscias, glândulas, pele | |
@@ -116,8 +116,8 @@ node -e "const c=require(process.env.TEMP+'/cat.cjs'); console.log(c.ITEMS.lengt
 
 Se lançar `Identificador duplicado…`, `Nervo aponta para estrutura inexistente…` ou `Músculos sem nervo…`, o catálogo está
 errado — corrija os dados. As articulações têm guardas próprias (`Articulação … cita osso inexistente`, `Cápsula de … usa peças
-fora dos ossos citados`, `Movimento … cita músculo inexistente`…). Contagens esperadas hoje: 604 estruturas (228 músculos, 106 nervos
-e gânglios, 52 ossos e cartilagens, 28 ligamentos, 13 articulações, 70 artérias, 37 veias, 14 cardíacas, 9 linfáticas, 28 do respiratório (5 lobos, traqueia e brônquios), 3 fáscias, 3 glândulas e 13 estruturas, entre elas a medula espinal, o pericárdio, a placenta, o cordão umbilical e o ligamento arterial).
+fora dos ossos citados`, `Movimento … cita músculo inexistente`…). Contagens esperadas hoje: 672 estruturas (228 músculos, 106 nervos
+e gânglios, 52 ossos e cartilagens, 28 ligamentos, 13 articulações, 111 artérias, 56 veias, 14 cardíacas, 15 linfáticas, 28 do respiratório (5 lobos, traqueia e brônquios), 3 fáscias, 3 glândulas e 15 estruturas, entre elas a medula espinal, o pericárdio, a placenta, o cordão umbilical, o ligamento arterial, a projeção do coração e os focos de ausculta).
 
 ### 6.2 Verificação visual (obrigatória para qualquer mudança de geometria ou interface)
 
