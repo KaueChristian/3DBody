@@ -349,7 +349,7 @@ async function runSmokeTest() {
       document.getElementById('btnStudy').click();
       t(!document.getElementById('studyModal').hidden, 'o modal de estudo não abriu');
       const cards = [...document.querySelectorAll('.tour-card')];
-      t(cards.length === 9, `esperava 9 tours, veio ${cards.length}`);
+      t(cards.length === 14, `esperava 14 tours, veio ${cards.length}`);
       for (const c of cards) {
         t(!/undefined|null|NaN/.test(c.innerText), `cartão de tour com texto quebrado: ${c.innerText.slice(0, 60)}`);
         t((c.querySelector('.tour-desc')?.innerText.length ?? 0) > 20, 'cartão de tour sem descrição');
@@ -372,7 +372,7 @@ async function runSmokeTest() {
       const app = window.__app;
       const sc = app.studyController;
       const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-      for (const id of ['manguito', 'plexo_braquial', 'nervo_radial', 'mastigacao_v3', 'facial_mimica', 'parede_abdominal', 'circulacao', 'circulacao_fetal', 'respiratorio']) {
+      for (const id of ['manguito', 'plexo_braquial', 'nervo_radial', 'mastigacao_v3', 'facial_mimica', 'parede_abdominal', 'circulacao', 'circulacao_fetal', 'circulatorio_generalidades', 'coracao_superficie', 'arterias_cabeca_pescoco', 'poligono_willis', 'sistema_porta', 'respiratorio']) {
         sc.startTour(id);
         const n = sc.activeTour.steps.length;
         for (let i = 0; i < n; i++) {
@@ -394,7 +394,7 @@ async function runSmokeTest() {
       }
       if (!document.getElementById('tourBox').hidden) f.push('o painel do tour continua aberto depois de sair');
       return f;
-    }, 'os 45 passos dos 9 tours destacam e enquadram a estrutura');
+    }, 'os passos dos 14 tours destacam e enquadram a estrutura');
 
     await run(async () => {
       const f = [];
@@ -818,6 +818,18 @@ async function runSmokeTest() {
       t(!app.state.hidden.has('arteria_profunda_braco') && app.state.hidden.has('biceps_longa'), 'isolar o feixe não escondeu o resto');
       app.state.hidden.clear();
       app.syncLayers();
+
+      // F5.2: a carótida externa e o polígono de Willis existem, e o masseter leva à maxilar
+      app.setRegion('cabeca', { fly: false });
+      app.select('masseter', { fly: false });
+      t([...document.querySelectorAll('#infoBody button.lchip')].some((b) => b.dataset.go === 'arteria_maxilar'), 'a ficha do masseter não leva à artéria maxilar');
+      app.select('arteria_facial', { fly: false });
+      t(/ESQUEMA/.test(document.getElementById('infoBody').textContent) && /Pulso e compressão/.test(txt()), 'a ficha da artéria facial não traz o esquema e o pulso');
+      app.select('arteria_cerebral_media', { fly: false });
+      t(/lenticuloestriadas/.test(txt()) && app.M.get('arteria_cerebral_media').meshes.length > 0, 'a cerebral média não tem malha ou ficha');
+      app.setRegion('tronco', { fly: false });
+      app.select('focos_ausculta', { fly: false });
+      t(/Mitral/.test(txt()) && app.M.get('focos_ausculta').meshes.length > 0, 'os focos de ausculta não aparecem');
 
       // M16: pulso na ficha da artéria radial
       app.select('arteria_radial', { fly: false });

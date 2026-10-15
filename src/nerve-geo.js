@@ -145,7 +145,8 @@ export class NerveBuilder {
     if (Array.isArray(spec)) p = new THREE.Vector3(...spec);
     else if (typeof spec === 'string') p = this.lm(spec).clone();
     else if (spec.skin) {
-      p = this.underSkin(new THREE.Vector3(...spec.p), spec.d ?? -0.03);
+      // o lado vem do sinal de x: pontos do lado direito (x < 0) acham a pele do lado direito
+      p = this.underSkin(new THREE.Vector3(...spec.p), spec.d ?? -0.03, spec.p[0] < 0 ? -1 : 1);
       if (!p) throw new Error('Não achei a pele');
     } else if (spec.on) {
       const ref = new THREE.Vector3(...spec.p);

@@ -446,7 +446,7 @@ export const CIRC_ITEMS = [
   art('arteria_carotida_comum', 'Artéria carótida comum', 'Arteria carotis communis', ['cabeca', 'tronco'], ['arteria_carotida_comum'], {
     origem: 'A direita, do tronco braquiocefálico; a esquerda, direto do arco da aorta.',
     trajeto: 'Sobe pelo pescoço dentro da bainha carótica, com a veia jugular interna (lateral) e o nervo vago (posterior), e se divide, ao nível da margem superior da cartilagem tireóidea (C4), nas artérias carótidas externa e interna.',
-    ramos: 'Sem ramos antes da bifurcação; as carótidas externa e interna são os ramos terminais. A carótida externa não está no modelo.',
+    ramos: 'Sem ramos antes da bifurcação; as carótidas externa e interna são os ramos terminais. A carótida externa (esquema por código) e seus ramos estão no modelo.',
     territorio: 'Cabeça e pescoço, pelas carótidas externa e interna.',
     nota: 'O pulso carotídeo se palpa à frente do esternocleidomastóideo, no nível da cartilagem tireóidea. O seio carótico (barorreceptor) e o glomo carótico (quimiorreceptor) ficam na bifurcação.',
   }, {

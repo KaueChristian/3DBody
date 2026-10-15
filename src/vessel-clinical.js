@@ -16,6 +16,8 @@ export const PULSOS = {
   arteria_poplitea: 'O pulso é difícil de palpar: fica no fundo da fossa poplítea e se sente melhor com o joelho semifletido e a musculatura relaxada.',
   arteria_tibial_posterior: 'Palpa-se atrás do maléolo medial, a meio caminho entre o maléolo e o tendão do calcâneo.',
   arteria_dorsal_pe: 'Palpa-se no dorso do pé, lateral ao tendão do extensor longo do hálux; é o pulso periférico mais distal que se examina no membro inferior.',
+  arteria_facial: 'Palpa-se no ponto em que cruza a margem inferior da mandíbula, na borda anterior do masseter. A compressão ali, contra a mandíbula, controla a hemorragia da face.',
+  arteria_temporal_superficial: 'Palpa-se à frente do trago da orelha e sobre a raiz do arco zigomático; é o pulso da cabeça mais acessível. Os ferimentos do couro cabeludo sangram muito, e a compressão contra o osso temporal ajuda a controlá-los.',
   aorta_abdominal: 'A aorta abdominal termina em L4, ao nível das cristas ilíacas; em pessoas magras sua pulsação se sente na linha mediana, entre o apêndice xifoide e o umbigo.',
 };
 

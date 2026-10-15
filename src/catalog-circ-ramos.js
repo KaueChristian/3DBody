@@ -248,7 +248,7 @@ export const CIRC_RAMOS = [
     trajeto: 'Desce no compartimento posterior profundo, sob o sóleo, com o nervo tibial; passa por trás do maléolo medial, entre os tendões do flexor longo dos dedos e do flexor longo do hálux, no túnel do tarso, e se divide em artérias plantares medial e lateral.',
     ramos: 'Artéria fibular (o ramo mais calibroso), circunflexa fibular, nutrícia da tíbia, ramos maleolares mediais e calcâneos e ramos musculares.',
     territorio: 'Compartimentos posterior e lateral da perna (este pela fibular) e a planta do pé.',
-    nota: 'O pulso tibial posterior se palpa atrás do maléolo medial, entre o maléolo e o tendão do calcâneo. A artéria fibular (a que irriga o compartimento lateral) não é uma ficha própria.',
+    nota: 'O pulso tibial posterior se palpa atrás do maléolo medial, entre o maléolo e o tendão do calcâneo. A artéria fibular, que irriga o compartimento lateral, é uma ficha própria (esquema por código).',
   }, { relacionados: ['arteria_poplitea', 'arteria_plantar_medial', 'arteria_plantar_lateral', 'veia_tibial_posterior'] }),
   art('arteria_dorsal_pe', 'Artéria dorsal do pé', 'Arteria dorsalis pedis', MI, ['arteria_dorsal_pe'], {
     origem: 'Continuação da artéria tibial anterior, à frente do tornozelo, entre os maléolos.',

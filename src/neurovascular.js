@@ -62,6 +62,26 @@ export const FEIXES = [
     texto: 'No terço distal do antebraço a artéria ulnar e o nervo ulnar descem juntos sob o flexor ulnar do carpo e passam pelo canal ulnar (de Guyon), à frente do retináculo dos flexores.',
   },
   {
+    id: 'feixe_gluteo_superior', nome: 'Feixe glúteo superior',
+    membros: ['arteria_glutea_superior', 'veia_gluteas', 'n_gluteo_superior'],
+    texto: 'A artéria e a veia glúteas superiores e o nervo glúteo superior saem da pelve pelo forame isquiático maior, acima do piriforme, e seguem entre o glúteo médio e o mínimo. A lesão do nervo paralisa esses músculos e causa a marcha de Trendelenburg (a pelve cai do lado do membro que se apoia).',
+  },
+  {
+    id: 'feixe_gluteo_inferior', nome: 'Feixe glúteo inferior',
+    membros: ['arteria_glutea_inferior', 'veia_gluteas', 'n_gluteo_inferior', 'n_isquiatico'],
+    texto: 'Saem da pelve pelo forame isquiático maior, abaixo do piriforme: a artéria e a veia glúteas inferiores, o nervo glúteo inferior (para o glúteo máximo) e o nervo isquiático, que a artéria acompanha. A injeção no quadrante superolateral da nádega evita essa região.',
+  },
+  {
+    id: 'feixe_pudendo', nome: 'Feixe pudendo (canal pudendo)',
+    membros: ['arteria_pudenda_interna', 'veia_pudenda_interna', 'n_pudendo'],
+    texto: 'A artéria e a veia pudendas internas e o nervo pudendo saem da pelve pelo forame isquiático maior, contornam a espinha isquiática, entram no períneo pelo forame isquiático menor e seguem no canal pudendo (de Alcock), na parede lateral da fossa isquioanal. O bloqueio do pudendo no parto é feito perto da espinha isquiática.',
+  },
+  {
+    id: 'feixe_obturatorio', nome: 'Feixe obturatório',
+    membros: ['arteria_obturatoria', 'veia_obturatoria', 'n_obturatorio'],
+    texto: 'O nervo, a artéria e a veia obturatórios passam da pelve ao compartimento medial da coxa pelo canal obturatório, no alto do forame obturado. A hérnia obturatória, rara, pode comprimir o nervo e causar dor na face medial da coxa.',
+  },
+  {
     id: 'feixe_femoral', nome: 'Feixe do trígono femoral',
     membros: ['arteria_femoral', 'veia_femoral', 'n_femoral'],
     texto: 'No trígono femoral, de lateral para medial, vêm o nervo femoral, a artéria e a veia femorais. O nervo fica fora da bainha femoral; a artéria e a veia estão dentro dela, e o canal femoral é o compartimento medial.',

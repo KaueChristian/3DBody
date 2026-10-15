@@ -15,6 +15,9 @@ const tubo = (pts, width, thick = width, o = {}) => ({ kind: 'tube', pts, width,
 /** Linfonodo esquemático: um elipsoide pequeno centrado em p (comprimento `r`). */
 const nodo = (p, r = 0.07) => tubo([[p[0], p[1] + r * 0.45, p[2]], [p[0], p[1] - r * 0.45, p[2]]], r * 1.15, r * 0.85, { nf: 4, nc: 8 });
 
+/** Linfonodo sobre a pele mais próxima de p (região da cabeça): um elipsoide pequeno apoiado nela. */
+const nodoSk = (p, r = 0.06) => tubo([{ skin: true, p, d: 0 }, { skin: true, p, d: 0, add: [0, -r * 0.9, 0] }], r * 1.15, r * 0.85, { nf: 4, nc: 8 });
+
 const linfatico = (id, name, latin, proc, campos, extra = {}) => ({
   kind: 'linfatico',
   id,
@@ -139,6 +142,64 @@ export const CIRC_ESQUEMAS = [
   ], {
     nota: 'ESQUEMA: quatro linfonodos representam os grupos; os superficiais reais passam de dez, e as posições são aproximadas.',
     relacionados: ['veia_femoral', 'arteria_femoral', 'linfonodos_iliacos'],
+  }),
+  grupo('linfonodos_submandibulares', 'Linfonodos submentuais e submandibulares — esquema', 'Nodi lymphoidei submentales et submandibulares', [[0.24, -1.1, 0.52], [0.31, -1.06, 0.4], [0.37, -1.02, 0.28], [0.1, -1.2, 0.68]], 0.06, [
+    ['Localização', 'Submandibulares: sob a base da mandíbula, junto à glândula submandibular (três a seis de cada lado). Submentuais: sob o queixo, entre os ventres anteriores dos digástricos.'],
+    ['Território drenado', 'Submentuais: ponta da língua, assoalho da boca, parte média do lábio inferior e do queixo e incisivos inferiores. Submandibulares: lábio superior e a maior parte do inferior, bochecha, nariz, gengivas, dentes (menos os incisivos inferiores), corpo da língua e glândulas submandibular e sublingual.'],
+    ['Drena para', 'Linfonodos cervicais profundos (o jugulodigástrico e o justa-omo-hióideo).'],
+    ['Clínica', 'Uma infecção dos dentes ou da gengiva aumenta os linfonodos submandibulares; os tumores da ponta da língua e do lábio inferior fazem metástase aos submentuais e, em seguida, aos cervicais profundos.'],
+  ], {
+    nota: 'ESQUEMA: um grupo de quatro linfonodos representa as cadeias; as posições são aproximadas.',
+    relacionados: ['linfonodos_cervicais_profundos', 'arteria_facial', 'arteria_lingual'],
+  }),
+  linfatico('linfonodos_pericranianos', 'Linfonodos occipitais, mastóideos e parotídeos — esquema', 'Nodi lymphoidei occipitales, mastoidei et parotidei', [
+    nodoSk([0.3, -0.55, -1.9]), nodoSk([0.9, -0.45, -0.28]), nodoSk([0.9, -0.3, 0.16]), nodoSk([0.9, -0.55, 0.14]),
+  ], [
+    ['Localização', 'Em volta da base do crânio, no “colar” pericraniano: occipitais (sobre a inserção do trapézio, na parte posterior), mastóideos ou retroauriculares (atrás da orelha, sobre o processo mastoide) e parotídeos (superficiais, à frente da orelha, e profundos, dentro da glândula).'],
+    ['Território drenado', 'Occipitais: couro cabeludo posterior. Mastóideos: couro cabeludo atrás da orelha e parte posterior do pavilhão auricular. Parotídeos: fronte e têmpora, pálpebras, parte anterior do pavilhão, meato acústico externo e a própria glândula parótida.'],
+    ['Drena para', 'Linfonodos cervicais superficiais e profundos (cadeia jugular).'],
+    ['Clínica', 'Os linfonodos occipitais e retroauriculares aumentam, com frequência, na rubéola e em infecções do couro cabeludo; os parotídeos, nos tumores de pele da fronte e da têmpora.'],
+  ], {
+    nota: 'ESQUEMA: os quatro linfonodos desenhados sobre a pele representam os grupos, em posição aproximada.',
+    relacionados: ['linfonodos_cervicais_profundos', 'arteria_occipital', 'arteria_temporal_superficial'],
+  }),
+  grupo('linfonodos_mamarios_internos', 'Linfonodos paraesternais (mamários internos) — esquema', 'Nodi lymphoidei parasternales', [[0.2, -2.72, 0.9], [0.17, -3.05, 1.0], [0.15, -3.4, 1.1]], 0.055, [
+    ['Localização', 'Nos espaços intercostais, junto ao esterno, ao longo dos vasos torácicos internos, por trás das cartilagens costais.'],
+    ['Território drenado', 'Parte medial e central da mama, parede anterior do tórax, parte anterior do diafragma e a face superior do fígado.'],
+    ['Drena para', 'Troncos broncomediastinais, que desembocam no ducto torácico (à esquerda) e no ducto linfático direito (à direita), ou direto nas veias do ângulo venoso.'],
+    ['Clínica', 'A linfa dos quadrantes mediais da mama vai com mais frequência a eles do que aos axilares; o câncer de mama medial pode fazer metástase ao tórax pela cadeia paraesternal, e por isso a radioterapia pode incluí-la.'],
+  ], {
+    nota: 'ESQUEMA: três linfonodos de cada lado representam a cadeia, que tem, em geral, de quatro a doze; posições aproximadas, sobre a artéria torácica interna do modelo.',
+    relacionados: ['arteria_toracica_interna', 'veia_toracica_interna', 'linfonodos_axilares'],
+  }),
+  grupo('linfonodos_mediastinais', 'Linfonodos mediastinais anteriores e posteriores — esquema', 'Nodi lymphoidei mediastinales anteriores et posteriores', [[0.04, -2.32, 0.6], [0.12, -2.28, 0.55], [0.0, -3.4, 0.0], [0.0, -3.9, 0.12]], 0.06, [
+    ['Localização', 'Anteriores (pré-vasculares): na frente do arco da aorta e das veias braquiocefálicas, no mediastino superior e anterior. Posteriores: ao lado do esôfago e da aorta descendente, no mediastino posterior.'],
+    ['Território drenado', 'Anteriores: timo, pericárdio e coração (em parte) e parte do diafragma. Posteriores: esôfago, parte posterior do pericárdio e diafragma e a face superior do fígado.'],
+    ['Drena para', 'Troncos broncomediastinais e, a partir dos posteriores, o ducto torácico.'],
+    ['Clínica', 'Os linfonodos mediastinais aumentam no linfoma, no câncer de pulmão e de esôfago e na sarcoidose; o timoma e os linfomas formam massas do mediastino anterior.'],
+  ], {
+    paired: false,
+    nota: 'ESQUEMA: dois linfonodos de cada tipo, na linha mediana, representam os grupos; o esôfago e o timo não existem no modelo e as posições são aproximadas.',
+    relacionados: ['arco_aorta', 'aorta_toracica', 'linfonodos_traqueobronquicos', 'ducto_toracico'],
+  }),
+  grupo('linfonodos_celiacos_mesentericos', 'Linfonodos celíacos e mesentéricos — esquema', 'Nodi lymphoidei coeliaci et mesenterici', [[0.12, -4.55, 0.44], [-0.02, -4.6, 0.42], [0.0, -5.0, 0.52], [-0.1, -5.3, 0.7], [-0.06, -5.6, 0.66], [0.18, -5.6, 0.56], [0.2, -5.9, 0.52]], 0.06, [
+    ['Localização', 'Pré-aórticos, em volta da origem do tronco celíaco (celíacos) e das artérias mesentéricas superior e inferior, e no mesentério, junto aos vasos (mesentéricos).'],
+    ['Território drenado', 'Celíacos: estômago, parte do duodeno, fígado, vesícula biliar, pâncreas e baço. Mesentéricos superiores: intestino delgado, ceco, colo ascendente e parte do transverso. Mesentéricos inferiores: parte distal do colo transverso, colo descendente, sigmoide e reto superior.'],
+    ['Drena para', 'Tronco intestinal e, por ele, a cisterna do quilo.'],
+    ['Clínica', 'A linfa que sai do intestino delgado é rica em gordura (quilo) e leva os lipídios absorvidos ao sangue pelo ducto torácico. O câncer do colo e do estômago faz metástase por esses grupos, e a ressecção oncológica inclui a cadeia que acompanha as artérias.'],
+  ], {
+    paired: false,
+    nota: 'ESQUEMA: os sete linfonodos representam as cadeias, que têm centenas no mesentério; posições aproximadas, junto às artérias do modelo.',
+    relacionados: ['arteria_tronco_celiaco', 'arteria_mesenterica_superior', 'arteria_mesenterica_inferior', 'cisterna_quilo'],
+  }),
+  grupo('linfonodos_popliteos', 'Linfonodos poplíteos — esquema', 'Nodi lymphoidei popliteales', [[0.76, -11.35, -0.4], [0.78, -11.6, -0.4]], 0.06, [
+    ['Localização', 'Na fossa poplítea: os superficiais, perto da terminação da veia safena parva; os profundos, em volta da artéria e da veia poplíteas.'],
+    ['Território drenado', 'Superficiais: pele do lado lateral do pé e da região posterior da perna. Profundos: articulação do joelho e estruturas profundas da perna e do pé.'],
+    ['Drena para', 'Linfonodos inguinais profundos, pelos vasos que acompanham a veia femoral.'],
+    ['Clínica', 'Uma infecção do pé lateral ou da perna posterior pode aumentar os linfonodos poplíteos; a maior parte da linfa da perna e do pé passa pelos inguinais, por meio dos vasos superficiais que acompanham a veia safena magna.'],
+  ], {
+    nota: 'ESQUEMA: dois linfonodos de cada lado representam os poplíteos (em geral de quatro a seis); posições aproximadas, atrás da artéria poplítea do modelo.',
+    relacionados: ['arteria_poplitea', 'veia_poplitea', 'veia_safena_parva', 'linfonodos_inguinais'],
   }),
 
   /* ═════════════ Sistema de condução do coração ═════════════ */

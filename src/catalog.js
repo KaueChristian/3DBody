@@ -9,7 +9,11 @@ import { LEG_MUSCLES } from './catalog-leg-muscles.js';
 import { NERVES_LEG } from './catalog-nerves-leg.js';
 import { CIRC_ITEMS as CIRC_BASE } from './catalog-circ.js';
 import { CIRC_RAMOS } from './catalog-circ-ramos.js';
+import { CIRC_VISCERAIS } from './catalog-circ-viscerais.js';
+import { CIRC_CODIGO } from './catalog-circ-codigo.js';
 import { CIRC_ESQUEMAS } from './catalog-circ-esquemas.js';
+import { CIRC_SUPERFICIE } from './catalog-circ-superficie.js';
+import { CARDIO_EXTRAS } from './cardio-extras.js';
 import { CIRC_FETAL } from './catalog-circ-fetal.js';
 import { RESP_ITEMS } from './catalog-resp.js';
 import { NERVES as NERVES_BASE } from './catalog-nerves.js';
@@ -96,7 +100,7 @@ export const BODY_ITEMS = [...BODY_MUSCLES, ...ORAL_MUSCLES, ...BODY_BONES, ...J
 /** Estruturas do membro inferior (F4): vêm do pacote `anatomy-leg.js`, carregado depois do corpo. */
 export const LEG_ITEMS = [...LEG_BONES, ...LEG_MUSCLES];
 /** Circulatório (F5): coração, vasos principais e, no mesmo pacote, os ramos de menor calibre (F5.1). */
-export const CIRC_ITEMS = [...CIRC_BASE, ...CIRC_RAMOS, ...CIRC_ESQUEMAS, ...CIRC_FETAL];
+export const CIRC_ITEMS = [...CIRC_BASE, ...CIRC_RAMOS, ...CIRC_VISCERAIS, ...CIRC_CODIGO, ...CIRC_ESQUEMAS, ...CIRC_SUPERFICIE, ...CIRC_FETAL];
 export { RESP_ITEMS };
 export const NERVES = [...NERVES_BASE, ...NERVES_CRANIAL, ...NERVES_SENSORY, ...NERVES_SPINAL, ...NERVES_LEG];
 export const ITEMS = [...HEAD_ITEMS, ...BODY_ITEMS, ...LEG_ITEMS, ...CIRC_ITEMS, ...RESP_ITEMS, ...NERVES];
@@ -273,5 +277,15 @@ export const IRRIGATED = new Map();
       if (!item || (item.kind !== 'arteria' && item.kind !== 'veia')) throw new Error(`${campo} de vaso inexistente: ${id}`);
       item.campos = [...item.campos, [campo, texto]];
     }
+  }
+}
+
+// campos que completam as câmaras e as valvas do coração (F5.2): irrigação, inervação e esqueleto fibroso
+{
+  const byId = new Map(ITEMS.map((i) => [i.id, i]));
+  for (const [id, campos] of Object.entries(CARDIO_EXTRAS)) {
+    const item = byId.get(id);
+    if (item?.kind !== 'cardiaco') throw new Error(`Campos extras de estrutura cardíaca inexistente: ${id}`);
+    item.campos = [...item.campos, ...campos];
   }
 }
