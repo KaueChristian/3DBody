@@ -295,7 +295,7 @@
 | `n_facial_bucal` | Ramos bucais do nervo facial | *Rami buccales n. facialis* | Cabeça e pescoço | 13 músculo(s) | Comida acumula no vestíbulo da boca (bucinador fraco) e o sorriso f... | ✅ Verificado |
 | `n_facial_marginal` | Ramo marginal da mandíbula do nervo facial | *Ramus marginalis mandibularis n. facialis* | Cabeça e pescoço | 5 músculo(s) | Comum em cirurgias da glândula submandibular e do pescoço: o lábio ... | ✅ Verificado |
 | `n_facial_cervical` | Ramo cervical do nervo facial | *Ramus colli n. facialis* | Cabeça e pescoço | 1 músculo(s) | — | ✅ Verificado |
-| `n_hipoglosso` | Nervo hipoglosso (XII) | *N. hypoglossus* | Cabeça e pescoço | 10 músculo(s) | Ao pôr a língua para fora, ela desvia para o lado lesado (o geniogl... | ✅ Verificado |
+| `n_hipoglosso` | Nervo hipoglosso (XII) | *N. hypoglossus* | Cabeça e pescoço | 9 músculo(s) + 1 outro(s) | Ao pôr a língua para fora, ela desvia para o lado lesado (o geniogl... | ✅ Verificado |
 | `n_acessorio` | Nervo acessório (XI) | *N. accessorius* | Cabeça e pescoço, Tronco | 4 músculo(s) | É muito superficial no trígono posterior e pode ser lesado em bióps... | ✅ Verificado |
 | `n_ramos_cervicais` | Plexo cervical — ramos musculares | *Plexus cervicalis, rami musculares* | Cabeça e pescoço | 12 músculo(s) | O bloqueio do plexo cervical superficial, no ponto médio da margem ... | ✅ Verificado |
 | `n_alca_cervical` | Alça cervical | *Ansa cervicalis* | Cabeça e pescoço | 3 músculo(s) | Pode servir de nervo doador para reinervar a laringe ou a língua. N... | ✅ Verificado |
@@ -306,21 +306,21 @@
 | `n_plexo_braquial` | Plexo braquial | *Plexus brachialis* | Cabeça e pescoço, Tronco, Membro superior | 1 músculo(s) | Erb-Duchenne (C5–C6; queda que afasta a cabeça do ombro, parto difí... | ✅ Verificado |
 | `n_dorsal_escapula` | Nervo dorsal da escápula | *N. dorsalis scapulae* | Tronco | 3 músculo(s) | Rara. A escápula do lado afetado se afasta da coluna (romboides fra... | ✅ Verificado |
 | `n_toracico_longo` | Nervo torácico longo | *N. thoracicus longus* | Tronco | 1 músculo(s) | É superficial na parede lateral do tórax (lesão em esvaziamento axi... | ✅ Verificado |
-| `n_supraescapular` | Nervo supraescapular | *N. suprascapularis* | Membro superior | 3 músculo(s) | Compressão na incisura da escápula (cisto, ligamento calcificado): ... | ✅ Verificado |
-| `n_subclavio` | Nervo subclávio | *N. subclavius* | Tronco | 2 músculo(s) | Pode dar o nervo frênico acessório. | ✅ Verificado |
-| `n_peitoral_lateral` | Nervo peitoral lateral | *N. pectoralis lateralis* | Tronco | 4 músculo(s) | O nome indica a origem no fascículo lateral, não a posição: na pare... | ✅ Verificado |
+| `n_supraescapular` | Nervo supraescapular | *N. suprascapularis* | Membro superior | 2 músculo(s) + 1 outro(s) | Compressão na incisura da escápula (cisto, ligamento calcificado): ... | ✅ Verificado |
+| `n_subclavio` | Nervo subclávio | *N. subclavius* | Tronco | 1 músculo(s) + 1 outro(s) | Pode dar o nervo frênico acessório. | ✅ Verificado |
+| `n_peitoral_lateral` | Nervo peitoral lateral | *N. pectoralis lateralis* | Tronco | 2 músculo(s) + 2 outro(s) | O nome indica a origem no fascículo lateral, não a posição: na pare... | ✅ Verificado |
 | `n_peitoral_medial` | Nervo peitoral medial | *N. pectoralis medialis* | Tronco | 3 músculo(s) | — | ✅ Verificado |
 | `n_subescapular_sup` | Nervo subescapular superior | *N. subscapularis superior* | Membro superior | 1 músculo(s) | — | ✅ Verificado |
 | `n_toracodorsal` | Nervo toracodorsal | *N. thoracodorsalis* | Tronco | 1 músculo(s) | Pode ser lesado no esvaziamento axilar: fraqueza da adução e da ext... | ✅ Verificado |
 | `n_subescapular_inf` | Nervo subescapular inferior | *N. subscapularis inferior* | Membro superior | 2 músculo(s) | — | ✅ Verificado |
-| `n_axilar` | Nervo axilar | *N. axillaris* | Membro superior | 6 músculo(s) | Fratura do colo cirúrgico do úmero ou luxação anterior do ombro: ab... | ✅ Verificado |
-| `n_musculocutaneo` | Nervo musculocutâneo | *N. musculocutaneus* | Membro superior | 6 músculo(s) | Isolada é rara: flexão do cotovelo e supinação fracas (o braquiorra... | ✅ Verificado |
-| `n_radial` | Nervo radial | *N. radialis* | Membro superior | 9 músculo(s) | Fratura da diáfise do úmero ou “paralisia do sábado à noite”: mão c... | ✅ Verificado |
-| `n_interosseo_posterior` | Ramo profundo do nervo radial (nervo interósseo posterior) | *R. profundus n. radialis; N. interosseus antebrachii posterior* | Membro superior | 12 músculo(s) | Compressão na arcada de Frohse ou fratura da cabeça do rádio: dedos... | ✅ Verificado |
-| `n_mediano` | Nervo mediano | *N. medianus* | Membro superior | 9 músculo(s) | Síndrome do túnel do carpo: dormência noturna nos três primeiros de... | ✅ Verificado |
-| `n_interosseo_anterior` | Nervo interósseo anterior | *N. interosseus antebrachii anterior* | Membro superior | 6 músculo(s) | Não consegue fazer o sinal de “OK”: a pinça vira um “bico de pato”,... | ✅ Verificado |
-| `n_ulnar` | Nervo ulnar | *N. ulnaris* | Membro superior | 5 músculo(s) | No cotovelo (“osso do cotovelo”, túnel cubital): formigamento no 4º... | ✅ Verificado |
-| `n_ulnar_profundo` | Ramo profundo do nervo ulnar | *R. profundus n. ulnaris* | Membro superior | 11 músculo(s) | Compressão no canal de Guyon (ciclistas, ferramentas): fraqueza dos... | ✅ Verificado |
+| `n_axilar` | Nervo axilar | *N. axillaris* | Membro superior | 4 músculo(s) + 2 outro(s) | Fratura do colo cirúrgico do úmero ou luxação anterior do ombro: ab... | ✅ Verificado |
+| `n_musculocutaneo` | Nervo musculocutâneo | *N. musculocutaneus* | Membro superior | 4 músculo(s) + 2 outro(s) | Isolada é rara: flexão do cotovelo e supinação fracas (o braquiorra... | ✅ Verificado |
+| `n_radial` | Nervo radial | *N. radialis* | Membro superior | 7 músculo(s) + 2 outro(s) | Fratura da diáfise do úmero ou “paralisia do sábado à noite”: mão c... | ✅ Verificado |
+| `n_interosseo_posterior` | Ramo profundo do nervo radial (nervo interósseo posterior) | *R. profundus n. radialis; N. interosseus antebrachii posterior* | Membro superior | 9 músculo(s) + 3 outro(s) | Compressão na arcada de Frohse ou fratura da cabeça do rádio: dedos... | ✅ Verificado |
+| `n_mediano` | Nervo mediano | *N. medianus* | Membro superior | 8 músculo(s) + 1 outro(s) | Síndrome do túnel do carpo: dormência noturna nos três primeiros de... | ✅ Verificado |
+| `n_interosseo_anterior` | Nervo interósseo anterior | *N. interosseus antebrachii anterior* | Membro superior | 3 músculo(s) + 3 outro(s) | Não consegue fazer o sinal de “OK”: a pinça vira um “bico de pato”,... | ✅ Verificado |
+| `n_ulnar` | Nervo ulnar | *N. ulnaris* | Membro superior | 4 músculo(s) + 1 outro(s) | No cotovelo (“osso do cotovelo”, túnel cubital): formigamento no 4º... | ✅ Verificado |
+| `n_ulnar_profundo` | Ramo profundo do nervo ulnar | *R. profundus n. ulnaris* | Membro superior | 9 músculo(s) + 2 outro(s) | Compressão no canal de Guyon (ciclistas, ferramentas): fraqueza dos... | ✅ Verificado |
 | `n_intercostais` | Nervos intercostais (T1–T6) | *Nn. intercostales* | Tronco | 5 músculo(s) | O herpes-zóster segue um dermátomo intercostal. Toracocentese e blo... | ✅ Verificado |
 | `n_toracoabdominais` | Nervos toracoabdominais (T7–T11) | *Nn. thoracoabdominales* | Tronco | 10 músculo(s) | Incisões verticais na margem lateral do reto podem seccioná-los e d... | ✅ Verificado |
 | `n_subcostal` | Nervo subcostal (T12) | *N. subcostalis* | Tronco | 7 músculo(s) | — | ✅ Verificado |
@@ -330,7 +330,7 @@
 | `n_femoral` | Nervo femoral | *N. femoralis* | Tronco, Membro inferior | 7 músculo(s) | Na pelve pode ser comprimido por hematoma do psoas (anticoagulação)... | ✅ Verificado |
 | `n_levantador_anus` | Nervos do levantador do ânus e do coccígeo (S3–S5) | *N. musculi levatoris ani; plexus coccygeus* | Tronco | 4 músculo(s) | Lesões no parto vaginal podem enfraquecer o assoalho pélvico, contr... | ✅ Verificado |
 | `n_pudendo` | Nervo pudendo | *N. pudendus* | Tronco | 8 músculo(s) | O bloqueio do pudendo, junto à espinha isquiática, é usado no parto... | ✅ Verificado |
-| `n_obturador_interno` | Nervo para o obturador interno e gêmeo superior | *N. musculi obturatorii interni* | Tronco | 2 músculo(s) | Raramente é lesado sozinho; faz parte das lesões do plexo sacral (f... | ✅ Verificado |
+| `n_obturador_interno` | Nervo para o obturador interno e gêmeo superior | *N. musculi obturatorii interni* | Tronco, Membro inferior | 2 músculo(s) | Raramente é lesado sozinho; faz parte das lesões do plexo sacral (f... | ✅ Verificado |
 | `n_olfatorio` | Nervo olfatório (I) | *N. olfactorius* | Cabeça e pescoço | 0 músculo(s) | Anosmia, unilateral ou bilateral. Traumatismo craniano (os filetes ... | ✅ Verificado |
 | `n_vestibulococlear` | Nervo vestibulococlear (VIII) | *N. vestibulocochlearis* | Cabeça e pescoço | 0 músculo(s) | Perda auditiva neurossensorial, zumbido (tinnitus), vertigem e nist... | ✅ Verificado |
 | `n_glossofaringeo` | Nervo glossofaríngeo (IX) | *N. glossopharyngeus* | Cabeça e pescoço | 1 músculo(s) | Perda do reflexo do vômito (aferência IX, eferência X) e da sensibi... | ✅ Verificado |
@@ -344,18 +344,18 @@
 | `n_zigomatico` | Nervo zigomático (V2) | *N. zygomaticus* | Cabeça e pescoço | 0 músculo(s) | Fraturas do zigomático (“do tripé”) podem lesar o zigomático e o in... | ✅ Verificado |
 | `n_palatinos` | Nervos palatinos maior e menores (V2) | *N. palatinus major; Nn. palatini minores* | Cabeça e pescoço | 0 músculo(s) | O bloqueio do palatino maior, no forame, anestesia a mucosa do pala... | ✅ Verificado |
 | `n_nasopalatino` | Nervo nasopalatino (V2) | *N. nasopalatinus* | Cabeça e pescoço | 0 músculo(s) | É bloqueado na papila incisiva para anestesiar o palato anterior. P... | ✅ Verificado |
-| `n_corda_timpano` | Corda do tímpano | *Chorda tympani* | Cabeça e pescoço | 2 músculo(s) | Perda do paladar nos 2/3 anteriores da língua e menor salivação do ... | ✅ Verificado |
+| `n_corda_timpano` | Corda do tímpano | *Chorda tympani* | Cabeça e pescoço | 2 estrutura(s) | Perda do paladar nos 2/3 anteriores da língua e menor salivação do ... | ✅ Verificado |
 | `n_petroso_maior` | Nervo petroso maior | *N. petrosus major* | Cabeça e pescoço | 0 músculo(s) | Lesão do facial acima do gânglio geniculado: além da paralisia faci... | ✅ Verificado |
 | `n_estapedio` | Nervo para o estapédio | *N. stapedius* | Cabeça e pescoço | 1 músculo(s) | A lesão do facial acima da origem do nervo (paralisia de Bell, tumo... | ✅ Verificado |
 | `n_tensores` | Nervos do tensor do véu palatino e do tensor do tímpano (V3) | *N. musculi tensoris veli palatini; N. musculi tensoris tympani* | Cabeça e pescoço | 2 músculo(s) | Lesão rara. A falha do tensor do véu palatino impede a abertura ade... | ✅ Verificado |
 | `g_pterigopalatino` | Gânglio pterigopalatino | *Ganglion pterygopalatinum* | Cabeça e pescoço | 0 músculo(s) | Secreção reduzida da lágrima e da mucosa nasal e palatina. A cefale... | ✅ Verificado |
-| `g_otico` | Gânglio ótico | *Ganglion oticum* | Cabeça e pescoço | 1 músculo(s) | Cirurgia da parótida pode causar a síndrome de Frey (sudorese e rub... | ✅ Verificado |
-| `g_submandibular` | Gânglio submandibular | *Ganglion submandibulare* | Cabeça e pescoço | 2 músculo(s) | A salivação diminui do mesmo lado quando há lesão da corda do tímpa... | ✅ Verificado |
+| `g_otico` | Gânglio ótico | *Ganglion oticum* | Cabeça e pescoço | 1 estrutura(s) | Cirurgia da parótida pode causar a síndrome de Frey (sudorese e rub... | ✅ Verificado |
+| `g_submandibular` | Gânglio submandibular | *Ganglion submandibulare* | Cabeça e pescoço | 2 estrutura(s) | A salivação diminui do mesmo lado quando há lesão da corda do tímpa... | ✅ Verificado |
 | `n_simpatico_cervical` | Tronco simpático cervical e gânglios cervicais | *Truncus sympathicus cervicalis; Ganglia cervicalia* | Cabeça e pescoço, Tronco | 3 músculo(s) | Síndrome de Horner: ptose leve (tarsal superior), miose (dilatador)... | ✅ Verificado |
 | `n_occipital_menor` | Nervo occipital menor (C2–C3) | *N. occipitalis minor* | Cabeça e pescoço | 0 músculo(s) | Dormência atrás da orelha após cirurgias retroauriculares e da mast... | ✅ Verificado |
 | `n_auricular_magno` | Nervo auricular magno (C2–C3) | *N. auricularis magnus* | Cabeça e pescoço | 0 músculo(s) | É o nervo cervical mais lesado em cirurgias (parotidectomia, ritido... | ✅ Verificado |
 | `n_cervical_transverso` | Nervo cervical transverso (C2–C3) | *N. transversus colli* | Cabeça e pescoço | 0 músculo(s) | Dormência na face anterior do pescoço após tireoidectomia, esvaziam... | ✅ Verificado |
-| `n_supraclaviculares` | Nervos supraclaviculares (C3–C4) | *Nn. supraclaviculares (mediais, intermédios e laterais)* | Cabeça e pescoço, Tronco | 2 músculo(s) | Dormência na pele subclavicular após fratura ou cirurgia da clavícu... | ✅ Verificado |
+| `n_supraclaviculares` | Nervos supraclaviculares (C3–C4) | *Nn. supraclaviculares (mediais, intermédios e laterais)* | Cabeça e pescoço, Tronco | 2 estrutura(s) | Dormência na pele subclavicular após fratura ou cirurgia da clavícu... | ✅ Verificado |
 | `n_intercostobraquial` | Nervo intercostobraquial (T2) | *N. intercostobrachialis* | Tronco, Membro superior | 0 músculo(s) | Pode ser seccionado ou lesado no esvaziamento axilar (câncer de mam... | ✅ Verificado |
 | `n_cutaneo_medial_braco` | Nervo cutâneo medial do braço (C8–T1) | *N. cutaneus brachii medialis* | Membro superior | 0 músculo(s) | Dormência na face medial do braço, em geral com outros nervos do fa... | ✅ Verificado |
 | `n_cutaneo_medial_antebraco` | Nervo cutâneo medial do antebraço (C8–T1) | *N. cutaneus antebrachii medialis* | Membro superior | 0 músculo(s) | Pode ser lesado em punções da veia basílica ou da mediana cubital: ... | ✅ Verificado |
@@ -367,8 +367,8 @@
 | `n_radial_superficial` | Ramo superficial do nervo radial | *R. superficialis n. radialis* | Membro superior | 0 músculo(s) | Neurite de Wartenberg (“cheiralgia parestésica”): compressão sob o ... | ✅ Verificado |
 | `n_ramo_palmar_mediano` | Ramo cutâneo palmar do nervo mediano | *R. palmaris n. mediani* | Membro superior | 0 músculo(s) | É poupado na síndrome do túnel do carpo (passa por cima do retinácu... | ✅ Verificado |
 | `n_ramo_palmar_ulnar` | Ramo cutâneo palmar do nervo ulnar | *R. palmaris n. ulnaris* | Membro superior | 0 músculo(s) | É poupado na compressão do nervo ulnar no canal de Guyon (sai antes... | ✅ Verificado |
-| `n_ramo_dorsal_ulnar` | Ramo cutâneo dorsal do nervo ulnar | *R. dorsalis n. ulnaris* | Membro superior | 2 músculo(s) | Poupado na lesão do ulnar no punho (sai antes do canal de Guyon), m... | ✅ Verificado |
-| `n_digitais_palmares` | Nervos digitais palmares (comuns e próprios) | *Nn. digitales palmares communes et proprii* | Membro superior | 3 músculo(s) | Lesões por corte (vidro, facas) são comuns e deixam um lado do dedo... | ✅ Verificado |
+| `n_ramo_dorsal_ulnar` | Ramo cutâneo dorsal do nervo ulnar | *R. dorsalis n. ulnaris* | Membro superior | 2 estrutura(s) | Poupado na lesão do ulnar no punho (sai antes do canal de Guyon), m... | ✅ Verificado |
+| `n_digitais_palmares` | Nervos digitais palmares (comuns e próprios) | *Nn. digitales palmares communes et proprii* | Membro superior | 1 músculo(s) + 2 outro(s) | Lesões por corte (vidro, facas) são comuns e deixam um lado do dedo... | ✅ Verificado |
 | `n_digitais_dorsais` | Nervos digitais dorsais | *Nn. digitales dorsales* | Membro superior | 0 músculo(s) | Lesões do dorso da mão (cortes, cirurgia) deixam áreas de dormência... | ✅ Verificado |
 | `n_espinais_cervicais` | Nervos espinais cervicais (C1–C8) | *Nn. spinales cervicales* | Cabeça e pescoço, Tronco | 0 músculo(s) | Radiculopatia cervical (hérnia de disco ou osteófitos): dor irradia... | ✅ Verificado |
 | `n_espinais_toracicos` | Nervos espinais torácicos (T1–T12) | *Nn. spinales thoracici* | Tronco | 0 músculo(s) | O herpes-zóster segue o dermátomo (cinturão de vesículas). A compre... | ✅ Verificado |

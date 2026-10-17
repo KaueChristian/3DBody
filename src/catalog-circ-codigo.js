@@ -179,7 +179,7 @@ export const CIRC_CODIGO = [
   }),
 
   /* ═════════════ Ramos da ilíaca interna ═════════════ */
-  art('arteria_glutea_superior', 'Artéria glútea superior — esquema', 'Arteria glutea superior', T, [], {
+  art('arteria_glutea_superior', 'Artéria glútea superior — esquema', 'Arteria glutea superior', [T, MI], [], {
     origem: 'Maior ramo da divisão posterior da artéria ilíaca interna.',
     trajeto: 'Sai da pelve pelo forame isquiático maior, acima do músculo piriforme, com o nervo glúteo superior, e se divide em ramos superficial e profundo.',
     ramos: 'Ramo superficial (glúteo máximo) e ramo profundo (glúteos médio e mínimo, que se anastomosa com a circunflexa femoral lateral).',
@@ -190,7 +190,7 @@ export const CIRC_CODIGO = [
     proc: [tubo([[0.3, -6.7, -0.4], [0.42, -6.62, -0.62], [0.6, -6.55, -0.75], [0.82, -6.5, -0.8], [1.05, -6.45, -0.7]], 0.036, { nf: 22 })],
     relacionados: ['arteria_iliaca_interna', 'arteria_glutea_inferior', 'veia_gluteas'],
   }),
-  art('arteria_glutea_inferior', 'Artéria glútea inferior — esquema', 'Arteria glutea inferior', T, [], {
+  art('arteria_glutea_inferior', 'Artéria glútea inferior — esquema', 'Arteria glutea inferior', [T, MI], [], {
     origem: 'Divisão anterior da artéria ilíaca interna.',
     trajeto: 'Sai da pelve pelo forame isquiático maior, abaixo do músculo piriforme, com o nervo isquiático, e desce, profunda ao glúteo máximo, pela região glútea.',
     ramos: 'Ramos musculares, ramo que acompanha o nervo isquiático e ramos que se anastomosam com as circunflexas femorais e as perfurantes.',
@@ -201,7 +201,7 @@ export const CIRC_CODIGO = [
     proc: [tubo([[0.29, -6.86, -0.69], [0.34, -7.1, -0.86], [0.4, -7.3, -0.99], [0.45, -7.5, -0.93], [0.52, -7.78, -0.77]], 0.036, { nf: 22 })],
     relacionados: ['arteria_iliaca_interna', 'arteria_glutea_superior', 'veia_gluteas', 'arteria_femoral_profunda'],
   }),
-  art('arteria_obturatoria', 'Artéria obturatória — esquema', 'Arteria obturatoria', T, [], {
+  art('arteria_obturatoria', 'Artéria obturatória — esquema', 'Arteria obturatoria', [T, MI], [], {
     origem: 'Divisão anterior da artéria ilíaca interna (às vezes, da epigástrica inferior).',
     trajeto: 'Segue pela parede lateral da pelve, com o nervo obturatório, e passa ao compartimento medial da coxa pelo canal obturatório.',
     ramos: 'Ramos anterior e posterior (ao redor do forame obturado) e o ramo acetabular, que passa pelo ligamento da cabeça do fêmur.',
@@ -212,7 +212,7 @@ export const CIRC_CODIGO = [
     proc: [tubo([[0.25, -6.51, 0.0], [0.38, -6.7, -0.15], [0.48, -6.84, -0.27], [0.45, -6.99, -0.12], [0.34, -7.14, 0.02], [0.33, -7.26, 0.06]], 0.032, { nf: 24 })],
     relacionados: ['arteria_iliaca_interna', 'arteria_epigastrica_inferior', 'veia_obturatoria'],
   }),
-  art('arteria_pudenda_interna', 'Artéria pudenda interna — esquema', 'Arteria pudenda interna', T, [], {
+  art('arteria_pudenda_interna', 'Artéria pudenda interna — esquema', 'Arteria pudenda interna', [T, MI], [], {
     origem: 'Divisão anterior da artéria ilíaca interna.',
     trajeto: 'Sai da pelve pelo forame isquiático maior, abaixo do piriforme, contorna a espinha isquiática, entra no períneo pelo forame isquiático menor e segue no canal pudendo (de Alcock), na parede lateral da fossa isquioanal, com o nervo pudendo.',
     ramos: 'Retal inferior, perineal, artéria do bulbo do pênis (do vestíbulo, na mulher), uretral e as artérias profunda e dorsal do pênis (do clitóris).',

@@ -12,10 +12,10 @@ seções 6, 7 e 9 são as que mais evitam retrabalho e acidentes.
 
 ## 2. O projeto em um minuto
 
-Atlas 3D de anatomia em **português** (cabeça, tronco e membros superiores hoje): pele, fáscias, 160 músculos, 55 nervos,
-ossos, ligamentos, glândulas, com dissecação por camadas, fichas e quiz. Roda em qualquer navegador **por `file://`**
+Atlas 3D de anatomia em **português** (corpo inteiro, coração, vasos, linfáticos e sistema respiratório hoje: 706 estruturas): pele, fáscias, 255 músculos, 112 nervos e gânglios,
+52 ossos e cartilagens, 13 articulações, 29 ligamentos, 111 artérias, 56 veias, 14 estruturas cardíacas, 15 linfáticas, 28 órgãos respiratórios, glândulas e estruturas, com dissecação por camadas, fichas e quiz. Roda em qualquer navegador **por `file://`**
 (sem servidor) e é empacotado como `Anatomia3D.exe`, que **se atualiza sozinho** a cada release do GitHub
-(`KaueChristian/3DBody`). Malhas reais vêm do BodyParts3D (CC BY-SA 2.1 JP); o que o banco não tem é modelado por código.
+(`KaueChristian/3DBody`). Malhas reais vêm do BodyParts3D (CC BY-SA 2.1 JP) e do Human Reference Atlas (CC BY 4.0); o que o banco não tem é modelado por código.
 
 Stack: Three.js 0.170 + three-mesh-bvh, empacotado com esbuild em um único `dist/app.js` (IIFE). Sem framework de UI.
 Ferramentas de dados em Python (numpy); lançador do Windows em C# (.NET Framework, compilado pelo `csc.exe` do sistema).
@@ -80,8 +80,8 @@ A pasta acima (`Documents/port/`) tem **outros projetos sem relação**. Não to
 
 ```js
 {
-  region: 'tronco',            // 'cabeca' | 'tronco' | 'membro_sup' | 'todos' | lista (ex.: ['cabeca','tronco'])
-  kind: 'musculo',             // musculo | nervo | osso | ligamento | fascia | glandula | estrutura
+  region: 'tronco',            // 'cabeca' | 'tronco' | 'membro_sup' | 'membro_inf' | 'todos' | lista (ex.: ['cabeca','tronco'])
+  kind: 'musculo',             // musculo | nervo | osso | articulacao | ligamento | cardiaco | arteria | veia | linfatico | orgao | fascia | glandula | estrutura
   id: 'peitoral_clav',         // único; snake_case sem acento
   name: 'Peitoral maior — parte clavicular',
   latin: 'M. pectoralis major, pars clavicularis',
@@ -228,7 +228,7 @@ Este é um material de estudo: **um fato errado prejudica quem estuda**. Por iss
   sessão) em vez de embuti-los no comando.
 - **PowerShell vs Bash:** sintaxes diferentes (`$env:VAR` vs `$VAR`, `&&` só no PowerShell 7). Caminhos com espaços entre aspas.
 - **Normais do BodyParts3D inconsistentes:** raios e deslocamentos “para fora da malha” falham; use os helpers com fallback.
-- **Desempenho:** a construção dos 55 nervos leva ≈ 0,6 s (já foi 4,6 s). Prefiltre por caixa envolvente antes de consultas BVH
+- **Desempenho:** a construção dos 112 nervos e gânglios (mais as estruturas por código que usam `NerveBuilder`) leva ≈ 0,8 s no desktop. Prefiltre por caixa envolvente antes de consultas BVH
   exatas e ceda o laço ao navegador a cada poucos itens.
 - **Quiz:** a pele e as fáscias translúcidas não podem bloquear o clique; nomes ficam ocultos durante a pergunta. Teste ao mexer
   em seleção, rótulos ou lista.

@@ -854,7 +854,7 @@ export const NERVES = [
     sensibilidade: 'Períneo, ânus, escroto ou lábios e pênis ou clitóris.',
     lesao: 'O bloqueio do pudendo, junto à espinha isquiática, é usado no parto. Compressão no canal (ciclistas): dor e dormência perineal.',
   }),
-  nervo('n_obturador_interno', 'Nervo para o obturador interno e gêmeo superior', 'N. musculi obturatorii interni', 'tronco', {
+  nervo('n_obturador_interno', 'Nervo para o obturador interno e gêmeo superior', 'N. musculi obturatorii interni', ['tronco', 'membro_inf'], {
     paths: [{ pts: [[0.27, -6.62, -0.3], [0.4, -6.78, -0.44], [0.5, -6.94, -0.55], [0.57, -7.08, -0.45]], r: 0.0055 }],
     ramos: [{ m: 'obturador_interno' }, { m: 'gemeo_superior' }],
   }, {

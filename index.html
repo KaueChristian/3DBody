@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Body3D — Atlas de Anatomia 3D</title>
-  <meta name="description" content="Atlas 3D interativo de anatomia: cabeça, tronco e membros superiores, com músculos, nervos, ossos, ligamentos, fáscias e glândulas em camadas." />
+  <meta name="description" content="Atlas 3D interativo de anatomia humana: corpo inteiro, músculos, nervos, ossos, articulações, coração, vasos, linfáticos e sistema respiratório em camadas." />
   <meta name="theme-color" content="#0B1220" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -25,7 +25,7 @@
         </div>
         <div>
           <h1>Body<span>3D</span></h1>
-          <p>Cabeça, tronco e membros superiores</p>
+          <p>Atlas interativo do corpo humano</p>
         </div>
       </header>
 
@@ -100,7 +100,7 @@
             <a class="primary" href="https://github.com/KaueChristian/3DBody/releases/latest/download/Anatomia3D.exe" rel="noopener">⬇ Baixar para Windows (.exe)</a>
             <button id="getAppClose" type="button" aria-label="Dispensar o aviso de download">×</button>
           </div>
-          <p class="hint">Arraste para girar · role para aproximar · clique em uma estrutura<br>Modelos 3D: BodyParts3D, © DBCLS, <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/" target="_blank" rel="noopener">CC BY-SA 2.1 Japão</a> · pulmões: Human Reference Atlas (HuBMAP/NIH), <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a><span id="appVersion"></span></p>
+          <p class="hint">Arraste para girar · role para aproximar · clique em uma estrutura<br>Modelos 3D: BodyParts3D, © DBCLS, <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/" target="_blank" rel="noopener">CC BY-SA 2.1 Japão</a> · pulmões, placenta e cordão: Human Reference Atlas (HuBMAP/NIH), <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a><span id="appVersion"></span></p>
         </div>
       </div>
 
@@ -165,7 +165,7 @@
             <button type="button" class="mode-card" role="radio" data-mode="text">
               <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 7h8M8 11h8M8 15h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
               <b>Quiz Teórico</b>
-              <span>Perguntas de texto: nervo de cada músculo, ação, origem, inserção, lesões e sensibilidade dos nervos.</span>
+              <span>Perguntas de texto: nervo, irrigação, ação, origem, inserção, lesões e sensibilidade dos nervos.</span>
             </button>
           </div>
           <div class="opt" id="qsFilterBox">
@@ -179,7 +179,7 @@
             <div class="opt" id="qsCountBox"><h3>Perguntas</h3><div id="qsCount" class="opt-seg"></div></div>
             <label class="switch opt-switch" id="qsLatinRow"><input type="checkbox" id="qsLatin" /><span></span>Mostrar também o nome em latim</label>
             <p class="qs-tip" id="qsTipLocate">São 3 tentativas por pergunta: acertar de primeira vale 1 ponto; com erro ou dica, 0,5. Use a <b>dissecação</b> para tirar camadas e o <b>botão direito</b> (ou “Remover”) para ocultar o que estiver no caminho.</p>
-            <p class="qs-tip" id="qsTipText">Perguntas de texto sobre músculos (nervo, ação, origem, inserção, observações) e nervos (músculos inervados, lesão, sensibilidade). Atalhos: <b>1–4</b> respondem e <b>Enter</b> avança.</p>
+            <p class="qs-tip" id="qsTipText">Perguntas de texto sobre músculos (nervo, irrigação, ação, origem, inserção, observações) e nervos (músculos inervados, lesão, sensibilidade). Atalhos: <b>1–4</b> respondem e <b>Enter</b> avança.</p>
             <p class="qs-tip" id="qsTipChoice">A estrutura aparece destacada e você escolhe o nome entre 4 opções. Atalhos: <b>1–4</b> respondem e <b>Enter</b> avança.</p>
           </div>
           <div class="modal-actions">

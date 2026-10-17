@@ -631,6 +631,7 @@ function select(id, { fly = true, panel = true } = {}) {
   state.selected = id;
   if (id) {
     const m = M.get(id);
+    if (!regionOk(m.item) && state.quiz?.mode !== 'locate') setRegion('todos', { fly: false });
     if (!itemVisible(m)) {
       state.layers.add(m.item.layer);
       state.hidden.delete(id);
@@ -856,7 +857,7 @@ function syncList() {
     let n = 0;
     for (const item of itemsOfLayer(layer.id)) {
       const li = rows.get(item.id);
-      const match = (!q || li.dataset.search.includes(q)) && regionOk(item);
+      const match = q ? li.dataset.search.includes(q) : regionOk(item);
       li.hidden = !match;
       if (match) n++;
       li.classList.toggle('active', state.selected === item.id);
@@ -1272,8 +1273,16 @@ function nextQuestion() {
   q.current = id;
   q.answered = false;
   const kind = M.get(id).item.kind;
-  const same = pool.filter((p) => p !== id && M.get(p).item.kind === kind);
-  const options = shuffle([id, ...shuffle(same).slice(0, 3)]);
+  let same = shuffle(pool.filter((p) => p !== id && M.get(p).item.kind === kind));
+  if (same.length < 3) {
+    const extraKind = shuffle(ITEMS.filter((i) => i.id !== id && i.kind === kind && !same.includes(i.id)).map((i) => i.id));
+    same = [...same, ...extraKind];
+  }
+  if (same.length < 3) {
+    const extraPool = shuffle(pool.filter((p) => p !== id && !same.includes(p)));
+    same = [...same, ...extraPool];
+  }
+  const options = shuffle([id, ...same.slice(0, 3)]);
   $('#quizOptions').innerHTML = options.map((o, idx) => `<button data-id="${o}"><span class="kbadge" aria-hidden="true">${idx + 1}</span>${esc(M.get(o).item.name)}</button>`).join('');
   $('#quizFeedback').innerHTML = '';
   $('#quizScore').textContent = `${q.score}/${q.total}`;
@@ -1342,8 +1351,11 @@ function nextLocate() {
   state.flash.clear();
   state.hidden.clear();
   state.hover = null;
+  const targetLayer = M.get(q.cur.id)?.item.layer;
+  for (const l of LAYERS) if (l.optional) state.layers.delete(l.id);
+  if (targetLayer && LAYER[targetLayer]?.optional) state.layers.add(targetLayer);
   select(null, { fly: false });
-  applyVisibility();
+  syncLayers();
   renderLoc();
 }
 
@@ -1492,6 +1504,7 @@ function locateHint() {
   state.hidden.delete(c.id);
   if (c.hint === 1) {
     setDissect(Math.min(6, LAYER[item.layer].depth + 1));
+    if (!state.layers.has(item.layer)) { state.layers.add(item.layer); syncLayers(); }
     c.hints.push(`<b>Dica 1:</b> está em “${esc(LAYER[item.layer].label)}”. Deixei visíveis só essa camada e as mais profundas.`);
   } else {
     focusItem(c.id, true);

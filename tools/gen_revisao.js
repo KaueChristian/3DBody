@@ -14,6 +14,7 @@ const fn = new Function('module', 'exports', res.outputFiles[0].text);
 fn(mod, mod.exports);
 const { ITEMS, REGIONS } = mod.exports;
 
+const itemMap = new Map(ITEMS.map((i) => [i.id, i]));
 const muscles = ITEMS.filter((i) => i.kind === 'musculo');
 const nerves = ITEMS.filter((i) => i.kind === 'nervo');
 
@@ -34,7 +35,7 @@ md += '| --- | --- | --- | --- | --- | --- | --- |\n';
 
 for (const m of muscles) {
   const campos = m.campos.map((c) => c[0]).join(', ');
-  const reg = Array.isArray(m.region) ? m.region.join(', ') : (REGIONS[m.region] || m.region);
+  const reg = Array.isArray(m.region) ? m.region.map((r) => REGIONS[r] || r).join(', ') : (REGIONS[m.region] || m.region);
   const cleanNota = m.nota ? m.nota.replace(/\|/g, '/').replace(/\r?\n/g, ' ') : '';
   const nota = cleanNota ? (cleanNota.length > 70 ? cleanNota.slice(0, 67) + '...' : cleanNota) : '—';
   const status = m.nota ? '🟡 Nota clínica' : '✅ Verificado';
@@ -46,13 +47,18 @@ md += '| ID | Nome (PT-BR) | Latim (TA) | Região | Ramos Mapeados | Variação 
 md += '| --- | --- | --- | --- | --- | --- | --- |\n';
 
 for (const n of nerves) {
-  const ramosCount = n.ramos ? n.ramos.length : 0;
+  const ramosList = n.ramos || [];
+  const muscCount = ramosList.filter((r) => itemMap.get(r.m)?.kind === 'musculo').length;
+  const otherCount = ramosList.length - muscCount;
+  const ramosLabel = otherCount > 0
+    ? (muscCount > 0 ? `${muscCount} músculo(s) + ${otherCount} outro(s)` : `${otherCount} estrutura(s)`)
+    : `${muscCount} músculo(s)`;
   const reg = Array.isArray(n.region) ? n.region.map((r) => REGIONS[r] || r).join(', ') : (REGIONS[n.region] || n.region);
   const lesao = n.campos?.find((c) => c[0] === 'Lesão')?.[1];
   const rawNota = lesao || n.nota || '';
   const cleanNota = rawNota.replace(/\|/g, '/').replace(/\r?\n/g, ' ');
   const nota = cleanNota ? (cleanNota.length > 70 ? cleanNota.slice(0, 67) + '...' : cleanNota) : '—';
-  md += `| \`${n.id}\` | ${n.name} | *${n.latin}* | ${reg} | ${ramosCount} músculo(s) | ${nota} | ✅ Verificado |\n`;
+  md += `| \`${n.id}\` | ${n.name} | *${n.latin}* | ${reg} | ${ramosLabel} | ${nota} | ✅ Verificado |\n`;
 }
 
 const docsDir = path.resolve(__dirname, '../docs');

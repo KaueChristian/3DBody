@@ -581,7 +581,7 @@ export const BODY_MUSCLES = [
     origem: 'Face interna (pélvica) da membrana obturadora e das margens do forame obturado, no púbis e no ísquio.',
     insercao: 'Face medial do grande trocânter do fêmur (fossa trocantérica anterior ao tendão do piriforme). O tendão sai da pelve pelo forame isquiático menor, dobrando-se sobre o ísquio.',
     inervacao: 'Nervo para o obturador interno e gêmeo superior (plexo sacral, L5–S2).',
-    nota: 'Reveste a parede lateral da pelve. A fáscia que o cobre dá origem ao arco tendíneo do levantador do ânus e forma o canal do pudendo (de Alcock), por onde correm o nervo e os vasos pudendos. O fêmur ainda não está no modelo: o tendão termina no limite do que foi modelado. Os segmentos do nervo variam: L5–S1 em Moore e L5–S2 no Gray’s.',
+    nota: 'Reveste a parede lateral da pelve. A fáscia que o cobre dá origem ao arco tendíneo do levantador do ânus e forma o canal do pudendo (de Alcock), por onde correm o nervo e os vasos pudendos. Os segmentos do nervo variam: L5–S1 em Moore e L5–S2 no Gray’s.',
   }),
   /* F2.8 — o BodyParts3D só traz um “músculo perineal” (na verdade o esfíncter do ânus, em duas cópias); os músculos
      do períneo urogenital são modelados por código a partir de pontos medidos no ramo isquiopúbico (z = −0,3 a 0,3, y ≈ −7,7 a −7,85). O modelo

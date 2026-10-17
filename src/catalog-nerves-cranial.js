@@ -127,7 +127,7 @@ export const NERVES_CRANIAL = [
     ramos: 'Ramos para o esôfago e a traqueia, ramos faríngeos e os ramos laríngeos para todos os músculos intrínsecos da laringe, exceto o cricotireóideo.',
     sensibilidade: 'Mucosa da laringe abaixo das pregas vocais; parte superior da traqueia e do esôfago.',
     lesao: 'Paralisia da prega vocal do mesmo lado: rouquidão, voz soprosa e tosse fraca; a prega fica em posição paramediana. É lesado na tireoidectomia, em tumores do ápice do pulmão, em aneurismas da aorta (esquerda), na dilatação do átrio esquerdo e em tumores do mediastino. A lesão bilateral causa estridor e dispneia.',
-    nota: 'O nervo esquerdo, mais longo e com alça mais baixa, é atingido por mais doenças torácicas. O desenho é aproximado: o modelo ainda não tem a aorta nem a subclávia, e o lado direito é o espelho do esquerdo (na realidade a alça direita é mais alta, sob a subclávia).',
+    nota: 'O nervo esquerdo, mais longo e com alça mais baixa sob o arco da aorta, é atingido por mais doenças torácicas. O desenho é aproximado: o lado direito é o espelho do esquerdo (na realidade a alça direita é mais alta, sob a artéria subclávia).',
   }),
 
   /* ═════════════════════ F2.10 Ramos de V e VII ═════════════════════ */

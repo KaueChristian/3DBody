@@ -88,8 +88,18 @@ export const FEIXES = [
   },
   {
     id: 'feixe_popliteo', nome: 'Feixe da fossa poplítea',
-    membros: ['arteria_poplitea', 'veia_poplitea', 'n_isquiatico'],
-    texto: 'Na fossa poplítea, de superficial para profundo, vêm o nervo tibial, a veia e a artéria poplíteas; o nervo isquiático se divide em tibial e fibular comum perto do ápice da fossa (o tibial e o fibular comum não existem separados no modelo).',
+    membros: ['arteria_poplitea', 'veia_poplitea', 'n_isquiatico', 'n_tibial', 'n_fibular_comum'],
+    texto: 'Na fossa poplítea, de superficial para profundo, vêm o nervo tibial, a veia e a artéria poplíteas; o nervo isquiático se divide em tibial e fibular comum perto do ápice da fossa, e o fibular comum segue a margem medial do bíceps femoral rumo ao colo da fíbula.',
+  },
+  {
+    id: 'feixe_tibial_anterior', nome: 'Feixe tibial anterior (perna)',
+    membros: ['arteria_tibial_anterior', 'veia_tibial_anterior', 'n_fibular_profundo'],
+    texto: 'No compartimento anterior da perna, a artéria tibial anterior, as veias tibiais anteriores comitantes e o nervo fibular profundo descem sobre a membrana interóssea, entre o tibial anterior e os extensores longos dos dedos e do hálux, e passam sob o retináculo dos extensores para o dorso do pé.',
+  },
+  {
+    id: 'feixe_tibial_posterior', nome: 'Feixe tibial posterior (perna e túnel do tarso)',
+    membros: ['arteria_tibial_posterior', 'veia_tibial_posterior', 'n_tibial'],
+    texto: 'No compartimento posterior profundo da perna, o nervo tibial, a artéria tibial posterior e as veias tibiais posteriores descem sob o arco tendíneo do sóleo, sobre o tibial posterior e o flexor longo dos dedos, e passam atrás do maléolo medial, sob o retináculo dos flexores (túnel do tarso).',
   },
   {
     id: 'feixe_intercostal', nome: 'Feixe intercostal',

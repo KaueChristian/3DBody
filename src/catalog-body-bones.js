@@ -15,6 +15,7 @@ export const bone = (id, name, latin, region, partIds, d, extra = {}) => ({
     ['Função e inserções', d.funcao],
   ],
   nota: d.nota,
+  ...(extra.relacionados ? { relacionados: extra.relacionados } : {}),
 });
 
 export const range = (prefix, a, b) => Array.from({ length: b - a + 1 }, (_, i) => `${prefix}${a + i}`);

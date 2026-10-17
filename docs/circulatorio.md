@@ -46,7 +46,7 @@ anastomoses, circulação colateral, sistemas porta, anastomoses portossistêmic
 
 ## 2. Irrigação dos músculos, pulsos, relações e feixes (M15 a M17, M19)
 
-- **Irrigação (M15).** Cada um dos 228 músculos tem o campo “Irrigação” na ficha (texto com o nome verdadeiro dos ramos) e a lista de artérias do
+- **Irrigação (M15).** Cada um dos 255 músculos tem o campo “Irrigação” na ficha (texto com o nome verdadeiro dos ramos) e a lista de artérias do
   catálogo (chips; o botão “Isolar com nervos e artérias” mostra tudo junto). A ficha da artéria lista os músculos irrigados. Fonte única:
   `src/irrigation.js` (linhas `[músculos, artérias, texto]`); `catalog.js` deriva os mapas `IRRIGATION` e `IRRIGATED` e **lança erro** se um músculo
   ficar sem artéria, se uma artéria citada não existir ou se um músculo se repetir. Os músculos da cabeça e da pelve passaram a ligar aos ramos próprios (facial, maxilar,
@@ -56,9 +56,9 @@ anastomoses, circulação colateral, sistemas porta, anastomoses portossistêmic
   palpável (carótida comum, subclávia, axilar, braquial, radial, ulnar, femoral, poplítea, tibial posterior, dorsal do pé, facial, temporal superficial e aorta abdominal).
 - **Coração: irrigação, inervação e esqueleto fibroso.** `src/cardio-extras.js` acrescenta às fichas das câmaras os campos “Irrigação” (com a dominância coronariana) e
   “Inervação” (plexo cardíaco, simpático e vago, dor referida) e, às das valvas, “Anel fibroso e esqueleto do coração”.
-- **Feixes neurovasculares (M17).** `src/neurovascular.js`: 18 feixes (bainha carótica, axila, braço, sulco do nervo radial, espaço quadrangular,
+- **Feixes neurovasculares (M17).** `src/neurovascular.js`: 20 feixes (bainha carótica, axila, braço, sulco do nervo radial, espaço quadrangular,
   supraescapular, dorsal da escápula, toracodorsal, serrátil anterior, radial e ulnar do antebraço, glúteo superior, glúteo inferior, pudendo, obturatório, trígono femoral,
-  fossa poplítea, intercostal). A ficha
+  fossa poplítea, tibial anterior, tibial posterior e intercostal). A ficha
   de qualquer membro mostra o texto, os outros membros e o botão **“Isolar o feixe”**. Guarda em `catalog.js`: todo membro existe e cada feixe tem artéria e nervo.
 - **Quiz “o que irriga isto?” (M19).** Novo tipo de pergunta do quiz teórico: “Qual artéria irriga X?”; as erradas são artérias que não irrigam o músculo
   (só entram artérias que irrigam algum músculo, não as coronárias).

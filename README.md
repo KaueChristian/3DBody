@@ -6,17 +6,17 @@
 > (`draw_icon` em `tools/build_exe.py`). O executável, o repositório e a pasta de instalação **ainda se chamam** `Anatomia3D`/`3DBody`:
 > renomear o lançador faz o `.exe` se trocar sozinho, então fica para uma release própria.
 
-Atlas 3D interativo de **cabeça, tronco e membros superiores**, com pele, fáscias, músculos, **nervos**, **articulações**,
-ligamentos, glândulas, cartilagens, ossos e dentes em camadas. Cada estrutura tem nome em português e em latim e uma ficha: nos
-músculos, **ação, origem, inserção, inervação e os movimentos que realizam**; nos nervos, **origem, trajeto, ramos, sensibilidade,
+Atlas 3D interativo do **corpo humano**, com pele, fáscias, músculos, **nervos**, **articulações**,
+ligamentos, **coração, artérias, veias, sistema linfático**, **sistema respiratório**, glândulas, cartilagens, ossos e dentes em camadas. Cada estrutura tem nome em português e em latim e uma ficha: nos
+músculos, **ação, origem, inserção, inervação, irrigação e os movimentos que realizam**; nos nervos, **origem, trajeto, ramos, sensibilidade,
 lesão e os músculos que inervam**; nas articulações, **tipo, superfícies, cápsula, ligamentos, movimentos com amplitude e músculos,
-inervação e irrigação**; nos ossos, localização, articulações, estruturas e função; nos ligamentos, fixações e função.
+inervação e irrigação**; nos vasos, **origem (ou formação), trajeto, ramos (ou tributárias), território, pulsos e relações**; nos ossos, localização, articulações, estruturas e função; nos ligamentos, fixações e função.
 O **membro inferior** (F4) tem o esqueleto (fêmur, patela, tíbia, fíbula, tarso, metatarsais, falanges e sesamoides), a pele inteira, os **24 músculos do quadril e da coxa**, os **14 da perna** (compartimentos anterior, lateral e posterior) e a membrana interóssea, os **13 do pé** que o banco tem (o extensor curto dos dedos e os interósseos dorsais não existem no banco) e os nervos que os inervam (femoral, obturatório, glúteos, isquiático, **tibial, fibulares comum, superficial e profundo, plantares medial e lateral**); as articulações e os ligamentos do quadril, do joelho e do tornozelo entram no próximo lote (F4.6).
 
 ## Como abrir
 
 Dê dois cliques em `index.html` (Chrome, Edge ou Firefox). Não precisa de internet nem de servidor.
-A cabeça aparece primeiro; o tronco e os membros são carregados em segundo plano (`dist/anatomy-body.js` e, depois dele, o membro inferior em `dist/anatomy-leg.js` e o coração e os vasos em `dist/anatomy-circ.js`).
+A cabeça aparece primeiro; o tronco, os membros e os sistemas são carregados em segundo plano (`dist/anatomy-body.js` e, depois dele, o membro inferior em `dist/anatomy-leg.js`, o coração e os vasos em `dist/anatomy-circ.js` e o sistema respiratório em `dist/anatomy-resp.js`).
 
 Para editar o código:
 
@@ -71,25 +71,25 @@ Para gerar o executável localmente: `npm run exe` (usa o compilador C# do próp
 | Músculos da mímica | frontal, occipital, auriculares, orbicular do olho/boca, corrugador, prócero, nasal, levantadores, zigomáticos, risório, abaixadores, mentual… |
 | Músculos da mastigação e planos profundos da cabeça | masseter, temporal, pterigóideos, bucinador, supra-hióideos; **língua** (genioglosso, hioglosso, estiloglosso, palatoglosso e 4 intrínsecos), **palato mole** (levantador e tensor do véu, úvula, palatofaríngeo), **faringe** (3 constritores, estilofaríngeo, salpingofaríngeo), **laringe** (cricotireóideo, cricoaritenóideos, aritenóideos, tireoaritenóideo, vocal) e **ouvido médio** (tensor do tímpano, estapédio) |
 | Órbita e olho | globo ocular, 6 músculos extraoculares, levantador da pálpebra, placas tarsais e os músculos lisos intrínsecos (ciliar, esfíncter e dilatador da pupila, tarsais superior e inferior) |
-| Músculos superficiais (tronco e membros) | peitoral maior (3 partes), trapézio (3 partes), latíssimo do dorso, oblíquo externo, reto do abdome, deltoide (3 partes), bíceps, tríceps, extensores e flexores superficiais do antebraço, tenar/hipotenar superficial, palmar curto |
-| Músculos intermediários | peitoral menor, subclávio, serrátil anterior, rombóides, levantador da escápula, escalenos (incluindo o mínimo), serráteis posteriores, esplênios, oblíquo interno, manguito rotador, braquial, flexor superficial, lumbricais… |
-| Músculos profundos (tronco e membros) | intercostais, subcostais, levantadores das costelas, transverso do tórax, diafragma, transverso do abdome, quadrado do lombo, psoas, ilíaco, eretores da espinha, semiespinais, multífido, rotadores, interespinais, intertransversários, suboccipitais, pré-vertebrais (longos da cabeça e do pescoço), assoalho pélvico, flexor profundo, pronador quadrado, interósseos |
+| Músculos superficiais (tronco e membros) | peitoral maior (3 partes), trapézio (3 partes), latíssimo do dorso, oblíquo externo, reto do abdome, deltoide (3 partes), bíceps, tríceps, extensores e flexores superficiais do antebraço, tenar/hipotenar superficial, palmar curto; glúteo máximo, tensor da fáscia lata, sartório, reto femoral, vastos lateral e medial, grácil, bíceps femoral, semitendíneo, gastrocnêmio, fibulares, tibial anterior, abdutores e flexor curto dos dedos no pé |
+| Músculos intermediários | peitoral menor, subclávio, serrátil anterior, rombóides, levantador da escápula, escalenos (incluindo o mínimo), serráteis posteriores, esplênios, oblíquo interno, manguito rotador, braquial, flexor superficial, lumbricais; glúteo médio, adutores longo e curto, semimembranáceo, sóleo, plantar, extensores longos dos dedos e do hálux, quadrado plantar, lumbricais e flexores curtos no pé… |
+| Músculos profundos (tronco e membros) | intercostais, subcostais, levantadores das costelas, transverso do tórax, diafragma, transverso do abdome, quadrado do lombo, psoas, ilíaco, eretores da espinha, semiespinais, multífido, rotadores, interespinais, intertransversários, suboccipitais, pré-vertebrais (longos da cabeça e do pescoço), assoalho pélvico, flexor profundo, pronador quadrado, interósseos; glúteo mínimo, piriforme, gêmeos, obturadores, quadrado femoral, vasto intermédio, pectíneo, adutores magno e mínimo, poplíteo, tibial posterior, flexores longos dos dedos e do hálux, adutor do hálux, oponente do dedo mínimo e interósseos plantares |
 | Articulações (cápsulas) | membro superior: esternoclavicular, acromioclavicular, escapulotorácica (funcional), ombro, cotovelo, radiulnares proximal e distal, radiocarpal, intercarpais, carpometacarpais (polegar e 2º–5º), metacarpofalângicas e interfalângicas |
-| Ligamentos | 10 da cabeça (temporomandibular, estilomandibular, palpebrais…), linha alba, retináculo dos flexores e 16 do membro superior (esternoclaviculares, interclavicular, costoclavicular, acromioclavicular, coracoclavicular, coracoacromial, coracoumeral, glenoumerais, colaterais do cotovelo, anular do rádio, membrana interóssea, radiocarpais, colaterais do carpo, colaterais dos dedos, metacarpal transverso profundo) |
-| Nervos | 106 nervos e gânglios, mais a **medula espinal**, ligados a **todos** os 228 músculos (veja abaixo) |
-| Coração (F5) | átrios, ventrículos, as 4 valvas, músculos papilares e o **pericárdio** (envoltório esquemático, declarado na ficha) |
+| Ligamentos | 10 da cabeça (temporomandibular, estilomandibular, palpebrais…), linha alba, retináculo dos flexores, 16 do membro superior (esternoclaviculares, interclavicular, costoclavicular, acromioclavicular, coracoclavicular, coracoacromial, coracoumeral, glenoumerais, colaterais do cotovelo, anular do rádio, membrana interóssea, radiocarpais, colaterais do carpo, colaterais dos dedos, metacarpal transverso profundo) e a **membrana interóssea da perna** |
+| Nervos | 112 nervos e gânglios, mais a **medula espinal**, ligados a **todos** os 255 músculos (veja abaixo) |
+| Coração (F5) | átrios, ventrículos, as 4 valvas, músculos papilares, sistema de condução e o **pericárdio** (envoltório esquemático, declarado na ficha) |
 | Sistema respiratório (F6.1) | **pulmões** (5 lobos, malhas do Atlas de Referência Humano, CC BY 4.0, ajustadas ao tórax), **traqueia, brônquios principais e os 20 segmentares** (B1 a B10), **pleuras** (esquema) e as 6 **cartilagens da laringe** ([`docs/respiratorio.md`](docs/respiratorio.md)) |
-| Artérias e Veias (F5) | coronárias e veias do coração, aorta (ascendente, arco, torácica e abdominal), tronco e artérias pulmonares, veias pulmonares, cavas, ázigo, carótidas e **carótida externa com os ramos** (esquema por código), vertebral e **círculo arterial do cérebro**, subclávia e axilar com seus ramos, braço e antebraço até os arcos palmares, intercostais, lombares, epigástricas, **tronco celíaco, mesentéricas e seus ramos, veia porta e afluentes, veias hepáticas**, ilíacas e ramos da ilíaca interna (glúteas, obturatória, pudenda), femoral e femoral profunda, poplítea, tibiais, fibular, dorsal do pé e plantares; veias superficiais e profundas dos membros e da cabeça. Cada músculo mostra as artérias que o irrigam, e a ficha da artéria, os músculos irrigados; pulsos, relações e 18 feixes neurovasculares ([`docs/circulatorio.md`](docs/circulatorio.md)) |
+| Artérias e Veias (F5) | coronárias e veias do coração, aorta (ascendente, arco, torácica e abdominal), tronco e artérias pulmonares, veias pulmonares, cavas, ázigo, carótidas e **carótida externa com os ramos** (esquema por código), vertebral e **círculo arterial do cérebro**, subclávia e axilar com seus ramos, braço e antebraço até os arcos palmares, intercostais, lombares, epigástricas, **tronco celíaco, mesentéricas e seus ramos, veia porta e afluentes, veias hepáticas**, ilíacas e ramos da ilíaca interna (glúteas, obturatória, pudenda), femoral e femoral profunda, poplítea, tibiais, fibular, dorsal do pé e plantares; veias superficiais e profundas dos membros e da cabeça. Cada músculo mostra as artérias que o irrigam, e a ficha da artéria, os músculos irrigados; pulsos, relações e 20 feixes neurovasculares ([`docs/circulatorio.md`](docs/circulatorio.md)) |
 | Anatomia de superfície do coração (F5, esquemas) | projeção do coração na parede do tórax e focos de ausculta, desenhados sobre a pele |
 | Sistema linfático (F5, esquemas) | cisterna do quilo, ducto torácico, ducto linfático direito e os principais grupos de linfonodos (cabeça e pescoço, axilares, paraesternais, mediastinais, traqueobrônquicos, celíacos e mesentéricos, lombares, ilíacos, inguinais e poplíteos); posição aproximada, declarada na ficha |
 | Circulação fetal (F5, esquemas; camada desligada por padrão) | placenta e cordão umbilical (malha do Atlas de Referência Humano, CC BY 4.0), veia e artérias umbilicais, ducto venoso; o ligamento arterial (ducto arterioso) fica na camada das artérias |
 | Glândulas e língua | parótida e ducto, submandibular, sublingual, língua |
-| Cartilagens e discos | nasais, orelha, costais, discos intervertebrais |
+| Cartilagens e discos | nasais, orelha, 6 cartilagens da laringe (tireóidea, cricóidea, aritenóides, epiglote, corniculadas e cuneiformes), costais, discos intervertebrais |
 | Ossos e dentes | crânio completo, mandíbula, hioide, coluna (atlas a sacro), costelas, esterno, quadril, clavícula, escápula, úmero, rádio, ulna, carpo, metacarpais, falanges, dentes; **membro inferior (F4.1):** fêmur, patela, tíbia, fíbula, tarso, metatarsais, falanges do pé e sesamoides |
 
-Recursos: **regiões** (corpo, cabeça, tronco, braço), controle de **dissecação** (da pele aos ossos), opacidade da pele,
+Recursos: **regiões** (corpo, cabeça, tronco, braço, perna), controle de **dissecação** (da pele aos ossos), opacidade da pele,
 liga/desliga por camada ou por estrutura, busca, rótulos com linhas de chamada, câmera que enquadra a estrutura escolhida,
-vistas predefinidas, ligação **músculo ↔ nervo** e **modo quiz** (dois tipos, abaixo).
+vistas predefinidas, ligações **músculo ↔ nervo**, **músculo ↔ artéria** e **músculo ↔ articulação** e **modo quiz** (três tipos, abaixo).
 
 ## Nervos
 
@@ -111,7 +111,8 @@ Cada músculo do atlas está ligado ao(s) nervo(s) que o inervam, e cada nervo c
 | Pescoço e dorso | plexo cervical (ramos musculares), alça cervical, frênico, suboccipital (C1), occipital maior (C2), ramos posteriores dos nervos espinais (C3–L5), e os cutâneos do plexo cervical: occipital menor, auricular magno, cervical transverso e supraclaviculares |
 | Medula e nervos espinais | **medula espinal** (intumescências, cone e filo terminal), nervos espinais cervicais, torácicos, lombares e sacrais/coccígeo (raízes, gânglio espinal e início do nervo; os 31 pares) e **cauda equina** |
 | Membro superior | plexo braquial (raízes, troncos, divisões, fascículos), dorsal da escápula, torácico longo, supraescapular, subclávio, peitorais lateral e medial, subescapulares superior e inferior, toracodorsal, axilar, musculocutâneo, radial, interósseo posterior, mediano, interósseo anterior, ulnar e ramo profundo do ulnar; **nervos sensitivos**: intercostobraquial, cutâneos medial do braço e do antebraço, posterior e lateral inferior do braço, posterior do antebraço, lateral superior do braço, lateral do antebraço, ramo superficial do radial, ramos cutâneos palmar (mediano e ulnar) e dorsal do ulnar, nervos digitais palmares e dorsais |
-| Tronco e pelve | intercostais (T1–T6), toracoabdominais (T7–T11), subcostal (T12), ílio-hipogástrico, ilioinguinal, plexo lombar (ramos musculares), femoral (parte pélvica), nervos do levantador do ânus/coccígeo, pudendo e nervo para o obturador interno |
+| Tronco e pelve | intercostais (T1–T6), toracoabdominais (T7–T11), subcostal (T12), ílio-hipogástrico, ilioinguinal, plexo lombar (ramos musculares), nervos do levantador do ânus/coccígeo, pudendo e nervo para o obturador interno (e gêmeo superior) |
+| Membro inferior | femoral, obturatório, glúteos superior e inferior, nervo para o piriforme, nervo para o quadrado femoral (e gêmeo inferior), isquiático, tibial, fibular comum, fibulares superficial e profundo, plantares medial e lateral |
 
 Os textos seguem Moore, Dalley & Agur (*Anatomia orientada para a clínica*), *Gray's Anatomy*, Netter e a Terminologia
 Anatômica; onde as fontes divergem (ex.: segmentos medulares de alguns músculos), a ficha diz isso.
@@ -144,7 +145,7 @@ articulação, os ossos e ligamentos dela ficam em destaque (**Isolar com ossos 
 
 Ainda não há: articulações da coluna, do tórax e da cabeça; página e quiz de movimentos; origem e inserção desenhadas no osso;
 animação. Esses itens foram **adiados** para dar prioridade ao corpo inteiro e aos sistemas da disciplina (as da pelve e do membro
-inferior entram na F4) e estão listados em [`docs/pontos-de-melhoria.md`](docs/pontos-de-melhoria.md).
+inferior entram na F4.6) e estão listados em [`docs/pontos-de-melhoria.md`](docs/pontos-de-melhoria.md).
 
 ## Modo quiz
 
@@ -153,8 +154,8 @@ O botão **Modo quiz** abre uma janela para escolher o tipo de treino. Em todos 
 quantidade de estruturas de cada opção; opções sem nada ficam desabilitadas.
 
 - **Localizar** — aparece o *nome* de um músculo, osso, ligamento etc. e a pessoa precisa **clicar nele no modelo 3D**.
-  Não há alternativas para eliminar. Configurações: região (corpo, cabeça, tronco, braço), o que praticar (músculos,
-  nervos, ossos e o grupo “articulações, ligamentos e outras”), número de perguntas (10, 20, 30 ou todas) e se mostra o nome em latim.
+  Não há alternativas para eliminar. Configurações: região (corpo, cabeça, tronco, braço, perna), o que praticar (músculos,
+  nervos, ossos, coração, artérias, veias, linfáticos, órgãos e o grupo “articulações, ligamentos e outras”), número de perguntas (10, 20, 30 ou todas) e se mostra o nome em latim.
   - **3 tentativas** por pergunta. Acertar de primeira vale **1 ponto**; acertar com erro ou dica, **0,5**; esgotar as
     tentativas (ou pular) revela a resposta e vale 0. Clicar de novo na mesma estrutura errada não gasta tentativa.
   - **Dissecação e camadas** continuam disponíveis para chegar às estruturas profundas. O botão **Remover** (ou o
@@ -167,7 +168,7 @@ quantidade de estruturas de cada opção; opções sem nada ficam desabilitadas.
 - **Escolher o nome** — a estrutura aparece destacada e a pessoa escolhe o nome entre 4 alternativas, sem fim e sem
   repetir estrutura até acabar as do filtro. Atalhos: **1–4** respondem, **Enter** avança.
 - **Quiz teórico** — perguntas de texto geradas a partir das fichas, com 4 alternativas e **uma só correta**
-  (as erradas nunca são nervos/músculos que também seriam resposta). Para **músculos**: qual nervo o inerva, qual tem esta
+  (as erradas nunca são nervos/artérias/músculos que também seriam resposta). Para **músculos**: qual nervo o inerva, qual artéria o irriga, qual tem esta
   ação / origem / inserção, a que músculo se refere uma observação. Para **nervos**: qual destes músculos ele inerva, a lesão
   de qual nervo causa um quadro, qual nervo cuida de uma sensibilidade. Enunciados que citariam o nome da resposta são
   descartados. Respeita região, tipos (só músculos e nervos), quantidade e filtro; no fim mostra o resultado e **Treinar só as erradas**.
@@ -181,8 +182,9 @@ A última configuração é lembrada no navegador. **Toda resposta** (nos três 
 O botão **📚 Estudo** abre um painel com abas. Tudo funciona offline e os dados do estudante ficam só no navegador
 (`localStorage`), com exportação e importação em JSON.
 
-- **Tours** — 6 roteiros com 24 passos (manguito rotador, plexo braquial, nervo radial, mastigação e V3, nervo facial e
-  mímica, parede abdominal). Cada passo escolhe região, dissecação e a estrutura em destaque; a câmera enquadra a estrutura
+- **Tours** — 15 roteiros com 90 passos (manguito rotador, plexo braquial, nervo radial, mastigação e V3, nervo facial e
+  mímica, parede abdominal, perna e pé, grande e pequena circulação, circulação fetal, generalidades do circulatório,
+  coração: superfície/ausculta/condução, artérias da cabeça e do pescoço, círculo arterial do cérebro, fígado/tronco celíaco/veia porta e sistema respiratório). Cada passo escolhe região, dissecação e a estrutura em destaque; a câmera enquadra a estrutura
   (cópia esquerda) pelo lado indicado. Setas ← → navegam, **Esc** sai. Os textos dos tours são resumos didáticos que ainda
   **não passaram** pela revisão de fontes (`docs/revisao-conteudo.md` cobre as fichas): confira nas referências antes de citar.
 - **Progresso** — estruturas estudadas, precisão geral, revisões que vencem hoje (e amanhã/7 dias), pontos fracos, estruturas
@@ -192,10 +194,10 @@ O botão **📚 Estudo** abre um painel com abas. Tudo funciona offline e os dad
 - **Listas** — listas de estudo próprias (“Prova de membro superior”): adicione pelo nome, pela seleção atual ou pelos
   favoritos e treine só com ela em qualquer tipo de quiz.
 - **Corte** — plano **sagital**, **coronal** ou **axial** com controle deslizante (o curso vem do tamanho do modelo) e
-  botão para inverter o lado. Esconde um dos lados do plano; as malhas são cascas, então o corte mostra o interior delas,
+  botão para inverter o lado. Esconde um dos lados do plano; as malhas são cascas, então o corte mostra o interior dela,
   sem desenhar a superfície da fatia. Um aviso na tela lembra que há corte ativo.
 - **Cores** — por camada (padrão), por **nervo que inerva** (nervo principal do músculo), por **região**, por **grupo /
-  compartimento** (23 grupos definidos músculo a músculo em `src/study/groups.js`) ou por **segmento medular**: no último,
+  compartimento** (32 grupos definidos músculo a músculo em `src/study/groups.js`) ou por **segmento medular**: no último,
   escolha C1 a Co1 e o **miótomo** (músculos e nervos do segmento) fica em destaque, com a lista na janela. A cor sobrevive a
   seleção e hover e há legenda na tela.
 - **Dermátomos** — na mesma aba, uma opção pinta a pele em faixas (V1–V3 na face, C2–C4 no pescoço, T2–L1 e L1–S3 no tronco,
@@ -296,7 +298,7 @@ id2`); as peças dele (`pack="leg"` em `addl(...)`) e o que o banco não tem est
 | `tools/` | Pipeline de dados (Python) e do executável (`build_exe.py`, `launcher/Launcher.cs`) |
 | `.github/workflows/release.yml` | Gera e publica a release a cada push na `main` |
 | `tests/` | Testes: integridade do catálogo, dos tours e dos grupos (`test_catalog.js`), lógica das ferramentas de estudo (`test_study.js`) e fumaça no navegador (`smoke_test.js`; `SMOKE_FILE=1` abre por `file://`) |
-| `docs/` | Auditoria de conteúdo (`revisao-conteudo.md`), cobertura (`cobertura.md`), miótomos (`miotomos.md`), dermátomos (`dermatomos.md`), desempenho (`desempenho.md`), concorrentes (`concorrentes.md`) e publicação como site/celular (`publicacao-web.md`) |
+| `docs/` | Auditoria de conteúdo (`revisao-conteudo.md`), cobertura (`cobertura.md`), articulações (`articulacoes.md`), membro inferior (`inventario-membro-inferior.md`), circulatório (`circulatorio.md`), respiratório (`respiratorio.md`), fonte HRA (`fonte-hra-atlas-de-referencia.md`), miótomos (`miotomos.md`), dermátomos (`dermatomos.md`), desempenho (`desempenho.md`, `otimizacao-mobile.md`), pontos de melhoria (`pontos-de-melhoria.md`), concorrentes (`concorrentes.md`) e publicação como site/celular (`publicacao-web.md`) |
 | `project_context.md` | Roteiro: mapa do que atlas de anatomia costumam ter e a ordem de desenvolvimento por fases |
 | `agents.md` | Guia para agentes de código e colaboradores: convenções, verificação, regras de conteúdo e de publicação |
 

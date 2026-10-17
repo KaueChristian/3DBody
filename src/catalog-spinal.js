@@ -135,7 +135,7 @@ export const NERVES_SPINAL = [
     ramos: 'Plexo lombar (ílio-hipogástrico, ilioinguinal, genitofemoral, cutâneo femoral lateral, femoral e obturatório) e tronco lombossacral. Ramos posteriores com fichas próprias.',
     sensibilidade: 'Pele da região lombar, da parte anterior da coxa e da perna (dermátomos L1 a L5; L4 na face medial da perna, L5 no dorso do pé).',
     lesao: 'Radiculopatia lombar (hérnia de disco, em geral L4–L5 e L5–S1, que comprime a raiz que passa por baixo do disco): ciática, dormência no dermátomo e fraqueza do miótomo (L4: extensão do joelho; L5: dorsiflexão do pé e do hálux). Reflexo patelar: L3–L4.',
-    nota: 'Os ramos do plexo lombar que vão aos membros inferiores ficam para a etapa dos membros inferiores. Aqui só o gânglio e o início de cada nervo.',
+    nota: 'Aqui aparecem o gânglio espinal e o início de cada nervo no forame intervertebral; as raízes de L2 a L5 estão na ficha da cauda equina e os ramos principais nas fichas do plexo lombar, do femoral e do obturatório.',
   }),
   nervo('n_espinais_sacrais', 'Nervos espinais sacrais e coccígeo (S1–S5 e Co1)', 'Nn. spinales sacrales et n. coccygeus', ['tronco'], {
     paths: seg(S, { raiz: false }),

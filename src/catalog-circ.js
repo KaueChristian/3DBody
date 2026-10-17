@@ -156,7 +156,7 @@ export const CIRC_ITEMS = [
   cardio('papilar_ve', 'Músculo papilar anterolateral do ventrículo esquerdo', 'Musculus papillaris anterolateralis ventriculi sinistri', [part('papilar_lateral_ve', 'cardiac')], {
     local: 'Parede anterolateral do ventrículo esquerdo. O banco o chama de músculo papilar lateral.',
     k2: 'Estrutura',
-    paredes: 'Um dos dois grandes músculos papilares do ventrículo esquerdo (o outro é o posteromedial, que não existe no banco). Suas cordas tendíneas vão às duas cúspides da valva mitral.',
+    paredes: 'Um dos dois grandes músculos papilares do ventrículo esquerdo (o outro é o posteromedial, que não existe no banco e está representado no modelo como esquema). Suas cordas tendíneas vão às duas cúspides da valva mitral.',
     k3: 'Funcionamento',
     interno: 'Contrai-se com o ventrículo e tensiona as cordas, mantendo as cúspides da valva mitral fechadas durante a sístole.',
     k4: 'Posição na circulação',
@@ -428,7 +428,7 @@ export const CIRC_ITEMS = [
     trajeto: 'Sobe à esquerda da coluna e, entre T7 e T9, cruza para a direita por trás da aorta, do ducto torácico e do esôfago, para desembocar na veia ázigo.',
     ramos: 'Veias intercostais posteriores esquerdas (da 9ª à 11ª), esofágicas e mediastinais.',
     territorio: 'Parte inferior esquerda da parede do tórax e do abdome posterior.',
-    nota: 'A hemiázigo acessória, que recebe as intercostais esquerdas superiores, não existe no banco.',
+    nota: 'A hemiázigo acessória recebe as intercostais esquerdas superiores (da 4ª à 8ª) e desemboca na ázigo ou na própria hemiázigo.',
   }, {
     relacionados: ['veia_azigo'],
   }),
@@ -470,10 +470,10 @@ export const CIRC_ITEMS = [
   }, {
     relacionados: ['arteria_subclavia'],
   }),
-  art('arteria_subclavia', 'Artéria subclávia', 'Arteria subclavia', ['tronco', 'membro_sup'], ['arteria_subclavia'], {
+  art('arteria_subclavia', 'Artéria subclávia', 'Arteria subclavia', ['cabeca', 'tronco', 'membro_sup'], ['arteria_subclavia'], {
     origem: 'A direita, do tronco braquiocefálico; a esquerda, do arco da aorta.',
     trajeto: 'Arqueia-se sobre a cúpula da pleura e a 1ª costela, passa entre os músculos escalenos anterior e médio, junto com o plexo braquial, e termina na margem lateral da 1ª costela, onde passa a artéria axilar.',
-    ramos: 'Vertebral, torácica interna, tronco tireocervical e tronco costocervical (e, com variação, a dorsal da escápula). Só a vertebral e a torácica interna estão no modelo.',
+    ramos: 'Vertebral, torácica interna, tronco tireocervical (tireóidea inferior, supraescapular e cervical transversa) e tronco costocervical (intercostal suprema e cervical profunda), e a dorsal da escápula.',
     territorio: 'Pescoço, parte do encéfalo, parede do tórax e, por seus ramos e pela axilar, o membro superior.',
     nota: 'A artéria passa por trás do escaleno anterior e a veia subclávia, à frente dele.',
   }, {
@@ -535,7 +535,7 @@ export const CIRC_ITEMS = [
   }, {
     relacionados: ['veia_braquiocefalica', 'arteria_carotida_comum'],
   }),
-  vein('veia_subclavia', 'Veia subclávia', 'Vena subclavia', ['tronco', 'membro_sup'], ['veia_subclavia'], {
+  vein('veia_subclavia', 'Veia subclávia', 'Vena subclavia', ['cabeca', 'tronco', 'membro_sup'], ['veia_subclavia'], {
     origem: 'Continuação da veia axilar, na margem lateral da 1ª costela.',
     trajeto: 'Passa à frente do escaleno anterior (a artéria passa atrás) e sobre a 1ª costela, e se une à jugular interna para formar a veia braquiocefálica.',
     ramos: 'Em geral, a veia jugular externa; no ângulo venoso recebe o ducto torácico (à esquerda) e o ducto linfático direito.',

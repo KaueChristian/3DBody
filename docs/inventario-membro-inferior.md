@@ -171,7 +171,7 @@ Buscado por nome no índice em 2026-10-12. Cada item aponta o ponto de melhoria 
 
 Lembrete de licença: as malhas derivadas (`anatomy-leg.js`) seguem a CC BY-SA 2.1 Japão e a atribuição visível, como as demais.
 
-## 5. Lotes B e C entregues (2026-10-15)
+## 6. Lotes B e C entregues (2026-10-15)
 
 As 28 peças dos lotes B e C foram baixadas (66 elementos, 3,3 MB) e convertidas com `fetch_body.py --pack leg <ids>` e `convert_body.py --pack leg --append <ids>`; o pacote `anatomy-leg.js` passou de 2,9 para 3,9 MB. Fichas em `src/catalog-leg-perna.js` e `src/catalog-leg-pe.js`; nervos em `src/catalog-nerves-leg.js`.
 

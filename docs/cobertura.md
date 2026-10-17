@@ -48,7 +48,6 @@ foi verificado no banco BodyParts3D (nome do conceito em `tools/isa_element_part
 | Partes dos constritores (pterigofaríngea, bucofaríngea, milofaríngea, glossofaríngea; tireofaríngea e cricofaríngea) | O atlas mostra cada constritor como um músculo só; as partes e o triângulo de Killian estão na ficha |
 | Levantador da glândula tireoide | Inconstante; entra com a tireoide (F6.6; o banco não tem a glândula, ver `project_context.md` §5) |
 | Cremaster | É do canal inguinal e do cordão espermático: entra com o sistema genital (F6.4) |
-| Músculos da perna e do pé | Membro inferior (F4.3 e F4.4) |
 
 O número de músculos de uma região varia entre as fontes (cabeças e partes contadas à parte). Aqui cada parte com malha
 separada no BodyParts3D ou com inervação própria é uma entrada.
@@ -72,7 +71,6 @@ separada no BodyParts3D ou com inervação própria é uma entrada.
 
 | Item | Onde entra |
 | --- | --- |
-| Nervos da perna e do pé (tibial, fibular comum, fibulares, plantares) e os ramos musculares deles | F4.5 (núcleo do membro inferior) |
 | Nervos cutâneos do membro inferior (safeno, sural, cutâneos femorais…), plexos lombar e sacral desenhados, dermátomos L1–S2 | Adiado: M09, M10 e M11 (`docs/pontos-de-melhoria.md`) |
 | Ramos cardíacos, pulmonares e esofágicos do vago, troncos vagais, plexos autonômicos do tórax e do abdome, tronco simpático torácico e lombar, nervos esplâncnicos | Adiado: M22 (`docs/pontos-de-melhoria.md`); a F6 cita a inervação em texto |
 | Ramos do trigêmeo de calibre pequeno: alveolares superiores, nasais posteriores, faríngeo (de Bock), meníngeo médio, nervos dentais | Ficam nos textos das fichas de V1–V3 (não são desenhados) |
@@ -115,8 +113,7 @@ Exclusões e lacunas do banco (inventário completo em [`inventario-membro-infer
   períneo urogenital (bulboesponjoso, isquiocavernoso, transversos e esfíncter da uretra) foram modelados por código.
   Quem tiver esse id (`perineo_superficial`) em favoritos, listas ou progresso não perde o resto: a estrutura some do atlas e o id aparece só como texto nas listas.
 - Os nervos novos que correm sob a pele (sensitivos) são ancorados na pele do modelo; os que atravessam forames e canais
-  (VIII, IX, X, petrosos, corda do tímpano) têm trechos intraósseos, como na realidade. O modelo não tem as artérias, as veias
-  nem as vísceras: os laços do laríngeo recorrente e o trajeto do vago no tórax são aproximados.
+  (VIII, IX, X, petrosos, corda do tímpano) têm trechos intraósseos, como na realidade. Os laços do laríngeo recorrente e o trajeto do vago no tórax são aproximados.
 
 ## 4. Verificação
 

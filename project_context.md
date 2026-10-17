@@ -62,21 +62,21 @@ geral desses produtos, sem pesquisa nova; vale reconferir na F0.
 
 | ID | Item | Peso | Aqui hoje |
 | --- | --- | --- | --- |
-| A1 | Ossos individuais com **acidentes ósseos** (forames, processos, tuberosidades) selecionáveis | ★★★ | 🟡 38 ossos/grupos; acidentes só como pontos internos |
-| A2 | Articulações (tipo, movimentos, cápsula) | ★★★ | 🟡 13 do membro superior (F3a), com cápsula esquemática; faltam coluna, tórax, pelve, cabeça e membro inferior |
-| A3 | Ligamentos | ★★★ | 🟡 28 (10 na cabeça, linha alba, retináculo dos flexores e 16 do membro superior) |
-| A4 | Músculos esqueléticos | ★★★ | 🟡 204 (101 cabeça/pescoço, 54 tronco, 49 membro superior); sem membro inferior |
-| A5 | Nervos (cranianos, espinais, plexos, ramos) | ★★★ | 🟡 100 nervos e gânglios: os 12 pares, plexos, sensitivos do membro superior e do pescoço, autônomos da cabeça; faltam os do membro inferior e os das vísceras |
-| A6 | Artérias e veias | ★★★ | ⬜ |
-| A7 | Sistema linfático (linfonodos, ducto torácico) | ★★ | ⬜ |
-| A8 | Vísceras: respiratório, digestório, urinário, genital, endócrino, coração | ★★★ | ⬜ (coração na F5; demais sistemas na F6, na ordem das aulas) |
+| A1 | Ossos individuais com **acidentes ósseos** (forames, processos, tuberosidades) selecionáveis | ★★★ | 🟡 52 ossos/cartilagens/grupos (corpo inteiro + cartilagens da laringe); acidentes só como pontos internos |
+| A2 | Articulações (tipo, movimentos, cápsula) | ★★★ | 🟡 13 do membro superior (F3a), com cápsula esquemática; faltam coluna, tórax, pelve, cabeça e membro inferior (F4.6) |
+| A3 | Ligamentos | ★★★ | 🟡 29 (10 na cabeça, linha alba, retináculo dos flexores, 16 do membro superior e membrana interóssea da perna) |
+| A4 | Músculos esqueléticos | ★★★ | ✅ 255 (101 cabeça/pescoço, 54 tronco, 49 membro superior, 51 membro inferior); faltam só 3 sem malha no banco (M14) |
+| A5 | Nervos (cranianos, espinais, plexos, ramos) | ★★★ | ✅ 112 nervos e gânglios (corpo inteiro): os 12 pares, plexos, sensitivos do membro superior e do pescoço, autônomos da cabeça, nervos motores do membro inferior; faltam os cutâneos do membro inferior (M09) e os das vísceras (M22) |
+| A6 | Artérias e veias | ★★★ | ✅ 111 artérias e 56 veias (F5): aorta, pulmonares, cavas, ázigo, carótidas (com a externa e ramos por código), círculo arterial do cérebro, tronco celíaco, mesentéricas, sistema porta, ilíacas (com ramos por código), membros superior e inferior |
+| A7 | Sistema linfático (linfonodos, ducto torácico) | ★★ | ✅ 15 estruturas por código (cisterna do quilo, ductos torácico e linfático direito e 12 grupos de linfonodos) |
+| A8 | Vísceras: respiratório, digestório, urinário, genital, endócrino, coração | ★★★ | 🟡 coração (14 estruturas + pericárdio, F5) e respiratório (5 lobos pulmonares do HRA, traqueia, 22 brônquios e pleuras, F6.1) ✅; demais sistemas na F6.2+ |
 | A9 | Sistema nervoso central (encéfalo, medula, meninges, ventrículos) | ★★★ | 🟡 medula espinal e cauda equina (esquemáticas); sem encéfalo e meninges |
 | A10 | Órgãos dos sentidos (olho, ouvido, nariz, língua) | ★★ | 🟡 globo ocular com músculos lisos, 6 extraoculares, língua e seus 8 músculos, músculos do ouvido médio (sem ossículos) |
 | A11 | Fáscias, compartimentos, bursas, bainhas sinoviais, retináculos | ★★ | 🟡 3 fáscias da cabeça + retináculo dos flexores |
-| A12 | Regiões e espaços clínicos (triângulos do pescoço, fossa cubital, canal do carpo, canal inguinal) | ★★ | ⬜ |
-| A13 | Pele e anexos; anatomia de superfície | ★★ | 🟡 pele translúcida, com dermátomos esquemáticos; sem anotações de superfície |
-| A14 | Histologia e embriologia | ★ | ⬜ |
-| A15 | Variações (sexo, idade, anatomia comparada de variações comuns) | ★ | ⬜ |
+| A12 | Regiões e espaços clínicos (triângulos do pescoço, fossa cubital, canal do carpo, canal inguinal) | ★★ | 🟡 20 feixes neurovasculares (bainha carótica, axila, sulco do nervo radial, espaço quadrangular, trígono femoral, fossa poplítea…); demais regiões em M25 |
+| A13 | Pele e anexos; anatomia de superfície | ★★ | 🟡 pele inteira translúcida, com dermátomos esquemáticos (até o membro superior) e projeção do coração e focos de ausculta |
+| A14 | Histologia e embriologia | ★ | 🟡 circulação fetal (placenta e cordão do HRA, vasos umbilicais, ducto venoso e ligamento arterial); sem histologia |
+| A15 | Variações (sexo, idade, anatomia comparada de variações comuns) | ★ | 🟡 variações anatômicas frequentes descritas nas notas das fichas |
 
 ### B. Visualização e navegação
 
@@ -88,7 +88,7 @@ geral desses produtos, sem pesquisa nova; vale reconferir na F0.
 | B4 | Vistas predefinidas e opacidade da pele | ★★ | ✅ |
 | B5 | Salvar/compartilhar uma vista (câmera + camadas + seleção) | ★★ | ✅ vistas salvas e link com `#hash` (região, dissecação, camadas, câmera, corte, cores, seleção) |
 | B6 | **Plano de corte** (sagital, coronal, axial) | ★★ | 🟡 plano sagital/coronal/axial ✅; a fatia não é “tampada” (as malhas são cascas) |
-| B7 | Colorir por sistema, nervo que inerva, ação ou grupo | ★★ | ✅ por camada, nervo, região, grupo (23 grupos) e segmento medular, com legenda |
+| B7 | Colorir por sistema, nervo que inerva, ação ou grupo | ★★ | ✅ por camada, nervo, região, grupo (32 grupos) e segmento medular, com legenda |
 | B8 | **Origem e inserção marcadas no osso** | ★★★ | ⬜ |
 | B9 | Animação de movimento / de ação muscular | ★★★ | ⬜ |
 | B10 | Vista explodida; medidas (distância/ângulo) | ★ | ⬜ |
@@ -101,15 +101,15 @@ geral desses produtos, sem pesquisa nova; vale reconferir na F0.
 | --- | --- | --- | --- |
 | C1 | Nome em PT e em latim | ★★★ | ✅ |
 | C2 | Origem, inserção, ação, inervação | ★★★ | ✅ |
-| C3 | **Irrigação** (artérias) | ★★★ | ⬜ |
-| C4 | Aplicação clínica e lesões | ★★★ | 🟡 nervos têm “Lesão”; músculos só em notas |
-| C5 | Estruturas vizinhas / relações | ★★ | ⬜ |
+| C3 | **Irrigação** (artérias) | ★★★ | ✅ todos os 255 músculos (`src/irrigation.js`) com guarda, texto dos ramos e chips para as artérias |
+| C4 | Aplicação clínica e lesões | ★★★ | 🟡 nervos têm “Lesão”; artérias principais têm “Pulso e compressão”; demais estruturas em notas |
+| C5 | Estruturas vizinhas / relações | ★★ | 🟡 vasos e vias aéreas têm `relacionados` nos dois sentidos; artérias palpáveis têm “Relações” e 20 feixes neurovasculares |
 | C6 | Nome em inglês, sinônimos e epônimos na busca | ★★ | ⬜ (busca por nome, ação e nervo ✅) |
-| C7 | Fontes citadas na ficha | ★★ | 🟡 só na `nota` e no README |
+| C7 | Fontes citadas na ficha | ★★ | 🟡 nas fichas novas (`fontes`), na `nota`, em `docs/revisao-conteudo.md` e no README |
 | C8 | Pronúncia dos termos | ★ | ⬜ |
 | C9 | Ilustrações 2D, esquemas e fotos | ★★ | ⬜ |
-| C10 | Links cruzados: músculo ↔ nervo | ★★★ | ✅ |
-| C11 | Links cruzados: músculo ↔ artéria, ↔ articulação, ↔ movimento | ★★★ | 🟡 músculo ↔ articulação ↔ movimento no membro superior; falta artéria |
+| C10 | Links cruzados: músculo ↔ nervo | ★★★ | ✅ (255 músculos ↔ 112 nervos) |
+| C11 | Links cruzados: músculo ↔ artéria, ↔ articulação, ↔ movimento | ★★★ | ✅ músculo ↔ artéria em todos os 255 músculos; 🟡 músculo ↔ articulação ↔ movimento no membro superior (falta membro inferior, F4.6) |
 
 ### D. Estudo e avaliação
 
@@ -117,12 +117,12 @@ geral desses produtos, sem pesquisa nova; vale reconferir na F0.
 | --- | --- | --- | --- |
 | D1 | Quiz “escolha o nome” | ★★★ | ✅ |
 | D2 | Quiz “localize no modelo 3D” (3 tentativas, dica, revisão) | ★★ | ✅ |
-| D3 | Quiz de **texto**: inervação, ação, origem/inserção | ★★★ | ✅ músculos (nervo, ação, origem, inserção, nota) e nervos (músculos, lesão, sensibilidade) |
+| D3 | Quiz de **texto**: inervação, irrigação, ação, origem/inserção | ★★★ | ✅ músculos (nervo, irrigação, ação, origem, inserção, nota) e nervos (músculos, lesão, sensibilidade) |
 | D4 | Flashcards com **repetição espaçada** | ★★★ | 🟡 repetição espaçada (SM-2) agenda as estruturas dos quizzes; ainda não há flashcards |
 | D5 | Progresso e estatísticas por estrutura | ★★ | ✅ painel de progresso: precisão, pontos fracos, revisões e histórico de rodadas |
 | D6 | Favoritos e anotações pessoais | ★★ | ✅ favoritos e anotações por estrutura |
 | D7 | Listas de estudo personalizadas (“prova de MMSS”) | ★★ | ✅ listas próprias que alimentam os três quizzes |
-| D8 | **Tours / aulas guiadas** | ★★ | 🟡 6 tours (24 passos); textos ainda sem revisão de fontes |
+| D8 | **Tours / aulas guiadas** | ★★ | ✅ 15 tours (90 passos); textos ainda sem revisão formal de fontes |
 | D9 | Exportar imagem da vista, imprimir ficha | ★★ | ✅ PNG da vista e impressão da ficha |
 | D10 | Modo professor: criar e compartilhar quizzes/tours | ★ | ⬜ |
 
@@ -131,7 +131,7 @@ geral desses produtos, sem pesquisa nova; vale reconferir na F0.
 | ID | Item | Peso | Aqui hoje |
 | --- | --- | --- | --- |
 | E1 | Movimentos e amplitude por articulação; músculos agonistas/antagonistas | ★★★ | 🟡 membro superior: amplitude (AAOS) e músculos principais e auxiliares por movimento; antagonistas só implícitos |
-| E2 | **Dermátomos e miótomos** | ★★★ | ✅ miótomos por segmento (C1–Co1) e dermátomos esquemáticos (sem membro inferior) |
+| E2 | **Dermátomos e miótomos** | ★★★ | ✅ miótomos por segmento (C1–Co1, 183 músculos e 70 nervos) e dermátomos esquemáticos (até o membro superior; falta membro inferior, M11) |
 | E3 | Síndromes de lesão nervosa visualizadas (mão em garra, queda do punho…) | ★★ | 🟡 texto |
 | E4 | Testes ortopédicos/neurológicos, pontos de palpação, pontos motores | ★★ | ⬜ |
 | E5 | Patologias em 3D (fraturas, luxações, hérnias) | ★★ | ⬜ |
@@ -618,7 +618,8 @@ visível e mantém o retorno do usuário frequente. Cada lote = um ciclo `dev` �
 | 2.3 (F3a — modelo e membro superior) | F3.1 e F3.2: 13 articulações, 16 ligamentos, movimentos com músculos (dados de F3.5) | ~1 dia de trabalho contínuo | M + G | A cápsula calculada pela zona de contato poupou medir à mão cada articulação; o tempo foi para os ligamentos (pontos encaixados no osso e conferidos pela fração dentro de osso) e para os textos com fonte. Custo na carga: ≈ 0,1 s de cápsulas e ≈ 0,04 s de ligamentos. |
 | 2.3+ (F4.1 — pacote e região do membro inferior) | 31 peças ósseas do pé e da perna, pele inteira, 8 fichas de ossos, região “Perna”, `--pack leg` no pipeline, inventário das 84 peças | uma sessão | M | Baixou só 5 MB (ossos e pele). A pele inteira trocou o recorte-e-emenda por uma peça única (sem frestas). Carga no celular emulado: +1,3 s (de ≈ 26,6 s para 28,4 s). Exigiu cuidado: com a pele inteira, `dermatomeOf` classificaria as pernas pelo ramo do membro superior (abaixo da cintura); agora devolve “sem dermátomo”. |
 | 2.3+ (F4.2 — lote A: quadril e coxa) | 24 músculos com malha real, 6 nervos novos e o femoral prolongado; segmentos e grupos | uma sessão | G | O que mais pesou foi medir os trajetos no modelo (saída pelo forame isquiático maior, interface entre glúteo médio e mínimo, passagem do isquiático atrás dos gêmeos) e conferir que nenhum ramo atravessa osso (0 % fora o obturatório, 3,7 %). A carga dos nervos no celular emulado subiu 2,6 s com 7 nervos (≈ 0,37 s cada, o dobro da média dos 100 anteriores). |
-| *(próximo: F4.3 — lote B, perna; depois C, nervos e articulações. F3b/F3c adiadas → M01–M08)* | | | | |
+| 2.3.10–2.3.12 (F5 completa, F6.1 respiratório e F4.3–F4.5 perna/pé/nervos) | 202 estruturas circulatórias, irrigação dos 255 músculos, 20 feixes, linfáticos, circulação fetal, 36 estruturas respiratórias, 27 músculos + membrana interóssea + 6 nervos da perna e do pé (706 estruturas no total) | 3 sessões | GG | Pacotes `anatomy-circ.js` (2,7 MB) e `anatomy-resp.js` (598 KB), mais ampliação de `anatomy-leg.js` (3,9 MB); medida “nervos mais leves” manteve a carga no celular emulado em 29,6 s. |
+| *(próximo pelo calendário das aulas: F6.2 — Digestório; no membro inferior restam F4.6/F4.7 — articulações e ligamentos)* | | | | |
 
 Use a coluna “Observações” para anotar o que atrasou (ex.: geometria de nervo que cai dentro do osso, ajuste de decimação).
 
@@ -685,6 +686,7 @@ Use a coluna “Observações” para anotar o que atrasou (ex.: geometria de ne
 | 2026-10-14 | **F5 fechada (M15 a M21) e publicada (`main` 79a8fc4, release v2.3.10, site no ar).** Pedido do responsável: “fazer tudo o que falta do circulatório”, subir na `main` e acompanhar a release. **Baixado com autorização:** 14,5 MB do BodyParts3D (mais que os 10,6 MB estimados, por incluir as intercostais e a femoral profunda) e a placenta do HRA (4,9 MB, `placenta-full-term-female` v1.1, CC BY 4.0). **Entregue:** 49 vasos novos (38 artérias e 11 veias) com malha real; irrigação dos 228 músculos (`src/irrigation.js`, campo “Irrigação”, lista de músculos na ficha da artéria, guarda que lança erro se faltar); pulsos e relações (`vessel-clinical.js`); 14 feixes neurovasculares com “Isolar o feixe”; quiz “qual artéria irriga X?”; 9 fichas linfáticas, 3 estruturas do sistema de condução e o papilar posteromedial (esquemas por código); circulação fetal (placenta e cordão do HRA, veia e artérias umbilicais, ducto venoso) numa camada opcional desligada por padrão (`optional: true`) e o ligamento arterial; tour fetal atualizado. **Decisões:** vasos ausentes do banco (carótida externa e ramos, glúteas, obturatória, pudenda interna…) ficam no texto da irrigação e ligam ao tronco de origem, em vez de inventar malha; a placenta é mostrada fora do corpo (o corpo é adulto e masculino) e a ficha diz que a posição não é real; a descrição clássica das cúspides da valva da aorta entrou na nota (a do tronco pulmonar continua sem correspondência afirmada). **Medido:** `npm test` completo passa (catálogo, estudo, fumaça); carga no celular emulado 23,5 s (limite 35 s); pacote do circulatório +0,9 MB. **Não feito:** o que está nos “Adiados” da F5. |
 | 2026-10-15 | **F5, segunda leva (publicada: `main` eeb648d, release v2.3.11, site no ar).** Pedido do responsável: “implementar o que ainda está faltando do sistema circulatório”, antes de seguir para outra parte. **Baixado com autorização:** 85 elementos do BodyParts3D (3,5 MB; o estimado foi 3,5 MB e o baixado, 3,56). **Entregue:** 25 artérias e 16 veias do banco (encéfalo, órbita, tronco celíaco e mesentéricas, veia porta e afluentes, veias da pelve, da mão e do pé); 19 vasos por código (carótida externa e ramos, jugular externa, retromandibular, facial, glúteas, obturatória, pudenda interna, circunflexa femoral medial, fibular); projeção do coração e focos de ausculta; irrigação, inervação e esqueleto fibroso nas câmaras e valvas; 6 grupos de linfonodos; 4 feixes neurovasculares; 5 tours; irrigação dos músculos da cabeça e da pelve religada aos ramos próprios. **Decisões:** os vasos que o banco não tem seguem por código, declarados como esquema, em vez de ficarem só no texto; o modelo tem uma falha de ≈ 6 cm no pescoço entre as malhas da carótida comum e da interna (a bifurcação foi posta no meio); `NerveBuilder.point` passou a achar a pele do lado direito (sinal de x), necessário para a projeção do coração. **Medido:** `npm test` completo passa (inclusive por `file://`); carga no celular emulado ≈ 29 s em duas medições (23,5 s na medição anterior; o computador estava mais lento desta vez; limite de 35 s do M37), pacote do circulatório de 2,1 para 2,7 MB, +0,6 s para montar as 202 estruturas. **Não feito:** o que está nos “Adiados” da F5. O CI da `dev` falhou uma vez por “Falha ao conectar à porta de depuração do navegador” (o Chrome do runner não abriu); os mesmos testes passaram na Release da `main`. |
 | 2026-10-15 | **F4.3 a F4.5 entregues e publicados (`main` 6f567ee, release v2.3.12, site no ar): músculos da perna e do pé e seus nervos.** Pedido do responsável (“desenvolver os músculos da perna que estão faltando”). **Baixado com autorização:** 66 elementos do BodyParts3D (3,3 MB). **Entregue:** 14 músculos da perna, a membrana interóssea, 13 peças de músculos do pé, 6 nervos (tibial, fibular comum, fibulares superficial e profundo, plantares medial e lateral), irrigação, segmentos medulares, 5 grupos de cor e o tour “Perna e pé”; o catálogo passa a **706 estruturas** (255 músculos, 112 nervos). **Decisões:** o extensor curto dos dedos e os interósseos dorsais ficam fora (o banco não os tem, M14); as divergências de inervação e de segmentos entre Moore e Gray's estão nas notas (flexores longos, flexor curto do hálux, fibulares). **Medido:** com os 6 nervos, a carga no celular emulado foi a 33,6–35,8 s; fiz a medida “nervos mais leves” (anel a cada 4 mm e 6 lados, nos nervos e nas áreas de clique), que a levou a **29,6 s**. `npm test` verde. **Não feito:** articulações e ligamentos do membro inferior (F4.6), contagens finais (F4.7). |
+| 2026-10-17 | **Auditoria e validação completa de todo o conteúdo e código (706 estruturas; na `dev`, sem publicar).** Conferência sistemática de catálogo, vínculos, geometria 3D no navegador, modos de quiz, interface e documentação. **Corrigido:** (1) `src/main.js`: quiz de múltipla escolha (`nextQuestion`) complementava menos de 4 alternativas quando uma região tinha ≤ 3 itens do mesmo tipo (`traqueia` em cabeça, `linha_alba` e `art_esternoclavicular` em tronco, `membrana_interossea_perna` em perna, ou as 3 glândulas); quiz de localizar (`nextLocate` e `locateHint`) não ativava camadas opcionais (`fetal`) quando uma estrutura fetal vinha de lista personalizada ou favoritos; (2) fichas com notas anacrônicas anteriores às fases F4/F5 (`papilar_ve`, `veia_hemiazigo`, `arteria_subclavia`, `obturador_interno`, `n_laringeo_recorrente`, `n_espinais_lombares` e `feixe_popliteo`); (3) vínculos e regiões: acrescentados os feixes neurovasculares tibial anterior e tibial posterior (20 feixes em `src/neurovascular.js`), `relacionados` nas 6 cartilagens da laringe (`src/catalog-resp-airways.js`), `region: ['tronco', 'membro_inf']` nas artérias glúteas, obturatória, pudenda interna e no `n_obturador_interno`, e artérias do catálogo citadas no texto de `src/irrigation.js` (`arteria_meningea_media`, `arteria_escapular_dorsal`, `arteria_tireoidea_inferior`, `arteria_pudenda_interna`, `arteria_glutea_inferior`, `arteria_femoral`, `arteria_poplitea`); (4) `tools/gen_revisao.js` e `docs/revisao-conteudo.md` regenerado, além de `index.html`, `manifest.webmanifest`, `README.md`, `AGENTS.md`, `project_context.md` e `docs/*.md` alinhados às 706 estruturas. |
 
 ## 11. Referências
 
