@@ -484,6 +484,61 @@ for pid, nome, tris in [("cartilagem_tireoidea", "thyroid cartilage", 3000), ("c
     addp(pid, "cartilagem", nome, 3, tris)
 
 
+# ───────── F6.2 — sistema digestório e baço (pacote `digest`, dist/anatomy-digest.js) ─────────
+# Tubo digestório (esôfago, estômago, duodeno, jejuno, íleo, ceco, apêndice, colos, tênias, reto e canal anal), fígado (8 segmentos
+# contíguos FJ2816 e FJ2818..FJ2824, que evitam as duplicatas FJ2409/FJ1858 do índice), vesícula e vias biliares, pâncreas e ducto
+# pancreático, baço e pregas peritoneais (mesentério, mesocolo transverso e mesoapêndice).
+def addd(pid, cat, pattern, smooth=3, tris=2500, region="tronco", exclude=(), maxel=40, cut=None):
+    add(pid, cat, pattern, smooth, tris, region, False, exclude, "digest", maxel)
+    if cut:
+        BODY[pid]["cut"] = cut
+
+
+addd("esofago", "orgao", r"esophagus", 3, 1200)
+addd("estomago", "orgao", r"stomach", 4, 3000)
+addd("duodeno", "orgao", r"duodenum", 3, 2500)
+addd("jejuno", "orgao", r"zone of jejunum", 3, 5500, maxel=30)
+addd("ileo", "orgao", r"zone of ileum", 3, 6500, maxel=40)
+# FJ2566 traz o ceco (abaixo da junção ileocecal, y < -6,22) e o colo ascendente numa peça só; divididos sem fresta por smooth_labels
+addd("ceco", "orgao", r"ascending colon", 3, 1200, cut=("y<", -6.22))
+addd("apendice_vermiforme", "orgao", r"appendix", 3, 800)
+addd("colo_ascendente", "orgao", r"ascending colon", 3, 2600, cut=("y>=", -6.22))
+addd("colo_transverso", "orgao", r"transverse colon", 3, 3200)
+# FJ2567 traz o colo descendente (vertical no flanco esquerdo, y >= -6,32 e x >= 0,58) e o colo sigmóide (alça pélvica até S3)
+addd("colo_descendente", "orgao", r"descending colon", 3, 2800, cut=("desc", -6.32, 0.58))
+addd("colo_sigmoide", "orgao", r"descending colon", 3, 2600, cut=("sig", -6.32, 0.58))
+addd("tenias_colo", "orgao", r"taenia coli", 3, 3500)
+# FJ2571 traz o reto (acima da flexura anorretal / alça do puborretal, y >= -7,46) e o canal anal (abaixo, rodeado pelos esfíncteres)
+addd("reto", "orgao", r"rectum", 3, 1800, cut=("y>=", -7.46))
+addd("canal_anal", "orgao", r"rectum", 3, 700, cut=("y<", -7.46))
+
+# fígado: série contígua FJ2816 + FJ2818..FJ2824 (na ontologia do banco, FJ2823 e FJ2824 saem juntos em `hepatovenous segment viii`,
+# enquanto FJ2409 e FJ1858 são cópias redundantes de FJ2822 e FJ2823)
+addd("figado_lobo_caudado", "orgao", r"caudate lobe of liver", 4, 2200)
+addd("figado_seg_ii", "orgao", r"hepatovenous segment ii", 4, 2800)
+addd("figado_seg_iii", "orgao", r"hepatovenous segment iii", 4, 2400)
+addd("figado_lobo_quadrado", "orgao", r"hepatovenous segment iv", 4, 3200)
+addd("figado_seg_v", "orgao", r"hepatovenous segment v", 4, 2600)
+addd("figado_seg_vi", "orgao", r"hepatovenous segment vi", 4, 3000)
+addd("figado_seg_vii", "orgao", r"hepatovenous segment viii", 4, 2800, exclude=("FJ2824",))
+addd("figado_seg_viii", "orgao", r"hepatovenous segment viii", 4, 3000, exclude=("FJ2823",))
+
+# vesícula biliar, vias biliares, pâncreas, baço e mesentérios
+addd("vesicula_biliar", "orgao", r"gallbladder", 3, 1800)
+addd("ducto_cistico", "orgao", r"cystic duct", 2, 400)
+addd("ducto_hepatico_direito", "orgao", r"right hepatic duct|segment of right hepatic biliary tree", 2, 1600)
+addd("ducto_hepatico_esquerdo", "orgao", r"left hepatic duct|segment of left hepatic biliary tree", 2, 1800)
+# FJ3079 vai do porta hepatis ao duodeno: acima da junção com o ducto cístico (y >= -4,51) é o hepático comum; abaixo, o colédoco
+addd("ducto_hepatico_comum", "orgao", r"common hepatic duct", 2, 600, cut=("y>=", -4.51))
+addd("ducto_coledoco", "orgao", r"common hepatic duct", 2, 900, cut=("y<", -4.51))
+addd("pancreas", "orgao", r"pancreas", 4, 3200)
+addd("ducto_pancreatico", "orgao", r"pancreatic duct", 2, 1800)
+addd("baco", "orgao", r"spleen", 4, 1800)
+addd("mesenterio", "orgao", r"mesentery of small intestine", 3, 4500)
+addd("mesocolo_transverso", "orgao", r"transverse mesocolon", 3, 1600)
+addd("mesoapendice", "orgao", r"mesoappendix", 3, 1200)
+
+
 def resolve():
     out = {}
     for pid, d in BODY.items():

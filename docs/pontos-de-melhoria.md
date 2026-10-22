@@ -102,6 +102,7 @@ clínica curta, com fonte) e quizzes de localizar e escolher o nome. Ficam para 
 | M38 | Revisão de fontes dos textos dos 15 tours; plano de corte sem “tampa” (as malhas são cascas) | F1 | M | C |
 | M39 | Medir o site e a atualização do PWA em aparelhos reais; marcar *Enforce HTTPS* no Pages | `docs/publicacao-web.md` | P | B |
 | M40 | **Retirar a `pele_corpo` do pacote `anatomy-body.js`** (≈ 1 MB e 55 mil vértices que a `pele_inteira` do pacote do membro inferior deixa sem uso) e, junto, voltar a decimar a pele inteira só uma vez; exige regenerar o pacote do corpo (baixar ≈ 60 MB) | F4.1 | M | C |
+| M41 | **Lista sistemática de pendências por sistema** já implementado (99 itens, P01–P99), com a origem de cada malha (banco, HRA, código ou fonte nova) e a fidelidade estimada por código: [`pendencias-por-sistema.md`](pendencias-por-sistema.md) | Pedido de 2026-10-20 | M | A |
 
 **M37 é condicional:** o membro inferior soma ≈ 4,4 MB de malhas (previsto, `docs/inventario-membro-inferior.md`) e dezenas de nervos novos, e a
 carga no celular já era o ponto mais frágil. Medição de 2026-10-12 (`node tools/perf_mobile.js 4`): 26,3–26,8 s antes da F4.1 e **28,4 s com ela**

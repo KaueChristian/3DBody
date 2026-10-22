@@ -4,7 +4,7 @@ Auditoria feita ao fechar a **F2** do roteiro (`project_context.md`): para cada 
 cabeça, do pescoço, do tronco e do membro superior, a entrada correspondente no catálogo — ou a exclusão, com o motivo.
 Os músculos e os nervos dos membros inferiores estão na §2b abaixo. Contagem atual: **255 músculos** (204 da cabeça ao membro
 superior, 24 do quadril e da coxa, 14 da perna e 13 do pé), **112 nervos e gânglios**, mais a medula espinal. Com o coração, os vasos, os linfáticos e a circulação fetal da F5 (202 estruturas, ver
-[`circulatorio.md`](circulatorio.md)), o atlas tem **706 estruturas** (com o respiratório e a perna e o pé).
+[`circulatorio.md`](circulatorio.md)), o respiratório da F6.1 ([`respiratorio.md`](respiratorio.md)) e o digestório da F6.2 ([`digestorio.md`](digestorio.md)), o atlas tem **740 estruturas**.
 
 Articulações e ligamentos (F3) têm o registro próprio em [`articulacoes.md`](articulacoes.md).
 

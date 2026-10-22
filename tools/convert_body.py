@@ -151,6 +151,31 @@ def split_wall(v, f, mine, other, bias=0.55):
     return v[used], remap[f]
 
 
+def split_cut(v, f, cut):
+    """Divide uma peça única do banco por critério geométrico em coordenadas do atlas (ceco vs colo ascendente, colo descendente vs
+    sigmóide, reto vs canal anal, ducto hepático comum vs colédoco), suavizando o limite com smooth_labels."""
+    vs = (v - ORIGIN) * SCALE
+    cent = vs[f].mean(1)
+    kind = cut[0]
+    if kind == "y<":
+        keep = cent[:, 1] < cut[1]
+    elif kind == "y>=":
+        keep = cent[:, 1] >= cut[1]
+    elif kind == "desc":
+        keep = (cent[:, 1] >= cut[1]) & (cent[:, 0] >= cut[2])
+    elif kind == "sig":
+        keep = ~((cent[:, 1] >= cut[1]) & (cent[:, 0] >= cut[2]))
+    else:
+        raise ValueError(f"corte desconhecido: {cut}")
+    keep = smooth_labels(f, keep, rounds=4)
+    f = f[keep]
+    used = np.unique(f)
+    remap = -np.ones(len(v), dtype=np.int64)
+    remap[used] = np.arange(len(used))
+    v, f = v[used], remap[f]
+    return remove_small_components(v, f, 0.05)
+
+
 def mirror_x(v, f):
     """Acrescenta a cópia espelhada (x → −x) com a ordem dos vértices invertida, para as normais continuarem para fora."""
     m = v.copy()
@@ -236,12 +261,15 @@ def main():
                 pass
             v, f = remove_small_components(v, f, 0.02)
             split = spec.get("split")
-            budget = spec["tris"] * 2 if split else spec["tris"]
+            cut = spec.get("cut")
+            budget = spec["tris"] * 2 if (split or cut) else spec["tris"]
             if len(f) > budget:
                 v, f = decimate_to(v, f, budget)
             v = smooth(v, f, spec["smooth"])
             if split:
                 v, f = split_wall(v, f, *split)
+            if cut:
+                v, f = split_cut(v, f, cut)
         if spec.get("mirror"):
             v, f = mirror_x(v, f)
         v = (v - ORIGIN) * SCALE

@@ -6,7 +6,7 @@ import { loadAnatomy } from './anatomy.js';
 import { Surfaces, TORSO_PARTS } from './surfaces.js';
 import { buildProc, makeFiberTexture } from './proc.js';
 import { LM } from './landmarks.js';
-import { ITEMS as ALL_ITEMS, HEAD_IDS, BODY_ITEMS, LEG_ITEMS, CIRC_ITEMS, RESP_ITEMS, NERVES, INNERVATION, IRRIGATION, LAYERS, KIND_LABEL, REGIONS, inRegion, layersForDissect } from './catalog.js';
+import { ITEMS as ALL_ITEMS, HEAD_IDS, BODY_ITEMS, LEG_ITEMS, CIRC_ITEMS, RESP_ITEMS, DIGEST_ITEMS, NERVES, INNERVATION, IRRIGATION, LAYERS, KIND_LABEL, REGIONS, inRegion, layersForDissect } from './catalog.js';
 import { NerveBuilder } from './nerve-geo.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { SKULL_PARTS } from './surfaces.js';
@@ -44,6 +44,7 @@ const state = {
   legReady: false,
   circReady: false,
   respReady: false,
+  digestReady: false,
   nervesReady: false,
   search: '',
   quiz: null,
@@ -139,11 +140,13 @@ function makeMaterial(key, color) {
     case 'cartilage': return std({ color: '#9fc3c9', roughness: 0.5 });
     case 'capsule': return std({ color, roughness: 0.3, transparent: true, opacity: 0.38, depthWrite: false });
     case 'nerve': return std({ color: '#f0cf55', roughness: 0.42, emissive: '#000000' });
-    // circulatório (F5): paredes do coração, valvas e vasos
+    // circulatório (F5) e vísceras (F6): coração, valvas, vasos, pulmões, digestório e serosas
     case 'cardiac': return std({ color, roughness: 0.55 });
     case 'valve': return std({ color: '#ead9bd', roughness: 0.45 });
     case 'lung': return std({ color, roughness: 0.65 });
     case 'airway': return std({ color, roughness: 0.5 });
+    case 'viscera': return std({ color, roughness: 0.52 });
+    case 'peritonio': return std({ color, roughness: 0.45, transparent: true, opacity: 0.42, depthWrite: false });
     case 'pericardio': return std({ color, roughness: 0.35, transparent: true, opacity: 0.2, depthWrite: false });
     case 'artery':
     case 'vein': return std({ color, roughness: 0.4 });
@@ -153,7 +156,7 @@ function makeMaterial(key, color) {
 }
 
 /** Resolve disputas de profundidade entre superfícies quase coincidentes: camadas superficiais ganham. */
-const DEPTH_OFFSET = { nervo: -2.5, arteria: -2, veia: -2, linfatico: -2, coracao: -1, respiratorio: -0.5, fascia: -3, mimica: -2, sup: -2, pescoco: -1.5, med: -1.5, mastigacao: -1, ligamento: -1, articulacao: -0.5, prof: -0.5, osso: 0.5 };
+const DEPTH_OFFSET = { nervo: -2.5, arteria: -2, veia: -2, linfatico: -2, coracao: -1, respiratorio: -0.5, digestorio: -0.5, fascia: -3, mimica: -2, sup: -2, pescoco: -1.5, med: -1.5, mastigacao: -1, ligamento: -1, articulacao: -0.5, prof: -0.5, osso: 0.5 };
 
 function jitter(hex, id) {
   const c = new THREE.Color(hex);
@@ -423,7 +426,7 @@ function relatedIds(id) {
   const m = M.get(id);
   if (!m) return [];
   if (m.item.kind === 'nervo') return (m.item.ramos ?? []).map((r) => r.m);
-  if (m.item.relacionados) return m.item.relacionados;
+  if (m.item.relacionados) return [...m.item.relacionados, ...(INNERVATION.get(id) ?? []).map((r) => r.nervo)];
   return jointRelatedIds(m.item, CATALOG) ?? [...(INNERVATION.get(id) ?? []).map((r) => r.nervo), ...(IRRIGATION.get(id) ?? [])];
 }
 
@@ -662,19 +665,22 @@ function linkChip(l) {
   return `<${tag} class="lchip${cls}" data-go="${esc(l.id)}" style="--c:${color}"><i></i><span>${esc(name)}${extra ? `<small>${esc(extra)}</small>` : ''}</span></${tag}>`;
 }
 
-/** Chips das estruturas ligadas (nervo → músculos; músculo → nervos). */
+/** Chips das estruturas ligadas (nervo → músculos; músculo/glândula → nervos; órgãos/vasos → relacionados). */
 function linksHtml(item) {
+  let out = '';
   if (item.relacionados?.length) {
-    return `<div class="links"><h3>Estruturas relacionadas</h3><div class="lchips">${item.relacionados.map((id) => linkChip({ id })).join('')}</div></div>`;
+    out += `<div class="links"><h3>Estruturas relacionadas</h3><div class="lchips">${item.relacionados.map((id) => linkChip({ id })).join('')}</div></div>`;
   }
   const isNerve = item.kind === 'nervo';
   const list = isNerve
     ? (item.ramos ?? []).map((r) => ({ id: r.m, obs: r.obs, sens: r.sens }))
     : (INNERVATION.get(item.id) ?? []).map((r) => ({ id: r.nervo, obs: r.obs, sens: r.sens }));
-  if (!list.length) return '';
-  const title = isNerve ? 'Músculos e estruturas inervados' : 'Nervos (inervação)';
-  const pending = !isNerve && !state.nervesReady ? '<p class="links-note">Os nervos aparecem em instantes, quando terminarem de ser montados.</p>' : '';
-  return `<div class="links"><h3>${title}</h3><div class="lchips">${list.map(linkChip).join('')}</div>${pending}</div>`;
+  if (list.length) {
+    const title = isNerve ? 'Músculos e estruturas inervados' : 'Nervos (inervação)';
+    const pending = !isNerve && !state.nervesReady ? '<p class="links-note">Os nervos aparecem em instantes, quando terminarem de ser montados.</p>' : '';
+    out += `<div class="links"><h3>${title}</h3><div class="lchips">${list.map(linkChip).join('')}</div>${pending}</div>`;
+  }
+  return out;
 }
 
 function geomBadge(item) {
@@ -1921,6 +1927,33 @@ async function loadResp(parts, S, landmarks) {
   console.info('[carga] respiratório', perf.respDataMs, 'ms · estruturas', perf.respStructuresMs, 'ms');
 }
 
+/**
+ * Sistema digestório e baço (F6.2). Mesmo molde do respiratório; carrega depois dele e antes dos nervos.
+ */
+async function loadDigest(parts, S, landmarks) {
+  setBodyStatus('Carregando o sistema digestório…');
+  if (!(await loadScript('dist/anatomy-digest.js'))) {
+    setBodyStatus('Não foi possível carregar o sistema digestório (dist/anatomy-digest.js).', true);
+    await new Promise((r) => setTimeout(r, 2500));
+    return;
+  }
+  const t0 = performance.now();
+  const digestParts = await loadAnatomy(window.__ANATOMY_DIGEST);
+  perf.digestDataMs = Math.round(performance.now() - t0);
+  const tBuild = performance.now();
+  for (const [id, p] of digestParts) parts.set(id, p);
+  buildItems(digestParts, S, DIGEST_ITEMS, jointContext(parts, landmarks));
+  perf.digestStructuresMs = Math.round(performance.now() - tBuild);
+  state.digestReady = true;
+  document.body.classList.add('digest-ready');
+  buildList();
+  applyVisibility();
+  syncList();
+  studyController?.onModelUpdated();
+  if (!setupEl.hidden) renderSetup();
+  console.info('[carga] digestório', perf.digestDataMs, 'ms · estruturas', perf.digestStructuresMs, 'ms');
+}
+
 function loadBody() {
   setBodyStatus('Carregando tronco e membros…');
   const sc = document.createElement('script');
@@ -1963,6 +1996,12 @@ function loadBody() {
         await loadResp(parts, S2, lm);
       } catch (err) {
         console.error('[respiratório]', err);
+      }
+      // sistema digestório e baço (F6.2)
+      try {
+        await loadDigest(parts, S2, lm);
+      } catch (err) {
+        console.error('[digestório]', err);
       }
       // nervos: montados em segundo plano, depois que cabeça e corpo já estão na tela
       setBodyStatus('Montando os nervos…');
@@ -2011,6 +2050,8 @@ const perf = {
   circStructuresMs: 0,
   respDataMs: 0,
   respStructuresMs: 0,
+  digestDataMs: 0,
+  digestStructuresMs: 0,
   shadersWarmMs: 0,
   nervesMs: 0,
   totalReadyMs: 0,

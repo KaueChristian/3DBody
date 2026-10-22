@@ -1,7 +1,7 @@
 {
   "name": "Body3D — Atlas de Anatomia 3D",
   "short_name": "Body3D",
-  "description": "Atlas 3D interativo de anatomia humana: corpo inteiro, músculos, nervos, ossos, articulações, coração, vasos e sistema respiratório com dissecação em camadas e quiz.",
+  "description": "Atlas 3D interativo de anatomia humana: corpo inteiro, músculos, nervos, ossos, articulações, coração, vasos, sistema respiratório e sistema digestório com dissecação em camadas e quiz.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

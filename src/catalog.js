@@ -18,6 +18,7 @@ import { CIRC_SUPERFICIE } from './catalog-circ-superficie.js';
 import { CARDIO_EXTRAS } from './cardio-extras.js';
 import { CIRC_FETAL } from './catalog-circ-fetal.js';
 import { RESP_ITEMS } from './catalog-resp.js';
+import { DIGEST_ITEMS } from './catalog-digest.js';
 import { NERVES as NERVES_BASE } from './catalog-nerves.js';
 import { NERVES_CRANIAL } from './catalog-nerves-cranial.js';
 import { NERVES_SENSORY } from './catalog-nerves-sensory.js';
@@ -47,6 +48,7 @@ export const LAYERS = [
   { id: 'fetal', label: 'Circulação fetal (esquema)', depth: 4, color: '#c46a8a', optional: true },
   { id: 'coracao', label: 'Coração', depth: 4, color: '#b83a4b' },
   { id: 'respiratorio', label: 'Sistema respiratório', depth: 4, color: '#d98f95' },
+  { id: 'digestorio', label: 'Sistema digestório e baço', depth: 4, color: '#c97b5a' },
   { id: 'articulacao', label: 'Articulações (cápsulas)', depth: 4, color: '#7fb2e8' },
   { id: 'ligamento', label: 'Ligamentos', depth: 4, color: '#f1da8c' },
   { id: 'glandula', label: 'Glândulas e língua', depth: 4, color: '#dba35a' },
@@ -103,9 +105,9 @@ export const BODY_ITEMS = [...BODY_MUSCLES, ...ORAL_MUSCLES, ...BODY_BONES, ...J
 export const LEG_ITEMS = [...LEG_BONES, ...LEG_MUSCLES, ...LEG_PERNA, ...LEG_PE, ...LEG_LIGS];
 /** Circulatório (F5): coração, vasos principais e, no mesmo pacote, os ramos de menor calibre (F5.1). */
 export const CIRC_ITEMS = [...CIRC_BASE, ...CIRC_RAMOS, ...CIRC_VISCERAIS, ...CIRC_CODIGO, ...CIRC_ESQUEMAS, ...CIRC_SUPERFICIE, ...CIRC_FETAL];
-export { RESP_ITEMS };
+export { RESP_ITEMS, DIGEST_ITEMS };
 export const NERVES = [...NERVES_BASE, ...NERVES_CRANIAL, ...NERVES_SENSORY, ...NERVES_SPINAL, ...NERVES_LEG];
-export const ITEMS = [...HEAD_ITEMS, ...BODY_ITEMS, ...LEG_ITEMS, ...CIRC_ITEMS, ...RESP_ITEMS, ...NERVES];
+export const ITEMS = [...HEAD_ITEMS, ...BODY_ITEMS, ...LEG_ITEMS, ...CIRC_ITEMS, ...RESP_ITEMS, ...DIGEST_ITEMS, ...NERVES];
 
 // ramos articulares (F3): a articulação diz quais nervos a inervam e o nervo ganha o ramo (sem desenhar: é só o vínculo)
 {
@@ -141,20 +143,23 @@ for (const n of NERVES) {
   for (const id of INNERVATION.keys()) if (!seen.has(id)) throw new Error(`Nervo aponta para estrutura inexistente: ${id}`);
   const semNervo = ITEMS.filter((i) => i.kind === 'musculo' && !INNERVATION.has(i.id)).map((i) => i.id);
   if (semNervo.length) throw new Error(`Músculos sem nervo no catálogo: ${semNervo.join(', ')}`);
-  // circulatório (F5): `relacionados` só cita estruturas do catálogo, e toda artéria e veia diz de onde vem, por onde vai e o que irriga ou drena
-  const CIRC_KINDS = new Set(['cardiaco', 'arteria', 'veia', 'linfatico', 'estrutura', 'orgao', 'osso']);
-  for (const i of [...CIRC_ITEMS, ...RESP_ITEMS]) {
-    if (!CIRC_KINDS.has(i.kind)) throw new Error(`Tipo inesperado no circulatório: ${i.id} (${i.kind})`);
+  // circulatório, respiratório e digestório (F5–F6): `relacionados` só cita estruturas do catálogo, e toda ficha tem 4 campos
+  const CIRC_KINDS = new Set(['cardiaco', 'arteria', 'veia', 'linfatico', 'estrutura', 'orgao', 'osso', 'glandula']);
+  const headGlands = HEAD_ITEMS.filter((i) => i.layer === 'glandula');
+  const linked = [...CIRC_ITEMS, ...RESP_ITEMS, ...DIGEST_ITEMS, ...headGlands];
+  for (const i of linked) {
+    if (!CIRC_KINDS.has(i.kind)) throw new Error(`Tipo inesperado em estrutura ligada: ${i.id} (${i.kind})`);
     for (const r of i.relacionados ?? []) if (!seen.has(r)) throw new Error(`Estrutura relacionada inexistente em ${i.id}: ${r}`);
-    if ((i.kind === 'arteria' || i.kind === 'veia') && (i.campos.length < 4 || i.campos.some(([, t]) => !t))) throw new Error(`Ficha incompleta no vaso ${i.id}`);
+    if ((i.kind === 'arteria' || i.kind === 'veia' || i.layer === 'digestorio') && (i.campos.length < 4 || i.campos.some(([, t]) => !t))) {
+      throw new Error(`Ficha incompleta em ${i.id}`);
+    }
   }
-  // a ligação vale nos dois sentidos: quem é citado também passa a citar (circulatório e respiratório se ligam pelos vasos pulmonares)
-  const linked = [...CIRC_ITEMS, ...RESP_ITEMS];
+  // a ligação vale nos dois sentidos: quem é citado também passa a citar
   const circById = new Map(linked.map((i) => [i.id, i]));
   for (const i of linked) {
     for (const r of i.relacionados ?? []) {
       const t = circById.get(r);
-      if (!t) throw new Error(`Estrutura relacionada fora do circulatório e do respiratório em ${i.id}: ${r}`);
+      if (!t) throw new Error(`Estrutura relacionada fora do circulatório, respiratório e digestório em ${i.id}: ${r}`);
       t.relacionados ??= [];
       if (!t.relacionados.includes(i.id)) t.relacionados.push(i.id);
     }

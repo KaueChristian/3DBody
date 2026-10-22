@@ -1,7 +1,7 @@
 /**
  * Service Worker para funcionamento offline e instalação como PWA (F0.7).
  */
-const CACHE_NAME = 'anatomia3d-v2.0.1';
+const CACHE_NAME = 'anatomia3d-v2.0.2';
 
 const STATIC_ASSETS = [
   './',
@@ -16,6 +16,7 @@ const STATIC_ASSETS = [
   './dist/anatomy-leg.js',
   './dist/anatomy-circ.js',
   './dist/anatomy-resp.js',
+  './dist/anatomy-digest.js',
   './assets/icon-192.png',
   './assets/icon-512.png',
   './assets/icon-maskable-512.png',

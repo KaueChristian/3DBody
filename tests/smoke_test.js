@@ -349,7 +349,7 @@ async function runSmokeTest() {
       document.getElementById('btnStudy').click();
       t(!document.getElementById('studyModal').hidden, 'o modal de estudo não abriu');
       const cards = [...document.querySelectorAll('.tour-card')];
-      t(cards.length === 15, `esperava 15 tours, veio ${cards.length}`);
+      t(cards.length === 16, `esperava 16 tours, veio ${cards.length}`);
       for (const c of cards) {
         t(!/undefined|null|NaN/.test(c.innerText), `cartão de tour com texto quebrado: ${c.innerText.slice(0, 60)}`);
         t((c.querySelector('.tour-desc')?.innerText.length ?? 0) > 20, 'cartão de tour sem descrição');
@@ -372,7 +372,7 @@ async function runSmokeTest() {
       const app = window.__app;
       const sc = app.studyController;
       const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-      for (const id of ['manguito', 'plexo_braquial', 'nervo_radial', 'mastigacao_v3', 'facial_mimica', 'parede_abdominal', 'circulacao', 'circulacao_fetal', 'circulatorio_generalidades', 'coracao_superficie', 'arterias_cabeca_pescoco', 'poligono_willis', 'sistema_porta', 'perna_pe', 'respiratorio']) {
+      for (const id of ['manguito', 'plexo_braquial', 'nervo_radial', 'mastigacao_v3', 'facial_mimica', 'parede_abdominal', 'circulacao', 'circulacao_fetal', 'circulatorio_generalidades', 'coracao_superficie', 'arterias_cabeca_pescoco', 'poligono_willis', 'sistema_porta', 'perna_pe', 'respiratorio', 'digestorio']) {
         sc.startTour(id);
         const n = sc.activeTour.steps.length;
         for (let i = 0; i < n; i++) {
@@ -394,7 +394,7 @@ async function runSmokeTest() {
       }
       if (!document.getElementById('tourBox').hidden) f.push('o painel do tour continua aberto depois de sair');
       return f;
-    }, 'os passos dos 15 tours destacam e enquadram a estrutura');
+    }, 'os passos dos 16 tours destacam e enquadram a estrutura');
 
     await run(async () => {
       const f = [];
@@ -993,6 +993,74 @@ async function runSmokeTest() {
       app.setDissect(1);
       return f;
     }, 'F6.1: pulmões e vias aéreas (malhas, camada, fichas, vizinhas, posição no tórax e tour)');
+
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
+      const sc = app.studyController;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      for (let i = 0; i < 120 && !(app.state.nervesReady && app.state.digestReady); i++) await sleep(250);
+      t(app.state.digestReady && document.body.classList.contains('digest-ready'), 'o pacote do digestório não carregou');
+
+      // F6.2: todas as 34 estruturas do digestório têm malha, camada própria e ficha completa
+      const digestIds = [
+        'esofago', 'estomago', 'duodeno', 'jejuno', 'ileo', 'ceco', 'apendice_vermiforme',
+        'colo_ascendente', 'colo_transverso', 'colo_descendente', 'colo_sigmoide', 'tenias_colo', 'reto', 'canal_anal',
+        'figado_lobo_caudado', 'figado_seg_ii', 'figado_seg_iii', 'figado_lobo_quadrado',
+        'figado_seg_v', 'figado_seg_vi', 'figado_seg_vii', 'figado_seg_viii',
+        'vesicula_biliar', 'ducto_cistico', 'ducto_hepatico_direito', 'ducto_hepatico_esquerdo', 'ducto_hepatico_comum', 'ducto_coledoco',
+        'pancreas', 'ducto_pancreatico', 'baco', 'mesenterio', 'mesocolo_transverso', 'mesoapendice',
+      ];
+      for (const id of digestIds) t(app.M.has(id) && app.M.get(id).meshes.length > 0, 'sem malha no modelo: ' + id);
+      t([...document.querySelectorAll('#list .sec-name')].some((e) => e.textContent === 'Sistema digestório e baço'), 'a lista não tem a camada Sistema digestório e baço');
+
+      // posição anatômica e cortes de malha: lados (x > 0 esquerda, x < 0 direita), alturas e relações
+      const cx = (id) => app.M.get(id).center.x;
+      const cy = (id) => app.M.get(id).center.y;
+      const box = (id) => { const b = new app.THREE.Box3(); app.M.get(id).meshes.forEach((m) => b.union(m.geometry.boundingBox)); return b; };
+      t(cx('estomago') > 0.2 && cx('baco') > 0.6, 'estômago e baço deveriam estar à esquerda (x > 0)');
+      t(cx('vesicula_biliar') < -0.2 && cx('ceco') < -0.4 && cx('apendice_vermiforme') < -0.3 && cx('colo_ascendente') < -0.4, 'vesícula, ceco, apêndice e colo ascendente deveriam estar à direita (x < 0)');
+      t(cx('colo_descendente') > 0.5 && cx('figado_seg_vii') < -0.3 && cx('figado_seg_ii') > 0.1, 'segmentos hepáticos ou colo descendente do lado errado');
+      t(cy('ceco') < cy('colo_ascendente'), 'o ceco deveria ficar abaixo do colo ascendente');
+      t(cy('canal_anal') < cy('reto'), 'o canal anal deveria ficar abaixo do reto');
+      t(cy('ducto_coledoco') < cy('ducto_hepatico_comum'), 'o colédoco deveria ficar abaixo do ducto hepático comum');
+      t(box('duodeno').intersectsBox(box('pancreas')), 'o arco duodenal deveria envolver a cabeça do pâncreas');
+      const esofBox = box('esofago');
+      t(esofBox.max.y > -1.45 && esofBox.min.y < -3.8, 'o esôfago deveria ir do pescoço ao abdome');
+
+      // fichas e ligações bidirecionais com vasos e glândulas
+      app.setRegion('tronco', { fly: false });
+      app.setDissect(5);
+      app.select('estomago', { fly: false });
+      let infoFull = document.getElementById('info').textContent;
+      let ficha = document.getElementById('infoBody').textContent;
+      t(/Estômago/.test(infoFull) && /Ventriculus/.test(infoFull) && /Localização e partes/.test(ficha) && /Função e clínica/.test(ficha), 'a ficha do estômago está incompleta');
+      t(/Malha real \(BodyParts3D\)/.test(infoFull), 'o estômago deveria ter badge de Malha real (BodyParts3D)');
+      t(/Artéria gástrica esquerda/.test(ficha) && /Veia porta/.test(ficha) && /Duodeno/.test(ficha), 'a ficha do estômago não lista seus vasos e órgãos vizinhos');
+      app.select('veia_porta', { fly: false });
+      ficha = document.getElementById('infoBody').textContent;
+      t(/Estômago/.test(ficha) && /Pâncreas/.test(ficha) && /Baço/.test(ficha), 'a veia porta não recebeu o vínculo de volta dos órgãos digestórios');
+
+      // glândulas salivares e língua mostram tanto Estruturas relacionadas quanto Nervos (inervação)
+      app.setRegion('cabeca', { fly: false });
+      app.select('parotida', { fly: false });
+      ficha = document.getElementById('infoBody').textContent;
+      t(/Estruturas relacionadas/.test(ficha) && /Artéria carótida externa/.test(ficha) && /Nervos \(inervação\)/.test(ficha) && /Gânglio ótico/.test(ficha), 'a ficha da parótida deveria mostrar Estruturas relacionadas e Nervos (inervação)');
+
+      // tour do digestório: percorre todos os 8 passos
+      sc.startTour('digestorio');
+      t(sc.activeTour.steps.length === 8, 'o tour do digestório deveria ter 8 passos');
+      for (let i = 0; i < sc.activeTour.steps.length; i++) {
+        t(app.state.selected === sc.activeTour.steps[i].highlight, `o passo ${i + 1} do tour do digestório não destacou ${sc.activeTour.steps[i].highlight}`);
+        if (i < sc.activeTour.steps.length - 1) sc.tourStep(1);
+      }
+      sc.stopTour();
+      app.select(null, { fly: false });
+      app.setRegion('tronco', { fly: false });
+      app.setDissect(1);
+      return f;
+    }, 'F6.2: sistema digestório e baço (34 malhas, cortes, fichas, vínculos vasculares/glandulares e tour)');
 
     await run(async () => {
       const f = [];

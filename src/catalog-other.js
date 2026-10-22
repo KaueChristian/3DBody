@@ -181,6 +181,7 @@ export const GLANDS = [
       ['Função', 'Maior glândula salivar: produz saliva serosa rica em amilase.'],
     ],
     nota: 'Na caxumba (parotidite) a glândula incha e provoca dor ao mastigar; cirurgias da parótida arriscam lesar o nervo facial.',
+    relacionados: ['submandibular', 'sublingual', 'lingua', 'arteria_carotida_externa', 'veia_retromandibular'],
   },
   {
     kind: 'glandula', id: 'submandibular', name: 'Glândula submandibular', latin: 'Glandula submandibularis', layer: 'glandula',
@@ -192,6 +193,7 @@ export const GLANDS = [
       ['Função', 'Produz saliva mista (serosa e mucosa).'],
     ],
     nota: 'É o local mais comum de cálculos salivares (sialolitíase).',
+    relacionados: ['parotida', 'sublingual', 'lingua', 'arteria_facial', 'veia_facial', 'linfonodos_submandibulares'],
   },
   {
     kind: 'glandula', id: 'sublingual', name: 'Glândula sublingual', latin: 'Glandula sublingualis', layer: 'glandula',
@@ -202,6 +204,7 @@ export const GLANDS = [
       ['Inervação', 'Fibras parassimpáticas do nervo facial (via corda do tímpano).'],
       ['Função', 'Produz saliva predominantemente mucosa.'],
     ],
+    relacionados: ['submandibular', 'parotida', 'lingua', 'arteria_lingual'],
   },
   {
     kind: 'estrutura', id: 'lingua', name: 'Língua', latin: 'Lingua', layer: 'glandula',
@@ -213,6 +216,7 @@ export const GLANDS = [
       ['Função', 'Mastigação, deglutição, fala e gustação.'],
     ],
     nota: 'O modelo mostra apenas o volume da língua; os músculos intrínsecos não são individualizados.',
+    relacionados: ['sublingual', 'submandibular', 'parotida', 'epiglote', 'esofago', 'arteria_lingual'],
   },
 ];
 

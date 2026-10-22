@@ -12,8 +12,8 @@ seções 6, 7 e 9 são as que mais evitam retrabalho e acidentes.
 
 ## 2. O projeto em um minuto
 
-Atlas 3D de anatomia em **português** (corpo inteiro, coração, vasos, linfáticos e sistema respiratório hoje: 706 estruturas): pele, fáscias, 255 músculos, 112 nervos e gânglios,
-52 ossos e cartilagens, 13 articulações, 29 ligamentos, 111 artérias, 56 veias, 14 estruturas cardíacas, 15 linfáticas, 28 órgãos respiratórios, glândulas e estruturas, com dissecação por camadas, fichas e quiz. Roda em qualquer navegador **por `file://`**
+Atlas 3D de anatomia em **português** (corpo inteiro, coração, vasos, linfáticos, sistema respiratório e sistema digestório e baço hoje: 740 estruturas): pele, fáscias, 255 músculos, 112 nervos e gânglios,
+52 ossos e cartilagens, 13 articulações, 29 ligamentos, 111 artérias, 56 veias, 14 estruturas cardíacas, 15 linfáticas, 28 órgãos respiratórios, 34 órgãos digestórios e baço, glândulas e estruturas, com dissecação por camadas, fichas e quiz. Roda em qualquer navegador **por `file://`**
 (sem servidor) e é empacotado como `Anatomia3D.exe`, que **se atualiza sozinho** a cada release do GitHub
 (`KaueChristian/3DBody`). Malhas reais vêm do BodyParts3D (CC BY-SA 2.1 JP) e do Human Reference Atlas (CC BY 4.0); o que o banco não tem é modelado por código.
 
@@ -49,6 +49,7 @@ Dados (raramente necessário; baixa ~60 MB e regenera arquivos grandes — só c
 | `src/catalog-body-muscles.js`, `catalog-leg-muscles.js`, `catalog-leg-perna.js`, `catalog-leg-pe.js` | Músculos do tronco e do membro superior; os demais, do quadril e da coxa, da perna e do pé (pacote `anatomy-leg.js`) | O extensor curto dos dedos e os interósseos dorsais do pé não existem no banco (M14) |
 | `src/catalog-bones.js`, `catalog-body-bones.js`, `catalog-leg-bones.js` | Ossos, dentes, cartilagens, discos (o último é do membro inferior, pacote `anatomy-leg.js`) | |
 | `src/catalog-resp.js`, `catalog-resp-airways.js` | Pulmões (malhas do Atlas de Referência Humano ajustadas ao tórax por `tools/fit_hra.py`) e vias aéreas, pleuras e cartilagens da laringe (BodyParts3D e esquema); pacote `anatomy-resp.js` | Ver `docs/respiratorio.md`; a ficha cita a origem da malha (`malha: 'hra'`) |
+| `src/catalog-digest.js` | Sistema digestório e baço (34 estruturas do BodyParts3D: esôfago ao canal anal, 8 segmentos do fígado, vias biliares, pâncreas, baço e mesos); pacote `anatomy-digest.js` | Ver `docs/digestorio.md`; `relacionados` liga aos vasos e órgãos vizinhos |
 | `src/catalog-circ.js`, `catalog-circ-ramos.js`, `catalog-circ-viscerais.js` | Coração, artérias e veias principais e os vasos de menor calibre (pacote `anatomy-circ.js`); `relacionados` liga as vizinhas (o catálogo completa a ligação nos dois sentidos) | Ver `docs/circulatorio.md`; o pericárdio é esquema (`src/hull-geo.js`) |
 | `src/catalog-circ-codigo.js`, `catalog-circ-esquemas.js`, `catalog-circ-superficie.js`, `catalog-circ-fetal.js`, `cardio-extras.js` | Carótida externa e outros vasos por código, linfáticos, sistema de condução, papilar posteromedial, projeção do coração, focos de ausculta, circulação fetal e ligamento arterial: **esquemas por código** (a placenta e o cordão vêm do HRA, `tools/convert_placenta.py`) | A ficha tem de dizer que é esquema (`nota: 'ESQUEMA…'`); a camada `fetal` é `optional` (desligada por padrão) |
 | `src/irrigation.js`, `vessel-clinical.js`, `neurovascular.js`, `vascular-links.js` | Irrigação de cada músculo (fonte única de `IRRIGATION` e do campo “Irrigação”), pulsos e relações dos vasos, feixes neurovasculares e as seções da ficha | **Todo músculo novo precisa de uma linha em `irrigation.js`** (a guarda lança erro); os atlas divergem nos ramos, ver o cabeçalho do arquivo |
@@ -116,8 +117,8 @@ node -e "const c=require(process.env.TEMP+'/cat.cjs'); console.log(c.ITEMS.lengt
 
 Se lançar `Identificador duplicado…`, `Nervo aponta para estrutura inexistente…` ou `Músculos sem nervo…`, o catálogo está
 errado — corrija os dados. As articulações têm guardas próprias (`Articulação … cita osso inexistente`, `Cápsula de … usa peças
-fora dos ossos citados`, `Movimento … cita músculo inexistente`…). Contagens esperadas hoje: 706 estruturas (255 músculos, 112 nervos
-e gânglios, 52 ossos e cartilagens, 29 ligamentos, 13 articulações, 111 artérias, 56 veias, 14 cardíacas, 15 linfáticas, 28 do respiratório (5 lobos, traqueia e brônquios), 3 fáscias, 3 glândulas e 15 estruturas, entre elas a medula espinal, o pericárdio, a placenta, o cordão umbilical, o ligamento arterial, a projeção do coração e os focos de ausculta).
+fora dos ossos citados`, `Movimento … cita músculo inexistente`…). Contagens esperadas hoje: 740 estruturas (255 músculos, 112 nervos
+e gânglios, 52 ossos e cartilagens, 29 ligamentos, 13 articulações, 111 artérias, 56 veias, 14 cardíacas, 15 linfáticas, 28 do respiratório (5 lobos, traqueia e brônquios), 34 do digestório e baço, 3 fáscias, 3 glândulas e 15 estruturas, entre elas a medula espinal, o pericárdio, a placenta, o cordão umbilical, o ligamento arterial, a projeção do coração e os focos de ausculta).
 
 ### 6.2 Verificação visual (obrigatória para qualquer mudança de geometria ou interface)
 
@@ -222,8 +223,8 @@ Este é um material de estudo: **um fato errado prejudica quem estuda**. Por iss
 - **Renderização sob demanda:** o laço só desenha quando algo pede (câmera, voo, `invalidate()`). Quem mudar a cena **sem passar por** `applyHighlight`/`applyVisibility`/`setSkin`/`resize`/`select` (material, geometria, visibilidade, `renderer.*`) deve chamar `app.invalidate()` (ou `invalidate()` no `main.js`); sem isso a tela só atualiza no quadro de segurança, a cada 2 s. O teste de fumaça “renderização sob demanda” cobre os caminhos conhecidos: acrescente o seu a ele.
 - **Bundle é IIFE.** Funciona de `file://`; trocar o formato ou usar `type="module"` quebra a abertura por duplo clique.
 - **Ordem de scripts em `index.html`:** `version.js` → `anatomy-data.js` → `anatomy-nerves.js` → `app.js` (o corpo é carregado
-  depois, em segundo plano), e os pacotes do membro inferior (`anatomy-leg.js`), do circulatório (`anatomy-circ.js`) e do respiratório (`anatomy-resp.js`) vêm, nessa ordem, depois do corpo
-  e antes dos nervos (`loadLeg`, `loadCirc` e `loadResp` em `main.js`); o do membro inferior traz a `pele_inteira`, que **substitui** a `pele_corpo` do pacote do corpo assim que carrega.
+  depois, em segundo plano), e os pacotes do membro inferior (`anatomy-leg.js`), do circulatório (`anatomy-circ.js`), do respiratório (`anatomy-resp.js`) e do digestório (`anatomy-digest.js`) vêm, nessa ordem, depois do corpo
+  e antes dos nervos (`loadLeg`, `loadCirc`, `loadResp` e `loadDigest` em `main.js`); o do membro inferior traz a `pele_inteira`, que **substitui** a `pele_corpo` do pacote do corpo assim que carrega.
 - **Heredocs com crases no shell** quebram; escreva scripts Python/JS em arquivos temporários (use o diretório de rascunho da
   sessão) em vez de embuti-los no comando.
 - **PowerShell vs Bash:** sintaxes diferentes (`$env:VAR` vs `$VAR`, `&&` só no PowerShell 7). Caminhos com espaços entre aspas.

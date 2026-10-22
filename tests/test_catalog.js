@@ -198,7 +198,7 @@ function runTests() {
     }
   }
 
-  // 6c. Circulatório (F5): peças do pacote ↔ fichas, camadas por tipo, vizinhas existentes e câmaras e valvas completas
+  // 6c. Circulatório (F5), respiratório (F6.1) e digestório (F6.2): peças do pacote ↔ fichas, camadas por tipo e vizinhas existentes
   {
     const fs = require('fs');
     const readPack = (name) => {
@@ -207,16 +207,22 @@ function runTests() {
     };
     const circPieces = readPack('circ');
     const respPieces = readPack('resp');
-    const pieces = new Set([...circPieces, ...respPieces]);
+    const digestPieces = readPack('digest');
+    const pieces = new Set([...circPieces, ...respPieces, ...digestPieces]);
     const circ = ITEMS.filter((i) => ['cardiaco', 'arteria', 'veia', 'orgao'].includes(i.kind) && i.parts?.length);
     // peças usadas por qualquer ficha (as cartilagens da laringe são fichas de osso no pacote do respiratório)
     const used = new Set(ITEMS.flatMap((i) => (i.parts ?? []).map((p) => p.id)));
     for (const i of circ) {
-      const want = { cardiaco: 'coracao', arteria: 'arteria', veia: 'veia', orgao: 'respiratorio' }[i.kind];
-      if (i.layer !== want) logFail(`"${i.id}" (${i.kind}) deveria estar na camada "${want}", e não em "${i.layer}".`);
-      const home = i.kind === 'orgao' ? respPieces : circPieces;
+      const want = { cardiaco: 'coracao', arteria: 'arteria', veia: 'veia' }[i.kind];
+      if (i.kind === 'orgao') {
+        if (i.layer !== 'respiratorio' && i.layer !== 'digestorio') logFail(`"${i.id}" (orgao) deveria estar na camada "respiratorio" ou "digestorio", e não em "${i.layer}".`);
+      } else if (i.layer !== want) {
+        logFail(`"${i.id}" (${i.kind}) deveria estar na camada "${want}", e não em "${i.layer}".`);
+      }
+      const home = i.kind === 'orgao' ? (i.layer === 'digestorio' ? digestPieces : respPieces) : circPieces;
+      const packLabel = i.kind === 'orgao' ? (i.layer === 'digestorio' ? 'digestório' : 'respiratório') : 'circulatório';
       for (const p of i.parts ?? []) {
-        if (!home.has(p.id)) logFail(`"${i.id}" usa a peça "${p.id}", que não está no pacote do ${i.kind === 'orgao' ? 'respiratório' : 'circulatório'}.`);
+        if (!home.has(p.id)) logFail(`"${i.id}" usa a peça "${p.id}", que não está no pacote do ${packLabel}.`);
       }
       if (i.kind === 'orgao' && i.malha === 'hra' && !/Atlas de Referência Humano/.test(i.nota ?? '')) logFail(`"${i.id}" tem malha do HRA e a nota não diz de onde ela vem.`);
       for (const r of i.relacionados ?? []) {
@@ -224,7 +230,7 @@ function runTests() {
         else if (!(itemMap.get(r).relacionados ?? []).includes(i.id)) logFail(`"${i.id}" cita "${r}", que não o cita de volta (o catálogo deveria completar a ligação).`);
       }
     }
-    for (const p of pieces) if (!used.has(p)) logFail(`A peça "${p}" do pacote do circulatório não é usada por nenhuma ficha.`);
+    for (const p of pieces) if (!used.has(p)) logFail(`A peça "${p}" dos pacotes de vísceras/circulatório não é usada por nenhuma ficha.`);
     for (const id of ['atrio_direito', 'atrio_esquerdo', 'ventriculo_direito', 'ventriculo_esquerdo', 'valva_tricuspide', 'valva_mitral', 'valva_aortica', 'valva_pulmonar']) {
       if (itemMap.get(id)?.kind !== 'cardiaco') logFail(`Câmara ou valva "${id}" ausente do coração.`);
     }
@@ -233,6 +239,9 @@ function runTests() {
     }
     for (const id of ['veia_cava_superior', 'veia_cava_inferior', 'seio_coronario', 'veia_azigo']) {
       if (itemMap.get(id)?.kind !== 'veia') logFail(`Veia "${id}" ausente.`);
+    }
+    for (const id of ['esofago', 'estomago', 'duodeno', 'jejuno', 'ileo', 'ceco', 'apendice_vermiforme', 'colo_transverso', 'reto', 'figado_lobo_caudado', 'vesicula_biliar', 'ducto_coledoco', 'pancreas', 'baco', 'mesenterio']) {
+      if (itemMap.get(id)?.kind !== 'orgao' || itemMap.get(id)?.layer !== 'digestorio') logFail(`Órgão digestório "${id}" ausente ou fora da camada digestorio.`);
     }
   }
 

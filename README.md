@@ -7,16 +7,16 @@
 > renomear o lançador faz o `.exe` se trocar sozinho, então fica para uma release própria.
 
 Atlas 3D interativo do **corpo humano**, com pele, fáscias, músculos, **nervos**, **articulações**,
-ligamentos, **coração, artérias, veias, sistema linfático**, **sistema respiratório**, glândulas, cartilagens, ossos e dentes em camadas. Cada estrutura tem nome em português e em latim e uma ficha: nos
+ligamentos, **coração, artérias, veias, sistema linfático**, **sistema respiratório**, **sistema digestório e baço**, glândulas, cartilagens, ossos e dentes em camadas. Cada estrutura tem nome em português e em latim e uma ficha: nos
 músculos, **ação, origem, inserção, inervação, irrigação e os movimentos que realizam**; nos nervos, **origem, trajeto, ramos, sensibilidade,
 lesão e os músculos que inervam**; nas articulações, **tipo, superfícies, cápsula, ligamentos, movimentos com amplitude e músculos,
-inervação e irrigação**; nos vasos, **origem (ou formação), trajeto, ramos (ou tributárias), território, pulsos e relações**; nos ossos, localização, articulações, estruturas e função; nos ligamentos, fixações e função.
+inervação e irrigação**; nos vasos, **origem (ou formação), trajeto, ramos (ou tributárias), território, pulsos e relações**; nos órgãos, **localização e partes, relações e peritônio/pleura, irrigação, drenagem, inervação e clínica**; nos ossos, localização, articulações, estruturas e função; nos ligamentos, fixações e função.
 O **membro inferior** (F4) tem o esqueleto (fêmur, patela, tíbia, fíbula, tarso, metatarsais, falanges e sesamoides), a pele inteira, os **24 músculos do quadril e da coxa**, os **14 da perna** (compartimentos anterior, lateral e posterior) e a membrana interóssea, os **13 do pé** que o banco tem (o extensor curto dos dedos e os interósseos dorsais não existem no banco) e os nervos que os inervam (femoral, obturatório, glúteos, isquiático, **tibial, fibulares comum, superficial e profundo, plantares medial e lateral**); as articulações e os ligamentos do quadril, do joelho e do tornozelo entram no próximo lote (F4.6).
 
 ## Como abrir
 
 Dê dois cliques em `index.html` (Chrome, Edge ou Firefox). Não precisa de internet nem de servidor.
-A cabeça aparece primeiro; o tronco, os membros e os sistemas são carregados em segundo plano (`dist/anatomy-body.js` e, depois dele, o membro inferior em `dist/anatomy-leg.js`, o coração e os vasos em `dist/anatomy-circ.js` e o sistema respiratório em `dist/anatomy-resp.js`).
+A cabeça aparece primeiro; o tronco, os membros e os sistemas são carregados em segundo plano (`dist/anatomy-body.js` e, depois dele, o membro inferior em `dist/anatomy-leg.js`, o coração e os vasos em `dist/anatomy-circ.js`, o sistema respiratório em `dist/anatomy-resp.js` e o sistema digestório em `dist/anatomy-digest.js`).
 
 Para editar o código:
 
@@ -62,7 +62,7 @@ Use a branch **`dev`** para trabalhar sem publicar; quando estiver bom, junte na
 
 Para gerar o executável localmente: `npm run exe` (usa o compilador C# do próprio Windows; resultado em `release/`).
 
-## O que tem (706 estruturas: 255 músculos, 112 nervos, 52 ossos e cartilagens, 13 articulações, 29 ligamentos, 111 artérias, 56 veias, 14 estruturas do coração, 15 do sistema linfático e 28 do sistema respiratório, mais o pericárdio, as 2 pleuras, a placenta, o cordão umbilical, o ligamento arterial, a projeção do coração e os focos de ausculta e a medula espinal)
+## O que tem (740 estruturas: 255 músculos, 112 nervos, 52 ossos e cartilagens, 13 articulações, 29 ligamentos, 111 artérias, 56 veias, 14 estruturas do coração, 15 do sistema linfático, 28 do sistema respiratório e 34 do sistema digestório e baço, mais o pericárdio, as 2 pleuras, a placenta, o cordão umbilical, o ligamento arterial, a projeção do coração e os focos de ausculta e a medula espinal)
 
 | Camada | Conteúdo |
 | --- | --- |
@@ -79,6 +79,7 @@ Para gerar o executável localmente: `npm run exe` (usa o compilador C# do próp
 | Nervos | 112 nervos e gânglios, mais a **medula espinal**, ligados a **todos** os 255 músculos (veja abaixo) |
 | Coração (F5) | átrios, ventrículos, as 4 valvas, músculos papilares, sistema de condução e o **pericárdio** (envoltório esquemático, declarado na ficha) |
 | Sistema respiratório (F6.1) | **pulmões** (5 lobos, malhas do Atlas de Referência Humano, CC BY 4.0, ajustadas ao tórax), **traqueia, brônquios principais e os 20 segmentares** (B1 a B10), **pleuras** (esquema) e as 6 **cartilagens da laringe** ([`docs/respiratorio.md`](docs/respiratorio.md)) |
+| Sistema digestório e baço (F6.2) | **esôfago, estômago**, intestino delgado (**duodeno, jejuno, íleo**), intestino grosso (**ceco, apêndice vermiforme, colos ascendente, transverso, descendente e sigmoide, tênias do colo, reto e canal anal**), **fígado** (8 segmentos de Couinaud: lobo caudado I, II, III, lobo quadrado IV, V, VI, VII e VIII), **vesícula biliar e vias biliares** (ductos cístico, hepáticos direito, esquerdo e comum, colédoco), **pâncreas e ducto pancreático**, **baço** e **peritônio** (mesentério, mesocolo transverso, mesoapêndice) ([`docs/digestorio.md`](docs/digestorio.md)) |
 | Artérias e Veias (F5) | coronárias e veias do coração, aorta (ascendente, arco, torácica e abdominal), tronco e artérias pulmonares, veias pulmonares, cavas, ázigo, carótidas e **carótida externa com os ramos** (esquema por código), vertebral e **círculo arterial do cérebro**, subclávia e axilar com seus ramos, braço e antebraço até os arcos palmares, intercostais, lombares, epigástricas, **tronco celíaco, mesentéricas e seus ramos, veia porta e afluentes, veias hepáticas**, ilíacas e ramos da ilíaca interna (glúteas, obturatória, pudenda), femoral e femoral profunda, poplítea, tibiais, fibular, dorsal do pé e plantares; veias superficiais e profundas dos membros e da cabeça. Cada músculo mostra as artérias que o irrigam, e a ficha da artéria, os músculos irrigados; pulsos, relações e 20 feixes neurovasculares ([`docs/circulatorio.md`](docs/circulatorio.md)) |
 | Anatomia de superfície do coração (F5, esquemas) | projeção do coração na parede do tórax e focos de ausculta, desenhados sobre a pele |
 | Sistema linfático (F5, esquemas) | cisterna do quilo, ducto torácico, ducto linfático direito e os principais grupos de linfonodos (cabeça e pescoço, axilares, paraesternais, mediastinais, traqueobrônquicos, celíacos e mesentéricos, lombares, ilíacos, inguinais e poplíteos); posição aproximada, declarada na ficha |
@@ -182,9 +183,9 @@ A última configuração é lembrada no navegador. **Toda resposta** (nos três 
 O botão **📚 Estudo** abre um painel com abas. Tudo funciona offline e os dados do estudante ficam só no navegador
 (`localStorage`), com exportação e importação em JSON.
 
-- **Tours** — 15 roteiros com 90 passos (manguito rotador, plexo braquial, nervo radial, mastigação e V3, nervo facial e
+- **Tours** — 16 roteiros com 98 passos (manguito rotador, plexo braquial, nervo radial, mastigação e V3, nervo facial e
   mímica, parede abdominal, perna e pé, grande e pequena circulação, circulação fetal, generalidades do circulatório,
-  coração: superfície/ausculta/condução, artérias da cabeça e do pescoço, círculo arterial do cérebro, fígado/tronco celíaco/veia porta e sistema respiratório). Cada passo escolhe região, dissecação e a estrutura em destaque; a câmera enquadra a estrutura
+  coração: superfície/ausculta/condução, artérias da cabeça e do pescoço, círculo arterial do cérebro, fígado/tronco celíaco/veia porta, sistema respiratório e sistema digestório). Cada passo escolhe região, dissecação e a estrutura em destaque; a câmera enquadra a estrutura
   (cópia esquerda) pelo lado indicado. Setas ← → navegam, **Esc** sai. Os textos dos tours são resumos didáticos que ainda
   **não passaram** pela revisão de fontes (`docs/revisao-conteudo.md` cobre as fichas): confira nas referências antes de citar.
 - **Progresso** — estruturas estudadas, precisão geral, revisões que vencem hoje (e amanhã/7 dias), pontos fracos, estruturas
@@ -228,7 +229,7 @@ e “colados” sobre a pele e o esqueleto reais (`src/proc.js`), com posições
 - sistema nervoso: todos os nervos, exceto os da órbita (malhas reais), e a medula espinal (esquemática: não há meninges nem substância cinzenta).
 
 São aproximações didáticas. Por causa da licença **Share-Alike**, os arquivos `dist/anatomy-data.js`,
-`dist/anatomy-body.js`, `dist/anatomy-leg.js`, `dist/anatomy-circ.js` e `dist/anatomy-nerves.js` (malhas derivadas do BodyParts3D; `dist/anatomy-resp.js` traz também os pulmões do Atlas de Referência Humano, CC BY 4.0, ajustados ao tórax, e `dist/anatomy-circ.js`, a placenta e o cordão do mesmo atlas) devem manter a atribuição acima e a mesma licença CC BY-SA ao serem redistribuídos.
+`dist/anatomy-body.js`, `dist/anatomy-leg.js`, `dist/anatomy-circ.js`, `dist/anatomy-digest.js` e `dist/anatomy-nerves.js` (malhas derivadas do BodyParts3D; `dist/anatomy-resp.js` traz também os pulmões do Atlas de Referência Humano, CC BY 4.0, ajustados ao tórax, e `dist/anatomy-circ.js`, a placenta e o cordão do mesmo atlas) devem manter a atribuição acima e a mesma licença CC BY-SA ao serem redistribuídos.
 
 ### Regenerar os dados
 
@@ -251,6 +252,8 @@ python convert_placenta.py          # placenta e cordão do HRA (GLB em tools/hr
 python fetch_body.py --pack resp && python convert_body.py --pack resp   # → anatomy-resp.js (copie para ../dist/)
 python fit_hra.py                   # ajusta os pulmões ao tórax (escala por eixo) → hra_transform.json
 python convert_hra.py --append      # acrescenta os lobos ao pacote em ../dist/ (copie o resultado para ../dist/)
+# digestório e baço (F6.2): esôfago ao canal anal, fígado (8 segmentos), vias biliares, pâncreas, baço e mesos
+python fetch_body.py --pack digest && python convert_body.py --pack digest # → anatomy-digest.js (copie para ../dist/)
 python fetch_nerves.py    # nervos da órbita: baixa os elementos usados
 python convert_nerves.py  # nervos da órbita: converte e empacota → anatomy-nerves.js
 ```
@@ -285,6 +288,7 @@ id2`); as peças dele (`pack="leg"` em `addl(...)`) e o que o banco não tem est
 | `src/catalog-leg-bones.js` | **Ossos do membro inferior** (pacote `dist/anatomy-leg.js`, carregado depois do corpo) |
 | `src/catalog-leg-muscles.js`, `src/catalog-leg-perna.js`, `src/catalog-leg-pe.js`, `src/catalog-nerves-leg.js` | **Músculos do quadril e da coxa, da perna e do pé**, a membrana interóssea da perna e os **nervos do membro inferior** (mesmo pacote) |
 | `src/catalog-resp.js`, `src/catalog-resp-airways.js` | **Pulmões** (a ficha diz que a malha é do Atlas de Referência Humano) e **vias aéreas** (traqueia, brônquios, pleuras, cartilagens da laringe); pacote `dist/anatomy-resp.js`, carregado depois do circulatório |
+| `src/catalog-digest.js` | **Sistema digestório e baço** (34 fichas: esôfago ao canal anal, 8 segmentos do fígado, vias biliares, pâncreas, baço e mesos); pacote `dist/anatomy-digest.js`, carregado depois do respiratório |
 | `src/catalog-circ.js`, `src/catalog-circ-ramos.js`, `src/hull-geo.js` | **Coração e vasos** (pacote `dist/anatomy-circ.js`, carregado depois do membro inferior); os vasos de menor calibre; o casco suavizado do pericárdio esquemático |
 | `src/catalog-circ-viscerais.js`, `src/catalog-circ-codigo.js` | Vasos do **encéfalo e das vísceras** (malhas do BodyParts3D) e vasos **por código** (carótida externa, veias da cabeça, ramos da ilíaca interna) |
 | `src/catalog-circ-esquemas.js`, `src/catalog-circ-superficie.js`, `src/catalog-circ-fetal.js`, `src/cardio-extras.js` | **Linfáticos, sistema de condução, papilar posteromedial, projeção do coração e focos de ausculta, circulação fetal** (esquemas por código, declarados na ficha; a placenta e o cordão vêm do HRA) e os campos de irrigação, inervação e esqueleto fibroso do coração |
@@ -298,7 +302,7 @@ id2`); as peças dele (`pack="leg"` em `addl(...)`) e o que o banco não tem est
 | `tools/` | Pipeline de dados (Python) e do executável (`build_exe.py`, `launcher/Launcher.cs`) |
 | `.github/workflows/release.yml` | Gera e publica a release a cada push na `main` |
 | `tests/` | Testes: integridade do catálogo, dos tours e dos grupos (`test_catalog.js`), lógica das ferramentas de estudo (`test_study.js`) e fumaça no navegador (`smoke_test.js`; `SMOKE_FILE=1` abre por `file://`) |
-| `docs/` | Auditoria de conteúdo (`revisao-conteudo.md`), cobertura (`cobertura.md`), articulações (`articulacoes.md`), membro inferior (`inventario-membro-inferior.md`), circulatório (`circulatorio.md`), respiratório (`respiratorio.md`), fonte HRA (`fonte-hra-atlas-de-referencia.md`), miótomos (`miotomos.md`), dermátomos (`dermatomos.md`), desempenho (`desempenho.md`, `otimizacao-mobile.md`), pontos de melhoria (`pontos-de-melhoria.md`), concorrentes (`concorrentes.md`) e publicação como site/celular (`publicacao-web.md`) |
+| `docs/` | Auditoria de conteúdo (`revisao-conteudo.md`), cobertura (`cobertura.md`), articulações (`articulacoes.md`), membro inferior (`inventario-membro-inferior.md`), circulatório (`circulatorio.md`), respiratório (`respiratorio.md`), digestório (`digestorio.md`), fonte HRA (`fonte-hra-atlas-de-referencia.md`), miótomos (`miotomos.md`), dermátomos (`dermatomos.md`), desempenho (`desempenho.md`, `otimizacao-mobile.md`), pontos de melhoria (`pontos-de-melhoria.md`), concorrentes (`concorrentes.md`) e publicação como site/celular (`publicacao-web.md`) |
 | `project_context.md` | Roteiro: mapa do que atlas de anatomia costumam ter e a ordem de desenvolvimento por fases |
 | `agents.md` | Guia para agentes de código e colaboradores: convenções, verificação, regras de conteúdo e de publicação |
 
