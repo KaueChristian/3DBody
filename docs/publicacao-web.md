@@ -28,6 +28,13 @@ Revisitar só se as medições em aparelhos reais (abaixo) mostrarem que o WebGL
 ## O que foi ajustado para publicar
 - `pages.yml` agora grava a versão (`major.minor.<execução>`) em `dist/version.js` e **versiona o cache do service worker**
   (`CACHE_NAME`) a cada deploy. Antes o nome era fixo, e o cache antigo só era trocado por acaso.
+- **2026-10-22: rede primeiro.** O service worker respondia com a cópia guardada e só buscava a nova em segundo plano: depois
+  de cada deploy, quem abria o site via a versão anterior (o responsável viu a lista lateral toda aberta, de antes da v2.3.13). Agora
+  ele busca na rede, revalidando com o servidor (`cache: 'no-cache'`, que o Pages responde com 304 quando nada mudou), e usa a cópia
+  só sem rede ou se a rede não responder em 6 s. O cache passou a se chamar `body3d-v…`: ao encontrar um `anatomia3d-…` (geração
+  antiga), o service worker novo recarrega uma vez as páginas abertas. O `index.html` também recarrega uma vez se um service worker
+  novo assumir a página e a versão publicada (`dist/version.js`) for outra. Testado no navegador: transição da geração antiga,
+  atualização seguinte sem recarregar e funcionamento offline.
 
 ## Situação (2026-10-07)
 - Site publicado em **https://body3d.app** (também `https://kauechristian.github.io/3DBody/`). O Pages usa *Source: GitHub Actions* e o

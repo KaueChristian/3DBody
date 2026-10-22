@@ -336,6 +336,20 @@
   <script src="dist/app.js"></script>
   <script>
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+      // Quando um service worker novo assume a página (atualização do site), confere a versão publicada: se a página veio de
+      // uma cópia antiga do cache, recarrega uma vez para abrir a versão nova.
+      var hadController = !!navigator.serviceWorker.controller;
+      var reloaded = false;
+      navigator.serviceWorker.addEventListener('controllerchange', function () {
+        if (!hadController || reloaded) return;
+        fetch('dist/version.js', { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (txt) {
+          var m = txt.match(/"([^"]+)"/);
+          if (m && m[1] !== window.__APP_VERSION && !reloaded) {
+            reloaded = true;
+            location.reload();
+          }
+        }).catch(function () {});
+      });
       window.addEventListener('load', function () {
         navigator.serviceWorker.register('sw.js').catch(function (err) {
           console.warn('[SW] Falha ao registrar ServiceWorker:', err);
