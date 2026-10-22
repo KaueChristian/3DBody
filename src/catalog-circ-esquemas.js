@@ -15,8 +15,12 @@ const tubo = (pts, width, thick = width, o = {}) => ({ kind: 'tube', pts, width,
 /** Linfonodo esquemático: um elipsoide pequeno centrado em p (comprimento `r`). */
 const nodo = (p, r = 0.07) => tubo([[p[0], p[1] + r * 0.45, p[2]], [p[0], p[1] - r * 0.45, p[2]]], r * 1.15, r * 0.85, { nf: 4, nc: 8 });
 
-/** Linfonodo sobre a pele mais próxima de p (região da cabeça): um elipsoide pequeno apoiado nela. */
-const nodoSk = (p, r = 0.06) => tubo([{ skin: true, p, d: 0 }, { skin: true, p, d: 0, add: [0, -r * 0.9, 0] }], r * 1.15, r * 0.85, { nf: 4, nc: 8 });
+/**
+ * Linfonodo superficial (região da cabeça): um elipsoide pequeno sob a pele mais próxima de p, afundado `d` (o NerveBuilder limita a
+ * profundidade pela distância ao osso). `ref` orienta a seção para o lado mais fino ficar perpendicular à pele: [1, 0, 0] nas faces
+ * laterais, [0, 0, 1] na nuca.
+ */
+const nodoSk = (p, r = 0.055, d = -0.05, ref = [1, 0, 0]) => tubo([{ skin: true, p, d }, { skin: true, p, d, add: [0, -r * 0.9, 0] }], r * 1.15, r * 0.7, { nf: 4, nc: 8, ref });
 
 const linfatico = (id, name, latin, proc, campos, extra = {}) => ({
   kind: 'linfatico',
@@ -74,7 +78,7 @@ export const CIRC_ESQUEMAS = [
     ['Território drenado', 'Toda a linfa do corpo abaixo do diafragma e a do lado esquerdo da cabeça, do pescoço, do tórax e do membro superior esquerdo. A linfa do restante (lado direito acima do diafragma) vai ao ducto linfático direito.'],
   ], {
     paired: false,
-    nota: 'ESQUEMA: o trajeto foi medido entre a aorta, a veia ázigo e os corpos vertebrais, mas é aproximado; o BodyParts3D não tem vasos linfáticos nem o esôfago. A lesão do ducto (cirurgias do tórax, traumas) causa quilotórax; a ligadura costuma ser tolerada, porque a linfa encontra vias colaterais. O ducto tem uma valva perto da desembocadura, que impede o refluxo de sangue.',
+    nota: 'ESQUEMA: o trajeto foi medido entre a aorta, a veia ázigo e os corpos vertebrais, mas é aproximado; o BodyParts3D não tem vasos linfáticos. O esôfago do modelo fica à frente do ducto, como na realidade. A lesão do ducto (cirurgias do tórax, traumas) causa quilotórax; a ligadura costuma ser tolerada, porque a linfa encontra vias colaterais. O ducto tem uma valva perto da desembocadura, que impede o refluxo de sangue.',
     relacionados: ['cisterna_quilo', 'aorta_toracica', 'veia_azigo', 'veia_jugular_interna', 'veia_subclavia', 'ducto_linfatico_direito'],
   }),
   linfatico('ducto_linfatico_direito', 'Ducto linfático direito — esquema', 'Ductus lymphaticus dexter', [
@@ -153,33 +157,33 @@ export const CIRC_ESQUEMAS = [
     relacionados: ['linfonodos_cervicais_profundos', 'arteria_facial', 'arteria_lingual'],
   }),
   linfatico('linfonodos_pericranianos', 'Linfonodos occipitais, mastóideos e parotídeos — esquema', 'Nodi lymphoidei occipitales, mastoidei et parotidei', [
-    nodoSk([0.3, -0.55, -1.9]), nodoSk([0.9, -0.45, -0.28]), nodoSk([0.9, -0.3, 0.16]), nodoSk([0.9, -0.55, 0.14]),
+    nodoSk([0.3, -0.55, -1.9], 0.055, -0.05, [0, 0, 1]), nodoSk([0.9, -0.45, -0.28]), nodoSk([0.9, -0.3, 0.16]), nodoSk([0.9, -0.55, 0.14]),
   ], [
     ['Localização', 'Em volta da base do crânio, no “colar” pericraniano: occipitais (sobre a inserção do trapézio, na parte posterior), mastóideos ou retroauriculares (atrás da orelha, sobre o processo mastoide) e parotídeos (superficiais, à frente da orelha, e profundos, dentro da glândula).'],
     ['Território drenado', 'Occipitais: couro cabeludo posterior. Mastóideos: couro cabeludo atrás da orelha e parte posterior do pavilhão auricular. Parotídeos: fronte e têmpora, pálpebras, parte anterior do pavilhão, meato acústico externo e a própria glândula parótida.'],
     ['Drena para', 'Linfonodos cervicais superficiais e profundos (cadeia jugular).'],
     ['Clínica', 'Os linfonodos occipitais e retroauriculares aumentam, com frequência, na rubéola e em infecções do couro cabeludo; os parotídeos, nos tumores de pele da fronte e da têmpora.'],
   ], {
-    nota: 'ESQUEMA: os quatro linfonodos desenhados sobre a pele representam os grupos, em posição aproximada.',
+    nota: 'ESQUEMA: os quatro linfonodos, logo sob a pele, representam os grupos, em posição aproximada; os parotídeos profundos (dentro da glândula) não foram desenhados.',
     relacionados: ['linfonodos_cervicais_profundos', 'arteria_occipital', 'arteria_temporal_superficial'],
   }),
-  grupo('linfonodos_mamarios_internos', 'Linfonodos paraesternais (mamários internos) — esquema', 'Nodi lymphoidei parasternales', [[0.2, -2.72, 0.9], [0.17, -3.05, 1.0], [0.15, -3.4, 1.1]], 0.055, [
+  grupo('linfonodos_mamarios_internos', 'Linfonodos paraesternais (mamários internos) — esquema', 'Nodi lymphoidei parasternales', [[0.17, -2.6, 0.72], [0.175, -2.95, 0.875], [0.16, -3.2, 0.95]], 0.055, [
     ['Localização', 'Nos espaços intercostais, junto ao esterno, ao longo dos vasos torácicos internos, por trás das cartilagens costais.'],
     ['Território drenado', 'Parte medial e central da mama, parede anterior do tórax, parte anterior do diafragma e a face superior do fígado.'],
     ['Drena para', 'Troncos broncomediastinais, que desembocam no ducto torácico (à esquerda) e no ducto linfático direito (à direita), ou direto nas veias do ângulo venoso.'],
     ['Clínica', 'A linfa dos quadrantes mediais da mama vai com mais frequência a eles do que aos axilares; o câncer de mama medial pode fazer metástase ao tórax pela cadeia paraesternal, e por isso a radioterapia pode incluí-la.'],
   ], {
-    nota: 'ESQUEMA: três linfonodos de cada lado representam a cadeia, que tem, em geral, de quatro a doze; posições aproximadas, sobre a artéria torácica interna do modelo.',
+    nota: 'ESQUEMA: três linfonodos de cada lado representam a cadeia, que tem, em geral, de quatro a doze; ficam junto à artéria torácica interna do modelo, nos espaços intercostais (medidos para não tocar as cartilagens costais), em posição aproximada.',
     relacionados: ['arteria_toracica_interna', 'veia_toracica_interna', 'linfonodos_axilares'],
   }),
-  grupo('linfonodos_mediastinais', 'Linfonodos mediastinais anteriores e posteriores — esquema', 'Nodi lymphoidei mediastinales anteriores et posteriores', [[0.04, -2.32, 0.6], [0.12, -2.28, 0.55], [0.0, -3.4, 0.0], [0.0, -3.9, 0.12]], 0.06, [
+  grupo('linfonodos_mediastinais', 'Linfonodos mediastinais anteriores e posteriores — esquema', 'Nodi lymphoidei mediastinales anteriores et posteriores', [[0.06, -2.5, 0.62], [-0.03, -2.56, 0.64], [-0.12, -3.45, -0.04], [0.2, -3.75, 0.15]], 0.06, [
     ['Localização', 'Anteriores (pré-vasculares): na frente do arco da aorta e das veias braquiocefálicas, no mediastino superior e anterior. Posteriores: ao lado do esôfago e da aorta descendente, no mediastino posterior.'],
     ['Território drenado', 'Anteriores: timo, pericárdio e coração (em parte) e parte do diafragma. Posteriores: esôfago, parte posterior do pericárdio e diafragma e a face superior do fígado.'],
     ['Drena para', 'Troncos broncomediastinais e, a partir dos posteriores, o ducto torácico.'],
     ['Clínica', 'Os linfonodos mediastinais aumentam no linfoma, no câncer de pulmão e de esôfago e na sarcoidose; o timoma e os linfomas formam massas do mediastino anterior.'],
   ], {
     paired: false,
-    nota: 'ESQUEMA: dois linfonodos de cada tipo, na linha mediana, representam os grupos; o esôfago e o timo não existem no modelo e as posições são aproximadas.',
+    nota: 'ESQUEMA: dois linfonodos de cada tipo representam os grupos: os anteriores atrás do manúbrio e à frente do arco da aorta (onde, no modelo, há espaço entre o esterno e os vasos), os posteriores ao lado do esôfago, um à direita dele e outro junto da aorta descendente. Posições aproximadas; o timo, que fica na mesma região dos anteriores, ainda não está no modelo.',
     relacionados: ['arco_aorta', 'aorta_toracica', 'linfonodos_traqueobronquicos', 'ducto_toracico'],
   }),
   grupo('linfonodos_celiacos_mesentericos', 'Linfonodos celíacos e mesentéricos — esquema', 'Nodi lymphoidei coeliaci et mesenterici', [[0.12, -4.55, 0.44], [-0.02, -4.6, 0.42], [0.0, -5.0, 0.52], [-0.1, -5.3, 0.7], [-0.06, -5.6, 0.66], [0.18, -5.6, 0.56], [0.2, -5.9, 0.52]], 0.06, [

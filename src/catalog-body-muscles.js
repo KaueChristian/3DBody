@@ -36,7 +36,7 @@ export const BODY_MUSCLES = [
     origem: 'Face anterior do esterno (manúbrio e corpo) e cartilagens costais das costelas 2 a 6.',
     insercao: 'Lábio lateral do sulco intertubercular do úmero (lâmina posterior do tendão).',
     inervacao: 'Nervos peitorais lateral e medial (C5–T1).',
-    nota: 'Maior parte do volume do músculo. Sua ausência congênita faz parte da síndrome de Poland.',
+    nota: 'Maior parte do volume do músculo. Sua ausência congênita faz parte da síndrome de Poland. Segmentos: aqui C5–T1, porque a parte recebe os dois nervos peitorais (Gray’s); Moore dá C7, C8 e T1 à parte esternocostal e C5–C6 à clavicular.',
   }),
   bm('peitoral_abdominal', 'Peitoral maior — parte abdominal', 'M. pectoralis major, pars abdominalis', 'sup', 'tronco', P('peitoral_abdominal'), {
     acao: 'Abaixa o braço elevado (extensão a partir da flexão) e o aduz.',
@@ -579,7 +579,7 @@ export const BODY_MUSCLES = [
   bm('obturador_interno', 'Obturador interno', 'M. obturator internus', 'prof', 'tronco', P('obturador_interno'), {
     acao: 'Roda lateralmente a coxa estendida e abduz a coxa fletida; ajuda a manter a cabeça do fêmur no acetábulo.',
     origem: 'Face interna (pélvica) da membrana obturadora e das margens do forame obturado, no púbis e no ísquio.',
-    insercao: 'Face medial do grande trocânter do fêmur (fossa trocantérica anterior ao tendão do piriforme). O tendão sai da pelve pelo forame isquiático menor, dobrando-se sobre o ísquio.',
+    insercao: 'Face medial do trocanter maior do fêmur, na parte anterior, acima da fossa trocantérica (a fossa recebe o obturador externo), junto com os gêmeos. O tendão sai da pelve pelo forame isquiático menor, dobrando-se sobre o ísquio.',
     inervacao: 'Nervo para o obturador interno e gêmeo superior (plexo sacral, L5–S2).',
     nota: 'Reveste a parede lateral da pelve. A fáscia que o cobre dá origem ao arco tendíneo do levantador do ânus e forma o canal do pudendo (de Alcock), por onde correm o nervo e os vasos pudendos. Os segmentos do nervo variam: L5–S1 em Moore e L5–S2 no Gray’s.',
   }),

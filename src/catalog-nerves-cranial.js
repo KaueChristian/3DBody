@@ -77,7 +77,7 @@ export const NERVES_CRANIAL = [
     ramos: 'No pescoço: ramos meníngeo e auricular, ramos faríngeos (plexo faríngeo), nervo laríngeo superior, ramos para o seio e o corpo carótico e ramos cardíacos cervicais. No tórax: nervo laríngeo recorrente, ramos cardíacos, pulmonares e esofágicos. No abdome: troncos vagais anterior e posterior. Os que têm músculos para inervar têm fichas próprias.',
     sensibilidade: 'Meato acústico externo e parte da membrana timpânica (ramo auricular), faringe, laringe e vísceras do tórax e do abdome; paladar da epiglote. Fibras parassimpáticas para o coração, os pulmões e o tubo digestório até a flexura esquerda do colo.',
     lesao: 'Paralisia unilateral: rouquidão, disfagia e voz nasal; o palato mole do lado afetado não sobe e a úvula desvia para o lado são ao dizer “aaa”. Lesão bilateral alta é grave (arritmia e perda da proteção das vias aéreas). A estimulação vagal causa bradicardia e síncope vasovagal.',
-    nota: 'É o nervo craniano mais longo. Na lesão do núcleo ambíguo (síndrome bulbar lateral, ou de Wallenberg) os músculos da faringe e da laringe ficam paralisados. O modelo mostra só o trajeto cervical e o mediastino superior: o restante exige as vísceras.',
+    nota: 'É o nervo craniano mais longo. Na lesão do núcleo ambíguo (síndrome bulbar lateral, ou de Wallenberg) os músculos da faringe e da laringe ficam paralisados. O desenho vai só até o mediastino superior (T4–T5): o plexo esofágico, os troncos vagais e os ramos para o coração, os pulmões e as vísceras do abdome ainda não estão desenhados (M22), embora esses órgãos já estejam no modelo.',
   }),
   nervo('n_plexo_faringeo', 'Plexo faríngeo (ramos faríngeos do vago)', 'Plexus pharyngeus; rami pharyngei n. vagi', 'cabeca', {
     paths: [

@@ -5,9 +5,11 @@
  *
  * O corpo do atlas é adulto e masculino. Por isso os elementos da vida fetal ficam numa camada própria, **desligada por padrão** (“Circulação
  * fetal (esquema)”): a placenta aparece fora do corpo, à frente, ligada ao umbigo pelo cordão, só para mostrar as conexões; a veia e as
- * artérias umbilicais e o ducto venoso são traçados dentro do abdome para o fígado, a veia cava inferior e as artérias ilíacas internas, mas
- * o fígado não existe no modelo (o digestório ainda não foi feito) e os trajetos são aproximados. Textos próprios, a partir de Moore, Dalley
- * & Agur (8ª ed.) e Gray's Anatomy (42ª ed.).
+ * artérias umbilicais e o ducto venoso são traçados dentro do abdome para o fígado, a veia cava inferior e as artérias ilíacas internas, com
+ * trajetos aproximados. Desde a F6.2 o fígado está no modelo: a veia umbilical entra pela incisura do ligamento redondo e chega à parte
+ * umbilical do ramo esquerdo da veia porta (pontos medidos nas malhas do fígado e da veia porta), e o ducto venoso segue pela fissura do
+ * ligamento venoso, à esquerda do lobo caudado, até a veia cava inferior. Textos próprios, a partir de Moore, Dalley & Agur (8ª ed.) e
+ * Gray's Anatomy (42ª ed.).
  */
 
 const T = 'tronco';
@@ -71,7 +73,9 @@ export const CIRC_FETAL = [
     relacionados: ['placenta', 'veia_umbilical', 'arterias_umbilicais'],
   }),
   fetal('veia', 'veia_umbilical', 'Veia umbilical — esquema', 'Vena umbilicalis', {
-    proc: [tubo([...CORDAO.slice(0, 1), skin([0, -5.45, 1.5], -0.1), skin([0, -5.15, 1.5], -0.2), skin([0, -4.8, 1.5], -0.32), [-0.03, -4.4, 0.8], [-0.03, -4.2, 0.55]], 0.055, 0.05, { nf: 36, nc: 10 })],
+    // da parede anterior à incisura do ligamento redondo (borda inferior do fígado, entre os segmentos III e IV) e, pela fissura,
+    // à parte umbilical do ramo esquerdo da veia porta (recesso de Rex)
+    proc: [tubo([...CORDAO.slice(0, 1), skin([0, -5.45, 1.5], -0.1), skin([0, -5.15, 1.5], -0.2), skin([0, -4.8, 1.5], -0.32), [0.0, -4.5, 1.06], [0.03, -4.32, 0.99], [0.08, -4.19, 0.93]], 0.055, 0.05, { nf: 36, nc: 10 })],
     mat: 'vein',
     color: '#d2625a',
     paired: false,
@@ -81,7 +85,7 @@ export const CIRC_FETAL = [
       ['Tributárias', 'Dá origem ao ducto venoso, que leva parte do sangue direto à veia cava inferior; o restante vai ao fígado pelo seio da veia porta.'],
       ['Território drenado', 'Traz ao feto o sangue oxigenado da placenta (cerca de 80% de saturação), que a veia cava inferior leva ao átrio direito.'],
     ],
-    nota: 'ESQUEMA: o trajeto é aproximado e o fígado não existe no modelo. Depois do nascimento, a veia umbilical se fecha e vira o ligamento redondo do fígado, no ligamento falciforme; a veia paraumbilical recanalizada é uma via colateral na hipertensão portal (cabeça de medusa).',
+    nota: 'ESQUEMA: o trajeto é aproximado. O fígado do modelo é de adulto: a veia foi traçada da parede anterior do abdome até a incisura do ligamento redondo e, pela fissura, até o ramo esquerdo da veia porta, onde estaria no feto. Depois do nascimento, a veia umbilical se fecha e vira o ligamento redondo do fígado, no ligamento falciforme; a veia paraumbilical recanalizada é uma via colateral na hipertensão portal (cabeça de medusa).',
     relacionados: ['ducto_venoso', 'cordao_umbilical', 'placenta'],
   }),
   fetal('arteria', 'arterias_umbilicais', 'Artérias umbilicais — esquema', 'Arteriae umbilicales', {
@@ -99,7 +103,9 @@ export const CIRC_FETAL = [
     relacionados: ['arteria_iliaca_interna', 'cordao_umbilical', 'placenta'],
   }),
   fetal('veia', 'ducto_venoso', 'Ducto venoso — esquema', 'Ductus venosus', {
-    proc: [tubo([[-0.03, -4.2, 0.55], [-0.08, -4.05, 0.45], [-0.12, -3.95, 0.36]], 0.04, 0.035, { nf: 12, nc: 8 })],
+    // do ramo esquerdo da veia porta, em frente à chegada da veia umbilical, pela fissura do ligamento venoso (à esquerda do lobo
+    // caudado) até a veia cava inferior, junto da veia hepática esquerda
+    proc: [tubo([[0.08, -4.19, 0.93], [0.04, -4.06, 0.76], [0.06, -3.95, 0.6], [0.11, -3.87, 0.48], [0.04, -3.79, 0.39], [-0.07, -3.76, 0.34]], 0.04, 0.035, { nf: 24, nc: 8 })],
     mat: 'vein',
     color: '#b45a7a',
     paired: false,
@@ -109,7 +115,7 @@ export const CIRC_FETAL = [
       ['Função', 'Desvia cerca de metade do sangue da veia umbilical do fígado, que não precisa filtrá-lo; o sangue oxigenado chega ao átrio direito misturado com o da veia cava inferior.'],
       ['Depois do nascimento', 'Fecha-se nos primeiros dias de vida e vira o ligamento venoso, na fissura do ligamento venoso do fígado.'],
     ],
-    nota: 'ESQUEMA: o BodyParts3D não tem o ducto venoso nem o fígado em posição de mostrar o trajeto. O ducto venoso persistente é uma malformação rara. A proporção que passa pelo ducto varia nas fontes e com a idade gestacional.',
+    nota: 'ESQUEMA: o BodyParts3D não tem o ducto venoso. O trajeto foi traçado no fígado adulto do modelo, pela fissura do ligamento venoso, do ramo esquerdo da veia porta à veia cava inferior; no adulto, ali fica o ligamento venoso. Para vê-lo, oculte o fígado. O ducto venoso persistente é uma malformação rara. A proporção que passa pelo ducto varia nas fontes e com a idade gestacional.',
     relacionados: ['veia_umbilical', 'veia_cava_inferior'],
   }),
   {

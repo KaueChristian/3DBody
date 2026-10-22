@@ -113,7 +113,8 @@ export const NERVES_SENSORY = [
   }),
   nervo('n_cutaneo_lateral_inf_braco', 'Nervo cutâneo lateral inferior do braço (radial)', 'N. cutaneus brachii lateralis inferior', 'membro_sup', {
     superficial: true,
-    paths: [{ pts: [{ sec: 'umero', y: -3.85, at: 'post-lat', d: 0.035 }, SK([2.0, -4.05, -0.08], -0.025), SK([2.05, -4.5, 0.04], -0.025)], r: 0.003 }],
+    // o ponto lateral ao úmero faz o nervo contornar o osso por fora (sem ele, 19 % do trajeto atravessava a diáfise)
+    paths: [{ pts: [{ sec: 'umero', y: -3.85, at: 'post-lat', d: 0.035 }, { sec: 'umero', y: -3.95, at: 'lat', d: 0.05 }, SK([2.0, -4.05, -0.08], -0.025), SK([2.05, -4.5, 0.04], -0.025)], r: 0.003 }],
   }, {
     origem: 'Nervo radial (C5–C6), no sulco do nervo radial.',
     trajeto: 'Perfura a cabeça lateral do tríceps junto à inserção do deltoide e desce pela fáscia, chegando à pele da face lateral da parte inferior do braço.',

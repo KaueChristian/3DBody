@@ -1888,7 +1888,7 @@ async function loadCirc(parts, S, landmarks) {
   perf.circDataMs = Math.round(performance.now() - t0);
   const tBuild = performance.now();
   for (const [id, p] of circParts) parts.set(id, p);
-  buildItems(circParts, S, CIRC_ITEMS, jointContext(parts, landmarks));
+  buildItems(circParts, S, CIRC_ITEMS, jointContext(parts, landmarks, { skin: 'pele_inteira', bones: [...M.values()].filter((m) => m.item.layer === 'osso').flatMap((m) => m.meshes.map((x) => x.geometry)) }));
   perf.circStructuresMs = Math.round(performance.now() - tBuild);
   state.circReady = true;
   document.body.classList.add('circ-ready');

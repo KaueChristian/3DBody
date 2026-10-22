@@ -48,8 +48,8 @@ export const LEG_MUSCLES = [
     acao: 'Roda lateralmente a coxa estendida e abduz a coxa fletida; com o obturador interno, estabiliza o quadril.',
     origem: 'Face glútea da espinha isquiática.',
     insercao: 'Tendão do obturador interno, na face medial do trocanter maior.',
-    inervacao: 'Nervo para o obturador interno (L5–S1).',
-    nota: 'Os dois gêmeos acompanham, por cima e por baixo, o tendão do obturador interno, que passa entre eles para o trocanter maior.',
+    inervacao: 'Nervo para o obturador interno (L5–S2).',
+    nota: 'Os dois gêmeos acompanham, por cima e por baixo, o tendão do obturador interno, que passa entre eles para o trocanter maior. Os segmentos do nervo variam: L5–S1 em Moore e L5–S2 no Gray’s (o mesmo nervo do obturador interno).',
   }),
   bm('gemeo_inferior', 'Gêmeo inferior', 'M. gemellus inferior', 'prof', R, P('gemeo_inferior'), {
     acao: 'Roda lateralmente a coxa estendida e abduz a coxa fletida; com o obturador interno, estabiliza o quadril.',

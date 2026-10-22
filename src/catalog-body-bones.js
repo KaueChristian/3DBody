@@ -80,7 +80,7 @@ export const BODY_BONES = [
     local: 'Lateral da pelve; resulta da fusão de ílio, ísquio e púbis.',
     artic: 'Sacro (sacroilíaca), osso do quadril oposto (sínfise púbica) e fêmur (articulação do quadril).',
     estruturas: 'Crista ilíaca, espinhas ilíacas ântero-superior e póstero-superior, acetábulo, túber isquiático, ramo púbico, forame obturado e incisura isquiática maior.',
-    funcao: 'Forma a pelve óssea, sustenta as vísceras pélvicas e transmite o peso ao membro inferior. Dá origem/inserção ao oblíquo externo e interno, transverso do abdome, reto do abdome, quadrado do lombo, ilíaco e levantador do ânus.',
+    funcao: 'Forma a pelve óssea, sustenta as vísceras pélvicas e transmite o peso ao membro inferior. Inserções: na crista ilíaca, os músculos largos do abdome, o quadrado do lombo, o latíssimo do dorso e o eretor da espinha; no púbis, o reto do abdome e o piramidal; na face glútea do ílio, os glúteos máximo, médio e mínimo e o tensor da fáscia lata; na fossa ilíaca, o ilíaco; nas espinhas ilíacas anteriores, o sartório (superior) e o reto femoral (inferior); no púbis e no ramo isquiopúbico, o pectíneo, os adutores e o grácil; no túber isquiático, os isquiotibiais, a parte isquiocondilar do adutor magno, o quadrado femoral e o gêmeo inferior; na espinha isquiática, o gêmeo superior e o coccígeo; em volta do forame obturado, os obturadores interno e externo; na face pélvica, o levantador do ânus.',
   }),
   bone('o_discos', 'Discos intervertebrais', 'Disci intervertebrales', 'tronco', ['discos_cervicais', 'discos_toracicos', 'discos_lombares'], {
     local: 'Entre os corpos das vértebras, do áxis ao sacro.',

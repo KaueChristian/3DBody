@@ -164,7 +164,7 @@
 
 ### S2
 
-- **Músculos (33):** Esfíncter externo do ânus; Obturador interno; Bulboesponjoso; Isquiocavernoso; Transverso superficial do períneo; Transverso profundo do períneo; Esfíncter externo da uretra; Glúteo máximo; Piriforme; Bíceps femoral — cabeça longa; Bíceps femoral — cabeça curta; Semitendíneo; Semimembranáceo; Fibular longo; Fibular curto; Gastrocnêmio — cabeça medial; Gastrocnêmio — cabeça lateral; Sóleo; Plantar; Flexor longo dos dedos; Flexor longo do hálux; Abdutor do hálux; Flexor curto dos dedos; Abdutor do dedo mínimo do pé; Quadrado plantar; Lumbricais do pé (4); Flexor curto do hálux — cabeça medial; Flexor curto do hálux — cabeça lateral; Adutor do hálux — cabeça oblíqua; Adutor do hálux — cabeça transversa; Flexor curto do dedo mínimo do pé; Oponente do dedo mínimo do pé; Interósseos plantares do pé (3)
+- **Músculos (34):** Esfíncter externo do ânus; Obturador interno; Bulboesponjoso; Isquiocavernoso; Transverso superficial do períneo; Transverso profundo do períneo; Esfíncter externo da uretra; Glúteo máximo; Piriforme; Gêmeo superior; Bíceps femoral — cabeça longa; Bíceps femoral — cabeça curta; Semitendíneo; Semimembranáceo; Fibular longo; Fibular curto; Gastrocnêmio — cabeça medial; Gastrocnêmio — cabeça lateral; Sóleo; Plantar; Flexor longo dos dedos; Flexor longo do hálux; Abdutor do hálux; Flexor curto dos dedos; Abdutor do dedo mínimo do pé; Quadrado plantar; Lumbricais do pé (4); Flexor curto do hálux — cabeça medial; Flexor curto do hálux — cabeça lateral; Adutor do hálux — cabeça oblíqua; Adutor do hálux — cabeça transversa; Flexor curto do dedo mínimo do pé; Oponente do dedo mínimo do pé; Interósseos plantares do pé (3)
 - **Também, por inervação regional (1):** Multífido †
 - **Nervos e estruturas (13):** Nervo pudendo; Nervo para o obturador interno e gêmeo superior; Medula espinal; Nervos espinais sacrais e coccígeo (S1–S5 e Co1); Cauda equina e filo terminal; Nervo glúteo inferior; Nervo para o piriforme; Nervo isquiático (ciático); Nervo tibial; Nervo fibular comum; Nervo fibular superficial; Nervo plantar medial; Nervo plantar lateral
 
@@ -330,7 +330,7 @@
 | `gluteo_minimo` | Glúteo mínimo | L4–S1 |
 | `tensor_fascia_lata` | Tensor da fáscia lata | L4–S1 |
 | `piriforme` | Piriforme | S1–S2 |
-| `gemeo_superior` | Gêmeo superior | L5–S1 |
+| `gemeo_superior` | Gêmeo superior | L5–S2 |
 | `gemeo_inferior` | Gêmeo inferior | L4–S1 |
 | `obturador_externo` | Obturador externo | L3–L4 |
 | `quadrado_femoral` | Quadrado femoral | L4–S1 |

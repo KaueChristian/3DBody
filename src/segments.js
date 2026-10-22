@@ -57,7 +57,7 @@ export const SEGMENTOS_MUSCULO = {
   obturador_interno: cat(R('L5'), R('S1', 'S2')),
   // membro inferior (Moore): região glútea e coxa
   gluteo_maximo: R('L5', 'S2'), gluteo_medio: R('L4', 'S1'), gluteo_minimo: R('L4', 'S1'), tensor_fascia_lata: R('L4', 'S1'),
-  piriforme: R('S1', 'S2'), gemeo_superior: R('L5', 'S1'), gemeo_inferior: R('L4', 'S1'), obturador_externo: R('L3', 'L4'), quadrado_femoral: R('L4', 'S1'),
+  piriforme: R('S1', 'S2'), gemeo_superior: cat(R('L5'), R('S1', 'S2')), gemeo_inferior: R('L4', 'S1'), obturador_externo: R('L3', 'L4'), quadrado_femoral: R('L4', 'S1'),
   sartorio: R('L2', 'L3'), reto_femoral: R('L2', 'L4'), vasto_lateral: R('L2', 'L4'), vasto_medial: R('L2', 'L4'), vasto_intermedio: R('L2', 'L4'),
   pectineo: R('L2', 'L3'), adutor_longo: R('L2', 'L4'), adutor_curto: R('L2', 'L4'), adutor_magno: R('L2', 'L4'), adutor_minimo: R('L2', 'L4'), gracil: R('L2', 'L3'),
   biceps_femoral_longa: R('S1', 'S3'), biceps_femoral_curta: R('L5', 'S2'), semitendineo: R('L5', 'S2'), semimembranaceo: R('L5', 'S2'),

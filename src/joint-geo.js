@@ -285,16 +285,21 @@ function measureCollateral(spec, geo) {
 /**
  * Contexto para montar ligamentos e cápsulas do corpo: peças com BVH e pontos ancorados nas malhas, resolvidos pelo mesmo
  * código dos nervos ({ on }, { cast }, { sec }, { between }).
+ * Os pontos sob a pele (`{ skin, p, d }`) só afundam `d` se houver ossos: sem eles o NerveBuilder devolve o ponto da própria pele
+ * (era o caso de todos os vasos e linfonodos por código até a auditoria de 2026-10-22, que os achou saindo da pele). Quem usa pontos
+ * de pele passa `bones` e a pele que está na tela (`pele_inteira`, depois que o membro inferior carrega).
  * @param {Map<string, {geometry: THREE.BufferGeometry}>} parts peças do pacote do corpo
  * @param {(name: string) => THREE.Vector3} lm pontos de referência
+ * @param {{ skin?: string, bones?: THREE.BufferGeometry[] }} [o] peça da pele e geometrias dos ossos
  */
-export function jointContext(parts, lm) {
+export function jointContext(parts, lm, o = {}) {
   const geo = (id) => {
     const p = parts.get(id);
     if (!p) throw new Error(`Peça inexistente: ${id}`);
     if (!p.geometry.boundsTree) p.geometry.boundsTree = new MeshBVH(p.geometry);
     return p.geometry;
   };
-  const builder = new NerveBuilder({ geoms: (id) => [geo(id)], skins: [geo('pele_corpo')], bones: [], lm });
-  return { geo, point: (spec) => builder.point(spec) };
+  const skin = o.skin && parts.has(o.skin) ? o.skin : 'pele_corpo';
+  const builder = new NerveBuilder({ geoms: (id) => [geo(id)], skins: [geo(skin)], bones: o.bones ?? [], lm });
+  return { geo, point: (spec) => builder.point(spec), under: (p, depth, side) => builder.underSkin(p, depth, side) };
 }

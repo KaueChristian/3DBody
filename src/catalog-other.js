@@ -107,7 +107,7 @@ export const LIGAMENTS = [
     origem: 'Lados do dente (processo odontoide) do áxis.',
     insercao: 'Face medial dos côndilos do occipital.',
     funcao: 'Limitam a rotação e a inclinação lateral da cabeça sobre o áxis.',
-    relacoes: 'Estão posteriores ao dente e à membrana tectória.',
+    relacoes: 'Partem dos lados da parte alta do dente, acima do ligamento transverso do atlas, e ficam à frente da membrana tectória, a lâmina mais posterior do complexo (continuação do ligamento longitudinal posterior).',
     nota: 'Sua lesão em acidentes (ex.: chicote) pode causar instabilidade craniocervical.',
   }),
 ];
@@ -215,7 +215,7 @@ export const GLANDS = [
       ['Inervação', 'Motora: hipoglosso (XII). Sensitiva geral: lingual (V3) e glossofaríngeo; gustação: corda do tímpano (VII) e IX.'],
       ['Função', 'Mastigação, deglutição, fala e gustação.'],
     ],
-    nota: 'O modelo mostra apenas o volume da língua; os músculos intrínsecos não são individualizados.',
+    nota: 'A malha mostra o volume da língua. Os músculos intrínsecos (longitudinais, transverso e vertical) estão desenhados por código dentro dela, de forma esquemática: oculte a língua na lista para vê-los.',
     relacionados: ['sublingual', 'submandibular', 'parotida', 'epiglote', 'esofago', 'arteria_lingual'],
   },
 ];

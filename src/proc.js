@@ -195,20 +195,35 @@ function buildSurfacePart(spec, side, S) {
 }
 
 function buildTube(spec, side, lm, S, ctx) {
-  const pts = spec.pts.map((p) => {
-    let v;
-    if (typeof p === 'string') v = lm(p).clone();
-    else if (Array.isArray(p)) v = new THREE.Vector3(...p);
-    else if (!p.proj) v = ctx.point(p).clone(); // ancorado no osso: { on, p, d }, { cast }, { sec }… (ver nerve-geo.js)
-    else {
-      // ponto projetado sobre a pele (lado esquerdo), afundado `inset`
-      const axis = p.proj[0];
-      const h = S.project(p.a, p.b, axis, p.proj[1] === '-' ? -1 : 1);
-      v = h ? h.p.clone().addScaledVector(h.n, -(p.inset ?? 0)) : new THREE.Vector3(p.a, p.b, 0);
-    }
-    if (side < 0) v.x = -v.x;
-    return v;
+  const raw = spec.pts.map((p) => {
+    if (typeof p === 'string') return lm(p).clone();
+    if (Array.isArray(p)) return new THREE.Vector3(...p);
+    if (!p.proj) return ctx.point(p).clone(); // ancorado no osso: { on, p, d }, { cast }, { sec }… (ver nerve-geo.js)
+    // ponto projetado sobre a pele (lado esquerdo), afundado `inset`
+    const axis = p.proj[0];
+    const h = S.project(p.a, p.b, axis, p.proj[1] === '-' ? -1 : 1);
+    return h ? h.p.clone().addScaledVector(h.n, -(p.inset ?? 0)) : new THREE.Vector3(p.a, p.b, 0);
   });
+  // entre dois pontos sob a pele, pontos intermediários também sob a pele, como nos nervos (nerve-geo.js): sem eles a curva corta
+  // por fora as superfícies convexas (pescoço, couro cabeludo), achado da auditoria de 2026-10-22
+  const pts = [];
+  raw.forEach((v, i) => {
+    const prev = spec.pts[i - 1];
+    const cur = spec.pts[i];
+    if (i > 0 && prev?.skin && cur?.skin && !prev.add && !cur.add && ctx?.under) {
+      const a = raw[i - 1];
+      const n = Math.min(6, Math.floor(a.distanceTo(v) / 0.06));
+      const da = Math.abs(prev.d ?? 0.03);
+      const db = Math.abs(cur.d ?? 0.03);
+      for (let k = 1; k <= n; k++) {
+        const f = k / (n + 1);
+        const q = ctx.under(a.clone().lerp(v, f), da + (db - da) * f, cur.p[0] < 0 ? -1 : 1);
+        if (q) pts.push(q);
+      }
+    }
+    pts.push(v);
+  });
+  if (side < 0) for (const v of pts) v.x = -v.x;
   const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal');
   const ref = new THREE.Vector3(...(spec.ref ?? [1, 0, 0]));
   if (side < 0) ref.x = -ref.x;
@@ -299,8 +314,8 @@ function buildTorus(spec, side) {
 /**
  * @param {object} spec @param {number} side +1 esquerdo / -1 direito @param {import('./surfaces.js').Surfaces} S
  * @param {(name:string)=>THREE.Vector3} lm
- * @param {{ point: (spec: object) => THREE.Vector3, geo: (part: string) => THREE.BufferGeometry }} [ctx] pontos ancorados
- *   nas malhas e geometria das peças (só no corpo; usados por ligamentos e articulações)
+ * @param {{ point: (spec: object) => THREE.Vector3, geo: (part: string) => THREE.BufferGeometry, under?: Function }} [ctx] pontos
+ *   ancorados nas malhas e geometria das peças (só no corpo; usados por ligamentos e articulações) e, em `under`, o ponto sob a pele
  */
 export function buildProc(spec, side, S, lm, ctx) {
   if (spec.kind === 'group') return buildGroup(spec.of, side, S, lm, ctx);
