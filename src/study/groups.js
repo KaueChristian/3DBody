@@ -55,7 +55,7 @@ const BY_GROUP = {
   dorso_ext: 'trapezio_desc trapezio_transv trapezio_asc grande_dorsal levantador_escapula rombo_menor rombo_maior serratil_post_sup serratil_post_inf',
   dorso_prof: 'iliocostal_lombar iliocostal_toracico iliocostal_cervical longuissimo_toracico longuissimo_cervical longuissimo_cabeca espinal_toracico semiespinal_toracico semiespinal_cervical semiespinal_cabeca rotadores_cervicais interespinais_cervicais intertransversarios_cerv_ant intertransversarios_cerv_post rotadores_toracicos rotadores_lombares interespinais_toracicos interespinais_lombares intertransversarios_med intertransversarios_lat multifido esplenio_cabeca esplenio_pescoco',
   torax: 'peitoral_clav peitoral_esternocostal peitoral_abdominal peitoral_menor subclavio serratil_anterior intercostal_ext intercostal_int intercostal_intimo subcostais transverso_torax levantadores_costelas_curtos levantadores_costelas_longos diafragma',
-  abdome: 'obliquo_externo obliquo_interno transverso_abdome reto_abdome piramidal quadrado_lombo psoas_maior iliaco',
+  abdome: 'obliquo_externo obliquo_interno transverso_abdome reto_abdome piramidal cremaster quadrado_lombo psoas_maior iliaco',
   pelve: 'pubococcigeo iliococcigeo coccigeo esfincter_anal_ext bulboesponjoso isquiocavernoso transverso_superficial_perineo transverso_profundo_perineo esfincter_uretra puborretal obturador_interno',
   ombro: 'delt_clav delt_acro delt_esp supraespinal infraespinal redondo_menor redondo_maior subescapular',
   braco_ant: 'coracobraquial biceps_longa biceps_curta braquial',

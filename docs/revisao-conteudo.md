@@ -1,6 +1,6 @@
 # Revisão de Conteúdo Anatômico — Músculos e Nervos
 
-> Documento de auditoria e referência bibliográfica para as 367 estruturas neuromusculares ativas (255 músculos e 112 nervos). Gerado por `node tools/gen_revisao.js`.
+> Documento de auditoria e referência bibliográfica para as 369 estruturas neuromusculares ativas (256 músculos e 113 nervos). Gerado por `node tools/gen_revisao.js`.
 > Cumpre o item **F0.4** do roteiro (`project_context.md`).
 
 ## 1. Referências Bibliográficas Primárias
@@ -11,7 +11,7 @@
 4. **Paulsen, F. & Waschke, J.** — *Sobotta: Atlas de Anatomia Humana* (24ª ed., Guanabara Koogan, 2018).
 5. **Terminologia Anatomica (TA2 / FIPAT, 2019)** e *Terminologia Anatômica da Sociedade Brasileira de Anatomia (SBA)*.
 
-## 2. Músculos (255 estruturas)
+## 2. Músculos (256 estruturas)
 
 | ID | Nome (PT-BR) | Latim (TA) | Região | Campos Validados | Variação / Nota Clínica | Status |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -148,7 +148,7 @@
 | `puborretal` | Puborretal | *M. puborectalis* | Tronco | Ação, Origem, Inserção, Inervação, Segmentos medulares, Irrigação | É a parte mais medial e inferior do levantador do ânus. As fontes d... | 🟡 Nota clínica |
 | `obturador_interno` | Obturador interno | *M. obturator internus* | Tronco | Ação, Origem, Inserção, Inervação, Segmentos medulares, Irrigação | Reveste a parede lateral da pelve. A fáscia que o cobre dá origem a... | 🟡 Nota clínica |
 | `bulboesponjoso` | Bulboesponjoso | *M. bulbospongiosus* | Tronco | Ação, Origem, Inserção, Inervação, Segmentos medulares, Irrigação | Cobre o bulbo do pênis (ou do vestíbulo) e é um dos músculos do tri... | 🟡 Nota clínica |
-| `isquiocavernoso` | Isquiocavernoso | *M. ischiocavernosus* | Tronco | Ação, Origem, Inserção, Inervação, Segmentos medulares, Irrigação | Recobre o crus e o ramo isquiopúbico, formando o limite lateral do ... | 🟡 Nota clínica |
+| `isquiocavernoso` | Isquiocavernoso | *M. ischiocavernosus* | Tronco | Ação, Origem, Inserção, Inervação, Segmentos medulares, Irrigação | Recobre o ramo dos corpos cavernosos e o ramo isquiopúbico, formand... | 🟡 Nota clínica |
 | `transverso_superficial_perineo` | Transverso superficial do períneo | *M. transversus perinei superficialis* | Tronco | Ação, Origem, Inserção, Inervação, Segmentos medulares, Irrigação | Faixa fina e inconstante, às vezes ausente ou só unilateral. É o li... | 🟡 Nota clínica |
 | `transverso_profundo_perineo` | Transverso profundo do períneo | *M. transversus perinei profundus* | Tronco | Ação, Origem, Inserção, Inervação, Segmentos medulares, Irrigação | Fica na bolsa profunda do períneo, acima da membrana perineal, com ... | 🟡 Nota clínica |
 | `esfincter_uretra` | Esfíncter externo da uretra | *M. sphincter urethrae externus* | Tronco | Ação, Origem, Inserção, Inervação, Segmentos medulares, Irrigação | É o esfíncter voluntário (estriado); o esfíncter interno, liso, do ... | 🟡 Nota clínica |
@@ -270,24 +270,25 @@
 | `flexor_curto_minimo_pe` | Flexor curto do dedo mínimo do pé | *M. flexor digiti minimi brevis pedis* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares, Irrigação | — | ✅ Verificado |
 | `oponente_minimo_pe` | Oponente do dedo mínimo do pé | *M. opponens digiti minimi pedis* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares, Irrigação | É inconstante e muitas vezes descrito como parte do flexor curto do... | 🟡 Nota clínica |
 | `interosseos_plantares` | Interósseos plantares do pé (3) | *Mm. interossei plantares* | Membro inferior | Ação, Origem, Inserção, Inervação, Segmentos medulares, Irrigação | Os interósseos dorsais do pé (quatro, que abduzem em relação ao 2º ... | 🟡 Nota clínica |
+| `cremaster` | Cremaster — esquema | *M. cremaster* | Tronco | Ação, Origem, Inserção, Inervação, Segmentos medulares, Irrigação | ESQUEMA: músculo estriado esquelético (mas de controle reflexo invo... | 🟡 Nota clínica |
 
-## 3. Nervos (112 estruturas)
+## 3. Nervos (113 estruturas)
 
 | ID | Nome (PT-BR) | Latim (TA) | Região | Ramos Mapeados | Variação / Lesão Clínica | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| `n_optico` | Nervo óptico (II) | *N. opticus* | Cabeça e pescoço | 0 músculo(s) | Lesão do nervo: cegueira do olho afetado e perda do reflexo fotomot... | ✅ Verificado |
+| `n_optico` | Nervo óptico (II) | *N. opticus* | Cabeça e pescoço | 1 estrutura(s) | Lesão do nervo: cegueira do olho afetado e perda do reflexo fotomot... | ✅ Verificado |
 | `n_oculomotor` | Nervo oculomotor (III) | *N. oculomotorius* | Cabeça e pescoço | 7 músculo(s) | Olho “para baixo e para fora” (reto lateral e oblíquo superior sem ... | ✅ Verificado |
 | `n_troclear` | Nervo troclear (IV) | *N. trochlearis* | Cabeça e pescoço | 1 músculo(s) | Diplopia vertical, pior ao olhar para baixo e para dentro (descer e... | ✅ Verificado |
 | `n_abducente` | Nervo abducente (VI) | *N. abducens* | Cabeça e pescoço | 1 músculo(s) | O olho não abduz e fica desviado medialmente (estrabismo convergent... | ✅ Verificado |
 | `n_trigemeo` | Nervo trigêmeo (V) e gânglio trigeminal | *N. trigeminus; Ganglion trigeminale* | Cabeça e pescoço | 0 músculo(s) | Neuralgia do trigêmeo: dor em choque no território de V2 ou V3. Les... | ✅ Verificado |
 | `n_oftalmico` | Nervo oftálmico (V1) | *N. ophthalmicus* | Cabeça e pescoço | 0 músculo(s) | O herpes-zóster oftálmico acomete este território. Lesões na ponta ... | ✅ Verificado |
-| `n_maxilar` | Nervo maxilar (V2) e nervo infraorbital | *N. maxillaris; N. infraorbitalis* | Cabeça e pescoço | 0 músculo(s) | Fraturas do assoalho da órbita e do zigomático podem lesar o nervo ... | ✅ Verificado |
-| `n_mandibular` | Nervo mandibular (V3) | *N. mandibularis* | Cabeça e pescoço | 2 músculo(s) | A lesão da raiz motora enfraquece a mastigação do mesmo lado. Bloqu... | ✅ Verificado |
+| `n_maxilar` | Nervo maxilar (V2) e nervo infraorbital | *N. maxillaris; N. infraorbitalis* | Cabeça e pescoço | 1 estrutura(s) | Fraturas do assoalho da órbita e do zigomático podem lesar o nervo ... | ✅ Verificado |
+| `n_mandibular` | Nervo mandibular (V3) | *N. mandibularis* | Cabeça e pescoço | 2 músculo(s) + 3 outro(s) | A lesão da raiz motora enfraquece a mastigação do mesmo lado. Bloqu... | ✅ Verificado |
 | `n_masseterico` | Nervo massetérico | *N. massetericus* | Cabeça e pescoço | 1 músculo(s) | Raramente lesado isoladamente. É usado como nervo doador na reanima... | ✅ Verificado |
 | `n_temporais_profundos` | Nervos temporais profundos | *Nn. temporales profundi* | Cabeça e pescoço | 1 músculo(s) | — | ✅ Verificado |
-| `n_alveolar_inferior` | Nervo alveolar inferior e nervo mentual | *N. alveolaris inferior; N. mentalis* | Cabeça e pescoço | 0 músculo(s) | Pode ser lesado na extração do 3º molar inferior ou em implantes: p... | ✅ Verificado |
+| `n_alveolar_inferior` | Nervo alveolar inferior e nervo mentual | *N. alveolaris inferior; N. mentalis* | Cabeça e pescoço | 2 estrutura(s) | Pode ser lesado na extração do 3º molar inferior ou em implantes: p... | ✅ Verificado |
 | `n_milo_hioideo` | Nervo milo-hióideo | *N. mylohyoideus* | Cabeça e pescoço | 2 músculo(s) | Explica a dupla inervação do digástrico: o ventre anterior vem do 1... | ✅ Verificado |
-| `n_lingual` | Nervo lingual | *N. lingualis* | Cabeça e pescoço | 0 músculo(s) | Pode ser lesado na cirurgia do 3º molar inferior: dormência e perda... | ✅ Verificado |
+| `n_lingual` | Nervo lingual | *N. lingualis* | Cabeça e pescoço | 1 estrutura(s) | Pode ser lesado na cirurgia do 3º molar inferior: dormência e perda... | ✅ Verificado |
 | `n_facial` | Nervo facial (VII) | *N. facialis* | Cabeça e pescoço | 2 músculo(s) | Paralisia facial periférica (ex.: paralisia de Bell, tumor de parót... | ✅ Verificado |
 | `n_auricular_posterior` | Nervo auricular posterior | *N. auricularis posterior* | Cabeça e pescoço | 2 músculo(s) | — | ✅ Verificado |
 | `n_facial_temporal` | Ramos temporais do nervo facial | *Rami temporales n. facialis* | Cabeça e pescoço | 8 músculo(s) | Cirurgias da região temporal, ritidoplastia ou trauma do arco zigom... | ✅ Verificado |
@@ -325,30 +326,31 @@
 | `n_toracoabdominais` | Nervos toracoabdominais (T7–T11) | *Nn. thoracoabdominales* | Tronco | 10 músculo(s) | Incisões verticais na margem lateral do reto podem seccioná-los e d... | ✅ Verificado |
 | `n_subcostal` | Nervo subcostal (T12) | *N. subcostalis* | Tronco | 7 músculo(s) | — | ✅ Verificado |
 | `n_ilio_hipogastrico` | Nervo ílio-hipogástrico (L1) | *N. iliohypogastricus* | Tronco | 2 músculo(s) | Pode ser lesado em incisões baixas (apendicectomia, Pfannenstiel): ... | ✅ Verificado |
-| `n_ilioinguinal` | Nervo ilioinguinal (L1) | *N. ilioinguinalis* | Tronco | 2 músculo(s) | Neuralgia após hernioplastia inguinal (aprisionamento por tela ou s... | ✅ Verificado |
+| `n_ilioinguinal` | Nervo ilioinguinal (L1) | *N. ilioinguinalis* | Tronco | 2 músculo(s) + 2 outro(s) | Neuralgia após hernioplastia inguinal (aprisionamento por tela ou s... | ✅ Verificado |
+| `n_genitofemoral` | Nervo genitofemoral (L1–L2) | *N. genitofemoralis* | Tronco, Membro inferior | 1 músculo(s) + 3 outro(s) | Integra tanto a via aferente (ramo femoral, L1–L2) quanto a via efe... | ✅ Verificado |
 | `n_plexo_lombar` | Plexo lombar — ramos musculares | *Plexus lumbalis, rami musculares* | Tronco | 3 músculo(s) | — | ✅ Verificado |
 | `n_femoral` | Nervo femoral | *N. femoralis* | Tronco, Membro inferior | 7 músculo(s) | Na pelve pode ser comprimido por hematoma do psoas (anticoagulação)... | ✅ Verificado |
 | `n_levantador_anus` | Nervos do levantador do ânus e do coccígeo (S3–S5) | *N. musculi levatoris ani; plexus coccygeus* | Tronco | 4 músculo(s) | Lesões no parto vaginal podem enfraquecer o assoalho pélvico, contr... | ✅ Verificado |
-| `n_pudendo` | Nervo pudendo | *N. pudendus* | Tronco | 8 músculo(s) | O bloqueio do pudendo, junto à espinha isquiática, é usado no parto... | ✅ Verificado |
+| `n_pudendo` | Nervo pudendo | *N. pudendus* | Tronco | 8 músculo(s) + 4 outro(s) | O bloqueio do pudendo, junto à espinha isquiática, é usado no parto... | ✅ Verificado |
 | `n_obturador_interno` | Nervo para o obturador interno e gêmeo superior | *N. musculi obturatorii interni* | Tronco, Membro inferior | 2 músculo(s) | Raramente é lesado sozinho; faz parte das lesões do plexo sacral (f... | ✅ Verificado |
-| `n_olfatorio` | Nervo olfatório (I) | *N. olfactorius* | Cabeça e pescoço | 0 músculo(s) | Anosmia, unilateral ou bilateral. Traumatismo craniano (os filetes ... | ✅ Verificado |
-| `n_vestibulococlear` | Nervo vestibulococlear (VIII) | *N. vestibulocochlearis* | Cabeça e pescoço | 0 músculo(s) | Perda auditiva neurossensorial, zumbido (tinnitus), vertigem e nist... | ✅ Verificado |
-| `n_glossofaringeo` | Nervo glossofaríngeo (IX) | *N. glossopharyngeus* | Cabeça e pescoço | 1 músculo(s) | Perda do reflexo do vômito (aferência IX, eferência X) e da sensibi... | ✅ Verificado |
+| `n_olfatorio` | Nervo olfatório (I) | *N. olfactorius* | Cabeça e pescoço | 2 estrutura(s) | Anosmia, unilateral ou bilateral. Traumatismo craniano (os filetes ... | ✅ Verificado |
+| `n_vestibulococlear` | Nervo vestibulococlear (VIII) | *N. vestibulocochlearis* | Cabeça e pescoço | 2 estrutura(s) | Perda auditiva neurossensorial, zumbido (tinnitus), vertigem e nist... | ✅ Verificado |
+| `n_glossofaringeo` | Nervo glossofaríngeo (IX) | *N. glossopharyngeus* | Cabeça e pescoço | 1 músculo(s) + 3 outro(s) | Perda do reflexo do vômito (aferência IX, eferência X) e da sensibi... | ✅ Verificado |
 | `n_vago` | Nervo vago (X) | *N. vagus* | Cabeça e pescoço, Tronco | 0 músculo(s) | Paralisia unilateral: rouquidão, disfagia e voz nasal; o palato mol... | ✅ Verificado |
 | `n_plexo_faringeo` | Plexo faríngeo (ramos faríngeos do vago) | *Plexus pharyngeus; rami pharyngei n. vagi* | Cabeça e pescoço | 8 músculo(s) | Disfagia, regurgitação nasal de líquidos, voz hipernasal e desvio d... | ✅ Verificado |
 | `n_laringeo_superior` | Nervo laríngeo superior (ramos interno e externo) | *N. laryngeus superior; rr. internus et externus* | Cabeça e pescoço | 2 músculo(s) | A lesão do ramo externo (ligadura da artéria tireóidea superior, ti... | ✅ Verificado |
 | `n_laringeo_recorrente` | Nervo laríngeo recorrente | *N. laryngeus recurrens* | Cabeça e pescoço, Tronco | 7 músculo(s) | Paralisia da prega vocal do mesmo lado: rouquidão, voz soprosa e to... | ✅ Verificado |
 | `n_frontal` | Nervo frontal (V1) e nervos supraorbital e supratroclear | *N. frontalis; N. supraorbitalis; N. supratrochlearis* | Cabeça e pescoço | 0 músculo(s) | Neuralgia supraorbital: dor em ponto sobre a incisura (por exemplo,... | ✅ Verificado |
-| `n_lacrimal` | Nervo lacrimal (V1) | *N. lacrimalis* | Cabeça e pescoço | 0 músculo(s) | Dormência da pálpebra superior lateral. A via secretomotora da glân... | ✅ Verificado |
-| `n_nasociliar` | Nervo nasociliar (V1) e seus ramos | *N. nasociliaris* | Cabeça e pescoço | 1 músculo(s) | É a via aferente do reflexo corneano: sua lesão, ou a do V1, abole ... | ✅ Verificado |
+| `n_lacrimal` | Nervo lacrimal (V1) | *N. lacrimalis* | Cabeça e pescoço | 1 estrutura(s) | Dormência da pálpebra superior lateral. A via secretomotora da glân... | ✅ Verificado |
+| `n_nasociliar` | Nervo nasociliar (V1) e seus ramos | *N. nasociliaris* | Cabeça e pescoço | 1 músculo(s) + 4 outro(s) | É a via aferente do reflexo corneano: sua lesão, ou a do V1, abole ... | ✅ Verificado |
 | `n_zigomatico` | Nervo zigomático (V2) | *N. zygomaticus* | Cabeça e pescoço | 0 músculo(s) | Fraturas do zigomático (“do tripé”) podem lesar o zigomático e o in... | ✅ Verificado |
 | `n_palatinos` | Nervos palatinos maior e menores (V2) | *N. palatinus major; Nn. palatini minores* | Cabeça e pescoço | 0 músculo(s) | O bloqueio do palatino maior, no forame, anestesia a mucosa do pala... | ✅ Verificado |
-| `n_nasopalatino` | Nervo nasopalatino (V2) | *N. nasopalatinus* | Cabeça e pescoço | 0 músculo(s) | É bloqueado na papila incisiva para anestesiar o palato anterior. P... | ✅ Verificado |
-| `n_corda_timpano` | Corda do tímpano | *Chorda tympani* | Cabeça e pescoço | 2 estrutura(s) | Perda do paladar nos 2/3 anteriores da língua e menor salivação do ... | ✅ Verificado |
-| `n_petroso_maior` | Nervo petroso maior | *N. petrosus major* | Cabeça e pescoço | 0 músculo(s) | Lesão do facial acima do gânglio geniculado: além da paralisia faci... | ✅ Verificado |
+| `n_nasopalatino` | Nervo nasopalatino (V2) | *N. nasopalatinus* | Cabeça e pescoço | 1 estrutura(s) | É bloqueado na papila incisiva para anestesiar o palato anterior. P... | ✅ Verificado |
+| `n_corda_timpano` | Corda do tímpano | *Chorda tympani* | Cabeça e pescoço | 4 estrutura(s) | Perda do paladar nos 2/3 anteriores da língua e menor salivação do ... | ✅ Verificado |
+| `n_petroso_maior` | Nervo petroso maior | *N. petrosus major* | Cabeça e pescoço | 1 estrutura(s) | Lesão do facial acima do gânglio geniculado: além da paralisia faci... | ✅ Verificado |
 | `n_estapedio` | Nervo para o estapédio | *N. stapedius* | Cabeça e pescoço | 1 músculo(s) | A lesão do facial acima da origem do nervo (paralisia de Bell, tumo... | ✅ Verificado |
 | `n_tensores` | Nervos do tensor do véu palatino e do tensor do tímpano (V3) | *N. musculi tensoris veli palatini; N. musculi tensoris tympani* | Cabeça e pescoço | 2 músculo(s) | Lesão rara. A falha do tensor do véu palatino impede a abertura ade... | ✅ Verificado |
-| `g_pterigopalatino` | Gânglio pterigopalatino | *Ganglion pterygopalatinum* | Cabeça e pescoço | 0 músculo(s) | Secreção reduzida da lágrima e da mucosa nasal e palatina. A cefale... | ✅ Verificado |
+| `g_pterigopalatino` | Gânglio pterigopalatino | *Ganglion pterygopalatinum* | Cabeça e pescoço | 1 estrutura(s) | Secreção reduzida da lágrima e da mucosa nasal e palatina. A cefale... | ✅ Verificado |
 | `g_otico` | Gânglio ótico | *Ganglion oticum* | Cabeça e pescoço | 1 estrutura(s) | Cirurgia da parótida pode causar a síndrome de Frey (sudorese e rub... | ✅ Verificado |
 | `g_submandibular` | Gânglio submandibular | *Ganglion submandibulare* | Cabeça e pescoço | 2 estrutura(s) | A salivação diminui do mesmo lado quando há lesão da corda do tímpa... | ✅ Verificado |
 | `n_simpatico_cervical` | Tronco simpático cervical e gânglios cervicais | *Truncus sympathicus cervicalis; Ganglia cervicalia* | Cabeça e pescoço, Tronco | 3 músculo(s) | Síndrome de Horner: ptose leve (tarsal superior), miose (dilatador)... | ✅ Verificado |

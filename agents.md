@@ -12,8 +12,8 @@ seções 6, 7 e 9 são as que mais evitam retrabalho e acidentes.
 
 ## 2. O projeto em um minuto
 
-Atlas 3D de anatomia em **português** (corpo inteiro, coração, vasos, linfáticos, sistema respiratório e sistema digestório e baço hoje: 740 estruturas): pele, fáscias, 255 músculos, 112 nervos e gânglios,
-52 ossos e cartilagens, 13 articulações, 29 ligamentos, 111 artérias, 56 veias, 14 estruturas cardíacas, 15 linfáticas, 28 órgãos respiratórios, 34 órgãos digestórios e baço, glândulas e estruturas, com dissecação por camadas, fichas e quiz. Roda em qualquer navegador **por `file://`**
+Atlas 3D de anatomia em **português** (corpo inteiro, coração, vasos, linfáticos, sistema respiratório, sistema digestório e baço, sistema urinário e genital masculino e órgãos dos sentidos hoje: 791 estruturas): pele, fáscias, 256 músculos, 113 nervos e gânglios,
+58 ossos, cartilagens e ossículos, 13 articulações, 29 ligamentos, 113 artérias, 58 veias, 14 estruturas cardíacas, 15 linfáticas, 28 órgãos respiratórios, 34 órgãos digestórios e baço, 15 órgãos urogenitais masculinos, 5 glândulas e 37 estruturas dos sentidos, canal inguinal, serosas e órgãos anexos, com dissecação por camadas, fichas e quiz. Roda em qualquer navegador **por `file://`**
 (sem servidor) e é empacotado como `Anatomia3D.exe`, que **se atualiza sozinho** a cada release do GitHub
 (`KaueChristian/3DBody`). Malhas reais vêm do BodyParts3D (CC BY-SA 2.1 JP) e do Human Reference Atlas (CC BY 4.0); o que o banco não tem é modelado por código.
 
@@ -50,6 +50,8 @@ Dados (raramente necessário; baixa ~60 MB e regenera arquivos grandes — só c
 | `src/catalog-bones.js`, `catalog-body-bones.js`, `catalog-leg-bones.js` | Ossos, dentes, cartilagens, discos (o último é do membro inferior, pacote `anatomy-leg.js`) | |
 | `src/catalog-resp.js`, `catalog-resp-airways.js` | Pulmões (malhas do Atlas de Referência Humano ajustadas ao tórax por `tools/fit_hra.py`) e vias aéreas, pleuras e cartilagens da laringe (BodyParts3D e esquema); pacote `anatomy-resp.js` | Ver `docs/respiratorio.md`; a ficha cita a origem da malha (`malha: 'hra'`) |
 | `src/catalog-digest.js` | Sistema digestório e baço (34 estruturas do BodyParts3D: esôfago ao canal anal, 8 segmentos do fígado, vias biliares, pâncreas, baço e mesos); pacote `anatomy-digest.js` | Ver `docs/digestorio.md`; `relacionados` liga aos vasos e órgãos vizinhos |
+| `src/catalog-sense.js` | Órgãos dos sentidos e tegumentar (25 estruturas novas: túnicas e câmaras do olho, anel tendíneo, tróclea, aparelho lacrimal, cartilagens nasais, lábios e esquemas por código da orelha externa/média/interna); pacote `anatomy-sense.js` | Ver `docs/sentidos.md`; esquemas do ouvido exigem `ESQUEMA` na nota |
+| `src/catalog-urin.js` | Sistema urinário e genital masculino (23 estruturas novas: rins, ureteres, bexiga, uretra, próstata, glândulas seminais, ductos deferente e ejaculatório, glândulas bulbouretrais, epidídimo, testículo, pênis, canal inguinal, funículo espermático, músculo cremaster e vasos gonadais e penianos); pacote `anatomy-urin.js` | Ver `docs/urinario-masculino.md`; esquemas por código exigem `ESQUEMA` na nota |
 | `src/catalog-circ.js`, `catalog-circ-ramos.js`, `catalog-circ-viscerais.js` | Coração, artérias e veias principais e os vasos de menor calibre (pacote `anatomy-circ.js`); `relacionados` liga as vizinhas (o catálogo completa a ligação nos dois sentidos) | Ver `docs/circulatorio.md`; o pericárdio é esquema (`src/hull-geo.js`) |
 | `src/catalog-circ-codigo.js`, `catalog-circ-esquemas.js`, `catalog-circ-superficie.js`, `catalog-circ-fetal.js`, `cardio-extras.js` | Carótida externa e outros vasos por código, linfáticos, sistema de condução, papilar posteromedial, projeção do coração, focos de ausculta, circulação fetal e ligamento arterial: **esquemas por código** (a placenta e o cordão vêm do HRA, `tools/convert_placenta.py`) | A ficha tem de dizer que é esquema (`nota: 'ESQUEMA…'`); a camada `fetal` é `optional` (desligada por padrão) |
 | `src/irrigation.js`, `vessel-clinical.js`, `neurovascular.js`, `vascular-links.js` | Irrigação de cada músculo (fonte única de `IRRIGATION` e do campo “Irrigação”), pulsos e relações dos vasos, feixes neurovasculares e as seções da ficha | **Todo músculo novo precisa de uma linha em `irrigation.js`** (a guarda lança erro); os atlas divergem nos ramos, ver o cabeçalho do arquivo |
@@ -117,8 +119,8 @@ node -e "const c=require(process.env.TEMP+'/cat.cjs'); console.log(c.ITEMS.lengt
 
 Se lançar `Identificador duplicado…`, `Nervo aponta para estrutura inexistente…` ou `Músculos sem nervo…`, o catálogo está
 errado — corrija os dados. As articulações têm guardas próprias (`Articulação … cita osso inexistente`, `Cápsula de … usa peças
-fora dos ossos citados`, `Movimento … cita músculo inexistente`…). Contagens esperadas hoje: 740 estruturas (255 músculos, 112 nervos
-e gânglios, 52 ossos e cartilagens, 29 ligamentos, 13 articulações, 111 artérias, 56 veias, 14 cardíacas, 15 linfáticas, 28 do respiratório (5 lobos, traqueia e brônquios), 34 do digestório e baço, 3 fáscias, 3 glândulas e 15 estruturas, entre elas a medula espinal, o pericárdio, a placenta, o cordão umbilical, o ligamento arterial, a projeção do coração e os focos de ausculta).
+fora dos ossos citados`, `Movimento … cita músculo inexistente`…). Contagens esperadas hoje: 791 estruturas (256 músculos, 113 nervos
+e gânglios, 58 ossos, cartilagens e ossículos, 29 ligamentos, 13 articulações, 113 artérias, 58 veias, 14 cardíacas, 15 linfáticas, 28 do respiratório (5 lobos, traqueia e brônquios), 34 do digestório e baço, 15 órgãos do urinário e genital masculino, 3 fáscias, 5 glândulas e 37 estruturas, entre elas as do olho e do aparelho lacrimal, da orelha externa/média/interna, os lábios, a língua, a pele, o canal inguinal, o funículo espermático, a medula espinal, o pericárdio, as pleuras, a placenta, o cordão umbilical, o ligamento arterial, a projeção do coração e os focos de ausculta).
 
 ### 6.2 Verificação visual (obrigatória para qualquer mudança de geometria ou interface)
 
@@ -223,8 +225,8 @@ Este é um material de estudo: **um fato errado prejudica quem estuda**. Por iss
 - **Renderização sob demanda:** o laço só desenha quando algo pede (câmera, voo, `invalidate()`). Quem mudar a cena **sem passar por** `applyHighlight`/`applyVisibility`/`setSkin`/`resize`/`select` (material, geometria, visibilidade, `renderer.*`) deve chamar `app.invalidate()` (ou `invalidate()` no `main.js`); sem isso a tela só atualiza no quadro de segurança, a cada 2 s. O teste de fumaça “renderização sob demanda” cobre os caminhos conhecidos: acrescente o seu a ele.
 - **Bundle é IIFE.** Funciona de `file://`; trocar o formato ou usar `type="module"` quebra a abertura por duplo clique.
 - **Ordem de scripts em `index.html`:** `version.js` → `anatomy-data.js` → `anatomy-nerves.js` → `app.js` (o corpo é carregado
-  depois, em segundo plano), e os pacotes do membro inferior (`anatomy-leg.js`), do circulatório (`anatomy-circ.js`), do respiratório (`anatomy-resp.js`) e do digestório (`anatomy-digest.js`) vêm, nessa ordem, depois do corpo
-  e antes dos nervos (`loadLeg`, `loadCirc`, `loadResp` e `loadDigest` em `main.js`); o do membro inferior traz a `pele_inteira`, que **substitui** a `pele_corpo` do pacote do corpo assim que carrega.
+  depois, em segundo plano), e os pacotes do membro inferior (`anatomy-leg.js`), do circulatório (`anatomy-circ.js`), do respiratório (`anatomy-resp.js`), do digestório (`anatomy-digest.js`), dos órgãos dos sentidos (`anatomy-sense.js`) e do urinário e genital masculino (`anatomy-urin.js`) vêm, nessa ordem, depois do corpo
+  e antes dos nervos (`loadLeg`, `loadCirc`, `loadResp`, `loadDigest`, `loadSense` e `loadUrin` em `main.js`); o do membro inferior traz a `pele_inteira`, que **substitui** a `pele_corpo` do pacote do corpo assim que carrega.
 - **Heredocs com crases no shell** quebram; escreva scripts Python/JS em arquivos temporários (use o diretório de rascunho da
   sessão) em vez de embuti-los no comando.
 - **PowerShell vs Bash:** sintaxes diferentes (`$env:VAR` vs `$VAR`, `&&` só no PowerShell 7). Caminhos com espaços entre aspas.

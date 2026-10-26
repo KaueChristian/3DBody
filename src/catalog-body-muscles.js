@@ -584,25 +584,25 @@ export const BODY_MUSCLES = [
     nota: 'Reveste a parede lateral da pelve. A fáscia que o cobre dá origem ao arco tendíneo do levantador do ânus e forma o canal do pudendo (de Alcock), por onde correm o nervo e os vasos pudendos. Os segmentos do nervo variam: L5–S1 em Moore e L5–S2 no Gray’s.',
   }),
   /* F2.8 — o BodyParts3D só traz um “músculo perineal” (na verdade o esfíncter do ânus, em duas cópias); os músculos
-     do períneo urogenital são modelados por código a partir de pontos medidos no ramo isquiopúbico (z = −0,3 a 0,3, y ≈ −7,7 a −7,85). O modelo
-     do banco é masculino e não tem o pênis nem o bulbo: a forma é indicativa. */
+     do períneo urogenital são modelados por código a partir de pontos medidos no ramo isquiopúbico, no bulbo e nos ramos do pênis
+     e na uretra membranácea. */
   bm('bulboesponjoso', 'Bulboesponjoso', 'M. bulbospongiosus', 'prof', 'tronco', {
-    proc: [{ kind: 'tube', pts: [[0.02, -7.9, -0.36], [0.05, -7.9, -0.2], [0.055, -7.88, -0.04], [0.05, -7.84, 0.12]], ref: [0.4, -0.9, 0], width: 0.07, thick: 0.05, taper: 'blunt', nf: 24, nc: 8 }],
+    proc: [{ kind: 'tube', pts: [[0.02, -7.86, -0.28], [0.055, -7.85, -0.10], [0.06, -7.83, 0.06], [0.055, -7.78, 0.22]], ref: [0.4, -0.9, 0], width: 0.07, thick: 0.045, taper: 'blunt', nf: 24, nc: 8 }],
   }, {
     acao: 'No homem, comprime o bulbo do pênis e a uretra esponjosa, esvaziando-a no fim da micção e na ejaculação, e ajuda a ereção. Na mulher, comprime o bulbo do vestíbulo e atua como esfíncter da vagina.',
     origem: 'Homem: rafe mediana do bulbo e corpo do períneo. Mulher: corpo do períneo.',
     insercao: 'Homem: fáscia do bulbo do pênis e membrana perineal; fibras anteriores chegam ao dorso do pênis. Mulher: corpos cavernosos do clitóris e fáscia do bulbo do vestíbulo.',
     inervacao: 'Ramo perineal do nervo pudendo (S2–S4).',
-    nota: 'Cobre o bulbo do pênis (ou do vestíbulo) e é um dos músculos do triângulo urogenital superficial. O modelo é masculino e sem o pênis: forma e posição indicativas. Sua paralisia contribui para o gotejamento pós-miccional.',
+    nota: 'Cobre o bulbo do pênis (ou do vestíbulo) e é um dos músculos do triângulo urogenital superficial. Sua paralisia contribui para o gotejamento pós-miccional. Músculo não presente no banco BodyParts3D — modelado por código sobre o bulbo do corpo esponjoso.',
   }),
   bm('isquiocavernoso', 'Isquiocavernoso', 'M. ischiocavernosus', 'prof', 'tronco', {
-    proc: [{ kind: 'tube', pts: [[0.4, -7.85, -0.33], [0.35, -7.82, -0.2], [0.29, -7.8, -0.08], [0.22, -7.76, 0.05], [0.16, -7.7, 0.16]], ref: [-0.5, -0.85, 0], width: 0.07, thick: 0.045, taper: 'blunt', nf: 28, nc: 8 }],
+    proc: [{ kind: 'tube', pts: [[0.38, -7.82, -0.30], [0.33, -7.78, -0.18], [0.27, -7.74, -0.06], [0.21, -7.68, 0.06], [0.16, -7.62, 0.16]], ref: [-0.5, -0.85, 0], width: 0.07, thick: 0.045, taper: 'blunt', nf: 28, nc: 8 }],
   }, {
-    acao: 'Comprime o crus do pênis ou do clitóris e o fixa ao ramo isquiopúbico, mantendo a ereção ao dificultar o retorno venoso.',
+    acao: 'Comprime o ramo (crus) do pênis ou do clitóris e o fixa ao ramo isquiopúbico, mantendo a ereção ao dificultar o retorno venoso.',
     origem: 'Face interna do túber isquiático e do ramo do ísquio, de cada lado.',
-    insercao: 'Faces laterais e inferior do crus do pênis (ou do clitóris), na túnica albugínea.',
+    insercao: 'Faces laterais e inferior do ramo (crus) do pênis (ou do clitóris), na túnica albugínea.',
     inervacao: 'Ramo perineal do nervo pudendo (S2–S4).',
-    nota: 'Recobre o crus e o ramo isquiopúbico, formando o limite lateral do triângulo urogenital. Em textos antigos é chamado de “ereitor do pênis”. Forma e posição indicativas (o modelo não tem o pênis).',
+    nota: 'Recobre o ramo dos corpos cavernosos e o ramo isquiopúbico, formando o limite lateral do triângulo urogenital. Em textos antigos é chamado de “eretor do pênis”. Músculo não presente no banco BodyParts3D — modelado por código.',
   }),
   bm('transverso_superficial_perineo', 'Transverso superficial do períneo', 'M. transversus perinei superficialis', 'prof', 'tronco', {
     proc: [{ kind: 'tube', pts: [[0.36, -7.84, -0.29], [0.2, -7.88, -0.33], [0.05, -7.9, -0.36]], ref: [0, 1, 0], width: 0.035, thick: 0.018, taper: 'blunt', nf: 20, nc: 8 }],
@@ -620,16 +620,16 @@ export const BODY_MUSCLES = [
     origem: 'Face interna do ramo do ísquio.',
     insercao: 'Corpo do períneo (centro tendíneo) com algumas fibras na parede da vagina ou da próstata.',
     inervacao: 'Ramo perineal (ramo profundo) do nervo pudendo (S2–S4).',
-    nota: 'Fica na bolsa profunda do períneo, acima da membrana perineal, com o esfíncter externo da uretra. A anatomia do “diafragma urogenital” é discutida: o termo clássico foi substituído por membrana perineal e bolsa profunda, e na mulher alguns autores duvidam de que o transverso profundo seja um músculo distinto. Forma e posição indicativas.',
+    nota: 'Fica na bolsa profunda do períneo, acima da membrana perineal, com o esfíncter externo da uretra e as glândulas bulbouretrais. A anatomia do “diafragma urogenital” é discutida: o termo clássico foi substituído por membrana perineal e bolsa profunda, e na mulher alguns autores duvidam de que o transverso profundo seja um músculo distinto. Forma e posição indicativas.',
   }),
   bm('esfincter_uretra', 'Esfíncter externo da uretra', 'M. sphincter urethrae externus', 'prof', 'tronco', {
-    proc: [{ kind: 'torus', c: [0, -7.7, 0.1], axis: [0, 1, 0], R: 0.05, rb: 0.016, rn: 0.02, nf: 40, nc: 10 }],
+    proc: [{ kind: 'torus', c: [-0.006, -7.632, 0.018], axis: [0, 0.86, -0.51], R: 0.042, rb: 0.015, rn: 0.018, nf: 40, nc: 10 }],
   }, {
     acao: 'Comprime a uretra membranácea e mantém a continência urinária voluntária; contrai-se para interromper o jato da urina.',
     origem: 'Ramos isquiopúbicos, na margem do arco púbico (fibras que se estendem também ao colo da bexiga e à próstata no homem).',
     insercao: 'Forma um anel em torno da uretra membranácea; na mulher, fibras do esfíncter uretrovaginal e do compressor da uretra circundam a uretra e a vagina.',
     inervacao: 'Ramo perineal (ramo profundo) do nervo pudendo (S2–S4).',
-    nota: 'É o esfíncter voluntário (estriado); o esfíncter interno, liso, do colo da bexiga é autônomo. A incontinência por esforço após a prostatectomia radical decorre da lesão dele ou de seu nervo. Representado como um anel esquemático em torno da uretra, que o modelo ainda não traz.',
+    nota: 'É o esfíncter voluntário (estriado); o esfíncter interno, liso, do colo da bexiga é autônomo. A incontinência por esforço após a prostatectomia radical decorre da lesão dele ou de seu nervo. Representado como um anel esquemático em torno da parte membranácea da uretra, abaixo do ápice da próstata.',
   }, { paired: false }),
 
   /* ═════════════ Ombro ═════════════ */

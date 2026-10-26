@@ -198,7 +198,7 @@ function runTests() {
     }
   }
 
-  // 6c. Circulatório (F5), respiratório (F6.1) e digestório (F6.2): peças do pacote ↔ fichas, camadas por tipo e vizinhas existentes
+  // 6c. Circulatório (F5), respiratório (F6.1), digestório (F6.2), sentidos (F6.3) e urinário/genital masculino (F6.4): peças do pacote ↔ fichas, camadas por tipo e vizinhas existentes
   {
     const fs = require('fs');
     const readPack = (name) => {
@@ -208,19 +208,26 @@ function runTests() {
     const circPieces = readPack('circ');
     const respPieces = readPack('resp');
     const digestPieces = readPack('digest');
-    const pieces = new Set([...circPieces, ...respPieces, ...digestPieces]);
+    const sensePieces = readPack('sense');
+    const urinPieces = readPack('urin');
+    const circOrUrinPieces = new Set([...circPieces, ...urinPieces]);
+    const pieces = new Set([...circPieces, ...respPieces, ...digestPieces, ...sensePieces, ...urinPieces]);
     const circ = ITEMS.filter((i) => ['cardiaco', 'arteria', 'veia', 'orgao'].includes(i.kind) && i.parts?.length);
     // peças usadas por qualquer ficha (as cartilagens da laringe são fichas de osso no pacote do respiratório)
     const used = new Set(ITEMS.flatMap((i) => (i.parts ?? []).map((p) => p.id)));
     for (const i of circ) {
       const want = { cardiaco: 'coracao', arteria: 'arteria', veia: 'veia' }[i.kind];
       if (i.kind === 'orgao') {
-        if (i.layer !== 'respiratorio' && i.layer !== 'digestorio') logFail(`"${i.id}" (orgao) deveria estar na camada "respiratorio" ou "digestorio", e não em "${i.layer}".`);
+        if (i.layer !== 'respiratorio' && i.layer !== 'digestorio' && i.layer !== 'urinario') logFail(`"${i.id}" (orgao) deveria estar na camada "respiratorio", "digestorio" ou "urinario", e não em "${i.layer}".`);
       } else if (i.layer !== want) {
         logFail(`"${i.id}" (${i.kind}) deveria estar na camada "${want}", e não em "${i.layer}".`);
       }
-      const home = i.kind === 'orgao' ? (i.layer === 'digestorio' ? digestPieces : respPieces) : circPieces;
-      const packLabel = i.kind === 'orgao' ? (i.layer === 'digestorio' ? 'digestório' : 'respiratório') : 'circulatório';
+      const home = i.kind === 'orgao'
+        ? (i.layer === 'digestorio' ? digestPieces : i.layer === 'urinario' ? urinPieces : respPieces)
+        : circOrUrinPieces;
+      const packLabel = i.kind === 'orgao'
+        ? (i.layer === 'digestorio' ? 'digestório' : i.layer === 'urinario' ? 'urinário' : 'respiratório')
+        : 'circulatório/urinário';
       for (const p of i.parts ?? []) {
         if (!home.has(p.id)) logFail(`"${i.id}" usa a peça "${p.id}", que não está no pacote do ${packLabel}.`);
       }
@@ -242,6 +249,48 @@ function runTests() {
     }
     for (const id of ['esofago', 'estomago', 'duodeno', 'jejuno', 'ileo', 'ceco', 'apendice_vermiforme', 'colo_transverso', 'reto', 'figado_lobo_caudado', 'vesicula_biliar', 'ducto_coledoco', 'pancreas', 'baco', 'mesenterio']) {
       if (itemMap.get(id)?.kind !== 'orgao' || itemMap.get(id)?.layer !== 'digestorio') logFail(`Órgão digestório "${id}" ausente ou fora da camada digestorio.`);
+    }
+    const senseCheckIds = [
+      'esclera', 'cornea', 'iris', 'cristalino', 'corioide', 'corpo_ciliar', 'zonula_ciliar', 'retina', 'corpo_vitreo', 'camara_anterior_olho',
+      'anel_tendineo_comum', 'troclea_obliquo_superior', 'glandula_lacrimal', 'lago_lacrimal', 'canaliculos_lacrimais', 'saco_lacrimal', 'ducto_nasolacrimal',
+      'cartilagem_septal', 'cartilagem_nasal_lateral', 'cartilagem_alar_maior', 'labios', 'lingua', 'pele',
+      'orelha', 'meato_acustico_externo', 'membrana_timpanica', 'martelo', 'bigorna', 'estribo', 'tuba_auditiva', 'coclea', 'canais_semicirculares',
+    ];
+    for (const id of senseCheckIds) {
+      const it = itemMap.get(id);
+      if (!it) { logFail(`Estrutura dos sentidos/tegumento "${id}" ausente do catálogo.`); continue; }
+      if ((it.campos ?? []).length < 4) logFail(`Estrutura dos sentidos/tegumento "${id}" com menos de 4 campos na ficha.`);
+      if (!(it.relacionados ?? []).length) logFail(`Estrutura dos sentidos/tegumento "${id}" sem estruturas relacionadas.`);
+      for (const r of it.relacionados ?? []) {
+        if (!itemMap.has(r)) logFail(`"${id}" relaciona estrutura inexistente "${r}".`);
+        else if (!(itemMap.get(r).relacionados ?? []).includes(id)) logFail(`"${id}" cita "${r}", que não o cita de volta.`);
+      }
+      if (it.proc?.length && it.layer === 'ouvido' && !/ESQUEMA/.test(it.nota ?? '')) {
+        logFail(`Estrutura esquemática do ouvido "${id}" sem "ESQUEMA" na nota.`);
+      }
+    }
+    const urinCheckIds = [
+      'rim_direito', 'rim_esquerdo', 'ureter_direito', 'ureter_esquerdo', 'bexiga_urinaria', 'uretra_masculina',
+      'prostata', 'vesicula_seminal', 'ducto_deferente', 'ducto_ejaculatorio', 'glandulas_bulbouretrais',
+      'epididimo', 'testiculo', 'corpo_cavernoso_penis', 'corpo_esponjoso_penis', 'glande_penis',
+      'canal_inguinal', 'funiculo_espermatico', 'cremaster',
+      'arteria_testicular', 'veia_testicular', 'arteria_dorsal_penis', 'veia_dorsal_profunda_penis',
+    ];
+    for (const id of urinCheckIds) {
+      const it = itemMap.get(id);
+      if (!it) { logFail(`Estrutura urinária/genital "${id}" ausente do catálogo.`); continue; }
+      if ((it.campos ?? []).length < 4) logFail(`Estrutura urinária/genital "${id}" com menos de 4 campos na ficha.`);
+      if (!(it.relacionados ?? []).length) logFail(`Estrutura urinária/genital "${id}" sem estruturas relacionadas.`);
+      for (const r of it.relacionados ?? []) {
+        if (!itemMap.has(r)) logFail(`"${id}" relaciona estrutura inexistente "${r}".`);
+        else if (!(itemMap.get(r).relacionados ?? []).includes(id)) logFail(`"${id}" cita "${r}", que não o cita de volta.`);
+      }
+      if (it.proc?.length && !/ESQUEMA/.test(it.nota ?? '')) {
+        logFail(`Estrutura esquemática urinária/genital "${id}" sem "ESQUEMA" na nota.`);
+      }
+    }
+    if (!itemMap.has('n_genitofemoral') || itemMap.get('n_genitofemoral')?.kind !== 'nervo') {
+      logFail('Nervo genitofemoral ("n_genitofemoral") ausente do catálogo.');
     }
   }
 

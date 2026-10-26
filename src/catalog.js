@@ -19,6 +19,8 @@ import { CARDIO_EXTRAS } from './cardio-extras.js';
 import { CIRC_FETAL } from './catalog-circ-fetal.js';
 import { RESP_ITEMS } from './catalog-resp.js';
 import { DIGEST_ITEMS } from './catalog-digest.js';
+import { SENSE_ITEMS } from './catalog-sense.js';
+import { URIN_ITEMS } from './catalog-urin.js';
 import { NERVES as NERVES_BASE } from './catalog-nerves.js';
 import { NERVES_CRANIAL } from './catalog-nerves-cranial.js';
 import { NERVES_SENSORY } from './catalog-nerves-sensory.js';
@@ -40,7 +42,8 @@ export const LAYERS = [
   { id: 'med', label: 'Músculos intermediários (tronco e membros)', depth: 3, color: '#b34663' },
   { id: 'profundo', label: 'Planos profundos da cabeça', depth: 4, color: '#8c3350' },
   { id: 'prof', label: 'Músculos profundos (tronco e membros)', depth: 4, color: '#8a3558' },
-  { id: 'orbita', label: 'Órbita e olho', depth: 4, color: '#e98a4a' },
+  { id: 'orbita', label: 'Órbita, olho e aparelho lacrimal', depth: 4, color: '#e98a4a' },
+  { id: 'ouvido', label: 'Orelha e audição', depth: 4, color: '#d89b6a' },
   { id: 'nervo', label: 'Nervos', depth: 4, color: '#f2cf55' },
   { id: 'arteria', label: 'Artérias', depth: 4, color: '#d9453d' },
   { id: 'veia', label: 'Veias', depth: 4, color: '#4a74b8' },
@@ -49,9 +52,10 @@ export const LAYERS = [
   { id: 'coracao', label: 'Coração', depth: 4, color: '#b83a4b' },
   { id: 'respiratorio', label: 'Sistema respiratório', depth: 4, color: '#d98f95' },
   { id: 'digestorio', label: 'Sistema digestório e baço', depth: 4, color: '#c97b5a' },
+  { id: 'urinario', label: 'Sistema urinário e genital masculino', depth: 4, color: '#b8687a' },
   { id: 'articulacao', label: 'Articulações (cápsulas)', depth: 4, color: '#7fb2e8' },
   { id: 'ligamento', label: 'Ligamentos', depth: 4, color: '#f1da8c' },
-  { id: 'glandula', label: 'Glândulas e língua', depth: 4, color: '#dba35a' },
+  { id: 'glandula', label: 'Glândulas, língua e lábios', depth: 4, color: '#dba35a' },
   { id: 'cartilagem', label: 'Cartilagens e discos', depth: 4, color: '#a9d0d6' },
   { id: 'osso', label: 'Ossos e dentes', depth: 5, color: '#ece3cc' },
 ];
@@ -105,9 +109,9 @@ export const BODY_ITEMS = [...BODY_MUSCLES, ...ORAL_MUSCLES, ...BODY_BONES, ...J
 export const LEG_ITEMS = [...LEG_BONES, ...LEG_MUSCLES, ...LEG_PERNA, ...LEG_PE, ...LEG_LIGS];
 /** Circulatório (F5): coração, vasos principais e, no mesmo pacote, os ramos de menor calibre (F5.1). */
 export const CIRC_ITEMS = [...CIRC_BASE, ...CIRC_RAMOS, ...CIRC_VISCERAIS, ...CIRC_CODIGO, ...CIRC_ESQUEMAS, ...CIRC_SUPERFICIE, ...CIRC_FETAL];
-export { RESP_ITEMS, DIGEST_ITEMS };
+export { RESP_ITEMS, DIGEST_ITEMS, SENSE_ITEMS, URIN_ITEMS };
 export const NERVES = [...NERVES_BASE, ...NERVES_CRANIAL, ...NERVES_SENSORY, ...NERVES_SPINAL, ...NERVES_LEG];
-export const ITEMS = [...HEAD_ITEMS, ...BODY_ITEMS, ...LEG_ITEMS, ...CIRC_ITEMS, ...RESP_ITEMS, ...DIGEST_ITEMS, ...NERVES];
+export const ITEMS = [...HEAD_ITEMS, ...BODY_ITEMS, ...LEG_ITEMS, ...CIRC_ITEMS, ...RESP_ITEMS, ...DIGEST_ITEMS, ...SENSE_ITEMS, ...URIN_ITEMS, ...NERVES];
 
 // ramos articulares (F3): a articulação diz quais nervos a inervam e o nervo ganha o ramo (sem desenhar: é só o vínculo)
 {
@@ -143,14 +147,14 @@ for (const n of NERVES) {
   for (const id of INNERVATION.keys()) if (!seen.has(id)) throw new Error(`Nervo aponta para estrutura inexistente: ${id}`);
   const semNervo = ITEMS.filter((i) => i.kind === 'musculo' && !INNERVATION.has(i.id)).map((i) => i.id);
   if (semNervo.length) throw new Error(`Músculos sem nervo no catálogo: ${semNervo.join(', ')}`);
-  // circulatório, respiratório e digestório (F5–F6): `relacionados` só cita estruturas do catálogo, e toda ficha tem 4 campos
-  const CIRC_KINDS = new Set(['cardiaco', 'arteria', 'veia', 'linfatico', 'estrutura', 'orgao', 'osso', 'glandula']);
-  const headGlands = HEAD_ITEMS.filter((i) => i.layer === 'glandula');
-  const linked = [...CIRC_ITEMS, ...RESP_ITEMS, ...DIGEST_ITEMS, ...headGlands];
+  // circulatório, respiratório, digestório e órgãos dos sentidos (F5–F6): `relacionados` só cita estruturas do catálogo, e toda ficha tem 4 campos
+  const CIRC_KINDS = new Set(['cardiaco', 'arteria', 'veia', 'linfatico', 'estrutura', 'orgao', 'osso', 'glandula', 'musculo', 'ligamento']);
+  const headLinked = HEAD_ITEMS.filter((i) => CIRC_KINDS.has(i.kind));
+  const linked = [...CIRC_ITEMS, ...RESP_ITEMS, ...DIGEST_ITEMS, ...SENSE_ITEMS, ...URIN_ITEMS, ...headLinked, ...ORAL_MUSCLES, ...BODY_MUSCLES, ...BODY_BONES];
   for (const i of linked) {
     if (!CIRC_KINDS.has(i.kind)) throw new Error(`Tipo inesperado em estrutura ligada: ${i.id} (${i.kind})`);
     for (const r of i.relacionados ?? []) if (!seen.has(r)) throw new Error(`Estrutura relacionada inexistente em ${i.id}: ${r}`);
-    if ((i.kind === 'arteria' || i.kind === 'veia' || i.layer === 'digestorio') && (i.campos.length < 4 || i.campos.some(([, t]) => !t))) {
+    if ((i.kind === 'arteria' || i.kind === 'veia' || i.layer === 'digestorio' || i.layer === 'ouvido' || i.layer === 'urinario') && (i.campos.length < 4 || i.campos.some(([, t]) => !t))) {
       throw new Error(`Ficha incompleta em ${i.id}`);
     }
   }

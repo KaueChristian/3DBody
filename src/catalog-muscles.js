@@ -495,7 +495,7 @@ export const MUSCLES = [
     origem: 'Cartilagem da tuba auditiva, asa maior do esfenoide e parede do canal musculotubário, na parte petrosa do temporal.',
     insercao: 'Cabo do martelo. O tendão faz um ângulo reto ao contornar o processo cocleariforme.',
     inervacao: 'Nervo para o tensor do tímpano, ramo do nervo pterigóideo medial (mandibular, V3), pelo gânglio ótico.',
-    nota: 'Fica no semicanal superior do canal musculotubário, acima da tuba auditiva. É inervado pelo V3, como o tensor do véu palatino (mesmo arco faríngeo), e não pelo facial. O modelo não tem os ossículos nem a membrana timpânica: o trajeto é aproximado e intraósseo (dentro do temporal).',
+    nota: 'Fica no semicanal superior do canal musculotubário, acima da tuba auditiva, e prende-se ao cabo do martelo. É inervado pelo V3, como o tensor do véu palatino (mesmo arco faríngeo), e não pelo facial. Trajeto modelado por código dentro da parte petrosa do temporal.',
   }, { label: false }),
   mus('estapedio', 'Estapédio', 'M. stapedius', 'profundo', {
     proc: [{ kind: 'tube', pts: [[0.37, -0.275, -0.075], [0.365, -0.28, -0.045], [0.35, -0.285, -0.02]], ref: [0, 1, 0], width: 0.015, thick: 0.012, taper: 'blunt', nf: 10, nc: 8 }],
@@ -504,7 +504,7 @@ export const MUSCLES = [
     origem: 'Eminência piramidal, na parede posterior da cavidade timpânica (o ventre fica num canal dentro do osso).',
     insercao: 'Colo do estribo, por um tendão fino que sai do ápice da eminência.',
     inervacao: 'Nervo para o estapédio, ramo do nervo facial (VII).',
-    nota: 'É o menor músculo esquelético do corpo. Na paralisia do facial acima da origem do seu nervo (paralisia de Bell, por exemplo), o reflexo se perde e os sons parecem excessivamente altos (hiperacusia). Modelo aproximado e intraósseo (posição e forma indicativas; sem os ossículos).',
+    nota: 'É o menor músculo esquelético do corpo. Na paralisia do facial acima da origem do seu nervo (paralisia de Bell, por exemplo), o reflexo se perde e os sons parecem excessivamente altos (hiperacusia). Modelado por código dentro da parte petrosa do temporal, junto ao colo do estribo.',
   }, { label: false }),
 
   /* ───────── F2.7 Face: músculos pequenos e variáveis (alguns textos os tratam como parte do orbicular da boca ou do auricular superior) ───────── */

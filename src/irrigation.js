@@ -91,6 +91,7 @@ export const IRRIGACAO = [
   [['obliquo_externo', 'obliquo_interno', 'transverso_abdome'], ['arteria_epigastrica_inferior', 'arteria_epigastrica_superior', 'arteria_intercostais_posteriores', 'arteria_lombares'], 'Artérias epigástricas superior e inferior, musculofrênica, circunflexa ilíaca profunda (da ilíaca externa), subcostal, intercostais posteriores inferiores e lombares.'],
   [['reto_abdome'], ['arteria_epigastrica_superior', 'arteria_epigastrica_inferior', 'arteria_musculofrenica', 'arteria_intercostais_posteriores'], 'Artérias epigástricas superior (da torácica interna) e inferior (da ilíaca externa), que se anastomosam dentro da bainha, musculofrênica e ramos das intercostais posteriores inferiores.'],
   [['piramidal'], ['arteria_epigastrica_inferior', 'arteria_iliaca_externa'], 'Artéria epigástrica inferior (ramo da ilíaca externa).'],
+  [['cremaster'], ['arteria_epigastrica_inferior', 'arteria_testicular'], 'Artéria cremastérica (ramo da artéria epigástrica inferior), anastomosada no funículo espermático com a artéria testicular e a artéria do ducto deferente.'],
   [['quadrado_lombo'], ['arteria_lombares', 'arteria_iliaca_interna'], 'Artérias lombares, subcostal e iliolombar (da ilíaca interna).'],
   [['psoas_maior'], ['arteria_lombares', 'arteria_iliaca_interna'], 'Ramos das artérias lombares (da aorta abdominal) e iliolombar (da ilíaca interna).'],
   [['iliaco'], ['arteria_iliaca_interna', 'arteria_iliaca_externa'], 'Artéria iliolombar (ramo ilíaco, da ilíaca interna) e circunflexa ilíaca profunda (da ilíaca externa).'],

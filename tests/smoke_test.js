@@ -349,7 +349,7 @@ async function runSmokeTest() {
       document.getElementById('btnStudy').click();
       t(!document.getElementById('studyModal').hidden, 'o modal de estudo não abriu');
       const cards = [...document.querySelectorAll('.tour-card')];
-      t(cards.length === 16, `esperava 16 tours, veio ${cards.length}`);
+      t(cards.length === 18, `esperava 18 tours, veio ${cards.length}`);
       for (const c of cards) {
         t(!/undefined|null|NaN/.test(c.innerText), `cartão de tour com texto quebrado: ${c.innerText.slice(0, 60)}`);
         t((c.querySelector('.tour-desc')?.innerText.length ?? 0) > 20, 'cartão de tour sem descrição');
@@ -372,7 +372,7 @@ async function runSmokeTest() {
       const app = window.__app;
       const sc = app.studyController;
       const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-      for (const id of ['manguito', 'plexo_braquial', 'nervo_radial', 'mastigacao_v3', 'facial_mimica', 'parede_abdominal', 'circulacao', 'circulacao_fetal', 'circulatorio_generalidades', 'coracao_superficie', 'arterias_cabeca_pescoco', 'poligono_willis', 'sistema_porta', 'perna_pe', 'respiratorio', 'digestorio']) {
+      for (const id of ['manguito', 'plexo_braquial', 'nervo_radial', 'mastigacao_v3', 'facial_mimica', 'parede_abdominal', 'circulacao', 'circulacao_fetal', 'circulatorio_generalidades', 'coracao_superficie', 'arterias_cabeca_pescoco', 'poligono_willis', 'sistema_porta', 'perna_pe', 'respiratorio', 'digestorio', 'sentidos', 'urinario_masculino']) {
         sc.startTour(id);
         const n = sc.activeTour.steps.length;
         for (let i = 0; i < n; i++) {
@@ -394,7 +394,7 @@ async function runSmokeTest() {
       }
       if (!document.getElementById('tourBox').hidden) f.push('o painel do tour continua aberto depois de sair');
       return f;
-    }, 'os passos dos 16 tours destacam e enquadram a estrutura');
+    }, 'os passos dos 18 tours destacam e enquadram a estrutura');
 
     await run(async () => {
       const f = [];
@@ -1061,6 +1061,143 @@ async function runSmokeTest() {
       app.setDissect(1);
       return f;
     }, 'F6.2: sistema digestório e baço (34 malhas, cortes, fichas, vínculos vasculares/glandulares e tour)');
+
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
+      const sc = app.studyController;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      for (let i = 0; i < 120 && !(app.state.nervesReady && app.state.senseReady); i++) await sleep(250);
+      t(app.state.senseReady && document.body.classList.contains('sense-ready'), 'o pacote dos órgãos dos sentidos não carregou');
+
+      // F6.3: estruturas do olho, órbita, aparelho lacrimal, orelha, cartilagens nasais, lábios e pele
+      const senseIds = [
+        'esclera', 'cornea', 'iris', 'cristalino', 'corioide', 'corpo_ciliar', 'zonula_ciliar', 'retina', 'corpo_vitreo', 'camara_anterior_olho',
+        'anel_tendineo_comum', 'troclea_obliquo_superior', 'tarsos',
+        'glandula_lacrimal', 'lago_lacrimal', 'canaliculos_lacrimais', 'saco_lacrimal', 'ducto_nasolacrimal',
+        'cartilagem_septal', 'cartilagem_nasal_lateral', 'cartilagem_alar_maior', 'labios', 'lingua', 'pele',
+        'orelha', 'meato_acustico_externo', 'membrana_timpanica', 'martelo', 'bigorna', 'estribo', 'tuba_auditiva', 'coclea', 'canais_semicirculares',
+      ];
+      for (const id of senseIds) t(app.M.has(id) && app.M.get(id).meshes.length > 0, 'sem malha no modelo: ' + id);
+      t(!app.M.has('globo_ocular') && !app.M.has('cartilagem_nasal'), 'malhas agrupadas antigas (globo_ocular / cartilagem_nasal) não deveriam coexistir com as peças separadas');
+      const secNames = [...document.querySelectorAll('#list .sec-name')].map((e) => e.textContent);
+      t(secNames.includes('Órbita, olho e aparelho lacrimal') && secNames.includes('Orelha e audição') && secNames.includes('Glândulas, língua e lábios'),
+        'camadas de sentidos ausentes na lista lateral: ' + secNames.join(', '));
+
+      // geometria e relações espaciais na cabeça
+      const cz = (id) => app.M.get(id).center.z;
+      const cy = (id) => app.M.get(id).center.y;
+      t(cz('cornea') > cz('iris') && cz('iris') > cz('cristalino') && cz('cristalino') > cz('corpo_vitreo'), 'ordem anteroposterior do olho incorreta (córnea → íris → cristalino → corpo vítreo)');
+      t(cy('glandula_lacrimal') > cy('saco_lacrimal') && cy('saco_lacrimal') > cy('ducto_nasolacrimal'), 'ordem vertical da via lacrimal incorreta (glândula → saco → ducto)');
+      t(cz('cartilagem_alar_maior') > cz('cartilagem_septal'), 'a cartilagem alar maior deveria ficar mais anterior que o centro da cartilagem septal');
+
+      // fichas, vínculos bidirecionais com músculos e nervos, e declaração de ESQUEMA no ouvido médio/interno
+      app.setRegion('cabeca', { fly: false });
+      app.setDissect(5);
+      app.select('retina', { fly: false });
+      let ficha = document.getElementById('infoBody').textContent;
+      t(/Retina/.test(document.getElementById('info').textContent) && /Corioide/.test(ficha) && /Nervo óptico \(II\)/.test(ficha),
+        'a ficha da retina deveria ligar à corioide e ao nervo óptico (II)');
+      app.select('glandula_lacrimal', { fly: false });
+      ficha = document.getElementById('infoBody').textContent;
+      t(/Nervo lacrimal \(V1\)/.test(ficha) && /Gânglio pterigopalatino/.test(ficha) && /Saco lacrimal/.test(ficha),
+        'a ficha da glândula lacrimal deveria mostrar o nervo lacrimal, o gânglio pterigopalatino e o saco lacrimal');
+      app.select('coclea', { fly: false });
+      ficha = document.getElementById('infoBody').textContent;
+      t(/ESQUEMA/.test(ficha) && /Modelada por código/.test(document.getElementById('info').textContent) && /Nervo vestibulococlear \(VIII\)/.test(ficha),
+        'a ficha da cóclea deveria declarar ESQUEMA e ligar ao nervo vestibulococlear (VIII)');
+      app.select('martelo', { fly: false });
+      ficha = document.getElementById('infoBody').textContent;
+      t(/ESQUEMA/.test(ficha) && /Tensor do tímpano/.test(ficha) && /Bigorna/.test(ficha),
+        'a ficha do martelo deveria declarar ESQUEMA e ligar ao tensor do tímpano e à bigorna');
+      app.select('pele', { fly: false });
+      ficha = document.getElementById('infoBody').textContent;
+      t(/Epiderme/.test(ficha) && /Anexos cutâneos/.test(ficha) && /Inervação e receptores/.test(ficha),
+        'a ficha da pele deveria descrever camadas, anexos cutâneos e receptores');
+
+      // tour dos sentidos: percorre todos os 8 passos
+      sc.startTour('sentidos');
+      t(sc.activeTour.steps.length === 8, 'o tour dos sentidos deveria ter 8 passos');
+      for (let i = 0; i < sc.activeTour.steps.length; i++) {
+        t(app.state.selected === sc.activeTour.steps[i].highlight, `o passo ${i + 1} do tour dos sentidos não destacou ${sc.activeTour.steps[i].highlight}`);
+        if (i < sc.activeTour.steps.length - 1) sc.tourStep(1);
+      }
+      sc.stopTour();
+      app.select(null, { fly: false });
+      app.setRegion('cabeca', { fly: false });
+      app.setDissect(1);
+      return f;
+    }, 'F6.3: órgãos dos sentidos e tegumentar (olho, aparelho lacrimal, orelha, cartilagens nasais, lábios, pele e tour)');
+
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
+      const sc = app.studyController;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      for (let i = 0; i < 120 && !(app.state.nervesReady && app.state.urinReady); i++) await sleep(250);
+      t(app.state.urinReady && document.body.classList.contains('urin-ready'), 'o pacote do urinário e genital masculino não carregou');
+
+      // F6.4: estruturas do sistema urinário e genital masculino, vasos gonadais/penianos e canal inguinal
+      const urinIds = [
+        'rim_direito', 'rim_esquerdo', 'ureter_direito', 'ureter_esquerdo', 'bexiga_urinaria', 'uretra_masculina',
+        'prostata', 'vesicula_seminal', 'ducto_deferente', 'ducto_ejaculatorio', 'glandulas_bulbouretrais',
+        'epididimo', 'testiculo', 'corpo_cavernoso_penis', 'corpo_esponjoso_penis', 'glande_penis',
+        'canal_inguinal', 'funiculo_espermatico', 'cremaster',
+        'arteria_testicular', 'veia_testicular', 'arteria_dorsal_penis', 'veia_dorsal_profunda_penis',
+        'n_genitofemoral',
+      ];
+      for (const id of urinIds) t(app.M.has(id) && app.M.get(id).meshes.length > 0, 'sem malha no modelo: ' + id);
+      app.setRegion('tronco', { fly: false });
+      const secNames = [...document.querySelectorAll('#list .sec-name')].map((e) => e.textContent);
+      t(secNames.includes('Sistema urinário e genital masculino'),
+        'camada do sistema urinário e genital masculino ausente na lista lateral: ' + secNames.join(', '));
+
+      // geometria e relações espaciais no abdome, pelve e períneo
+      const cy = (id) => app.M.get(id).center.y;
+      const cz = (id) => app.M.get(id).center.z;
+      t(cy('rim_esquerdo') > cy('rim_direito'), 'o rim esquerdo deveria estar mais alto que o rim direito');
+      t(cy('rim_esquerdo') > cy('bexiga_urinaria') && cy('bexiga_urinaria') > cy('prostata') && cy('prostata') > cy('testiculo'),
+        'ordem craniocaudal urogenital incorreta (rim → bexiga → próstata → testículo)');
+      t(cz('corpo_cavernoso_penis') > cz('prostata'), 'os corpos cavernosos deveriam ficar anteriores à próstata');
+
+      // fichas, vínculos bidirecionais e declaração de ESQUEMA nas estruturas por código
+      app.setDissect(5);
+      app.select('rim_esquerdo', { fly: false });
+      let ficha = document.getElementById('infoBody').textContent;
+      t(/Rim esquerdo/.test(document.getElementById('info').textContent) && /Artéria renal/.test(ficha) && /Ureter esquerdo/.test(ficha) && /Veia suprarrenal/.test(ficha),
+        'a ficha do rim esquerdo deveria ligar à artéria renal, ao ureter esquerdo e à veia suprarrenal');
+      app.select('prostata', { fly: false });
+      ficha = document.getElementById('infoBody').textContent;
+      t(/Bexiga urinária/.test(ficha) && /Glândulas seminais/.test(ficha) && /Uretra masculina/.test(ficha) && /Ducto ejaculatório/.test(ficha),
+        'a ficha da próstata deveria ligar à bexiga, às glândulas seminais, à uretra e ao ducto ejaculatório');
+      app.select('canal_inguinal', { fly: false });
+      ficha = document.getElementById('infoBody').textContent;
+      t(/ESQUEMA/.test(ficha) && /Modelada por código/.test(document.getElementById('info').textContent) && /Funículo espermático/.test(ficha) && /Cremaster/.test(ficha),
+        'a ficha do canal inguinal deveria declarar ESQUEMA e ligar ao funículo espermático e ao cremaster');
+      app.select('cremaster', { fly: false });
+      ficha = document.getElementById('infoBody').textContent;
+      t(/ESQUEMA/.test(ficha) && /Nervo genitofemoral \(L1–L2\)/.test(ficha) && /Artéria epigástrica inferior/.test(ficha),
+        'a ficha do cremaster deveria declarar ESQUEMA e mostrar o nervo genitofemoral e a artéria epigástrica inferior');
+      app.select('testiculo', { fly: false });
+      ficha = document.getElementById('infoBody').textContent;
+      t(/Epidídimo/.test(ficha) && /Artéria testicular/.test(ficha) && /Veia testicular e plexo pampiniforme/.test(ficha),
+        'a ficha do testículo deveria ligar ao epidídimo e aos vasos testiculares');
+
+      // tour do urinário e genital masculino: percorre todos os 8 passos
+      sc.startTour('urinario_masculino');
+      t(sc.activeTour.steps.length === 8, 'o tour do urinário e genital masculino deveria ter 8 passos');
+      for (let i = 0; i < sc.activeTour.steps.length; i++) {
+        t(app.state.selected === sc.activeTour.steps[i].highlight, `o passo ${i + 1} do tour do urinário masculino não destacou ${sc.activeTour.steps[i].highlight}`);
+        if (i < sc.activeTour.steps.length - 1) sc.tourStep(1);
+      }
+      sc.stopTour();
+      app.select(null, { fly: false });
+      app.setRegion('cabeca', { fly: false });
+      app.setDissect(1);
+      return f;
+    }, 'F6.4: sistema urinário e genital masculino (rins, vias urinárias, próstata, testículo, pênis, canal inguinal e tour)');
 
     await run(async () => {
       const f = [];

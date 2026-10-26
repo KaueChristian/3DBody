@@ -6,7 +6,7 @@ import { loadAnatomy } from './anatomy.js';
 import { Surfaces, TORSO_PARTS } from './surfaces.js';
 import { buildProc, makeFiberTexture } from './proc.js';
 import { LM } from './landmarks.js';
-import { ITEMS as ALL_ITEMS, HEAD_IDS, BODY_ITEMS, LEG_ITEMS, CIRC_ITEMS, RESP_ITEMS, DIGEST_ITEMS, NERVES, INNERVATION, IRRIGATION, LAYERS, KIND_LABEL, REGIONS, inRegion, layersForDissect } from './catalog.js';
+import { ITEMS as ALL_ITEMS, HEAD_IDS, BODY_ITEMS, LEG_ITEMS, CIRC_ITEMS, RESP_ITEMS, DIGEST_ITEMS, SENSE_ITEMS, URIN_ITEMS, NERVES, INNERVATION, IRRIGATION, LAYERS, KIND_LABEL, REGIONS, inRegion, layersForDissect } from './catalog.js';
 import { NerveBuilder } from './nerve-geo.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { SKULL_PARTS } from './surfaces.js';
@@ -45,6 +45,8 @@ const state = {
   circReady: false,
   respReady: false,
   digestReady: false,
+  senseReady: false,
+  urinReady: false,
   nervesReady: false,
   search: '',
   quiz: null,
@@ -131,6 +133,7 @@ function makeMaterial(key, color) {
     case 'cornea': return std({ color: '#dfe9ee', roughness: 0.05, transparent: true, opacity: 0.28, depthWrite: false });
     case 'iris': return std({ color: '#4d7a8c', roughness: 0.35 });
     case 'lens': return std({ color: '#cdd9de', roughness: 0.1, transparent: true, opacity: 0.55, depthWrite: false });
+    case 'vitreo': return std({ color: '#d6eef5', roughness: 0.12, transparent: true, opacity: 0.36, depthWrite: false });
     case 'skin': return std({ color: '#e4b399', roughness: 0.55, transparent: true, opacity: 0.35, depthWrite: false });
     case 'brow': return std({ color: '#2f231d', roughness: 0.9 });
     case 'ligament': return std({ color: '#f1da8c', roughness: 0.4, map: fiberTexSoft });
@@ -156,7 +159,7 @@ function makeMaterial(key, color) {
 }
 
 /** Resolve disputas de profundidade entre superfícies quase coincidentes: camadas superficiais ganham. */
-const DEPTH_OFFSET = { nervo: -2.5, arteria: -2, veia: -2, linfatico: -2, coracao: -1, respiratorio: -0.5, digestorio: -0.5, fascia: -3, mimica: -2, sup: -2, pescoco: -1.5, med: -1.5, mastigacao: -1, ligamento: -1, articulacao: -0.5, prof: -0.5, osso: 0.5 };
+const DEPTH_OFFSET = { nervo: -2.5, arteria: -2, veia: -2, linfatico: -2, coracao: -1, respiratorio: -0.5, digestorio: -0.5, urinario: -0.5, orbita: -0.5, ouvido: -0.5, fascia: -3, mimica: -2, sup: -2, pescoco: -1.5, med: -1.5, mastigacao: -1, ligamento: -1, articulacao: -0.5, prof: -0.5, osso: 0.5 };
 
 function jitter(hex, id) {
   const c = new THREE.Color(hex);
@@ -297,8 +300,7 @@ function buildItems(parts, S, items, ctx) {
     };
     for (const p of item.parts ?? []) {
       const geo = parts.get(p.id).geometry;
-      const wantAnchor = !['cornea', 'iris', 'lens'].includes(p.mat);
-      addMesh(geo, matFor(item.mat ?? p.mat), wantAnchor ? outerAnchors(geo) : null);
+      addMesh(geo, matFor(item.mat ?? p.mat), outerAnchors(geo));
     }
     if (item.proc) {
       const sides = item.paired === false ? [1] : [1, -1];
@@ -426,8 +428,8 @@ function relatedIds(id) {
   const m = M.get(id);
   if (!m) return [];
   if (m.item.kind === 'nervo') return (m.item.ramos ?? []).map((r) => r.m);
-  if (m.item.relacionados) return [...m.item.relacionados, ...(INNERVATION.get(id) ?? []).map((r) => r.nervo)];
-  return jointRelatedIds(m.item, CATALOG) ?? [...(INNERVATION.get(id) ?? []).map((r) => r.nervo), ...(IRRIGATION.get(id) ?? [])];
+  const base = jointRelatedIds(m.item, CATALOG) ?? [...(INNERVATION.get(id) ?? []).map((r) => r.nervo), ...(IRRIGATION.get(id) ?? [])];
+  return m.item.relacionados ? [...new Set([...m.item.relacionados, ...base])] : base;
 }
 
 /* ───────────────────────── Visibilidade e destaque ───────────────────────── */
@@ -705,7 +707,8 @@ function sourcesHtml(item) {
 
 const ISO_LABEL = {
   nervo: 'Isolar com os músculos', musculo: 'Isolar com nervos e artérias', articulacao: 'Isolar com ossos e ligamentos', ligamento: 'Isolar com os ossos',
-  cardiaco: 'Isolar com as relacionadas', linfatico: 'Isolar com as relacionadas', arteria: 'Isolar com as relacionadas', veia: 'Isolar com as relacionadas', orgao: 'Isolar com as relacionadas',
+  cardiaco: 'Isolar com as relacionadas', linfatico: 'Isolar com as relacionadas', arteria: 'Isolar com as relacionadas', veia: 'Isolar com as relacionadas',
+  orgao: 'Isolar com as relacionadas', estrutura: 'Isolar com as relacionadas', glandula: 'Isolar com as relacionadas',
 };
 
 function showInfo(id) {
@@ -1954,6 +1957,60 @@ async function loadDigest(parts, S, landmarks) {
   console.info('[carga] digestório', perf.digestDataMs, 'ms · estruturas', perf.digestStructuresMs, 'ms');
 }
 
+/**
+ * Órgãos dos sentidos e tegumentar (F6.3). Carrega depois do digestório e antes dos nervos.
+ */
+async function loadSense(parts, S, landmarks) {
+  setBodyStatus('Carregando os órgãos dos sentidos…');
+  if (!(await loadScript('dist/anatomy-sense.js'))) {
+    setBodyStatus('Não foi possível carregar os órgãos dos sentidos (dist/anatomy-sense.js).', true);
+    await new Promise((r) => setTimeout(r, 2500));
+    return;
+  }
+  const t0 = performance.now();
+  const senseParts = await loadAnatomy(window.__ANATOMY_SENSE);
+  perf.senseDataMs = Math.round(performance.now() - t0);
+  const tBuild = performance.now();
+  for (const [id, p] of senseParts) parts.set(id, p);
+  buildItems(senseParts, S, SENSE_ITEMS, jointContext(parts, landmarks));
+  perf.senseStructuresMs = Math.round(performance.now() - tBuild);
+  state.senseReady = true;
+  document.body.classList.add('sense-ready');
+  buildList();
+  applyVisibility();
+  syncList();
+  studyController?.onModelUpdated();
+  if (!setupEl.hidden) renderSetup();
+  console.info('[carga] sentidos', perf.senseDataMs, 'ms · estruturas', perf.senseStructuresMs, 'ms');
+}
+
+/**
+ * Sistema urinário e genital masculino (F6.4). Carrega depois dos sentidos e antes dos nervos.
+ */
+async function loadUrin(parts, S, landmarks) {
+  setBodyStatus('Carregando o sistema urogenital…');
+  if (!(await loadScript('dist/anatomy-urin.js'))) {
+    setBodyStatus('Não foi possível carregar o sistema urogenital (dist/anatomy-urin.js).', true);
+    await new Promise((r) => setTimeout(r, 2500));
+    return;
+  }
+  const t0 = performance.now();
+  const urinParts = await loadAnatomy(window.__ANATOMY_URIN);
+  perf.urinDataMs = Math.round(performance.now() - t0);
+  const tBuild = performance.now();
+  for (const [id, p] of urinParts) parts.set(id, p);
+  buildItems(urinParts, S, URIN_ITEMS, jointContext(parts, landmarks));
+  perf.urinStructuresMs = Math.round(performance.now() - tBuild);
+  state.urinReady = true;
+  document.body.classList.add('urin-ready');
+  buildList();
+  applyVisibility();
+  syncList();
+  studyController?.onModelUpdated();
+  if (!setupEl.hidden) renderSetup();
+  console.info('[carga] urogenital', perf.urinDataMs, 'ms · estruturas', perf.urinStructuresMs, 'ms');
+}
+
 function loadBody() {
   setBodyStatus('Carregando tronco e membros…');
   const sc = document.createElement('script');
@@ -2002,6 +2059,18 @@ function loadBody() {
         await loadDigest(parts, S2, lm);
       } catch (err) {
         console.error('[digestório]', err);
+      }
+      // órgãos dos sentidos e tegumentar (F6.3)
+      try {
+        await loadSense(parts, S2, lm);
+      } catch (err) {
+        console.error('[sentidos]', err);
+      }
+      // sistema urinário e genital masculino (F6.4)
+      try {
+        await loadUrin(parts, S2, lm);
+      } catch (err) {
+        console.error('[urogenital]', err);
       }
       // nervos: montados em segundo plano, depois que cabeça e corpo já estão na tela
       setBodyStatus('Montando os nervos…');
@@ -2052,6 +2121,10 @@ const perf = {
   respStructuresMs: 0,
   digestDataMs: 0,
   digestStructuresMs: 0,
+  senseDataMs: 0,
+  senseStructuresMs: 0,
+  urinDataMs: 0,
+  urinStructuresMs: 0,
   shadersWarmMs: 0,
   nervesMs: 0,
   totalReadyMs: 0,

@@ -1,6 +1,6 @@
 # Miótomos: segmento medular → músculos e nervos
 
-> Gerado por `node tools/gen_miotomos.js` a partir do campo `segmentos` do catálogo (`src/segments.js`). Cumpre o item **F2.14**. 183 músculos e 70 nervos/estruturas têm segmentos; 72 músculos são inervados só por nervos cranianos (face, língua, palato, faringe, laringe, olho, ouvido médio) e não têm segmento.
+> Gerado por `node tools/gen_miotomos.js` a partir do campo `segmentos` do catálogo (`src/segments.js`). Cumpre o item **F2.14**. 184 músculos e 71 nervos/estruturas têm segmentos; 72 músculos são inervados só por nervos cranianos (face, língua, palato, faringe, laringe, olho, ouvido médio) e não têm segmento.
 
 **Como ler.** O miótomo de um segmento é o conjunto de músculos que recebem fibras dele. Os valores seguem Moore, Dalley & Agur (8ª ed.) e o Gray’s Anatomy (42ª ed.), com Kendall et al. para os miótomos clínicos; **as fontes divergem em vários músculos** (a nota de cada ficha diz quais). Os músculos próprios do dorso e os curtos da coluna (marcados com †) são inervados por ramos posteriores em vários níveis: o intervalo é o da região, e não um miótomo clínico. Os músculos marcados com ‡ (ECM e trapézio) têm segmentos só proprioceptivos: a parte motora é do nervo acessório (XI).
 
@@ -128,15 +128,15 @@
 
 ### L1
 
-- **Músculos (4):** Oblíquo interno do abdome; Transverso do abdome; Quadrado do lombo; Psoas maior
+- **Músculos (5):** Oblíquo interno do abdome; Transverso do abdome; Quadrado do lombo; Psoas maior; Cremaster — esquema
 - **Também, por inervação regional (7):** Iliocostal lombar †; Longuíssimo torácico †; Rotadores lombares †; Interespinais lombares †; Intertransversários lombares mediais †; Intertransversários lombares laterais †; Multífido †
-- **Nervos e estruturas (6):** Ramos posteriores dos nervos espinais; Nervo ílio-hipogástrico (L1); Nervo ilioinguinal (L1); Plexo lombar — ramos musculares; Medula espinal; Nervos espinais lombares (L1–L5)
+- **Nervos e estruturas (7):** Ramos posteriores dos nervos espinais; Nervo ílio-hipogástrico (L1); Nervo ilioinguinal (L1); Nervo genitofemoral (L1–L2); Plexo lombar — ramos musculares; Medula espinal; Nervos espinais lombares (L1–L5)
 
 ### L2
 
-- **Músculos (14):** Quadrado do lombo; Psoas maior; Ilíaco; Sartório; Reto femoral; Vasto lateral; Vasto medial; Vasto intermédio; Pectíneo; Adutor longo; Adutor curto; Adutor magno; Adutor mínimo; Grácil
+- **Músculos (15):** Quadrado do lombo; Psoas maior; Ilíaco; Sartório; Reto femoral; Vasto lateral; Vasto medial; Vasto intermédio; Pectíneo; Adutor longo; Adutor curto; Adutor magno; Adutor mínimo; Grácil; Cremaster — esquema
 - **Também, por inervação regional (7):** Iliocostal lombar †; Longuíssimo torácico †; Rotadores lombares †; Interespinais lombares †; Intertransversários lombares mediais †; Intertransversários lombares laterais †; Multífido †
-- **Nervos e estruturas (7):** Ramos posteriores dos nervos espinais; Plexo lombar — ramos musculares; Nervo femoral; Medula espinal; Nervos espinais lombares (L1–L5); Cauda equina e filo terminal; Nervo obturatório
+- **Nervos e estruturas (8):** Ramos posteriores dos nervos espinais; Nervo genitofemoral (L1–L2); Plexo lombar — ramos musculares; Nervo femoral; Medula espinal; Nervos espinais lombares (L1–L5); Cauda equina e filo terminal; Nervo obturatório
 
 ### L3
 
@@ -376,6 +376,7 @@
 | `flexor_curto_minimo_pe` | Flexor curto do dedo mínimo do pé | S2–S3 |
 | `oponente_minimo_pe` | Oponente do dedo mínimo do pé | S2–S3 |
 | `interosseos_plantares` | Interósseos plantares do pé (3) | S2–S3 |
+| `cremaster` | Cremaster — esquema | L1–L2 |
 
 ## 3. Músculos sem segmento medular (72)
 

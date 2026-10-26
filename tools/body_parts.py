@@ -539,6 +539,57 @@ addd("mesocolo_transverso", "orgao", r"transverse mesocolon", 3, 1600)
 addd("mesoapendice", "orgao", r"mesoappendix", 3, 1200)
 
 
+# ═════════════════════ Órgãos dos sentidos e tegumentar (F6.3, pacote `sense`) ═════════════════════
+def adds(pid, cat, pattern, smooth=3, tris=2200, region="cabeca", exclude=(), maxel=20, cut=None):
+    add(pid, cat, pattern, smooth, tris, region, False, exclude, "sense", maxel)
+    if cut:
+        BODY[pid]["cut"] = cut
+
+
+adds("corioide", "orgao", r"choroid", 3, 2800)
+adds("corpo_ciliar", "orgao", r"region of ciliary body", 3, 2400)
+adds("zonula_ciliar", "estrutura", r"suspensory ligament of lens", 2, 2200)
+adds("retina", "orgao", r"optic part of retina", 3, 2800)
+adds("corpo_vitreo", "orgao", r"vitreous body", 4, 2200)
+adds("camara_anterior_olho", "estrutura", r"anterior chamber of eyeball", 3, 1800)
+adds("anel_tendineo_comum", "estrutura", r"common tendinous ring", 2, 1400)
+adds("troclea_obliquo_superior", "estrutura", r"trochlea of superior oblique", 2, 1000)
+adds("glandula_lacrimal", "glandula", r"lacrimal gland", 3, 1800)
+adds("canaliculos_lacrimais", "estrutura", r"lacrimal canaliculus", 2, 1200)
+adds("lago_lacrimal", "estrutura", r"lacrimal lake", 2, 800)
+adds("saco_lacrimal", "estrutura", r"lacrimal sac", 2, 1000)
+adds("ducto_nasolacrimal", "estrutura", r"nasolacrimal duct", 2, 1200)
+adds("cartilagem_septal", "estrutura", r"septal nasal cartilage", 3, 1400)
+adds("cartilagem_nasal_lateral", "estrutura", r"lateral nasal cartilage", 3, 1400)
+adds("cartilagem_alar_maior", "estrutura", r"major alar cartilage", 3, 1400)
+adds("labios", "estrutura", r"lip", 3, 2000)
+
+
+# ═════════════════════ Sistema urinário e genital masculino (F6.4, pacote `urin`) ═════════════════════
+def addu(pid, cat, pattern, smooth=3, tris=1800, region="tronco", exclude=(), maxel=20):
+    add(pid, cat, pattern, smooth, tris, region, False, exclude, "urin", maxel)
+
+
+addu("rim_direito", "orgao", r"right kidney", 4, 2500)
+addu("rim_esquerdo", "orgao", r"left kidney", 4, 2500)
+addu("ureter_direito", "orgao", r"right ureter", 3, 1800)
+addu("ureter_esquerdo", "orgao", r"left ureter", 3, 1800)
+addu("bexiga_urinaria", "orgao", r"urinary bladder", 4, 1200)
+addu("uretra_masculina", "orgao", r"urethra", 3, 1200)
+addu("prostata", "orgao", r"prostate", 4, 1200)
+addu("vesicula_seminal", "orgao", r"seminal vesicle", 3, 1600)
+addu("ducto_deferente", "orgao", r"deferent duct", 3, 2400)
+addu("epididimo", "orgao", r"epididymis", 3, 1200)
+addu("testiculo", "orgao", r"testis", 4, 1200)
+addu("corpo_cavernoso_penis", "orgao", r"corpus cavernosum of penis", 3, 1800)
+addu("corpo_esponjoso_penis", "orgao", r"corpus spongiosum of penis", 3, 1400)
+addu("glande_penis", "orgao", r"glans penis", 3, 1600)
+addu("arteria_testicular", "arteria", r"testicular artery", 3, 2200)
+addu("veia_testicular", "veia", r"testicular vein", 3, 2400)
+addu("arteria_dorsal_penis", "arteria", r"dorsal artery of penis", 3, 1600)
+addu("veia_dorsal_profunda_penis", "veia", r"deep dorsal vein of penis", 3, 1000)
+
+
 def resolve():
     out = {}
     for pid, d in BODY.items():

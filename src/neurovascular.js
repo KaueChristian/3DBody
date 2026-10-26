@@ -73,8 +73,13 @@ export const FEIXES = [
   },
   {
     id: 'feixe_pudendo', nome: 'Feixe pudendo (canal pudendo)',
-    membros: ['arteria_pudenda_interna', 'veia_pudenda_interna', 'n_pudendo'],
-    texto: 'A artéria e a veia pudendas internas e o nervo pudendo saem da pelve pelo forame isquiático maior, contornam a espinha isquiática, entram no períneo pelo forame isquiático menor e seguem no canal pudendo (de Alcock), na parede lateral da fossa isquioanal. O bloqueio do pudendo no parto é feito perto da espinha isquiática.',
+    membros: ['arteria_pudenda_interna', 'veia_pudenda_interna', 'arteria_dorsal_penis', 'veia_dorsal_profunda_penis', 'n_pudendo'],
+    texto: 'A artéria e a veia pudendas internas e o nervo pudendo saem da pelve pelo forame isquiático maior, contornam a espinha isquiática, entram no períneo pelo forame isquiático menor e seguem no canal pudendo (de Alcock), na parede lateral da fossa isquioanal; no dorso do pênis continuam como o feixe dorsal (veia dorsal profunda mediana, artérias dorsais e nervos dorsais). O bloqueio do pudendo no parto é feito perto da espinha isquiática.',
+  },
+  {
+    id: 'feixe_espermatico', nome: 'Funículo espermático (canal inguinal)',
+    membros: ['arteria_testicular', 'veia_testicular', 'ducto_deferente', 'funiculo_espermatico', 'canal_inguinal', 'cremaster', 'n_genitofemoral', 'n_ilioinguinal'],
+    texto: 'No canal inguinal, do anel profundo ao superficial e até o escroto, o funículo espermático reúne a artéria testicular, o plexo venoso pampiniforme (veia testicular), o ducto deferente e o ramo genital do nervo genitofemoral (que inerva o músculo cremaster), enquanto o nervo ilioinguinal percorre o canal aplicado à face externa do funículo.',
   },
   {
     id: 'feixe_obturatorio', nome: 'Feixe obturatório',

@@ -51,7 +51,7 @@ export const SEGMENTOS_MUSCULO = {
   serratil_post_sup: R('T2', 'T5'), serratil_post_inf: R('T9', 'T12'), intercostal_ext: R('T1', 'T11'), intercostal_int: R('T1', 'T11'),
   intercostal_intimo: R('T1', 'T11'), transverso_torax: R('T2', 'T6'), subcostais: R('T8', 'T12'), diafragma: R('C3', 'C5'),
   obliquo_externo: R('T7', 'T12'), obliquo_interno: R('T7', 'L1'), transverso_abdome: R('T7', 'L1'), reto_abdome: R('T7', 'T12'),
-  piramidal: R('T12'), quadrado_lombo: R('T12', 'L4'), psoas_maior: R('L1', 'L3'), iliaco: R('L2', 'L4'),
+  piramidal: R('T12'), cremaster: R('L1', 'L2'), quadrado_lombo: R('T12', 'L4'), psoas_maior: R('L1', 'L3'), iliaco: R('L2', 'L4'),
   // pelve e períneo
   pubococcigeo: R('S3', 'S4'), iliococcigeo: R('S3', 'S4'), puborretal: R('S3', 'S4'), coccigeo: R('S4', 'S5'), esfincter_anal_ext: R('S2', 'S4'),
   obturador_interno: cat(R('L5'), R('S1', 'S2')),
@@ -108,7 +108,7 @@ export const SEGMENTOS_NERVO = {
   n_ramo_palmar_mediano: R('C6', 'C7'), n_ramo_palmar_ulnar: R('C8'), n_ramo_dorsal_ulnar: R('C8'),
   n_digitais_palmares: R('C6', 'C8'), n_digitais_dorsais: R('C6', 'C8'),
   n_intercostais: R('T1', 'T6'), n_toracoabdominais: R('T7', 'T11'), n_subcostal: R('T12'), n_ilio_hipogastrico: R('L1'), n_ilioinguinal: R('L1'),
-  n_plexo_lombar: R('T12', 'L4'), n_femoral: R('L2', 'L4'), n_levantador_anus: R('S3', 'S5'), n_pudendo: R('S2', 'S4'),
+  n_genitofemoral: R('L1', 'L2'), n_plexo_lombar: R('T12', 'L4'), n_femoral: R('L2', 'L4'), n_levantador_anus: R('S3', 'S5'), n_pudendo: R('S2', 'S4'),
   n_obturador_interno: cat(R('L5'), R('S1', 'S2')),
   n_obturatorio: R('L2', 'L4'), n_gluteo_superior: R('L4', 'S1'), n_gluteo_inferior: R('L5', 'S2'), n_piriforme: R('S1', 'S2'),
   n_quadrado_femoral: R('L4', 'S1'), n_isquiatico: R('L4', 'S3'),

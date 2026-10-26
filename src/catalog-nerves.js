@@ -146,6 +146,7 @@ export const NERVES = [
   /* ═════════════════════ Nervos cranianos ═════════════════════ */
   nervo('n_optico', 'Nervo óptico (II)', 'N. opticus', 'cabeca', {
     parts: [{ id: 'n_optico', mat: 'nerve' }],
+    ramos: [{ m: 'retina', obs: 'visão (aferência especial)', sens: true, semRamo: true }],
   }, {
     origem: 'Axônios das células ganglionares da retina. É, na verdade, um trato do sistema nervoso central, envolvido pelas meninges.',
     trajeto: 'Sai do bulbo do olho pelo polo posterior, atravessa a órbita dentro do cone dos músculos retos e entra no crânio pelo canal óptico. No quiasma óptico cruzam as fibras das metades nasais das duas retinas; daí seguem os tratos ópticos até o corpo geniculado lateral.',
@@ -217,6 +218,7 @@ export const NERVES = [
       { pts: [[0.26, -0.36, 0.86], SK([0.17, -0.38, 0.98], -0.035), SK([0.12, -0.42, 1.05], -0.03)], r: 0.0045 },
       { pts: [[0.26, -0.36, 0.86], SK([0.24, -0.5, 0.95], -0.04), SK([0.2, -0.62, 1.0], -0.035)], r: 0.005 },
     ],
+    ramos: [{ m: 'labios', obs: 'lábio superior (ramos labiais superiores do infraorbital)', sens: true, semRamo: true }],
   }, {
     origem: 'Divisão intermediária, puramente sensitiva, do gânglio trigeminal.',
     trajeto: 'Passa pelo forame redondo até a fossa pterigopalatina (onde se relaciona com o gânglio pterigopalatino), entra na órbita pela fissura orbital inferior como nervo infraorbital, percorre o sulco e o canal infraorbitais e emerge na face pelo forame infraorbital.',
@@ -241,6 +243,9 @@ export const NERVES = [
     ramos: [
       { m: 'pterigoideo_medial', path: 1 },
       { m: 'pterigoideo_lateral', path: 2 },
+      { m: 'orelha', obs: 'nervo auriculotemporal', sens: true, semRamo: true },
+      { m: 'meato_acustico_externo', obs: 'nervo auriculotemporal', sens: true, semRamo: true },
+      { m: 'membrana_timpanica', obs: 'face externa (nervo auriculotemporal)', sens: true, semRamo: true },
     ],
   }, {
     origem: 'Divisão inferior do trigêmeo: raiz sensitiva do gânglio trigeminal unida à raiz motora. É a única divisão mista.',
@@ -275,6 +280,10 @@ export const NERVES = [
       { pts: [MENTUAL, SK([0.24, -0.82, 0.88], -0.035), SK([0.16, -0.76, 0.98], -0.03)], r: 0.005 },
       { pts: [MENTUAL, SK([0.2, -0.95, 0.9], -0.035)], r: 0.004 },
     ],
+    ramos: [
+      { m: 'o_dentes_inf', obs: 'ramos dentais inferiores', sens: true, semRamo: true },
+      { m: 'labios', obs: 'lábio inferior (nervo mentual)', sens: true, semRamo: true },
+    ],
   }, {
     origem: 'Divisão posterior do nervo mandibular (V3).',
     trajeto: 'Desce medialmente ao pterigóideo lateral e entre o ligamento esfenomandibular e o ramo da mandíbula; entra no forame da mandíbula (junto à língula), percorre o canal da mandíbula e, no forame mentual (abaixo do 2º pré-molar), dá o nervo mentual.',
@@ -293,6 +302,7 @@ export const NERVES = [
   }),
   nervo('n_lingual', 'Nervo lingual', 'N. lingualis', 'cabeca', {
     paths: [{ pts: [[0.25, -0.425, 0.165], [0.29, -0.47, 0.2], [0.325, -0.56, 0.27], CAST('mandibula', [0.0, -0.69, 0.42], [1, 0, 0], 0.025), CAST('mandibula', [0.0, -0.77, 0.47], [1, 0, 0], 0.025), [0.2, -0.83, 0.53], [0.16, -0.82, 0.62], [0.1, -0.79, 0.72]], r: 0.007 }],
+    ramos: [{ m: 'lingua', obs: 'sensibilidade geral dos 2/3 anteriores', sens: true, semRamo: true }],
   }, {
     origem: 'Divisão posterior do nervo mandibular (V3).',
     trajeto: 'Desce medialmente ao pterigóideo lateral, recebe a corda do tímpano (do facial), passa entre o pterigóideo medial e o ramo da mandíbula e corre sob a mucosa, medial ao 3º molar inferior. No assoalho da boca cruza o ducto submandibular por baixo e entra na língua.',
@@ -780,12 +790,39 @@ export const NERVES = [
   }),
   nervo('n_ilioinguinal', 'Nervo ilioinguinal (L1)', 'N. ilioinguinalis', 'tronco', {
     paths: [{ pts: [foramen('L1'), { sec: 'psoas_maior', y: -5.4, at: 'lat', d: 0.02 }, [0.86, -5.78, -0.05], CAST('iliaco', [1.0, -6.05, 1.2], [0, 0, -1], 0.02), [1.15, -6.4, 0.5], SK([1.02, -6.72, 0.82], -0.16), SK([0.62, -7.05, 0.95], -0.1), SK([0.3, -7.45, 0.9], -0.04)], r: 0.0055 }],
-    ramos: [{ m: 'obliquo_interno' }, { m: 'transverso_abdome' }],
+    ramos: [
+      { m: 'obliquo_interno' }, { m: 'transverso_abdome' },
+      { m: 'canal_inguinal', obs: 'atravessa o canal fora do funículo espermático', sens: true, semRamo: true },
+      { m: 'funiculo_espermatico', obs: 'acompanha o funículo no canal inguinal', sens: true, semRamo: true },
+    ],
   }, {
     origem: 'Ramo anterior de L1, abaixo do ílio-hipogástrico.',
     trajeto: 'Emerge da margem lateral do psoas, cruza o quadrado do lombo e o ilíaco, perfura o transverso e o oblíquo interno perto da espinha ilíaca anterossuperior e percorre o canal inguinal (lateral ao funículo espermático ou ao ligamento redondo), saindo pelo anel inguinal superficial.',
     sensibilidade: 'Pele da face medial superior da coxa, raiz do pênis e parte anterior do escroto (ou monte do púbis e lábio maior).',
     lesao: 'Neuralgia após hernioplastia inguinal (aprisionamento por tela ou sutura): dor que irradia para a virilha e o escroto ou lábio.',
+  }),
+  nervo('n_genitofemoral', 'Nervo genitofemoral (L1–L2)', 'N. genitofemoralis', ['tronco', 'membro_inf'], {
+    paths: [
+      // tronco: de L1–L2 atravessa o psoas maior e desce na face anterior dele
+      { pts: [foramen('L1'), { sec: 'psoas_maior', y: -5.55, at: 'ant', d: 0.015 }, { sec: 'psoas_maior', y: -6.0, at: 'ant', d: 0.015 }, { sec: 'psoas_maior', y: -6.4, at: 'ant', d: 0.015 }, [0.65, -6.58, 0.31]], r: 0.0055 },
+      { pts: [foramen('L2'), { sec: 'psoas_maior', y: -5.55, at: 'ant', d: 0.015 }], r: 0.0045 },
+      // ramo genital: entra no anel inguinal profundo, percorre o canal inguinal e o funículo espermático até o cremaster e o escroto
+      { pts: [[0.65, -6.58, 0.31], [0.88, -6.75, 0.39], [0.95, -6.81, 0.43], [0.68, -7.01, 0.63], [0.42, -7.23, 0.65], [0.24, -7.68, 0.62], [0.19, -8.12, 0.6]], r: 0.004 },
+      // ramo femoral: acompanha a artéria ilíaca externa sob o ligamento inguinal até a pele do trígono femoral
+      { pts: [[0.65, -6.58, 0.31], [0.74, -6.92, 0.38], [0.78, -7.28, 0.46], SK([0.78, -7.65, 0.56], -0.03)], r: 0.004 },
+    ],
+    ramos: [
+      { m: 'cremaster', path: 2, t: [0.2, 0.85], obs: 'ramo genital' },
+      { m: 'canal_inguinal', obs: 'ramo genital (entra pelo anel inguinal profundo)', sens: true, semRamo: true },
+      { m: 'funiculo_espermatico', obs: 'ramo genital', sens: true, semRamo: true },
+      { m: 'testiculo', obs: 'túnica vaginal e pele anterolateral do escroto (ramo genital)', sens: true, semRamo: true },
+    ],
+  }, {
+    origem: 'Ramos anteriores de L1 e L2 (plexo lombar), dentro da substância do psoas maior.',
+    trajeto: 'Atravessa obliquamente o ventre do músculo psoas maior para emergir na sua face anterior (ao nível de L3–L4), desce sobre o psoas sob o peritônio (cruzado anteriormente pelo ureter e pelos vasos gonadais) e divide-se acima do ligamento inguinal em **ramo genital** (que entra no canal inguinal pelo anel inguinal profundo, dentro do funículo espermático, para inervar o músculo cremaster e a pele do escroto ou lábio maior) e **ramo femoral** (que passa sob o ligamento inguinal, lateralmente à artéria femoral na bainha femoral, para a pele do trígono femoral).',
+    ramos: 'Ramo genital (motor para o músculo cremaster e sensitivo para a túnica vaginal e pele escrotal/labial) e ramo femoral (sensitivo para a pele superomedial da coxa, sobre o trígono femoral).',
+    sensibilidade: 'Pele anterolateral do escroto (ou monte do púbis e lábio maior) e túnica vaginal pelo ramo genital; pele sobre o trígono femoral pelo ramo femoral.',
+    lesao: 'Integra tanto a via aferente (ramo femoral, L1–L2) quanto a via eferente motora (ramo genital, L1–L2) do **reflexo cremastérico**: estimular a pele superomedial da coxa contrai o cremaster e eleva o testículo ipsilateral (reflexo abolido na torção testicular e nas lesões de L1–L2). Pode ser lesado ou aprisionado em hernioplastia inguinal aberta ou laparoscópica, causando dor inguinal e escrotal crônica.',
   }),
   nervo('n_plexo_lombar', 'Plexo lombar — ramos musculares', 'Plexus lumbalis, rami musculares', 'tronco', {
     paths: [
@@ -797,7 +834,7 @@ export const NERVES = [
   }, {
     origem: 'Ramos anteriores de T12 e L1–L4, que formam o plexo lombar dentro do psoas maior.',
     trajeto: 'Ramos musculares curtos saem das raízes diretamente para o psoas maior (L1–L3), o quadrado do lombo (T12–L4) e os intertransversários laterais lombares.',
-    ramos: 'O plexo lombar também forma os nervos ílio-hipogástrico, ilioinguinal, genitofemoral, cutâneo femoral lateral, femoral e obturatório (o genitofemoral e o cutâneo femoral lateral não estão desenhados: M09).',
+    ramos: 'O plexo lombar também forma os nervos ílio-hipogástrico, ilioinguinal, genitofemoral, cutâneo femoral lateral, femoral e obturatório (o cutâneo femoral lateral não está desenhado: M09).',
   }),
   nervo('n_femoral', 'Nervo femoral', 'N. femoralis', ['tronco', 'membro_inf'], {
     paths: [
@@ -847,6 +884,10 @@ export const NERVES = [
       { m: 'esfincter_uretra', obs: 'ramo profundo do nervo perineal', path: 4 },
       { m: 'pubococcigeo', obs: 'ramos retal inferior e perineal (face inferior)' },
       { m: 'puborretal', obs: 'ramo retal inferior (face inferior)' },
+      { m: 'glande_penis', obs: 'nervo dorsal do pênis', sens: true, semRamo: true },
+      { m: 'corpo_cavernoso_penis', obs: 'nervo dorsal do pênis', sens: true, semRamo: true },
+      { m: 'corpo_esponjoso_penis', obs: 'ramos perineais e nervo dorsal do pênis', sens: true, semRamo: true },
+      { m: 'uretra_masculina', obs: 'parte esponjosa e membranácea (nervo perineal e dorsal do pênis)', sens: true, semRamo: true },
     ],
   }, {
     origem: 'Ramos anteriores de S2, S3 e S4 (plexo sacral).',

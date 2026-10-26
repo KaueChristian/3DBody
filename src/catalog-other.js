@@ -210,24 +210,25 @@ export const GLANDS = [
     kind: 'estrutura', id: 'lingua', name: 'Língua', latin: 'Lingua', layer: 'glandula',
     parts: [{ id: 'lingua', mat: 'tongue' }],
     campos: [
-      ['Localização', 'Assoalho da cavidade oral.'],
-      ['Músculos', 'Extrínsecos (genioglosso, hioglosso, estiloglosso, palatoglosso) e intrínsecos.'],
-      ['Inervação', 'Motora: hipoglosso (XII). Sensitiva geral: lingual (V3) e glossofaríngeo; gustação: corda do tímpano (VII) e IX.'],
-      ['Função', 'Mastigação, deglutição, fala e gustação.'],
+      ['Localização e partes', 'Assoalho da cavidade oral e parede anterior da orofaringe; divide-se pelo sulco terminal (em V, cujo ápice é o forame cego) em corpo e ápice (dois terços anteriores, orais) e raiz (terço posterior, faríngeo, com a tonsila lingual). A face dorsal apresenta as papilas linguais: filiformes (mecânicas, sem botões gustativos), fungiformes, folhadas e circunvaladas ou valadas (com botões gustativos).'],
+      ['Músculos', 'Quatro extrínsecos (genioglosso, hioglosso, estiloglosso e palatoglosso — movem a língua) e quatro intrínsecos (longitudinal superior, longitudinal inferior, transverso e vertical — alteram sua forma), separados pelo septo lingual mediano.'],
+      ['Inervação e irrigação', 'Motora: nervo hipoglosso (XII) para todos os músculos, exceto o palatoglosso (plexo faríngeo, X). Sensibilidade geral e gustação: nos 2/3 anteriores, nervo lingual (V3, geral) e corda do tímpano (VII, paladar); no 1/3 posterior, nervo glossofaríngeo (IX, geral e paladar); na valécula e epiglote, nervo laríngeo superior (X). Irrigada pela artéria lingual.'],
+      ['Função e clínica', 'Mastigação, formação e propulsão do bolo alimentar na deglutição, articulação da fala e gustação. Na lesão unilateral do hipoglosso, a língua protrusa desvia para o lado paralisado (por ação do genioglosso sadio); a mucosa sublingual, fina e ricamente vascularizada (veia profunda da língua), permite rápida absorção de fármacos.'],
     ],
     nota: 'A malha mostra o volume da língua. Os músculos intrínsecos (longitudinais, transverso e vertical) estão desenhados por código dentro dela, de forma esquemática: oculte a língua na lista para vê-los.',
-    relacionados: ['sublingual', 'submandibular', 'parotida', 'epiglote', 'esofago', 'arteria_lingual'],
+    relacionados: ['sublingual', 'submandibular', 'parotida', 'labios', 'epiglote', 'esofago', 'arteria_lingual', 'genioglosso', 'hioglosso', 'estiloglosso', 'palatoglosso', 'lingua_long_sup', 'lingua_long_inf', 'lingua_transverso', 'lingua_vertical'],
   },
 ];
 
 export const SKIN = {
-  kind: 'estrutura', id: 'pele', name: 'Pele da face', latin: 'Cutis faciei', layer: 'pele',
+  kind: 'estrutura', id: 'pele', name: 'Pele e tela subcutânea (sistema tegumentar)', latin: 'Cutis (epidermis et dermis); Tela subcutanea; Pili', layer: 'pele',
   parts: [{ id: 'pele', mat: 'skin' }, { id: 'sobrancelha', mat: 'brow' }],
   campos: [
-    ['Camadas', 'Epiderme, derme e hipoderme (tecido subcutâneo com gordura).'],
-    ['Particularidades', 'É fina e muito vascularizada; muitos músculos da mímica inserem-se diretamente na derme, o que forma as rugas de expressão.'],
-    ['Inervação sensitiva', 'Ramos do trigêmeo: oftálmico (V1), maxilar (V2) e mandibular (V3).'],
-    ['Função', 'Proteção, termorregulação, sensibilidade e comunicação por expressões.'],
+    ['Camadas', 'Epiderme (epitélio estratificado pavimentoso queratinizado, avascular, com queratinócitos, melanócitos, células de Langerhans e de Merkel), derme (conjuntivo papilar superficial e reticular profundo, rico em fibras colágenas e elásticas nas linhas de tensão de Langer, vasos e nervos) e tela subcutânea ou hipoderme (tecido adiposo e conjuntivo frouxo que une a derme à fáscia profunda).'],
+    ['Anexos cutâneos', 'Pelos e folículos pilosos (como os supercílios/sobrancelhas incluídos na malha, associados ao músculo eretor do pelo e às glândulas sebáceas holócrinas), glândulas sudoríparas écrinas (termorreguladoras, em quase todo o corpo) e apócrinas (axila e períneo), unhas e glândulas mamárias.'],
+    ['Inervação e receptores', 'Inervação sensitiva somática organizada em dermátomos (na face, divisões V1, V2 e V3 do trigêmeo; no pescoço e tronco/membros, ramos dos nervos espinais), com terminações livres (dor e temperatura), corpúsculos de Meissner e discos de Merkel (tato fino), corpúsculos de Pacini (vibração e pressão profunda) e de Ruffini (estiramento). Fibras simpáticas inervam vasos, glândulas sudoríparas e músculos eretores do pelo.'],
+    ['Função e clínica', 'Maior órgão do corpo: barreira física e imunológica, termorregulação (sudorese e vasomotricidade), sensibilidade tátil/térmica/dolorosa, síntese de vitamina D e expressão facial (na face, os músculos da mímica inserem-se diretamente na derme). As incisões cirúrgicas acompanham as linhas de clivagem (de Langer) para melhor cicatrização; queimaduras classificam-se pela profundidade atingida (epiderme, derme parcial ou espessura total).'],
   ],
-  nota: 'Use o controle de opacidade da pele para ver as camadas profundas.',
+  nota: 'Use o controle de opacidade da pele para ver as camadas profundas. Assim que o pacote do membro inferior carrega, a malha passa a cobrir o corpo inteiro, junto com os supercílios (sobrancelhas).',
+  relacionados: ['labios', 'orelha', 'glandula_lacrimal', 'parotida'],
 };

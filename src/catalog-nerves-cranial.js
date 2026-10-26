@@ -22,6 +22,10 @@ export const NERVES_CRANIAL = [
       { pts: [[0.125, -0.112, 0.68], [0.115, -0.2, 0.685], [0.12, -0.3, 0.7]], r: 0.0022 },
       { pts: [[0.12, -0.11, 0.58], [0.11, -0.2, 0.585], [0.08, -0.28, 0.59]], r: 0.0022 },
     ],
+    ramos: [
+      { m: 'o_etmoide', obs: 'lâmina crivosa e concha nasal superior', sens: true, semRamo: true },
+      { m: 'cartilagem_septal', obs: 'mucosa olfatória da parte superior do septo', sens: true, semRamo: true },
+    ],
   }, {
     origem: 'Células receptoras (neurônios sensoriais olfatórios) da mucosa olfatória, no teto da cavidade nasal (concha nasal superior e parte alta do septo).',
     trajeto: 'Cerca de vinte filetes de cada lado atravessam a lâmina crivosa do etmoide e fazem sinapse no bulbo olfatório, na face inferior do lobo frontal. Do bulbo, o trato olfatório segue para trás e se divide nas estrias olfatórias medial e lateral.',
@@ -37,13 +41,17 @@ export const NERVES_CRANIAL = [
       { pts: [[0.17, -0.325, -0.085], [0.21, -0.335, -0.06], [0.245, -0.34, -0.035]], r: 0.0065 },
       { pts: [[0.17, -0.325, -0.085], [0.21, -0.31, -0.095], [0.245, -0.3, -0.105]], r: 0.0065 },
     ],
+    ramos: [
+      { m: 'coclea', obs: 'parte coclear (audição)', sens: true, semRamo: true },
+      { m: 'canais_semicirculares', obs: 'parte vestibular (equilíbrio)', sens: true, semRamo: true },
+    ],
   }, {
     origem: 'Parte coclear: gânglio espiral da cóclea (audição). Parte vestibular: gânglio vestibular (equilíbrio). Entram no tronco encefálico no sulco bulbopontino, lateralmente ao facial.',
     trajeto: 'As duas partes seguem juntas, unidas ao facial e ao nervo intermédio, pelo ângulo pontocerebelar e pelo meato acústico interno, até o fundo do meato. Ali se separam: a parte coclear vai à cóclea e a vestibular, ao utrículo, ao sáculo e às ampolas dos canais semicirculares.',
     ramos: 'Parte coclear (da cóclea aos núcleos cocleares) e parte vestibular (do labirinto vestibular aos núcleos vestibulares e ao cerebelo).',
     sensibilidade: 'Audição e equilíbrio (aferência somática especial). Não inerva músculos.',
     lesao: 'Perda auditiva neurossensorial, zumbido (tinnitus), vertigem e nistagmo. O schwannoma do vestibular (“neuroma do acústico”) nasce no meato acústico interno e comprime também o facial, no ângulo pontocerebelar. A ototoxicidade (aminoglicosídeos, cisplatina) lesa as células ciliadas.',
-    nota: 'O ouvido interno (cóclea, vestíbulo, canais semicirculares) não está no modelo: o nervo termina no fundo do meato acústico interno, dentro do temporal. Os trechos desenhados ficam, de fato, dentro do osso.',
+    nota: 'Termina no fundo do meato acústico interno, dentro da parte petrosa do osso temporal, onde se junta aos esquemas da cóclea e do vestíbulo com os canais semicirculares.',
   }),
   nervo('n_glossofaringeo', 'Nervo glossofaríngeo (IX)', 'N. glossopharyngeus', 'cabeca', {
     paths: [
@@ -53,7 +61,12 @@ export const NERVES_CRANIAL = [
       // ramo do seio carótico
       { pts: [[0.27, -0.76, 0.14], [0.3, -0.9, 0.14], [0.3, -1.0, 0.13]], r: 0.0025 },
     ],
-    ramos: [{ m: 'estilofaringeo', obs: 'única inervação motora', path: 1 }],
+    ramos: [
+      { m: 'estilofaringeo', obs: 'única inervação motora', path: 1 },
+      { m: 'lingua', obs: 'sensibilidade geral e paladar do 1/3 posterior', sens: true, semRamo: true },
+      { m: 'tuba_auditiva', obs: 'mucosa (plexo timpânico)', sens: true, semRamo: true },
+      { m: 'membrana_timpanica', obs: 'face interna (nervo timpânico)', sens: true, semRamo: true },
+    ],
   }, {
     origem: 'Núcleos do bulbo (ambíguo, salivatório inferior, do trato solitário e do trato espinal do trigêmeo). Emerge do sulco retro-olivar, acima do vago.',
     trajeto: 'Sai do crânio pelo forame jugular, com o vago e o acessório, passa entre a artéria carótida interna e a veia jugular interna, contorna o estilofaríngeo (que inerva) e segue entre os constritores superior e médio da faringe até a base da língua e a tonsila palatina.',
@@ -143,16 +156,23 @@ export const NERVES_CRANIAL = [
   }),
   nervo('n_lacrimal', 'Nervo lacrimal (V1)', 'N. lacrimalis', 'cabeca', {
     parts: [{ id: 'n_lacrimal', mat: 'nerve' }],
+    ramos: [{ m: 'glandula_lacrimal', obs: 'sensitivo e via final secretomotora', sens: true, semRamo: true }],
   }, {
     origem: 'Menor ramo do nervo oftálmico (V1). Entra na órbita pela fissura orbital superior, por fora do anel tendíneo comum.',
     trajeto: 'Segue pela parede lateral da órbita, junto à margem superior do reto lateral, até a glândula lacrimal e a parte lateral da pálpebra superior. Recebe um ramo comunicante do zigomático (V2), que lhe leva as fibras parassimpáticas secretomotoras vindas do gânglio pterigopalatino.',
     sensibilidade: 'Glândula lacrimal, conjuntiva e pele da parte lateral da pálpebra superior.',
     lesao: 'Dormência da pálpebra superior lateral. A via secretomotora da glândula (facial → petroso maior → gânglio pterigopalatino → zigomático → lacrimal) explica o olho seco que acompanha as lesões do facial proximais ao gânglio geniculado.',
-    nota: 'Não inerva músculos. A glândula lacrimal ainda não está no modelo.',
+    nota: 'Não inerva músculos; conduz à glândula lacrimal tanto a sensibilidade geral (V1) quanto as fibras parassimpáticas pós-ganglionares recebidas do nervo zigomático.',
   }),
   nervo('n_nasociliar', 'Nervo nasociliar (V1) e seus ramos', 'N. nasociliaris', 'cabeca', {
     parts: [{ id: 'n_nasociliar', mat: 'nerve' }],
-    ramos: [{ m: 'dilatador_pupila', obs: 'fibras simpáticas, pelos nervos ciliares longos', semRamo: true }],
+    ramos: [
+      { m: 'dilatador_pupila', obs: 'fibras simpáticas, pelos nervos ciliares longos', semRamo: true },
+      { m: 'cornea', obs: 'nervos ciliares longos (via aferente do reflexo corneano)', sens: true, semRamo: true },
+      { m: 'iris', obs: 'sensitivo (nervos ciliares longos)', sens: true, semRamo: true },
+      { m: 'corpo_ciliar', obs: 'sensitivo (nervos ciliares longos)', sens: true, semRamo: true },
+      { m: 'saco_lacrimal', obs: 'nervo infratroclear', sens: true, semRamo: true },
+    ],
   }, {
     origem: 'Ramo do nervo oftálmico (V1). Entra na órbita pelo anel tendíneo comum, entre as duas divisões do oculomotor.',
     trajeto: 'Cruza sobre o nervo óptico, corre sob o reto superior pela parede medial da órbita e termina como nervo etmoidal anterior e nervo infratroclear. O etmoidal anterior entra no crânio pelo forame etmoidal anterior, desce pela lâmina crivosa até a cavidade nasal e dá o ramo nasal externo.',
@@ -195,6 +215,7 @@ export const NERVES_CRANIAL = [
   }),
   nervo('n_nasopalatino', 'Nervo nasopalatino (V2)', 'N. nasopalatinus', 'cabeca', {
     paths: [{ pts: [[0.25, -0.32, 0.36], [0.17, -0.31, 0.4], [0.06, -0.34, 0.5], [0.03, -0.4, 0.68], [0.02, -0.48, 0.84], [0.01, -0.55, 0.92]], r: 0.0035 }],
+    ramos: [{ m: 'cartilagem_septal', obs: 'mucosa do septo nasal', sens: true, semRamo: true }],
   }, {
     origem: 'Ramo do nervo maxilar (V2), pelo gânglio pterigopalatino, na fossa pterigopalatina.',
     trajeto: 'Entra na cavidade nasal pelo forame esfenopalatino, cruza o teto da cavidade e desce obliquamente para a frente no septo nasal, entre a mucosa e o vômer, até o canal incisivo, atrás dos incisivos superiores, onde se anastomosa com o palatino maior.',
@@ -204,22 +225,28 @@ export const NERVES_CRANIAL = [
   }),
   nervo('n_corda_timpano', 'Corda do tímpano', 'Chorda tympani', 'cabeca', {
     paths: [{ pts: [[0.33, -0.34, -0.085], [0.36, -0.315, -0.05], [0.395, -0.3, -0.015], [0.375, -0.325, 0.065], [0.33, -0.4, 0.12], [0.29, -0.465, 0.195]], r: 0.0035 }],
-    ramos: [{ m: 'submandibular', obs: 'secretomotor, via gânglio submandibular' }, { m: 'sublingual', obs: 'secretomotor, via gânglio submandibular' }],
+    ramos: [
+      { m: 'submandibular', obs: 'secretomotor, via gânglio submandibular' },
+      { m: 'sublingual', obs: 'secretomotor, via gânglio submandibular' },
+      { m: 'lingua', obs: 'paladar dos 2/3 anteriores (via nervo lingual)', sens: true, semRamo: true },
+      { m: 'membrana_timpanica', obs: 'atravessa a face medial entre o martelo e a bigorna', sens: true, semRamo: true },
+    ],
   }, {
     origem: 'Nervo facial (VII), na parte descendente do canal do facial, cerca de 6 mm acima do forame estilomastóideo.',
     trajeto: 'Sobe por um canalículo e entra na cavidade timpânica, onde cruza a face medial da membrana timpânica, entre o martelo e a bigorna, e sai pela fissura petrotimpânica (de Glaser). Na fossa infratemporal junta-se ao nervo lingual, que a conduz à língua e ao gânglio submandibular.',
     sensibilidade: 'Paladar dos dois terços anteriores da língua (aferência visceral especial) e fibras parassimpáticas pré-ganglionares para as glândulas submandibular e sublingual, com relé no gânglio submandibular.',
     lesao: 'Perda do paladar nos 2/3 anteriores da língua e menor salivação do mesmo lado. Pode ser lesada em otite média, em cirurgia da orelha e, junto com o lingual, na extração do 3º molar inferior.',
-    nota: 'Explica por que a paralisia do facial dentro do osso, acima da origem da corda, também altera o paladar. Não inerva músculos. O modelo não tem a membrana timpânica: o trecho no ouvido médio é aproximado.',
+    nota: 'Explica por que a paralisia do facial dentro do osso, acima da origem da corda, também altera o paladar. Não inerva músculos; na cavidade timpânica passa exatamente entre o colo do martelo e o ramo longo da bigorna.',
   }, { label: false }),
   nervo('n_petroso_maior', 'Nervo petroso maior', 'N. petrosus major', 'cabeca', {
     paths: [{ pts: [[0.28, -0.275, -0.03], [0.268, -0.19, -0.02], [0.255, -0.195, 0.04], [0.235, -0.235, 0.12], [0.215, -0.205, 0.22], [0.215, -0.26, 0.31], [0.235, -0.3, 0.335]], r: 0.0035 }],
+    ramos: [{ m: 'glandula_lacrimal', obs: 'secretomotor pré-ganglionar (via gânglio pterigopalatino)', semRamo: true }],
   }, {
     origem: 'Nervo facial (VII), no gânglio geniculado, no joelho do canal do facial.',
     trajeto: 'Sai pelo hiato do canal do nervo petroso maior e corre no sulco da face anterior da parte petrosa do temporal, sob o gânglio trigeminal, até o forame lacerado. Une-se ao nervo petroso profundo (simpático, do plexo carótico) e forma o nervo do canal pterigóideo, que chega ao gânglio pterigopalatino.',
     sensibilidade: 'Fibras parassimpáticas pré-ganglionares (secretomotoras) para a glândula lacrimal, as glândulas da mucosa nasal e as do palato; algumas fibras de paladar do palato mole.',
     lesao: 'Lesão do facial acima do gânglio geniculado: além da paralisia facial, olho seco (menos lágrima). A regeneração aberrante após paralisia produz a “síndrome da lágrima de crocodilo”: lacrimejar ao comer.',
-    nota: 'Não inerva músculos. A glândula lacrimal ainda não está no modelo.',
+    nota: 'Não inerva músculos; é a via parassimpática pré-ganglionar da glândula lacrimal.',
   }, { label: false }),
   nervo('n_estapedio', 'Nervo para o estapédio', 'N. stapedius', 'cabeca', {
     paths: [{ pts: [[0.345, -0.295, -0.115], [0.36, -0.285, -0.095], [0.37, -0.275, -0.078]], r: 0.0028 }],
@@ -248,6 +275,7 @@ export const NERVES_CRANIAL = [
   /* ═════════════════════ F2.11 Gânglios autônomos e tronco simpático cervical ═════════════════════ */
   nervo('g_pterigopalatino', 'Gânglio pterigopalatino', 'Ganglion pterygopalatinum', 'cabeca', {
     paths: [{ pts: [[0.235, -0.3, 0.33], [0.25, -0.33, 0.365]], r: 0.0165 }],
+    ramos: [{ m: 'glandula_lacrimal', obs: 'secretomotor pós-ganglionar (via zigomático e lacrimal)', semRamo: true }],
   }, {
     origem: 'Parassimpático: nervo petroso maior (VII), pelo nervo do canal pterigóideo. Simpático: nervo petroso profundo (plexo carótico). Sensitivo: ramos do V2, que o atravessam sem relé.',
     trajeto: 'Fica pendurado no nervo maxilar, na fossa pterigopalatina, anterior ao canal pterigóideo, junto ao forame esfenopalatino. É o maior gânglio parassimpático da cabeça.',
