@@ -198,7 +198,8 @@ function runTests() {
     }
   }
 
-  // 6c. Circulatório (F5), respiratório (F6.1), digestório (F6.2), sentidos (F6.3) e urinário/genital masculino (F6.4): peças do pacote ↔ fichas, camadas por tipo e vizinhas existentes
+  // 6c. Circulatório (F5), respiratório (F6.1), digestório (F6.2), sentidos (F6.3), urinário/genital masculino (F6.4), genital feminino (F6.5) e
+  // endócrino (F6.6): peças do pacote ↔ fichas, camadas por tipo e vizinhas existentes
   {
     const fs = require('fs');
     const readPack = (name) => {
@@ -210,23 +211,25 @@ function runTests() {
     const digestPieces = readPack('digest');
     const sensePieces = readPack('sense');
     const urinPieces = readPack('urin');
+    const femPieces = readPack('fem');
+    const endoPieces = readPack('endo');
     const circOrUrinPieces = new Set([...circPieces, ...urinPieces]);
-    const pieces = new Set([...circPieces, ...respPieces, ...digestPieces, ...sensePieces, ...urinPieces]);
+    const pieces = new Set([...circPieces, ...respPieces, ...digestPieces, ...sensePieces, ...urinPieces, ...femPieces, ...endoPieces]);
     const circ = ITEMS.filter((i) => ['cardiaco', 'arteria', 'veia', 'orgao'].includes(i.kind) && i.parts?.length);
     // peças usadas por qualquer ficha (as cartilagens da laringe são fichas de osso no pacote do respiratório)
     const used = new Set(ITEMS.flatMap((i) => (i.parts ?? []).map((p) => p.id)));
     for (const i of circ) {
       const want = { cardiaco: 'coracao', arteria: 'arteria', veia: 'veia' }[i.kind];
       if (i.kind === 'orgao') {
-        if (i.layer !== 'respiratorio' && i.layer !== 'digestorio' && i.layer !== 'urinario') logFail(`"${i.id}" (orgao) deveria estar na camada "respiratorio", "digestorio" ou "urinario", e não em "${i.layer}".`);
+        if (!['respiratorio', 'digestorio', 'urinario', 'feminino'].includes(i.layer)) logFail(`"${i.id}" (orgao) deveria estar na camada "respiratorio", "digestorio", "urinario" ou "feminino", e não em "${i.layer}".`);
       } else if (i.layer !== want) {
         logFail(`"${i.id}" (${i.kind}) deveria estar na camada "${want}", e não em "${i.layer}".`);
       }
       const home = i.kind === 'orgao'
-        ? (i.layer === 'digestorio' ? digestPieces : i.layer === 'urinario' ? urinPieces : respPieces)
+        ? (i.layer === 'digestorio' ? digestPieces : i.layer === 'urinario' ? urinPieces : i.layer === 'feminino' ? femPieces : respPieces)
         : circOrUrinPieces;
       const packLabel = i.kind === 'orgao'
-        ? (i.layer === 'digestorio' ? 'digestório' : i.layer === 'urinario' ? 'urinário' : 'respiratório')
+        ? (i.layer === 'digestorio' ? 'digestório' : i.layer === 'urinario' ? 'urinário' : i.layer === 'feminino' ? 'genital feminino' : 'respiratório')
         : 'circulatório/urinário';
       for (const p of i.parts ?? []) {
         if (!home.has(p.id)) logFail(`"${i.id}" usa a peça "${p.id}", que não está no pacote do ${packLabel}.`);
@@ -288,6 +291,37 @@ function runTests() {
       if (it.proc?.length && !/ESQUEMA/.test(it.nota ?? '')) {
         logFail(`Estrutura esquemática urinária/genital "${id}" sem "ESQUEMA" na nota.`);
       }
+    }
+    // genital feminino (F6.5) e endócrino (F6.6): fichas completas, vínculos nos dois sentidos, esquemas declarados e peças nos pacotes certos
+    const femCheckIds = [
+      'utero_fundo', 'utero_corpo', 'utero_istmo', 'colo_utero', 'tuba_istmo', 'tuba_ampola', 'tuba_infundibulo', 'ovario',
+      'vagina', 'uretra_feminina', 'labios_menores', 'labios_maiores', 'clitoris', 'bulbos_vestibulo', 'glandulas_vestibulares_maiores',
+      'lig_largo_utero', 'lig_redondo_utero', 'lig_utero_ovarico', 'lig_suspensor_ovario', 'lig_uterossacro', 'lig_transverso_colo',
+      'arteria_uterina', 'arteria_ovarica', 'veia_ovarica', 'mama_corpo_adiposo', 'mama_glandula', 'mama_papila_areola', 'pelve_feminina',
+    ];
+    const endoCheckIds = ['hipotalamo', 'hipofise', 'glandula_pineal', 'tireoide', 'paratireoides', 'suprarrenal_direita', 'suprarrenal_esquerda'];
+    for (const [ids, layer, home, label] of [[femCheckIds, 'feminino', femPieces, 'genital feminino'], [endoCheckIds, 'endocrino', endoPieces, 'endócrino']]) {
+      for (const id of ids) {
+        const it = itemMap.get(id);
+        if (!it) { logFail(`Estrutura do ${label} "${id}" ausente do catálogo.`); continue; }
+        if (it.layer !== layer) logFail(`"${id}" deveria estar na camada "${layer}", e não em "${it.layer}".`);
+        if ((it.campos ?? []).length < 4 || it.campos.some(([, t]) => !t)) logFail(`Estrutura do ${label} "${id}" com ficha incompleta.`);
+        if (!(it.relacionados ?? []).length) logFail(`Estrutura do ${label} "${id}" sem estruturas relacionadas.`);
+        for (const r of it.relacionados ?? []) {
+          if (!itemMap.has(r)) logFail(`"${id}" relaciona estrutura inexistente "${r}".`);
+          else if (!(itemMap.get(r).relacionados ?? []).includes(id)) logFail(`"${id}" cita "${r}", que não o cita de volta.`);
+        }
+        if (it.proc?.length && !/ESQUEMA/.test(it.nota ?? '')) logFail(`Estrutura esquemática do ${label} "${id}" sem "ESQUEMA" na nota.`);
+        if (it.malha === 'hra' && !/Atlas de Referência Humano/.test(it.nota ?? '')) logFail(`"${id}" tem malha do HRA e a nota não diz de onde ela vem.`);
+        for (const p of it.parts ?? []) if (!home.has(p.id)) logFail(`"${id}" usa a peça "${p.id}", que não está no pacote do ${label}.`);
+      }
+    }
+    // modelo feminino: os órgãos genitais masculinos têm de sair de cena com a camada `feminino` (main.js, `itemVisible`)
+    for (const id of ['testiculo', 'prostata', 'vesicula_seminal', 'uretra_masculina', 'corpo_cavernoso_penis', 'glande_penis', 'funiculo_espermatico']) {
+      if (itemMap.get(id)?.sexo !== 'm') logFail(`Órgão masculino "${id}" sem a marca sexo: 'm'.`);
+    }
+    for (const id of ['bexiga_urinaria', 'rim_direito', 'ureter_esquerdo', 'canal_inguinal']) {
+      if (itemMap.get(id)?.sexo) logFail(`"${id}" existe nos dois sexos e não deveria ter a marca "sexo".`);
     }
     if (!itemMap.has('n_genitofemoral') || itemMap.get('n_genitofemoral')?.kind !== 'nervo') {
       logFail('Nervo genitofemoral ("n_genitofemoral") ausente do catálogo.');

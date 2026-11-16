@@ -590,6 +590,20 @@ addu("arteria_dorsal_penis", "arteria", r"dorsal artery of penis", 3, 1600)
 addu("veia_dorsal_profunda_penis", "veia", r"deep dorsal vein of penis", 3, 1000)
 
 
+# ═════════════════════ Sistema endócrino (F6.6, pacote `endo`) ═════════════════════
+# O banco não tem a tireoide nem as paratireoides (só a cartilagem tireóidea e os vasos): elas são esquemas por código
+# (src/catalog-endo.js). O hipotálamo vem em duas metades (FJ1760 e FJ1808), unidas numa peça só.
+def adde(pid, cat, pattern, smooth=3, tris=1400, region="tronco", exclude=(), maxel=20):
+    add(pid, cat, pattern, smooth, tris, region, False, exclude, "endo", maxel)
+
+
+adde("suprarrenal_direita", "glandula", r"right adrenal gland", 3, 1400)
+adde("suprarrenal_esquerda", "glandula", r"left adrenal gland", 3, 1600)
+adde("hipofise", "glandula", r"pituitary gland", 3, 1000, region="cabeca")
+adde("glandula_pineal", "glandula", r"pineal body", 3, 700, region="cabeca")
+adde("hipotalamo", "orgao", r"hypothalamus", 3, 1600, region="cabeca")
+
+
 def resolve():
     out = {}
     for pid, d in BODY.items():

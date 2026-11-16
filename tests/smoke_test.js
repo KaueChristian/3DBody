@@ -349,7 +349,7 @@ async function runSmokeTest() {
       document.getElementById('btnStudy').click();
       t(!document.getElementById('studyModal').hidden, 'o modal de estudo não abriu');
       const cards = [...document.querySelectorAll('.tour-card')];
-      t(cards.length === 18, `esperava 18 tours, veio ${cards.length}`);
+      t(cards.length === 20, `esperava 20 tours, veio ${cards.length}`);
       for (const c of cards) {
         t(!/undefined|null|NaN/.test(c.innerText), `cartão de tour com texto quebrado: ${c.innerText.slice(0, 60)}`);
         t((c.querySelector('.tour-desc')?.innerText.length ?? 0) > 20, 'cartão de tour sem descrição');
@@ -372,7 +372,7 @@ async function runSmokeTest() {
       const app = window.__app;
       const sc = app.studyController;
       const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-      for (const id of ['manguito', 'plexo_braquial', 'nervo_radial', 'mastigacao_v3', 'facial_mimica', 'parede_abdominal', 'circulacao', 'circulacao_fetal', 'circulatorio_generalidades', 'coracao_superficie', 'arterias_cabeca_pescoco', 'poligono_willis', 'sistema_porta', 'perna_pe', 'respiratorio', 'digestorio', 'sentidos', 'urinario_masculino']) {
+      for (const id of ['manguito', 'plexo_braquial', 'nervo_radial', 'mastigacao_v3', 'facial_mimica', 'parede_abdominal', 'circulacao', 'circulacao_fetal', 'circulatorio_generalidades', 'coracao_superficie', 'arterias_cabeca_pescoco', 'poligono_willis', 'sistema_porta', 'perna_pe', 'respiratorio', 'digestorio', 'sentidos', 'urinario_masculino', 'genital_feminino', 'endocrino']) {
         sc.startTour(id);
         const n = sc.activeTour.steps.length;
         for (let i = 0; i < n; i++) {
@@ -394,7 +394,7 @@ async function runSmokeTest() {
       }
       if (!document.getElementById('tourBox').hidden) f.push('o painel do tour continua aberto depois de sair');
       return f;
-    }, 'os passos dos 18 tours destacam e enquadram a estrutura');
+    }, 'os passos dos 20 tours destacam e enquadram a estrutura');
 
     await run(async () => {
       const f = [];
@@ -1198,6 +1198,85 @@ async function runSmokeTest() {
       app.setDissect(1);
       return f;
     }, 'F6.4: sistema urinário e genital masculino (rins, vias urinárias, próstata, testículo, pênis, canal inguinal e tour)');
+
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
+      const sc = app.studyController;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      for (let i = 0; i < 120 && !(app.state.nervesReady && app.state.femReady && app.state.endoReady); i++) await sleep(250);
+      t(app.state.femReady && document.body.classList.contains('fem-ready'), 'o pacote do genital feminino não carregou');
+      t(app.state.endoReady && document.body.classList.contains('endo-ready'), 'o pacote do endócrino não carregou');
+
+      // F6.5 e F6.6: todas as estruturas têm malha (real ou por código)
+      const femIds = [
+        'utero_fundo', 'utero_corpo', 'utero_istmo', 'colo_utero', 'tuba_istmo', 'tuba_ampola', 'tuba_infundibulo', 'ovario',
+        'vagina', 'uretra_feminina', 'labios_menores', 'labios_maiores', 'clitoris', 'bulbos_vestibulo', 'glandulas_vestibulares_maiores',
+        'lig_largo_utero', 'lig_redondo_utero', 'lig_utero_ovarico', 'lig_suspensor_ovario', 'lig_uterossacro', 'lig_transverso_colo',
+        'arteria_uterina', 'arteria_ovarica', 'veia_ovarica', 'mama_corpo_adiposo', 'mama_glandula', 'mama_papila_areola', 'pelve_feminina',
+      ];
+      const endoIds = ['hipotalamo', 'hipofise', 'glandula_pineal', 'tireoide', 'paratireoides', 'suprarrenal_direita', 'suprarrenal_esquerda'];
+      for (const id of [...femIds, ...endoIds]) t(app.M.has(id) && app.M.get(id).meshes.length > 0, 'sem malha no modelo: ' + id);
+
+      // modelo feminino: a camada vem desligada; ligá-la (selecionando o útero) tira de cena o genital masculino, e selecionar um órgão
+      // masculino a desliga de novo
+      app.setRegion('tronco', { fly: false });
+      app.setDissect(5);
+      const vis = (id) => app.M.get(id).group.visible;
+      t(!app.state.layers.has('feminino') && !vis('utero_corpo') && vis('testiculo'), 'o modelo feminino deveria vir desligado, com o testículo visível');
+      app.select('utero_corpo', { fly: false });
+      t(app.state.layers.has('feminino') && vis('utero_corpo') && vis('vagina'), 'selecionar o útero deveria ligar o modelo feminino');
+      t(!vis('testiculo') && !vis('prostata') && !vis('glande_penis') && !vis('uretra_masculina'), 'com o modelo feminino, o genital masculino deveria sair de cena');
+      t(vis('bexiga_urinaria') && vis('rim_direito') && vis('canal_inguinal'), 'com o modelo feminino, bexiga, rins e canal inguinal deveriam continuar visíveis');
+      app.select('testiculo', { fly: false });
+      t(!app.state.layers.has('feminino') && vis('testiculo') && !vis('utero_corpo'), 'selecionar o testículo deveria desligar o modelo feminino');
+      app.setDissect(5);
+      t(!app.state.layers.has('feminino'), 'mudar a dissecação deveria manter o modelo feminino desligado');
+
+      // relações espaciais na pelve, no pescoço e no crânio
+      const c = (id) => app.M.get(id).center;
+      t(c('utero_fundo').y > c('colo_utero').y && c('colo_utero').y > c('vagina').y, 'ordem craniocaudal fundo → colo → vagina incorreta');
+      t(c('uretra_feminina').z > c('vagina').z && c('vagina').z > c('canal_anal').z, 'a uretra deveria ficar à frente da vagina, e a vagina à frente do canal anal');
+      t(c('bexiga_urinaria').z > c('colo_utero').z, 'o colo do útero deveria ficar atrás da bexiga');
+      t(c('pelve_feminina').x < -3, 'a pelve feminina de comparação deveria ficar fora do corpo, à direita');
+      t(c('hipotalamo').y > c('hipofise').y && c('hipofise').y > c('tireoide').y && c('tireoide').y > c('suprarrenal_esquerda').y && c('suprarrenal_esquerda').y > c('ovario').y,
+        'ordem craniocaudal hipotálamo → hipófise → tireoide → suprarrenal → ovário incorreta');
+      const cart = app.M.get('cartilagem_cricoidea').center;
+      t(Math.abs(c('tireoide').y - cart.y) < 0.35 && c('tireoide').z > 0, 'a tireoide deveria ficar na altura da cartilagem cricóidea, na frente do pescoço');
+
+      // fichas: origem da malha, esquema declarado e vínculos
+      app.select('ovario', { fly: false });
+      let info = document.getElementById('info').textContent;
+      t(/Atlas de Referência Humano/.test(info) && /Artéria ovárica/.test(info) && /Ligamento suspensor do ovário/.test(info),
+        'a ficha do ovário deveria citar a malha do HRA e ligar à artéria ovárica e ao ligamento suspensor');
+      app.select('arteria_uterina', { fly: false });
+      info = document.getElementById('info').textContent;
+      t(/ESQUEMA/.test(info) && /Modelada por código/.test(info) && /Ureter esquerdo/.test(info) && /Artéria ilíaca interna/.test(info),
+        'a ficha da artéria uterina deveria declarar ESQUEMA e ligar ao ureter e à artéria ilíaca interna');
+      app.select('hipofise', { fly: false });
+      info = document.getElementById('info').textContent;
+      t(/Hipotálamo/.test(info) && /Glândula tireoide/.test(info) && /Malha real \(BodyParts3D\)/.test(info), 'a ficha da hipófise deveria ligar ao hipotálamo e à tireoide');
+      app.select('tireoide', { fly: false });
+      info = document.getElementById('info').textContent;
+      t(/ESQUEMA/.test(info) && /Glândulas paratireoides/.test(info) && /Artéria tireóidea inferior/i.test(info), 'a ficha da tireoide deveria declarar ESQUEMA e ligar às paratireoides e à artéria tireóidea inferior');
+
+      // tours: todos os passos destacam a estrutura certa
+      for (const [id, n] of [['genital_feminino', 12], ['endocrino', 7]]) {
+        sc.startTour(id);
+        t(sc.activeTour.steps.length === n, `o tour ${id} deveria ter ${n} passos`);
+        for (let i = 0; i < sc.activeTour.steps.length; i++) {
+          t(app.state.selected === sc.activeTour.steps[i].highlight, `o passo ${i + 1} do tour ${id} não destacou ${sc.activeTour.steps[i].highlight}`);
+          t(app.M.get(sc.activeTour.steps[i].highlight).group.visible, `o passo ${i + 1} do tour ${id} deixou ${sc.activeTour.steps[i].highlight} invisível`);
+          if (i < sc.activeTour.steps.length - 1) sc.tourStep(1);
+        }
+        sc.stopTour();
+      }
+      app.select(null, { fly: false });
+      app.setRegion('cabeca', { fly: false });
+      app.setDissect(1);
+      return f;
+    }, 'F6.5 e F6.6: genital feminino e mama (modelo feminino), endócrino e tours');
 
     await run(async () => {
       const f = [];

@@ -309,3 +309,10 @@ export const URIN_ITEMS = [
     relacionados: ['funiculo_espermatico', 'canal_inguinal', 'testiculo', 'epididimo', 'ducto_deferente', 'obliquo_interno', 'transverso_abdome', 'arteria_epigastrica_inferior', 'arteria_testicular'],
   },
 ];
+
+/**
+ * Órgãos só do homem: saem de cena quando a camada `feminino` (o modelo feminino, F6.5) está ligada, porque o útero, a vagina e a
+ * vulva ocupam o mesmo lugar na pelve e no períneo (ver `itemVisible` em main.js). Bexiga, ureteres, rins e canal inguinal ficam.
+ */
+const MASCULINOS = new Set(['uretra_masculina', 'testiculo', 'epididimo', 'ducto_deferente', 'vesicula_seminal', 'ducto_ejaculatorio', 'prostata', 'glandulas_bulbouretrais', 'corpo_cavernoso_penis', 'corpo_esponjoso_penis', 'glande_penis', 'arteria_testicular', 'veia_testicular', 'arteria_dorsal_penis', 'veia_dorsal_profunda_penis', 'funiculo_espermatico', 'cremaster']);
+for (const i of URIN_ITEMS) if (MASCULINOS.has(i.id)) i.sexo = 'm';

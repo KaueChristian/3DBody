@@ -6,7 +6,7 @@ import { loadAnatomy } from './anatomy.js';
 import { Surfaces, TORSO_PARTS } from './surfaces.js';
 import { buildProc, makeFiberTexture } from './proc.js';
 import { LM } from './landmarks.js';
-import { ITEMS as ALL_ITEMS, HEAD_IDS, BODY_ITEMS, LEG_ITEMS, CIRC_ITEMS, RESP_ITEMS, DIGEST_ITEMS, SENSE_ITEMS, URIN_ITEMS, NERVES, INNERVATION, IRRIGATION, LAYERS, KIND_LABEL, REGIONS, inRegion, layersForDissect } from './catalog.js';
+import { ITEMS as ALL_ITEMS, HEAD_IDS, BODY_ITEMS, LEG_ITEMS, CIRC_ITEMS, RESP_ITEMS, DIGEST_ITEMS, SENSE_ITEMS, URIN_ITEMS, FEM_ITEMS, ENDO_ITEMS, NERVES, INNERVATION, IRRIGATION, LAYERS, KIND_LABEL, REGIONS, inRegion, layersForDissect } from './catalog.js';
 import { NerveBuilder } from './nerve-geo.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { SKULL_PARTS } from './surfaces.js';
@@ -47,6 +47,8 @@ const state = {
   digestReady: false,
   senseReady: false,
   urinReady: false,
+  femReady: false,
+  endoReady: false,
   nervesReady: false,
   search: '',
   quiz: null,
@@ -159,7 +161,7 @@ function makeMaterial(key, color) {
 }
 
 /** Resolve disputas de profundidade entre superfícies quase coincidentes: camadas superficiais ganham. */
-const DEPTH_OFFSET = { nervo: -2.5, arteria: -2, veia: -2, linfatico: -2, coracao: -1, respiratorio: -0.5, digestorio: -0.5, urinario: -0.5, orbita: -0.5, ouvido: -0.5, fascia: -3, mimica: -2, sup: -2, pescoco: -1.5, med: -1.5, mastigacao: -1, ligamento: -1, articulacao: -0.5, prof: -0.5, osso: 0.5 };
+const DEPTH_OFFSET = { nervo: -2.5, arteria: -2, veia: -2, linfatico: -2, coracao: -1, respiratorio: -0.5, digestorio: -0.5, urinario: -0.5, feminino: -0.5, endocrino: -0.5, orbita: -0.5, ouvido: -0.5, fascia: -3, mimica: -2, sup: -2, pescoco: -1.5, med: -1.5, mastigacao: -1, ligamento: -1, articulacao: -0.5, prof: -0.5, osso: 0.5 };
 
 function jitter(hex, id) {
   const c = new THREE.Color(hex);
@@ -441,6 +443,8 @@ function regionOk(item) {
 
 function itemVisible(m) {
   if (!state.layers.has(m.item.layer) || state.hidden.has(m.item.id) || !regionOk(m.item)) return false;
+  // com o modelo feminino ligado (camada `feminino`), os órgãos genitais masculinos saem de cena: os dois ocupariam a mesma pelve
+  if (m.item.sexo === 'm' && state.layers.has('feminino')) return false;
   // com a pele opaca, o que está por baixo não deve vazar por pequenas diferenças entre as malhas
   if (state.layers.has('pele') && state.skin >= 0.9 && m.item.layer !== 'pele') return false;
   return true;
@@ -639,6 +643,7 @@ function select(id, { fly = true, panel = true } = {}) {
     if (!regionOk(m.item) && state.quiz?.mode !== 'locate') setRegion('todos', { fly: false });
     if (!itemVisible(m)) {
       state.layers.add(m.item.layer);
+      if (m.item.sexo === 'm') state.layers.delete('feminino');
       state.hidden.delete(id);
       syncLayers();
     }
@@ -1904,111 +1909,42 @@ async function loadCirc(parts, S, landmarks) {
 }
 
 /**
- * Sistema respiratório (F6.1). Mesmo molde do circulatório; carrega depois dele e antes dos nervos.
+ * Sistemas carregados depois do circulatório e antes dos nervos (F6), cada um no seu pacote `dist/anatomy-<key>.js`: respiratório (F6.1),
+ * digestório e baço (F6.2), órgãos dos sentidos (F6.3), urinário e genital masculino (F6.4), genital feminino e mama (F6.5) e endócrino
+ * (F6.6). Se um pacote não carregar, o resto do atlas continua como estava.
  */
-async function loadResp(parts, S, landmarks) {
-  setBodyStatus('Carregando o sistema respiratório…');
-  if (!(await loadScript('dist/anatomy-resp.js'))) {
-    setBodyStatus('Não foi possível carregar o sistema respiratório (dist/anatomy-resp.js).', true);
-    await new Promise((r) => setTimeout(r, 2500));
-    return;
-  }
-  const t0 = performance.now();
-  const respParts = await loadAnatomy(window.__ANATOMY_RESP);
-  perf.respDataMs = Math.round(performance.now() - t0);
-  const tBuild = performance.now();
-  for (const [id, p] of respParts) parts.set(id, p);
-  buildItems(respParts, S, RESP_ITEMS, jointContext(parts, landmarks));
-  perf.respStructuresMs = Math.round(performance.now() - tBuild);
-  state.respReady = true;
-  document.body.classList.add('resp-ready');
-  buildList();
-  applyVisibility();
-  syncList();
-  studyController?.onModelUpdated();
-  if (!setupEl.hidden) renderSetup();
-  console.info('[carga] respiratório', perf.respDataMs, 'ms · estruturas', perf.respStructuresMs, 'ms');
-}
+const SYSTEM_PACKS = [
+  { key: 'resp', items: RESP_ITEMS, what: 'o sistema respiratório', log: 'respiratório' },
+  { key: 'digest', items: DIGEST_ITEMS, what: 'o sistema digestório', log: 'digestório' },
+  { key: 'sense', items: SENSE_ITEMS, what: 'os órgãos dos sentidos', log: 'sentidos' },
+  { key: 'urin', items: URIN_ITEMS, what: 'o sistema urogenital', log: 'urogenital' },
+  { key: 'fem', items: FEM_ITEMS, what: 'o sistema genital feminino', log: 'genital feminino' },
+  { key: 'endo', items: ENDO_ITEMS, what: 'o sistema endócrino', log: 'endócrino' },
+];
 
-/**
- * Sistema digestório e baço (F6.2). Mesmo molde do respiratório; carrega depois dele e antes dos nervos.
- */
-async function loadDigest(parts, S, landmarks) {
-  setBodyStatus('Carregando o sistema digestório…');
-  if (!(await loadScript('dist/anatomy-digest.js'))) {
-    setBodyStatus('Não foi possível carregar o sistema digestório (dist/anatomy-digest.js).', true);
+async function loadSystem(sys, parts, S, landmarks) {
+  const file = `dist/anatomy-${sys.key}.js`;
+  setBodyStatus(`Carregando ${sys.what}…`);
+  if (!(await loadScript(file))) {
+    setBodyStatus(`Não foi possível carregar ${sys.what} (${file}).`, true);
     await new Promise((r) => setTimeout(r, 2500));
     return;
   }
   const t0 = performance.now();
-  const digestParts = await loadAnatomy(window.__ANATOMY_DIGEST);
-  perf.digestDataMs = Math.round(performance.now() - t0);
+  const sysParts = await loadAnatomy(window[`__ANATOMY_${sys.key.toUpperCase()}`]);
+  perf[`${sys.key}DataMs`] = Math.round(performance.now() - t0);
   const tBuild = performance.now();
-  for (const [id, p] of digestParts) parts.set(id, p);
-  buildItems(digestParts, S, DIGEST_ITEMS, jointContext(parts, landmarks));
-  perf.digestStructuresMs = Math.round(performance.now() - tBuild);
-  state.digestReady = true;
-  document.body.classList.add('digest-ready');
+  for (const [id, p] of sysParts) parts.set(id, p);
+  buildItems(sysParts, S, sys.items, jointContext(parts, landmarks));
+  perf[`${sys.key}StructuresMs`] = Math.round(performance.now() - tBuild);
+  state[`${sys.key}Ready`] = true;
+  document.body.classList.add(`${sys.key}-ready`);
   buildList();
   applyVisibility();
   syncList();
   studyController?.onModelUpdated();
   if (!setupEl.hidden) renderSetup();
-  console.info('[carga] digestório', perf.digestDataMs, 'ms · estruturas', perf.digestStructuresMs, 'ms');
-}
-
-/**
- * Órgãos dos sentidos e tegumentar (F6.3). Carrega depois do digestório e antes dos nervos.
- */
-async function loadSense(parts, S, landmarks) {
-  setBodyStatus('Carregando os órgãos dos sentidos…');
-  if (!(await loadScript('dist/anatomy-sense.js'))) {
-    setBodyStatus('Não foi possível carregar os órgãos dos sentidos (dist/anatomy-sense.js).', true);
-    await new Promise((r) => setTimeout(r, 2500));
-    return;
-  }
-  const t0 = performance.now();
-  const senseParts = await loadAnatomy(window.__ANATOMY_SENSE);
-  perf.senseDataMs = Math.round(performance.now() - t0);
-  const tBuild = performance.now();
-  for (const [id, p] of senseParts) parts.set(id, p);
-  buildItems(senseParts, S, SENSE_ITEMS, jointContext(parts, landmarks));
-  perf.senseStructuresMs = Math.round(performance.now() - tBuild);
-  state.senseReady = true;
-  document.body.classList.add('sense-ready');
-  buildList();
-  applyVisibility();
-  syncList();
-  studyController?.onModelUpdated();
-  if (!setupEl.hidden) renderSetup();
-  console.info('[carga] sentidos', perf.senseDataMs, 'ms · estruturas', perf.senseStructuresMs, 'ms');
-}
-
-/**
- * Sistema urinário e genital masculino (F6.4). Carrega depois dos sentidos e antes dos nervos.
- */
-async function loadUrin(parts, S, landmarks) {
-  setBodyStatus('Carregando o sistema urogenital…');
-  if (!(await loadScript('dist/anatomy-urin.js'))) {
-    setBodyStatus('Não foi possível carregar o sistema urogenital (dist/anatomy-urin.js).', true);
-    await new Promise((r) => setTimeout(r, 2500));
-    return;
-  }
-  const t0 = performance.now();
-  const urinParts = await loadAnatomy(window.__ANATOMY_URIN);
-  perf.urinDataMs = Math.round(performance.now() - t0);
-  const tBuild = performance.now();
-  for (const [id, p] of urinParts) parts.set(id, p);
-  buildItems(urinParts, S, URIN_ITEMS, jointContext(parts, landmarks));
-  perf.urinStructuresMs = Math.round(performance.now() - tBuild);
-  state.urinReady = true;
-  document.body.classList.add('urin-ready');
-  buildList();
-  applyVisibility();
-  syncList();
-  studyController?.onModelUpdated();
-  if (!setupEl.hidden) renderSetup();
-  console.info('[carga] urogenital', perf.urinDataMs, 'ms · estruturas', perf.urinStructuresMs, 'ms');
+  console.info(`[carga] ${sys.log}`, perf[`${sys.key}DataMs`], 'ms · estruturas', perf[`${sys.key}StructuresMs`], 'ms');
 }
 
 function loadBody() {
@@ -2048,29 +1984,13 @@ function loadBody() {
       } catch (err) {
         console.error('[circulatório]', err);
       }
-      // sistema respiratório (F6.1)
-      try {
-        await loadResp(parts, S2, lm);
-      } catch (err) {
-        console.error('[respiratório]', err);
-      }
-      // sistema digestório e baço (F6.2)
-      try {
-        await loadDigest(parts, S2, lm);
-      } catch (err) {
-        console.error('[digestório]', err);
-      }
-      // órgãos dos sentidos e tegumentar (F6.3)
-      try {
-        await loadSense(parts, S2, lm);
-      } catch (err) {
-        console.error('[sentidos]', err);
-      }
-      // sistema urinário e genital masculino (F6.4)
-      try {
-        await loadUrin(parts, S2, lm);
-      } catch (err) {
-        console.error('[urogenital]', err);
+      // sistemas da F6, um pacote cada, na ordem das aulas
+      for (const sys of SYSTEM_PACKS) {
+        try {
+          await loadSystem(sys, parts, S2, lm);
+        } catch (err) {
+          console.error(`[${sys.log}]`, err);
+        }
       }
       // nervos: montados em segundo plano, depois que cabeça e corpo já estão na tela
       setBodyStatus('Montando os nervos…');
@@ -2125,6 +2045,10 @@ const perf = {
   senseStructuresMs: 0,
   urinDataMs: 0,
   urinStructuresMs: 0,
+  femDataMs: 0,
+  femStructuresMs: 0,
+  endoDataMs: 0,
+  endoStructuresMs: 0,
   shadersWarmMs: 0,
   nervesMs: 0,
   totalReadyMs: 0,

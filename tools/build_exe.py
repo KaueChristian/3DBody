@@ -30,6 +30,7 @@ FILES = [
     "assets/icon-192.png", "assets/icon-512.png", "assets/icon-maskable-512.png", "assets/favicon.svg",
     "dist/version.js", "dist/app.js", "dist/anatomy-data.js",
     "dist/anatomy-nerves.js", "dist/anatomy-body.js", "dist/anatomy-leg.js", "dist/anatomy-circ.js", "dist/anatomy-resp.js", "dist/anatomy-digest.js", "dist/anatomy-sense.js", "dist/anatomy-urin.js",
+    "dist/anatomy-fem.js", "dist/anatomy-endo.js",
 ]
 LAUNCHER = os.path.join(ROOT, "tools", "launcher", "Launcher.cs")
 CSC = os.path.join(os.environ.get("WINDIR", r"C:\Windows"), r"Microsoft.NET\Framework64\v4.0.30319\csc.exe")
