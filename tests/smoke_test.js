@@ -349,7 +349,7 @@ async function runSmokeTest() {
       document.getElementById('btnStudy').click();
       t(!document.getElementById('studyModal').hidden, 'o modal de estudo não abriu');
       const cards = [...document.querySelectorAll('.tour-card')];
-      t(cards.length === 20, `esperava 20 tours, veio ${cards.length}`);
+      t(cards.length === 22, `esperava 22 tours, veio ${cards.length}`);
       for (const c of cards) {
         t(!/undefined|null|NaN/.test(c.innerText), `cartão de tour com texto quebrado: ${c.innerText.slice(0, 60)}`);
         t((c.querySelector('.tour-desc')?.innerText.length ?? 0) > 20, 'cartão de tour sem descrição');
@@ -372,7 +372,7 @@ async function runSmokeTest() {
       const app = window.__app;
       const sc = app.studyController;
       const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-      for (const id of ['manguito', 'plexo_braquial', 'nervo_radial', 'mastigacao_v3', 'facial_mimica', 'parede_abdominal', 'circulacao', 'circulacao_fetal', 'circulatorio_generalidades', 'coracao_superficie', 'arterias_cabeca_pescoco', 'poligono_willis', 'sistema_porta', 'perna_pe', 'respiratorio', 'digestorio', 'sentidos', 'urinario_masculino', 'genital_feminino', 'endocrino']) {
+      for (const id of ['revisao_n2_completa', 'manguito', 'plexo_braquial', 'nervo_radial', 'mastigacao_v3', 'facial_mimica', 'parede_abdominal', 'circulacao', 'circulacao_fetal', 'circulatorio_generalidades', 'coracao_superficie', 'arterias_cabeca_pescoco', 'poligono_willis', 'sistema_porta', 'perna_pe', 'respiratorio', 'digestorio', 'sentidos', 'urinario_masculino', 'genital_feminino', 'endocrino', 'urogenital_integrado']) {
         sc.startTour(id);
         const n = sc.activeTour.steps.length;
         for (let i = 0; i < n; i++) {
@@ -1215,9 +1215,18 @@ async function runSmokeTest() {
         'vagina', 'uretra_feminina', 'labios_menores', 'labios_maiores', 'clitoris', 'bulbos_vestibulo', 'glandulas_vestibulares_maiores',
         'lig_largo_utero', 'lig_redondo_utero', 'lig_utero_ovarico', 'lig_suspensor_ovario', 'lig_uterossacro', 'lig_transverso_colo',
         'arteria_uterina', 'arteria_ovarica', 'veia_ovarica', 'mama_corpo_adiposo', 'mama_glandula', 'mama_papila_areola', 'pelve_feminina',
+        'corpo_perineo', 'himen_glandulas_parauretrais', 'arteria_plexo_vaginal',
       ];
-      const endoIds = ['hipotalamo', 'hipofise', 'glandula_pineal', 'tireoide', 'paratireoides', 'suprarrenal_direita', 'suprarrenal_esquerda'];
-      for (const id of [...femIds, ...endoIds]) t(app.M.has(id) && app.M.get(id).meshes.length > 0, 'sem malha no modelo: ' + id);
+      const endoIds = ['hipotalamo', 'hipofise', 'glandula_pineal', 'tireoide', 'paratireoides', 'veias_tireoideas_ima', 'timo', 'suprarrenal_direita', 'suprarrenal_esquerda'];
+      const extraN2Ids = [
+        'cavidade_nasal', 'seios_paranasais', 'membrana_laringea_vocal', 'bronquios_lobares', 'mediastino',
+        'seio_sagital_superior', 'seio_cavernoso', 'seio_transverso_sigmoide', 'arteria_vesical_inferior', 'arterias_retais_media_inferior',
+        'plexo_venoso_pelvico', 'arteria_interossea_posterior', 'fossa_oval', 'troncos_linfaticos',
+        'omento_menor', 'omento_maior', 'lig_falciforme_coronario_figado', 'mesocolo_sigmoide', 'valva_ileocecal', 'esfincter_interno_anus',
+        'tonsilas_anel_waldeyer', 'ductos_salivares', 'pelve_calices_renais', 'fascia_renal_gerota', 'tunicas_testiculo_escroto',
+        'n_troncos_vagais', 'n_simpatico_toracolombar', 'n_plexo_cardiopulmonar', 'n_plexo_celiaco_mesenterico', 'n_plexo_hipogastrico_pelvico',
+      ];
+      for (const id of [...femIds, ...endoIds, ...extraN2Ids]) t(app.M.has(id) && app.M.get(id).meshes.length > 0, 'sem malha no modelo: ' + id);
 
       // modelo feminino: a camada vem desligada; ligá-la (selecionando o útero) tira de cena o genital masculino, e selecionar um órgão
       // masculino a desliga de novo
@@ -1261,16 +1270,25 @@ async function runSmokeTest() {
       info = document.getElementById('info').textContent;
       t(/ESQUEMA/.test(info) && /Glândulas paratireoides/.test(info) && /Artéria tireóidea inferior/i.test(info), 'a ficha da tireoide deveria declarar ESQUEMA e ligar às paratireoides e à artéria tireóidea inferior');
 
-      // tours: todos os passos destacam a estrutura certa
-      for (const [id, n] of [['genital_feminino', 12], ['endocrino', 7]]) {
+      // tours: todos os passos destacam a estrutura certa, e o urogenital integrado ativa o corte sagital nos passos de pelve
+      for (const [id, n] of [['genital_feminino', 12], ['endocrino', 7], ['urogenital_integrado', 10]]) {
         sc.startTour(id);
         t(sc.activeTour.steps.length === n, `o tour ${id} deveria ter ${n} passos`);
         for (let i = 0; i < sc.activeTour.steps.length; i++) {
-          t(app.state.selected === sc.activeTour.steps[i].highlight, `o passo ${i + 1} do tour ${id} não destacou ${sc.activeTour.steps[i].highlight}`);
-          t(app.M.get(sc.activeTour.steps[i].highlight).group.visible, `o passo ${i + 1} do tour ${id} deixou ${sc.activeTour.steps[i].highlight} invisível`);
+          const st = sc.activeTour.steps[i];
+          t(app.state.selected === st.highlight, `o passo ${i + 1} do tour ${id} não destacou ${st.highlight}`);
+          t(app.M.get(st.highlight).group.visible, `o passo ${i + 1} do tour ${id} deixou ${st.highlight} invisível`);
+          if (st.clip === 'sagittal,0,0') t(sc.clipping.activeAxis === 'sagittal', `o passo ${i + 1} do tour ${id} deveria ativar o corte sagital`);
           if (i < sc.activeTour.steps.length - 1) sc.tourStep(1);
         }
         sc.stopTour();
+        t(!sc.clipping.active, `sair do tour ${id} deveria desativar o plano de corte`);
+      }
+
+      // quiz teórico expandido (F6.7): gera perguntas para órgãos, coração, vasos e endócrino/outras além de músculos e nervos
+      for (const k of ['orgao', 'cardiaco', 'arteria', 'veia', 'linfatico', 'outras']) {
+        const p = sc.textQuiz.poolFor({ region: 'todos', kinds: [k], smart: 'all' });
+        t(p.length >= 10, `o quiz teórico deveria ter estruturas do tipo "${k}", tem ${p.length}`);
       }
       app.select(null, { fly: false });
       app.setRegion('cabeca', { fly: false });

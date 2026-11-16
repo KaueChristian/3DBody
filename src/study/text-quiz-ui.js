@@ -24,7 +24,7 @@ export class TextQuizRunner {
 
   /** Estruturas que o quiz teórico consegue usar com as opções escolhidas. */
   poolFor(setup, only = null) {
-    const kinds = (setup.kinds ?? []).filter((k) => k === 'musculo' || k === 'nervo');
+    const kinds = setup.kinds ?? [];
     const allow = only ? new Set(only) : this.ctl.smartSet(setup.smart);
     return this.generator.pool({ region: setup.region, kinds, allow });
   }
@@ -36,7 +36,7 @@ export class TextQuizRunner {
   start(setup, only = null) {
     const pool = this.poolFor(setup, only);
     if (!pool.length) {
-      this.ctl.toast('Nenhuma estrutura de músculo ou nervo com esses filtros.');
+      this.ctl.toast('Nenhuma estrutura com esses filtros.');
       return false;
     }
     const queue = shuffle(pool);
@@ -85,8 +85,9 @@ export class TextQuizRunner {
     this.scoreEl.textContent = this.scoreText();
     this.feedbackEl.innerHTML = '';
     // se o enunciado já cita a estrutura, mostrar onde ela está ajuda; senão, só depois de responder
+    for (const l of this.app.LAYERS) if (l.optional) this.app.state.layers.delete(l.id);
     if (question.named && this.app.M.has(question.targetId)) this.app.select(question.targetId, { fly: true, panel: false });
-    else this.app.select(null, { fly: false });
+    else { this.app.select(null, { fly: false }); this.app.syncLayers(); }
 
     this.optionsEl.innerHTML = question.options
       .map((o, i) => `<button type="button" data-id="${esc(o.id)}"><span class="kbadge" aria-hidden="true">${i + 1}</span>${esc(o.text)}</button>`)

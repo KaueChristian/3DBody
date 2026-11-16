@@ -641,6 +641,43 @@ body.quiz-text .region-seg button { pointer-events: none; }
 
 /* Tours */
 .tour-card { display: flex; flex-direction: column; gap: 6px; cursor: default; }
+.tour-card.featured {
+  grid-column: 1 / -1;
+  border-color: var(--accent);
+  background: linear-gradient(145deg, rgba(235, 168, 58, 0.14), rgba(26, 29, 36, 0.96));
+}
+.tour-featured-badge {
+  align-self: flex-start;
+  margin-top: 0 !important;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(235, 168, 58, 0.18);
+  border: 1px solid rgba(235, 168, 58, 0.45);
+  color: var(--accent);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+.exam-tour-card {
+  border-color: rgba(235, 168, 58, 0.55);
+  background: linear-gradient(145deg, rgba(235, 168, 58, 0.12), var(--panel-2));
+  margin-bottom: 10px;
+}
+.tour-step-select {
+  width: 100%;
+  margin: 0 0 8px;
+  padding: 6px 9px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  outline: none;
+}
+.tour-step-select:focus { border-color: var(--accent); }
+.tour-actions #tourCardBtn { margin-right: auto; }
 .tour-card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .tour-card-head h4 { margin: 0; }
 .tour-steps-count { font-size: 11px; color: var(--accent); font-weight: 600; white-space: nowrap; }

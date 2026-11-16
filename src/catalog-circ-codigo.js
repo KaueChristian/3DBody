@@ -44,11 +44,11 @@ export const CIRC_CODIGO = [
     trajeto: 'Desce, à frente, junto ao ramo externo do nervo laríngeo superior, até o polo superior do lobo da glândula tireoide.',
     ramos: 'Laríngea superior (perfura a membrana tíreo-hióidea com o nervo laríngeo interno), cricotireóidea, ramo infra-hióideo, ramo esternocleidomastóideo e ramos glandulares anterior e posterior.',
     territorio: 'Parte superior da glândula tireoide, laringe (parte superior), músculos infra-hióideos e esternocleidomastóideo.',
-    nota: esq('posição aproximada; a tireoide não existe no modelo. Na tireoidectomia, o ramo externo do nervo laríngeo superior fica perto da artéria, e a ligadura longe da glândula protege a voz.'),
+    nota: esq('posição aproximada. Na tireoidectomia, o ramo externo do nervo laríngeo superior fica perto da artéria junto ao polo superior da tireoide, e a ligadura dos ramos rente à cápsula da glândula protege a voz.'),
   }, {
     ...base, label: false,
     proc: [tubo([[0.27, -1.3, 0.26], [0.23, -1.37, 0.33], [0.18, -1.45, 0.38], [0.14, -1.52, 0.36]], 0.03, { nf: 14 })],
-    relacionados: ['arteria_carotida_externa', 'arteria_tireoidea_inferior'],
+    relacionados: ['arteria_carotida_externa', 'arteria_tireoidea_inferior', 'tireoide'],
   }),
   art('arteria_faringea_ascendente', 'Artéria faríngea ascendente — esquema', 'Arteria pharyngea ascendens', H, [], {
     origem: 'Face medial da carótida externa, perto da origem; é o menor ramo.',
@@ -246,5 +246,118 @@ export const CIRC_CODIGO = [
     ...base, label: false,
     proc: [tubo([[0.88, -12.5, -0.3], [0.95, -13.0, -0.3], [0.93, -13.5, -0.3], [0.9, -14.5, -0.33], [0.88, -15.2, -0.3], [0.9, -15.5, -0.28]], 0.028, { nf: 26 })],
     relacionados: ['arteria_tibial_posterior', 'veia_fibular'],
+  }),
+
+  /* ═════════════ Seios venosos da dura-máter, vasos pélvicos viscerais e interóssea posterior ═════════════ */
+  vein('seio_sagital_superior', 'Seios sagitais (superior e inferior), seio reto e confluência dos seios — esquema', 'Sinus sagittalis superior et inferior; Sinus rectus; Confluens sinuum', H, [], {
+    origem: 'O seio sagital superior começa no forame cego (à frente da crista etmoidal) e corre para trás na margem superior convexa da foice do cérebro; o seio sagital inferior corre na margem livre inferior da foice e une-se à veia cerebral magna (de Galeno) para formar o seio reto ao longo da junção entre a foice do cérebro e o tentório do cerebelo.',
+    trajeto: 'Desembocam posteriormente, junto à protuberância occipital interna, na confluência dos seios (tórcula de Herófilo), de onde o sangue segue para os seios transversos direito (em geral continuação do sagital superior) e esquerdo (em geral continuação do seio reto).',
+    ramos: 'Veias cerebrais superiores (veias-ponte que atravessam o espaço subdural), veias diploicas, veias emissárias parietais e a reabsorção do líquido cerebrospinal pelas granulações aracnóideas (de Pacchioni), que se projetam nas lacunas venosas laterais do seio sagital superior.',
+    territorio: 'Córtex cerebral das faces superolateral e medial dos hemisférios, núcleos profundos (via Galeno/seio reto), foice do cérebro e drenagem fisiológica do líquor para o sistema venoso.',
+    nota: esq('os seios venosos da dura-máter são canais endoteliais sem válvulas nem túnica muscular entre as lâminas periosteal e meníngea da dura-máter. A ruptura das veias cerebrais superiores (veias-ponte) ao entrarem no seio sagital superior causa o hematoma subdural; a trombose do seio sagital superior produz hipertensão intracraniana grave.'),
+  }, {
+    ...base, mat: 'vein', paired: false, label: false,
+    proc: [
+      // Seio sagital superior (arco mediano sob a calota craniana, da região frontal à protuberância occipital)
+      tubo([[0.0, 0.08, 0.82], [0.0, 0.58, 0.68], [0.0, 0.86, 0.25], [0.0, 0.82, -0.25], [0.0, 0.48, -0.68], [0.0, -0.05, -0.82]], 0.042, { nf: 30, taper: 'blunt', ref: [1, 0, 0] }),
+      // Seio sagital inferior e seio reto até a confluência dos seios
+      tubo([[0.0, 0.22, 0.32], [0.0, 0.28, 0.02], [0.0, 0.18, -0.22], [0.0, 0.06, -0.52], [0.0, -0.05, -0.82]], 0.026, { nf: 20, taper: 'blunt', ref: [1, 0, 0] }),
+    ],
+    relacionados: ['seio_transverso_sigmoide', 'seio_cavernoso', 'veia_jugular_interna', 'o_frontal', 'o_parietal', 'o_occipital', 'glandula_pineal'],
+  }),
+
+  vein('seio_cavernoso', 'Seio cavernoso e seios petrosos (superior e inferior) — esquema', 'Sinus cavernosus; Sinus petrosus superior et inferior', H, [], {
+    origem: 'Plexo venoso dural trabeculado situado de cada lado do corpo do osso esfenoide e da sela turca (onde fica a hipófise), estendendo-se da fissura orbital superior (à frente) até o ápice da parte petrosa do osso temporal (atrás); os dois lados comunicam-se pelos seios intercavernosos anterior e posterior ao redor do infundíbulo da hipófise.',
+    trajeto: 'Drena posteriormente pelos seios petrosos superior (que corre na margem superior da parte petrosa do temporal até a junção dos seios transverso e sigmoide) e inferior (que desce pelo sulco petroso inferior e atravessa o forame jugular para desembocar diretamente no bulbo superior da veia jugular interna), além de comunicar-se inferiormente com o plexo venoso pterigóideo e com o plexo basilar.',
+    ramos: 'Veias oftálmicas superior e inferior (pela fissura orbital superior), veia cerebral média superficial, seio esfenoparietal e veias hipofisárias.',
+    territorio: 'Órbita e bulbo do olho, hipófise (hormônios adeno e neuro-hipofisários lançados na circulação sistêmica), parte inferior do lobo frontal e temporal.',
+    nota: esq('é a única localização anatômica do corpo em que uma artéria (a carótida interna, em seu sifão cavernoso, cercada pelo plexo simpático carótico interno) atravessa completamente uma estrutura venosa, ao lado do nervo abducente (VI); na parede lateral do seio correm, de cima para baixo, os nervos oculomotor (III), troclear (IV), oftálmico (V1) e maxilar (V2). Infecções do "triângulo perigoso da face" (asa do nariz e lábio superior) podem propagar-se sem válvulas da veia facial → veia angular → veia oftálmica superior → seio cavernoso, causando trombose séptica do seio cavernoso (oftalmoplegia, quemose, exoftalmia e cefaleia).'),
+  }, {
+    ...base, mat: 'vein', label: false,
+    proc: [
+      // Corpo do seio cavernoso ao lado da sela turca e da hipófise
+      tubo([[0.16, -0.17, 0.45], [0.18, -0.18, 0.34], [0.19, -0.2, 0.24]], 0.055, { thick: 0.04, nf: 12, taper: 'blunt' }),
+      // Seio petroso superior (até o seio transverso/sigmoide) e petroso inferior (até o forame jugular)
+      tubo([[0.19, -0.2, 0.24], [0.3, -0.22, 0.08], [0.42, -0.24, -0.08]], 0.018, { nf: 14 }),
+      tubo([[0.19, -0.2, 0.24], [0.22, -0.32, 0.08], [0.25, -0.44, -0.06]], 0.02, { nf: 14 }),
+    ],
+    relacionados: ['hipofise', 'seios_paranasais', 'o_esfenoide', 'o_temporal', 'arteria_carotida_interna', 'veia_facial', 'seio_transverso_sigmoide', 'veia_jugular_interna'],
+  }),
+
+  vein('seio_transverso_sigmoide', 'Seios transverso e sigmoide — esquema', 'Sinus transversus; Sinus sigmoideus', H, [], {
+    origem: 'Os seios transversos começam na confluência dos seios (junto à protuberância occipital interna; o direito costuma ser mais calibroso por continuar o seio sagital superior, e o esquerdo continua o seio reto).',
+    trajeto: 'Cada seio transverso corre lateralmente e para a frente no sulco do seio transverso do occipital, ao longo da margem fixa do tentório do cerebelo; ao chegar à face posterior da parte petrosa do temporal, recebe o seio petroso superior e curva-se para baixo e medialmente em S como seio sigmoide (no sulco do seio sigmoide, separado das células mastóideas por uma fina lâmina óssea) até atravessar a parte posterior do forame jugular, continuando-se como o bulbo superior da veia jugular interna.',
+    ramos: 'Seio sagital superior, seio reto, seio petroso superior, veias cerebrais inferiores (incluindo a veia anastomótica inferior de Labbé), veias cerebelares e veia emissária mastóidea.',
+    territorio: 'Principal via de drenagem venosa de todo o encéfalo, das meninges e do líquor reabsorvido rumo às veias jugulares internas.',
+    nota: esq('pela íntima proximidade da parede anterior do sulco do seio sigmoide com o antro e as células mastóideas, otites médias agudas complicadas com mastoidite podem causar tromboflebite do seio sigmoide.'),
+  }, {
+    ...base, mat: 'vein', label: false,
+    proc: [
+      tubo([[0.0, -0.05, -0.82], [0.24, -0.08, -0.74], [0.44, -0.14, -0.52], [0.48, -0.2, -0.24], [0.42, -0.26, -0.08], [0.36, -0.38, -0.12], [0.28, -0.46, -0.08]], 0.042, { nf: 28, taper: 'blunt' }),
+    ],
+    relacionados: ['seio_sagital_superior', 'seio_cavernoso', 'veia_jugular_interna', 'o_occipital', 'o_temporal'],
+  }),
+
+  art('arteria_vesical_inferior', 'Artérias vesicais (superior e inferior) e umbilical — esquema', 'Arteriae vesicales superiores et inferior; Arteriaumbilicalis', T, [], {
+    origem: 'Divisão anterior da artéria ilíaca interna. As artérias vesicais superiores nascem da parte proximal patente da artéria umbilical (cuja parte distal obliterada sobe na parede abdominal anterior como ligamento umbilical medial, levantando a prega umbilical medial); a artéria vesical inferior nasce isolada ou em tronco comum com a retal média na pelve masculina (na mulher, é substituída pela artéria vaginal).',
+    trajeto: 'As vesicais superiores dirigem-se medialmente para o ápice e a parte posterossuperior do corpo da bexiga urinária; a vesical inferior corre no assoalho pélvico sobre o levantador do ânus até o fundo (base) da bexiga, a próstata e as glândulas seminais.',
+    ramos: 'Ramos para o ureter pélvico distal, ramos prostáticos e vesiculares, e a artéria do ducto deferente (que acompanha o ducto deferente até o testículo, onde se anastomosa com a artéria testicular e a cremastérica).',
+    territorio: 'Bexiga urinária (ápice, corpo e trígono), parte pélvica terminal do ureter, próstata, glândulas seminais e ducto deferente.',
+    nota: esq('trajeto medido entre a artéria ilíaca interna, a parede superolateral e o fundo da bexiga urinária e a próstata.'),
+  }, {
+    ...base, label: false,
+    proc: [
+      // Artéria umbilical (parte patente) e ramos vesicais superiores para a cúpula da bexiga
+      tubo([[0.28, -6.62, -0.28], [0.3, -6.82, -0.04], [0.28, -7.02, 0.18], [0.18, -7.1, 0.28]], 0.022, { nf: 18 }),
+      // Artéria vesical inferior para o fundo da bexiga, vesícula seminal e próstata
+      tubo([[0.28, -6.75, -0.34], [0.28, -7.05, -0.26], [0.22, -7.32, -0.18], [0.14, -7.46, -0.1]], 0.02, { nf: 18 }),
+    ],
+    relacionados: ['arteria_iliaca_interna', 'bexiga_urinaria', 'prostata', 'vesicula_seminal', 'ducto_deferente', 'ureter_direito', 'ureter_esquerdo', 'plexo_venoso_pelvico'],
+  }),
+
+  art('arterias_retais_media_inferior', 'Artérias retais média e inferior — esquema', 'Arteria rectalis media; Arteria rectalis inferior', T, [], {
+    origem: 'A artéria retal média nasce da divisão anterior da artéria ilíaca interna na pelve menor; a artéria retal inferior nasce da artéria pudenda interna dentro do canal do pudendo (de Alcock), na parede lateral da fossa isquioanal.',
+    trajeto: 'A retal média segue medialmente acima do diafragma da pelve (músculo levantador do ânus) até a parte média e inferior do reto; a retal inferior atravessa transversalmente o coxim adiposo da fossa isquioanal (abaixo do levantador do ânus), acompanhada pelo nervo retal inferior, até o canal anal e os esfíncteres.',
+    ramos: 'Anastomosam-se na parede anorretal entre si e com a artéria retal superior (ramo terminal ímpar da artéria mesentérica inferior), além de darem ramos para as glândulas seminais e a próstata (ou vagina).',
+    territorio: 'A retal média supre a camada muscular do reto médio/inferior e parte das glândulas acessórias; a retal inferior supre o canal anal abaixo da linha pectínea, os esfíncteres anais interno e externo e a pele perianal.',
+    nota: esq('a linha pectínea do canal anal é um divisor vascular, linfático e nervoso clássico: acima dela (endoderma), a irrigação é da retal superior (mesentérica inferior) e a drenagem é portal; abaixo dela (ectoderma), a irrigação é da retal inferior (pudenda interna) e a drenagem é sistêmica (cava inferior).'),
+  }, {
+    ...base, label: false,
+    proc: [
+      // Artéria retal média (acima do levantador do ânus, da ilíaca interna ao reto inferior)
+      tubo([[0.28, -6.82, -0.38], [0.25, -7.05, -0.4], [0.18, -7.22, -0.42]], 0.02, { nf: 14 }),
+      // Artéria retal inferior (abaixo do levantador do ânus, da pudenda interna na fossa isquioanal ao canal anal)
+      tubo([[0.26, -7.48, -0.58], [0.18, -7.58, -0.54], [0.1, -7.66, -0.5]], 0.018, { nf: 14 }),
+    ],
+    relacionados: ['arteria_iliaca_interna', 'arteria_pudenda_interna', 'arteria_retal_superior', 'reto', 'canal_anal', 'esfincter_anal_ext', 'plexo_venoso_pelvico'],
+  }),
+
+  vein('plexo_venoso_pelvico', 'Plexos venosos pélvicos (prostático, vesical e retal) — esquema', 'Plexus venosus prostaticus, vesicalis et rectalis', T, [], {
+    origem: 'Densa rede de veias intercomunicantes e desprovidas de válvulas na fáscia endopélvica visceral: anteriormente e dos lados da próstata e do fundo da bexiga (plexos prostático de Santorini e vesical, que recebem a veia dorsal profunda do pênis) e ao redor do reto e do canal anal (plexos retais interno submucoso e externo perirretal).',
+    trajeto: 'Drenam lateralmente pelas veias vesicais e retais médias para a veia ilíaca interna (circulação sistêmica cava inferior) e, pelo canal do pudendo, pelas veias retais inferiores para a veia pudenda interna; superiormente, o plexo retal drena pela veia retal superior para a veia mesentérica inferior (sistema porta hepático).',
+    ramos: 'Veia dorsal profunda do pênis (ou do clitóris), veias profundas da bexiga, da próstata, das glândulas seminais (ou do útero e da vagina) e do canal anal.',
+    territorio: 'Bexiga urinária, próstata e uretra prostática, glândulas seminais, reto e canal anal.',
+    nota: esq('apresenta duas conexões clínicas fundamentais: 1) no canal anal, o plexo retal interno forma os coxins hemorroidários e constitui uma importante anastomose portossistêmica (hipertensão portal e estase venosa geram hemorroidas internas acima da linha pectínea — indolores, cobertas por mucosa colunar — e externas abaixo dela — trombosadas e muito dolorosas, inervadas pelo nervo retal inferior); e 2) o plexo venoso prostático comunica-se diretamente, sem válvulas, com o plexo venoso vertebral interno (de Batson), explicando por que o adenocarcinoma de próstata origina precocemente metástases osteoblásticas para a coluna lombar e os ossos da pelve quando a pressão intra-abdominal sobe.'),
+  }, {
+    ...base, mat: 'vein', label: false,
+    proc: [
+      // Plexo prostático e vesical (de Santorini) ao redor da próstata e da base da bexiga
+      tubo([[0.06, -7.48, 0.08], [0.16, -7.42, -0.04], [0.22, -7.28, -0.18], [0.26, -7.02, -0.28]], 0.026, { nf: 18 }),
+      // Plexo retal ao redor do reto inferior e canal anal até a ilíaca interna e a retal superior
+      tubo([[0.09, -7.64, -0.48], [0.16, -7.42, -0.46], [0.2, -7.15, -0.44], [0.26, -6.92, -0.4]], 0.024, { nf: 18 }),
+    ],
+    relacionados: ['veia_iliaca_interna', 'veia_dorsal_profunda_penis', 'veia_pudenda_interna', 'veia_mesenterica_inferior', 'veia_porta', 'bexiga_urinaria', 'prostata', 'reto', 'canal_anal', 'arteria_vesical_inferior', 'arterias_retais_media_inferior'],
+  }),
+
+  art('arteria_interossea_posterior', 'Artéria interóssea posterior — esquema', 'Arteria interossea posterior', 'membro_sup', [], {
+    origem: 'Ramo da artéria interóssea comum (que nasce da artéria ulnar logo abaixo da tuberosidade do rádio, na fossa cubital).',
+    trajeto: 'Passa para trás entre o rádio e a ulna acima da margem superior da membrana interóssea do antebraço, emerge no compartimento posterior entre o supinador e o abdutor longo do polegar e desce entre as camadas superficial e profunda dos músculos extensores, acompanhada pelo nervo interósseo posterior (ramo profundo do nervo radial), até o dorso do punho.',
+    ramos: 'Artéria interóssea recorrente (sobe atrás do epicôndilo lateral para a rede articular do cotovelo), ramos musculares para os extensores superficiais e profundos do antebraço e anastomose distal com o ramo perfurante da artéria interóssea anterior e a rede carpal dorsal.',
+    territorio: 'Músculos do compartimento posterior (extensor) do antebraço e articulações do cotovelo e do punho.',
+    nota: esq('trajeto medido sobre a face posterior da membrana interóssea do antebraço, junto ao nervo interósseo posterior.'),
+  }, {
+    ...base, label: false,
+    proc: [tubo([[2.28, -5.08, -0.02], [2.36, -5.3, -0.08], [2.46, -5.85, -0.06], [2.56, -6.45, 0.02], [2.64, -6.95, 0.1]], 0.02, { nf: 22 })],
+    relacionados: ['arteria_interossea_comum', 'arteria_interossea_anterior', 'arteria_ulnar', 'arteria_radial', 'o_radio', 'o_ulna'],
   }),
 ];

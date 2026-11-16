@@ -127,11 +127,11 @@ export const IRRIGACAO = [
   [['pronador_quadrado'], ['arteria_interossea_anterior'], 'Artéria interóssea anterior (e ramos da radial e da ulnar na parte distal).'],
   [['braquiorradial'], ['arteria_radial', 'arteria_recorrente_radial', 'arteria_profunda_braco'], 'Artéria radial, recorrente radial e colateral radial (da profunda do braço).'],
   [['ecrl'], ['arteria_radial', 'arteria_recorrente_radial', 'arteria_profunda_braco'], 'Artéria radial, recorrente radial e colateral radial (da profunda do braço).'],
-  [['ecrb'], ['arteria_radial', 'arteria_recorrente_radial', 'arteria_interossea_comum'], 'Artéria radial e recorrente radial, com ramos da interóssea posterior.'],
-  [['ed', 'edm', 'ecu'], ['arteria_interossea_comum', 'arteria_interossea_anterior'], 'Artéria interóssea posterior (da interóssea comum), com ramos terminais da interóssea anterior no dorso do punho.'],
-  [['supinador'], ['arteria_recorrente_radial', 'arteria_interossea_comum'], 'Artérias recorrente radial e interóssea recorrente (da interóssea posterior).'],
-  [['apl', 'epb'], ['arteria_interossea_comum', 'arteria_radial'], 'Artéria interóssea posterior (da interóssea comum) e ramos da radial.'],
-  [['epl', 'extensor_indicador'], ['arteria_interossea_comum', 'arteria_interossea_anterior'], 'Artéria interóssea posterior (da interóssea comum), com ramos terminais da interóssea anterior.'],
+  [['ecrb'], ['arteria_radial', 'arteria_recorrente_radial', 'arteria_interossea_posterior', 'arteria_interossea_comum'], 'Artéria radial e recorrente radial, com ramos da interóssea posterior.'],
+  [['ed', 'edm', 'ecu'], ['arteria_interossea_posterior', 'arteria_interossea_comum', 'arteria_interossea_anterior'], 'Artéria interóssea posterior (da interóssea comum), com ramos terminais da interóssea anterior no dorso do punho.'],
+  [['supinador'], ['arteria_recorrente_radial', 'arteria_interossea_posterior', 'arteria_interossea_comum'], 'Artérias recorrente radial e interóssea recorrente (da interóssea posterior).'],
+  [['apl', 'epb'], ['arteria_interossea_posterior', 'arteria_interossea_comum', 'arteria_radial'], 'Artéria interóssea posterior (da interóssea comum) e ramos da radial.'],
+  [['epl', 'extensor_indicador'], ['arteria_interossea_posterior', 'arteria_interossea_comum', 'arteria_interossea_anterior'], 'Artéria interóssea posterior (da interóssea comum), com ramos terminais da interóssea anterior.'],
 
   /* ═════════ Mão ═════════ */
   [['abdutor_polegar_curto', 'flexor_polegar_curto', 'oponente_polegar'], ['arteria_radial', 'arteria_princeps_polegar', 'arteria_arco_palmar_superficial'], 'Ramo palmar superficial da radial e artéria principal do polegar; o flexor curto também recebe ramos do arco palmar superficial.'],

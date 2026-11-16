@@ -183,8 +183,8 @@ export const CIRC_ESQUEMAS = [
     ['Clínica', 'Os linfonodos mediastinais aumentam no linfoma, no câncer de pulmão e de esôfago e na sarcoidose; o timoma e os linfomas formam massas do mediastino anterior.'],
   ], {
     paired: false,
-    nota: 'ESQUEMA: dois linfonodos de cada tipo representam os grupos: os anteriores atrás do manúbrio e à frente do arco da aorta (onde, no modelo, há espaço entre o esterno e os vasos), os posteriores ao lado do esôfago, um à direita dele e outro junto da aorta descendente. Posições aproximadas; o timo, que fica na mesma região dos anteriores, ainda não está no modelo.',
-    relacionados: ['arco_aorta', 'aorta_toracica', 'linfonodos_traqueobronquicos', 'ducto_toracico'],
+    nota: 'ESQUEMA: dois linfonodos de cada tipo representam os grupos: os anteriores atrás do manúbrio e à frente do arco da aorta (junto ao timo), os posteriores ao lado do esôfago, um à direita dele e outro junto da aorta descendente. Posições aproximadas.',
+    relacionados: ['timo', 'arco_aorta', 'aorta_toracica', 'linfonodos_traqueobronquicos', 'ducto_toracico'],
   }),
   grupo('linfonodos_celiacos_mesentericos', 'Linfonodos celíacos e mesentéricos — esquema', 'Nodi lymphoidei coeliaci et mesenterici', [[0.12, -4.55, 0.44], [-0.02, -4.6, 0.42], [0.0, -5.0, 0.52], [-0.1, -5.3, 0.7], [-0.06, -5.6, 0.66], [0.18, -5.6, 0.56], [0.2, -5.9, 0.52]], 0.06, [
     ['Localização', 'Pré-aórticos, em volta da origem do tronco celíaco (celíacos) e das artérias mesentéricas superior e inferior, e no mesentério, junto aos vasos (mesentéricos).'],
@@ -254,5 +254,40 @@ export const CIRC_ESQUEMAS = [
     paired: false,
     nota: 'ESQUEMA: forma e posição aproximadas; o BodyParts3D só tem o músculo papilar anterolateral (“lateral”). A ruptura do papilar posteromedial, mais frequente que a do anterolateral, causa insuficiência mitral aguda no infarto da parede inferior. As cordas tendíneas dele não estão no modelo.',
     relacionados: ['papilar_ve', 'valva_mitral', 'ventriculo_esquerdo'],
+  }),
+
+  cond('fossa_oval', 'Fossa oval e limbo da fossa oval (forame oval fetal) — esquema', 'Fossa ovalis; Limbus fossae ovalis (Foramen ovale)', [
+    tubo([[-0.06, -3.02, 0.25], [-0.04, -2.95, 0.26], [-0.02, -2.88, 0.25]], 0.11, 0.032, { nf: 10, nc: 10 }),
+  ], [
+    ['Localização', 'Depressão oval rasa na face direita da parede interatrial (septo interatrial), no átrio direito, situada acima e à esquerda do óstio da veia cava inferior e posterior ao óstio do seio coronário. Seu assoalho fino (lâmina da fossa oval) deriva do septum primum embrionário, e sua margem saliente em ferradura superior e anterior (limbo da fossa oval) deriva da borda livre do septum secundum.'],
+    ['Na vida fetal', 'Corresponde ao forame oval fetal: um curto-circuito (shunt direita-esquerda) dotado de válvula unidirecional que permite que o sangue bem oxigenado trazido pela veia umbilical, pelo ducto venoso e pela veia cava inferior passe diretamente do átrio direito para o átrio esquerdo, desviando dos pulmões colabados rumo ao coração esquerdo, às coronárias e ao encéfalo.'],
+    ['Fechamento pós-natal', 'Ao nascimento, a expansão pulmonar reduz abruptamente a resistência vascular pulmonar e eleva o retorno venoso pelas veias pulmonares; a pressão no átrio esquerdo supera a do átrio direito, comprimindo a válvula do forame oval (septum primum) contra o limbo (septum secundum), com fechamento funcional imediato e fusão anatômica fibrosa nos primeiros meses de vida.'],
+    ['Clínica', 'Em cerca de 20 % a 25 % dos adultos a fusão anatômica é incompleta, restando uma fenda obliqua permeável à sonda ("forame oval patente", FOP), em geral assintomática, mas que pode permitir a passagem de um trombo venoso profundo para o átrio esquerdo durante manobra de Valsalva (embolia paradoxal e AVC criptogênico). A falha no desenvolvimento dos septos produz a comunicação interatrial (CIA, a mais comum sendo a do tipo ostium secundum, na região da fossa oval), com shunt esquerda-direita e desdobramento fixo de B2 na ausculta.'],
+  ], {
+    color: '#c96b78',
+    nota: 'ESQUEMA: como o septo interatrial faz parte da malha contínua das câmaras no BodyParts3D, a fossa oval e seu limbo foram modelados por código na parede medial do átrio direito, entre os dois átrios (visível com o plano de corte).',
+    relacionados: ['atrio_direito', 'atrio_esquerdo', 'veia_cava_inferior', 'seio_coronario', 'no_atrioventricular', 'ducto_venoso', 'ligamento_arterial'],
+  }),
+
+  linfatico('troncos_linfaticos', 'Troncos linfáticos (jugular, subclávio, broncomediastinal, lombar e intestinal) — esquema', 'Trunci lymphatici (jugularis, subclavius, bronchomediastinalis, lumbalis, intestinalis)', [
+    // Troncos lombares direito e esquerdo e tronco intestinal convergindo na cisterna do quilo
+    tubo([[0.12, -5.25, 0.22], [0.06, -4.85, 0.2], [0.02, -4.55, 0.18]], 0.022, 0.022, { nf: 12, nc: 8 }),
+    tubo([[-0.1, -5.25, 0.22], [-0.04, -4.85, 0.2], [0.01, -4.55, 0.18]], 0.022, 0.022, { nf: 12, nc: 8 }),
+    tubo([[0.05, -4.95, 0.38], [0.03, -4.72, 0.28], [0.02, -4.55, 0.18]], 0.022, 0.022, { nf: 10, nc: 8 }),
+    // Troncos jugular, subclávio e broncomediastinal esquerdos e direitos junto aos ângulos venosos
+    tubo([[0.26, -1.55, 0.08], [0.28, -1.8, 0.14], [0.3, -1.96, 0.2]], 0.02, 0.02, { nf: 12, nc: 8 }),
+    tubo([[0.58, -2.02, 0.18], [0.44, -2.0, 0.2], [0.3, -1.96, 0.2]], 0.02, 0.02, { nf: 12, nc: 8 }),
+    tubo([[-0.26, -1.55, 0.08], [-0.28, -1.8, 0.14], [-0.3, -1.96, 0.2]], 0.02, 0.02, { nf: 12, nc: 8 }),
+    tubo([[-0.58, -2.02, 0.18], [-0.44, -2.0, 0.2], [-0.3, -1.96, 0.2]], 0.02, 0.02, { nf: 12, nc: 8 }),
+  ], [
+    ['Localização', 'Grandes vasos coletores que reúnem a linfa das principais cadeias de linfonodos regionais antes de desembocar nos dois ductos linfáticos terminais (ducto torácico e ducto linfático direito) ou diretamente nos ângulos venosos jugulossubclávios (de Pirogoff).'],
+    ['No abdome', 'Os troncos lombares direito e esquerdo (que trazem a linfa dos membros inferiores, da pelve, do períneo, dos rins, das suprarrenais, dos testículos/ovários e da parede abdominal profunda, vinda dos linfonodos lombares/cavais/aórticos) e o tronco intestinal (que traz o quilo rico em quilomícrons do tubo digestório, fígado, pâncreas e baço, vindo dos linfonodos celíacos e mesentéricos) confluem em L1–L2 para formar a cisterna do quilo e a origem do ducto torácico.'],
+    ['No pescoço e tórax', 'De cada lado convergem três troncos para o respectivo ângulo venoso (junção da veia jugular interna com a subclávia): 1) tronco jugular (cabeça e pescoço, dos linfonodos cervicais profundos); 2) tronco subclávio (membro superior e maior parte da mama, dos linfonodos axilares apicais); e 3) tronco broncomediastinal (pulmões, brônquios, traqueia, esôfago, coração, timo e cadeia paraesternal). À esquerda unem-se à parte terminal do ducto torácico; à direita formam o curto ducto linfático direito (ou abrem-se separadamente nas veias).'],
+    ['Clínica', 'Explicam a assimetria da drenagem linfática corporal: o quadrante superior direito (hemicabeça direita, membro superior direito e hemitórax direito) drena para o ângulo venoso direito, enquanto os outros três quartos do corpo (ambos os membros inferiores, todo o abdome e a pelve, hemitórax esquerdo, membro superior esquerdo e hemicabeça esquerda) drenam pelo ducto torácico no ângulo venoso esquerdo. Por isso, metástases de cânceres abdominais, pélvicos ou testiculares sobem pelo ducto torácico até o linfonodo supraclavicular esquerdo (nódulo de Virchow / sinal de Troisier).'],
+  ], {
+    region: ['cabeca', T],
+    paired: false,
+    nota: 'ESQUEMA: tubos curtos modelados por código representando a convergência dos troncos lombares e intestinal na cisterna do quilo e dos troncos jugulares, subclávios e broncomediastinais nos ângulos venosos.',
+    relacionados: ['cisterna_quilo', 'ducto_toracico', 'ducto_linfatico_direito', 'linfonodos_lombares', 'linfonodos_celiacos_mesentericos', 'linfonodos_cervicais_profundos', 'linfonodos_axilares', 'linfonodos_traqueobronquicos', 'linfonodos_mamarios_internos', 'veia_jugular_interna', 'veia_subclavia'],
   }),
 ];

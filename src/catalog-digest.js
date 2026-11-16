@@ -27,14 +27,14 @@ const C_PERITONIO = '#dfb888';
 const notaTA = (n, ta, pt) => `Nomenclatura: o latim da Terminologia Anatômica chama o segmento ${n} de “${ta}”, e a divisão cirúrgica (Couinaud, revista em Brisbane, 2000) o descreve como ${pt}. É o mesmo segmento: a TA usa uma nomenclatura mais antiga, que chama de anterior o segmento inferior e de posterior o superior e, no lobo direito, chama de lateral e medial os setores que a cirurgia chama de posterior e anterior.`;
 
 const dig = (id, name, latin, region, parts, color, d, extra = {}) => ({
-  kind: 'orgao',
+  kind: extra.kind ?? 'orgao',
   id,
   name,
   latin,
   layer: 'digestorio',
   region,
   color,
-  parts: parts.map((p) => ({ id: p, mat: extra.mat ?? 'viscera' })),
+  ...(parts ? { parts: parts.map((p) => ({ id: p, mat: extra.mat ?? 'viscera' })) } : { mat: extra.mat ?? 'viscera' }),
   campos: [
     ['Localização e partes', d.local],
     ['Relações e peritônio', d.relacoes],
@@ -44,6 +44,8 @@ const dig = (id, name, latin, region, parts, color, d, extra = {}) => ({
   nota: d.nota,
   ...extra,
 });
+
+const tube = (pts, width, thick = width, ref = [0, 0, 1], nc = 10) => ({ kind: 'tube', pts, ref, width, thick, taper: 'blunt', nf: Math.max(14, pts.length * 5), nc });
 
 export const DIGEST_ITEMS = [
   /* ═════════════ Tubo digestório: esôfago e estômago ═════════════ */
@@ -397,5 +399,144 @@ export const DIGEST_ITEMS = [
     label: false,
     mat: 'peritonio',
     relacionados: ['apendice_vermiforme', 'ceco', 'ileo', 'mesenterio', 'arteria_apendicular', 'arteria_ileocolica'],
+  }),
+
+  /* ═════════════ Omentos, ligamentos peritoneais, valva ileocecal, esfíncter interno, tonsilas e ductos salivares (esquemas) ═════════════ */
+  dig('omento_menor', 'Omento menor (ligamentos hepatogástrico e hepatoduodenal) e forame omental — esquema', 'Omentum minus (Ligamentum hepatogastricum et ligamentum hepatoduodenale); Foramen omentale', T, null, C_PERITONIO, {
+    local: 'Dupla lâmina peritoneal que une a face visceral do fígado (porta do fígado e fissura do ligamento venoso) à curvatura menor do estômago e aos 2 cm iniciais da parte superior (bulbo) do duodeno. Divide-se em duas partes contínuas: o ligamento hepatogástrico (medial, membranáceo e flácido) e o ligamento hepatoduodenal (lateral, margem livre direita espessada).',
+    relacoes: 'Forma a parede anterior da bolsa omental (retrocavidade dos epíploons). Sua margem livre direita (ligamento hepatoduodenal) constitui o limite anterior do forame omental (epiploico de Winslow — comunicação única entre a grande cavidade peritoneal e a bolsa omental, limitado atrás pela veia cava inferior e pilar direito do diafragma, em cima pelo lobo caudado do fígado e embaixo pela 1ª parte do duodeno).',
+    vasos: 'O ligamento hepatoduodenal encerra a tríade portal extra-hepática: o ducto colédoco à frente e à direita, a artéria hepática própria à frente e à esquerda, e a veia porta posteriormente entre os dois, acompanhados pelo plexo nervoso hepático e linfáticos. Ao longo da curvatura menor, no ligamento hepatogástrico, anastomosam-se as artérias gástricas esquerda e direita.',
+    clinica: 'Em hemorragias maciças do fígado (trauma hepático ou hepatectomias), o cirurgião pode pinçar digitalmente ou com clampe vascular a margem livre do omento menor (ligamento hepatoduodenal) através do forame omental — a manobra de Pringle —, interrompendo temporariamente o influxo arterial e portal ao fígado; se o sangramento continuar, a origem é das veias hepáticas ou da cava inferior retro-hepática.',
+    nota: 'ESQUEMA: modelado por código entre a porta do fígado, a curvatura menor do estômago e a 1ª porção do duodeno.',
+  }, {
+    kind: 'estrutura',
+    mat: 'peritonio',
+    paired: false,
+    proc: [
+      // Ligamento hepatogástrico (da fissura/porta do fígado à curvatura menor do estômago)
+      tube([[-0.08, -4.05, 0.52], [0.06, -4.15, 0.56], [0.22, -4.22, 0.58]], 0.34, 0.014, [0, 0, 1], 8),
+      // Ligamento hepatoduodenal (margem livre direita com a tríade portal, da porta do fígado ao duodeno superior)
+      tube([[-0.22, -4.2, 0.45], [-0.24, -4.5, 0.44], [-0.22, -4.78, 0.46]], 0.12, 0.045, [0, 0, 1], 10),
+    ],
+    relacionados: ['estomago', 'duodeno', 'figado_lobo_caudado', 'figado_lobo_quadrado', 'ducto_coledoco', 'ducto_hepatico_comum', 'arteria_hepatica_propria', 'arteria_gastrica_esquerda', 'arteria_gastrica_direita', 'veia_porta', 'veia_cava_inferior', 'omento_maior'],
+  }),
+
+  dig('omento_maior', 'Omento maior (ligamentos gastrocólico, gastroesplênico e esplenorrenal) — esquema', 'Omentum majus (Ligamentum gastrocolicum, gastrosplenicum et splenorenale)', T, null, C_PERITONIO, {
+    local: 'Grande prega peritoneal quadrilátera de quatro lâminas, infiltrada por tecido adiposo, que desce da curvatura maior do estômago e da parte proximal do duodeno como um avental à frente do intestino delgado e se dobra sobre si mesma para subir e fixar-se à face anterior da tênia omental do colo transverso e do mesocolo transverso.',
+    relacoes: 'Subdivide-se em três porções funcionais: 1) ligamento gastrocólico (a maior parte, da curvatura maior ao colo transverso, fechando inferiormente a bolsa omental); 2) ligamento gastroesplênico (à esquerda, do fundo e curvatura maior alta ao hilo do baço); e 3) ligamento gastrofrênico (no fundo gástrico). Continua-se no hilo esplênico com o ligamento esplenorrenal (lieno-renal), que vai ao rim esquerdo.',
+    vasos: 'Entre as lâminas anteriores do ligamento gastrocólico corre a arcada das artérias e veias gastro-omentais (gastroepiploicas) direita (da gastroduodenal) e esquerda (da esplênica). No ligamento gastroesplênico passam os vasos gástricos curtos e gastro-omentais esquerdos; no ligamento esplenorrenal passam os vasos esplênicos e a ponta da cauda do pâncreas.',
+    clinica: 'Conhecido como o "policial do abdome", possui grande mobilidade e riqueza em macrófagos (manchas lácteas), deslocando-se para envolver e bloquear focos inflamatórios ou perfurações (como apendicite, diverticulite ou úlcera perfurada), evitando peritonite difusa. Também é usado como retalho vascularizado (omentoplastia) em reconstruções cirúrgicas.',
+    nota: 'ESQUEMA: lâmina peritoneal anterior modelada por código descendo da curvatura maior do estômago e do colo transverso sobre as alças intestinais, acompanhada das pregas gastroesplênica e esplenorrenal.',
+  }, {
+    kind: 'estrutura',
+    mat: 'peritonio',
+    paired: false,
+    proc: [
+      // Avental omental (ligamento gastrocólico descendo sobre o colo transverso e as alças jejunoileais)
+      tube([[-0.55, -5.05, 0.88], [-0.15, -5.45, 0.96], [0.25, -5.5, 0.96], [0.65, -5.1, 0.88]], 0.95, 0.02, [0, 0, 1], 10),
+      // Ligamentos gastroesplênico e esplenorrenal (entre o fundo do estômago, o hilo do baço e o rim esquerdo)
+      tube([[0.68, -4.3, 0.35], [0.78, -4.45, 0.15], [0.72, -4.75, -0.02]], 0.28, 0.022, [1, 0, 0], 8),
+    ],
+    relacionados: ['estomago', 'colo_transverso', 'mesocolo_transverso', 'baco', 'pancreas', 'rim_esquerdo', 'jejuno', 'ileo', 'omento_menor', 'arteria_esplenica', 'arteria_gastroduodenal'],
+  }),
+
+  dig('lig_falciforme_coronario_figado', 'Ligamentos do fígado (falciforme, redondo, coronário e triangulares) — esquema', 'Ligamentum falciforme hepatis; Ligamentum teres hepatis; Ligamentum coronarium; Ligamenta triangularia', T, null, C_PERITONIO, {
+    local: 'Conjunto de reflexões peritoneais e cordões fibrosos que prendem o fígado ao diafragma e à parede abdominal anterior: o ligamento falciforme (foice sagital entre a face diafragmática do fígado, o diafragma e a parede anterior até o umbigo), o ligamento redondo do fígado (cordão fibroso na margem livre inferior do falciforme), o ligamento coronário (lâminas anterior e posterior no domo hepático) e os ligamentos triangulares direito e esquerdo.',
+    relacoes: 'O ligamento falciforme marca na superfície externa a divisão anatômica clássica entre os lobos direito e esquerdo (no limite entre o segmento IV medial e os segmentos II/III laterais). As lâminas do ligamento coronário divergem na face diafragmática posterossuperior para delimitar a área nua do fígado — onde o parênquima hepático encosta diretamente no diafragma e na veia cava inferior sem serosa peritoneal — e se encontram nas pontas formando os ligamentos triangulares direito e esquerdo.',
+    vasos: 'O ligamento redondo do fígado (ligamentum teres hepatis) é o remanescente pós-natal obliterado da veia umbilical fetal (que levava sangue oxigenado da placenta ao ramo esquerdo da veia porta e ao ducto venoso); ao seu redor correm as pequenas veias paraumbilicais (de Sappey), que anastomosam o ramo esquerdo da veia porta com as veias epigástricas superficiais e toracoepigástricas da parede abdominal.',
+    clinica: 'Na hipertensão portal (cirrose hepática), a recanalização da veia umbilical no ligamento redondo e a dilatação das veias paraumbilicais ao redor do umbigo produzem o sinal clássico da "cabeça de Medusa" (e a síndrome de Cruveilhier-Baumgarten). Na mobilização cirúrgica do fígado, a secção dos ligamentos falciforme, coronário e triangulares expõe a área nua e as veias hepáticas.',
+    nota: 'ESQUEMA: modelado por código com a lâmina sagital do ligamento falciforme, o cordão do ligamento redondo até o umbigo e a reflexão superior do ligamento coronário.',
+  }, {
+    kind: 'ligamento',
+    mat: 'peritonio',
+    paired: false,
+    proc: [
+      // Ligamento falciforme na fissura sagital entre os segmentos III/II e IV
+      tube([[0.02, -3.65, 0.72], [0.03, -3.95, 0.98], [0.02, -4.35, 1.06]], 0.35, 0.016, [1, 0, 0], 8),
+      // Ligamento redondo do fígado (da incisura do ligamento redondo até a cicatriz umbilical)
+      tube([[0.02, -4.35, 0.92], [0.01, -4.75, 1.05], [0.0, -5.15, 1.12], [0.0, -5.5, 1.15]], 0.028, 0.028, [1, 0, 0], 10),
+      // Ligamento coronário e triangulares no domo diafragmático
+      tube([[-0.85, -3.75, 0.15], [-0.45, -3.62, 0.25], [0.0, -3.62, 0.35], [0.45, -3.68, 0.32]], 0.08, 0.022, [0, 1, 0], 10),
+    ],
+    relacionados: ['figado_seg_ii', 'figado_seg_iii', 'figado_lobo_quadrado', 'figado_seg_vii', 'figado_seg_viii', 'diafragma', 'reto_abdome', 'veia_porta', 'veia_cava_inferior', 'veia_umbilical', 'ducto_venoso'],
+  }),
+
+  dig('mesocolo_sigmoide', 'Mesocolo sigmoide — esquema', 'Mesocolon sigmoideum', T, null, C_PERITONIO, {
+    local: 'Prega peritoneal em forma de leque que suspende o colo sigmoide à parede pélvica posterior, conferindo-lhe ampla mobilidade. Sua raiz de fixação tem a forma de um V invertido, com um ramo lateral ascendente (ao longo da margem medial do psoas maior esquerdo e dos vasos ilíacos externos esquerdos) e um ramo medial descendente (que vai do promontório sacral até a face anterior da vértebra S3, onde começa o reto).',
+    relacoes: 'No ápice (vértice) da raiz em V invertido, exatamente sobre a bifurcação da artéria ilíaca comum esquerda e a articulação sacroilíaca esquerda, situa-se uma fosseta peritoneal em funil — o recesso intersigmoide —, em cujo assoalho retroperitoneal passa o ureter esquerdo descendo para a pelve.',
+    vasos: 'Entre as duas lâminas do mesocolo sigmoide correm as artérias sigmoideas (3 a 4 ramos) e a artéria retal superior (ramo terminal da artéria mesentérica inferior), suas veias homônimas (tributárias da veia mesentérica inferior para o sistema porta), vasos linfáticos e fibras dos plexos mesentérico inferior e hipogástrico superior.',
+    clinica: 'Quando o mesocolo sigmoide é muito longo e tem uma base de fixação estreita (comum em idosos, constipados crônicos e na colopatia chagásica), a alça sigmoidea pode sofrer torção axial sobre seu próprio mesentério — o volvo de sigmoide —, causando obstrução intestinal em alça fechada com o sinal radiográfico do "grão de café" (ou "U invertido") e risco de isquemia e perfuração. Na colectomia esquerda, o recesso intersigmoide é o marco cirúrgico para identificar e proteger o ureter esquerdo.',
+    nota: 'ESQUEMA: lâmina peritoneal em V invertido modelada por código entre os vasos ilíacos esquerdos, o promontório/sacro e a alça do colo sigmoide.',
+  }, {
+    mat: 'peritonio',
+    paired: false,
+    proc: [
+      tube([[0.32, -6.45, -0.05], [0.52, -6.62, 0.08], [0.35, -6.82, -0.08], [0.08, -6.95, -0.25]], 0.32, 0.018, [0, 0, 1], 10),
+    ],
+    relacionados: ['colo_sigmoide', 'colo_descendente', 'reto', 'ureter_esquerdo', 'arteria_sigmoideas', 'arteria_retal_superior', 'arteria_mesenterica_inferior', 'veia_mesenterica_inferior', 'arteria_iliaca_comum', 'o_sacro'],
+  }),
+
+  dig('valva_ileocecal', 'Valva ileocecal (papila ileal e óstio ileal) — esquema', 'Valva ileocaecalis (Papilla ilealis; Ostium ileale)', T, null, C_DELGADO, {
+    local: 'Estrutura esfincteriana e valvular situada na transição entre o íleo terminal e o intestino grosso, na parede posteromedial da fronteira entre o ceco e o colo ascendente (fossa ilíaca direita, cerca de 2 a 3 cm acima do óstio do apêndice vermiforme). Na pessoa viva (endoscopia), projeta-se na luz cecal como uma elevação arredondada — a papila ileal —, enquanto no cadáver fixado assume a forma de dois lábios (ileocólico superior e ileocecal inferior) unidos pelos frênulos do óstio ileal.',
+    relacoes: 'Anteriormente é recoberta pela prega vascular ileocecal; inferiormente relaciona-se com a prega ileocecal (sem vasos, de Treves) e o mesoapêndice, que delimitam os recessos ileocecais superior e inferior.',
+    vasos: 'Irrigada pelos ramos ileal e cecal (anterior e posterior) da artéria ileocólica (ramo da mesentérica superior); drenagem venosa pela veia ileocólica para a mesentérica superior e linfática para os linfonodos ileocólicos. Inervação pelo plexo mesentérico superior (vago e simpático toracolombar).',
+    clinica: 'Seu esfíncter de músculo liso mantém-se tonicamente contraído para evitar o refluxo bacteriano do ceco para o íleo e relaxa reflexamente com a chegada de alimento ao estômago (reflexo gastroileal mediado pela gastrina e pelo vago). Quando um tumor do colo obstrui o intestino grosso e a valva ileocecal é competente, o ceco sofre distensão progressiva em "alça fechada", com alto risco de perfuração diastática (lei de Laplace). A região ileocecal é também a sede mais frequente da doença de Crohn, da tuberculose intestinal e da intussuscepção ileocólica em lactentes.',
+    nota: 'ESQUEMA: anel papilar modelado por código exatamente na desembocadura da malha do íleo terminal na parede posteromedial da transição entre o ceco e o colo ascendente (`y = -6.22`).',
+  }, {
+    paired: false,
+    proc: [
+      tube([[-0.64, -6.22, 0.34], [-0.72, -6.22, 0.32], [-0.8, -6.22, 0.3]], 0.095, 0.085, [0, 1, 0], 12),
+    ],
+    relacionados: ['ileo', 'ceco', 'colo_ascendente', 'apendice_vermiforme', 'mesenterio', 'arteria_ileocolica', 'arteria_mesenterica_superior', 'veia_mesenterica_superior'],
+  }),
+
+  dig('esfincter_interno_anus', 'Esfíncter interno do ânus e linha pectínea — esquema', 'Musculus sphincter ani internus; Linea pectinata', T, null, '#b85a52', {
+    local: 'Espessamento anelar involuntário da camada circular de músculo liso da parede do intestino grosso ao longo dos três quartos superiores (2,5 a 3 cm) do canal anal, começando na junção anorretal (alça do puborretal) e terminando na linha branca interesfinctérica (sulco de Hilton), logo acima da margem anal. Na mucosa interna do meio do canal anal situa-se a linha pectínea (dentada), formada pelas válvulas e seios anais na base das 6 a 10 colunas anais verticais (de Morgagni).',
+    relacoes: 'É separado externamente das partes profunda e superficial do músculo esfíncter externo do ânus (músculo estriado esquelético voluntário, inervado pelo nervo retal inferior do pudendo) pelo plano longitudinal conjunto fibromuscular (sulco interesfinctérico).',
+    vasos: 'Acima da linha pectínea (origem endodérmica, intestino posterior): irrigação pela artéria retal superior (mesentérica inferior), drenagem para a veia retal superior (porta), linfa para os linfonodos ilíacos internos e inervação autonômica (visceral, insensível ao corte, sensível apenas à distensão). Abaixo da linha pectínea (origem ectodérmica, proctodeu): irrigação pela artéria retal inferior (pudenda interna), drenagem para a veia pudenda interna (cava inferior), linfa para os linfonodos inguinais superficiais e inervação somática pelo nervo retal inferior (S2–S4, altamente sensível a dor, temperatura e toque). O músculo esfíncter interno tem tônus mantido pelo simpático (L1–L2, plexo hipogástrico) e relaxa pelo parassimpático (nervos esplâncnicos pélvicos S2–S4 e reflexo inibitório retoanal intrínseco).',
+    clinica: 'O esfíncter interno do ânus responde por 70 % a 85 % da pressão de repouso do canal anal (continência passiva para gases e fezes líquidas). Na doença de Hirschsprung (aganglionose mioentérica), a ausência do reflexo inibitório retoanal na manometria anorretal é diagnóstica. Na fissura anal crônica (90 % na linha mediana posterior), o espasmo doloroso do esfíncter interno causa isquemia local; o tratamento cirúrgico padrão é a esfincterotomia lateral interna parcial (nunca do esfíncter externo).',
+    nota: 'ESQUEMA: manga cilíndrica de músculo liso modelada por código envolvendo o canal anal, internamente ao anel do músculo esfíncter externo do ânus.',
+  }, {
+    kind: 'estrutura',
+    paired: false,
+    proc: [
+      tube([[0.0, -7.45, -0.46], [0.0, -7.58, -0.49], [0.0, -7.7, -0.52]], 0.11, 0.1, [1, 0, 0], 14),
+    ],
+    relacionados: ['canal_anal', 'reto', 'esfincter_anal_ext', 'puborretal', 'pubococcigeo', 'arteria_retal_superior', 'arterias_retais_media_inferior', 'plexo_venoso_pelvico', 'linfonodos_inguinais', 'linfonodos_iliacos'],
+  }),
+
+  dig('tonsilas_anel_waldeyer', 'Tonsilas palatinas, faríngea (adenoide) e anel linfático de Waldeyer — esquema', 'Tonsilla palatina; Tonsilla pharyngea; Anulus lymphoideus pharyngis', 'cabeca', null, '#c97882', {
+    local: 'Conjunto circular de tecido linfoide associado à mucosa (MALT) na entrada dos tratos aerodigestivos (anel linfático da faringe de Waldeyer): 1) tonsilas palatinas (amígdalas, pares, alojadas na fossa tonsilar da orofaringe, entre o arco palatoglosso à frente e o arco palatofaríngeo atrás); 2) tonsila faríngea (adenoide, ímpar, na mucosa do teto e parede posterior da nasofaringe); 3) tonsilas tubárias (pares, junto ao tórus tubário do óstio faríngeo da tuba auditiva); e 4) tonsila lingual (na raiz/terço posterior da língua, atrás do sulco terminal).',
+    relacoes: 'O leito (parede lateral) da tonsila palatina é formado pela fáscia faringobasilar e pelo músculo constritor superior da faringe; imediatamente por fora dessa parede muscular passam o nervo glossofaríngeo (IX), a alça da artéria facial (e seu ramo tonsilar), a artéria palatina ascendente e, a cerca de 2 cm posterolateralmente, a artéria carótida interna.',
+    vasos: 'A tonsila palatina tem vascularização intensa (principalmente o ramo tonsilar da artéria facial, mais ramos das artérias palatina ascendente, lingual, faríngea ascendente e palatina menor); sua drenagem venosa vai para a veia paratonsilar (principal fonte de sangramento na amigdalectomia) e plexo faríngeo, e sua linfa drena diretamente para o linfonodo jugulodigástrico (das cadeias cervicais profundas). Inervação sensitiva pelo plexo tonsilar (nervo glossofaríngeo IX e palatinos menores V2) — explicando a otalgia reflexa via nervo timpânico de Jacobson nas amigdalites e após amigdalectomia.',
+    clinica: 'Atuam na primeira linha de defesa imunológica (produção de IgA secretora). Na infância, a hipertrofia da tonsila faríngea (adenoide) obstrui as coanas e a tuba auditiva, levando à respiração bucal crônica ("fácies adenoideana"), ronco/apneia do sono e otite média secretora de repetição. Na amigdalite bacteriana complicada por abscesso peritonsilar (entre a cápsula tonsilar e o constritor superior), há trismo, voz de "batata quente" e desvio da úvula para o lado oposto.',
+    nota: 'ESQUEMA: a tonsila palatina (na loja entre o palatoglosso e o palatofaríngeo) e a tonsila faríngea (no teto da nasofaringe) foram modeladas por código.',
+  }, {
+    paired: true,
+    proc: [
+      // Tonsila palatina na fossa tonsilar (entre o palatoglosso e o palatofaríngeo, medial ao constritor superior)
+      tube([[0.15, -0.68, 0.28], [0.155, -0.76, 0.27]], 0.055, 0.038, [1, 0, 0], 10),
+      // Tonsila faríngea (adenoide) no teto posterior da nasofaringe
+      tube([[0.03, -0.38, 0.16], [0.03, -0.45, 0.14]], 0.05, 0.03, [1, 0, 0], 8),
+    ],
+    relacionados: ['lingua', 'palatoglosso', 'palatofaringeo', 'constritor_faringe_sup', 'tuba_auditiva', 'cavidade_nasal', 'arteria_facial', 'arteria_faringea_ascendente', 'arteria_carotida_interna', 'linfonodos_cervicais_profundos'],
+  }),
+
+  dig('ductos_salivares', 'Ductos salivares: parotídeo (de Stenon) e submandibular (de Wharton) — esquema', 'Ductus parotideus [Stenonis]; Ductus submandibularis [Whartoni]', 'cabeca', null, '#e2be78', {
+    local: 'Ductos excretores principais das duas maiores glândulas salivares: 1) o ducto parotídeo (de Stenon/Stensen, cerca de 5 cm) emerge da margem anterior da glândula parótida, cruza horizontalmente a face lateral do músculo masseter (cerca de 1 cm abaixo do arco zigomático), dobra-se medialmente em ângulo reto contornando o corpo adiposo da bochecha, perfura o músculo bucinador e abre-se no vestíbulo da boca na papila parotídea, em frente à coroa do 2º dente molar superior; e 2) o ducto submandibular (de Wharton, cerca de 5 cm) nasce da parte profunda da glândula submandibular, corre para a frente e medialmente no assoalho da boca (entre o milo-hióideo lateralmente e o hioglosso/genioglosso medialmente, medial à glândula sublingual) e abre-se no cume da carúncula sublingual, ao lado da base do frênulo da língua.',
+    relacoes: 'Na face, o ducto parotídeo corre paralelo à artéria transversa da face (acima dele) e aos ramos bucais do nervo facial. No assoalho da boca, o ducto submandibular apresenta uma relação anatômica clássica de prova com o nervo lingual (V3): o nervo lingual desce inicialmente lateral ao ducto, passa por baixo dele de fora para dentro e sobe medialmente a ele rumo à língua ("o nervo lingual faz uma alça sob o ducto de Wharton").',
+    vasos: 'O ducto parotídeo recebe ramos da artéria transversa da face e da facial; o ducto submandibular é acompanhado pelos vasos sublinguais (ramos da artéria e veia linguais).',
+    clinica: 'Cerca de 80 % dos cálculos salivares (sialolitíase) formam-se no ducto submandibular (de Wharton), porque sua secreção é mista seromucosa (mais viscosa e rica em cálcio/fosfato) e o ducto tem trajeto ascendente contra a gravidade e óstio estreito, provocando dor e tumefação submandibular às refeições ("cólica salivar"); ao incisá-lo no assoalho da boca, o cirurgião deve preservar o nervo lingual. Na caxumba (parotidite) é possível observar hiperemia e edema na papila do ducto parotídeo em frente ao 2º molar superior.',
+    nota: 'ESQUEMA: os trajetos do ducto parotídeo (sobre o masseter até o bucinador/2º molar superior) e do ducto submandibular (da glândula submandibular até o assoalho anterior da língua) foram modelados por código.',
+  }, {
+    kind: 'estrutura',
+    paired: true,
+    proc: [
+      // Ducto parotídeo (de Stenon): da margem anterior da parótida, sobre o masseter, perfurando o bucinador junto ao 2º molar superior
+      tube([[0.48, -0.58, 0.25], [0.49, -0.57, 0.42], [0.42, -0.58, 0.56], [0.28, -0.59, 0.62]], 0.018, 0.018, [0, 1, 0], 8),
+      // Ducto submandibular (de Wharton): da parte profunda da submandibular até a carúncula sublingual
+      tube([[0.22, -0.84, 0.46], [0.16, -0.83, 0.58], [0.09, -0.82, 0.68], [0.03, -0.81, 0.75]], 0.016, 0.016, [0, 1, 0], 8),
+    ],
+    relacionados: ['parotida', 'submandibular', 'sublingual', 'lingua', 'masseter', 'bucinador', 'milo_hioideo', 'hioglosso', 'genioglosso', 'o_dentes_sup', 'arteria_facial', 'arteria_lingual'],
   }),
 ];

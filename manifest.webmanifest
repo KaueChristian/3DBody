@@ -1,13 +1,13 @@
 {
   "name": "Body3D — Atlas de Anatomia 3D",
   "short_name": "Body3D",
-  "description": "Atlas 3D interativo de anatomia humana: corpo inteiro, músculos, nervos, ossos, articulações, coração, vasos, sistema respiratório, sistema digestório, sistema urinário, genital masculino e órgãos dos sentidos com dissecação em camadas e quiz.",
+  "description": "Atlas 3D interativo de anatomia humana: corpo inteiro, músculos, nervos, ossos, articulações, coração, vasos, sistema respiratório, sistema digestório, sistema urinário, genitais masculino e feminino, sistema endócrino e órgãos dos sentidos com dissecação em camadas e quiz.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#0B1220",
-  "theme_color": "#0B1220",
+  "background_color": "#0E0F12",
+  "theme_color": "#0E0F12",
   "icons": [
     {
       "src": "assets/icon-192.png",

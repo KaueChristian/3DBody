@@ -64,6 +64,7 @@ export const NERVES_CRANIAL = [
     ramos: [
       { m: 'estilofaringeo', obs: 'única inervação motora', path: 1 },
       { m: 'lingua', obs: 'sensibilidade geral e paladar do 1/3 posterior', sens: true, semRamo: true },
+      { m: 'tonsilas_anel_waldeyer', obs: 'ramos tonsilares (loja tonsilar e orofaringe)', sens: true, semRamo: true },
       { m: 'tuba_auditiva', obs: 'mucosa (plexo timpânico)', sens: true, semRamo: true },
       { m: 'membrana_timpanica', obs: 'face interna (nervo timpânico)', sens: true, semRamo: true },
     ],
@@ -90,7 +91,7 @@ export const NERVES_CRANIAL = [
     ramos: 'No pescoço: ramos meníngeo e auricular, ramos faríngeos (plexo faríngeo), nervo laríngeo superior, ramos para o seio e o corpo carótico e ramos cardíacos cervicais. No tórax: nervo laríngeo recorrente, ramos cardíacos, pulmonares e esofágicos. No abdome: troncos vagais anterior e posterior. Os que têm músculos para inervar têm fichas próprias.',
     sensibilidade: 'Meato acústico externo e parte da membrana timpânica (ramo auricular), faringe, laringe e vísceras do tórax e do abdome; paladar da epiglote. Fibras parassimpáticas para o coração, os pulmões e o tubo digestório até a flexura esquerda do colo.',
     lesao: 'Paralisia unilateral: rouquidão, disfagia e voz nasal; o palato mole do lado afetado não sobe e a úvula desvia para o lado são ao dizer “aaa”. Lesão bilateral alta é grave (arritmia e perda da proteção das vias aéreas). A estimulação vagal causa bradicardia e síncope vasovagal.',
-    nota: 'É o nervo craniano mais longo. Na lesão do núcleo ambíguo (síndrome bulbar lateral, ou de Wallenberg) os músculos da faringe e da laringe ficam paralisados. O desenho vai só até o mediastino superior (T4–T5): o plexo esofágico, os troncos vagais e os ramos para o coração, os pulmões e as vísceras do abdome ainda não estão desenhados (M22), embora esses órgãos já estejam no modelo.',
+    nota: 'É o nervo craniano mais longo. Na lesão do núcleo ambíguo (síndrome bulbar lateral, ou de Wallenberg) os músculos da faringe e da laringe ficam paralisados. Esta entrada mostra o tronco cervical e mediastinal superior (até T4–T5); a continuação toracoabdominal e os plexos viscerais têm fichas próprias (plexos cardiopulmonar, esofágico/troncos vagais e celíaco).',
   }),
   nervo('n_plexo_faringeo', 'Plexo faríngeo (ramos faríngeos do vago)', 'Plexus pharyngeus; rami pharyngei n. vagi', 'cabeca', {
     paths: [
@@ -116,7 +117,12 @@ export const NERVES_CRANIAL = [
       // ramo externo: desce com a artéria tireóidea superior até o cricotireóideo
       { pts: [[0.17, -0.99, 0.17], [0.155, -1.2, 0.215], [0.125, -1.33, 0.225]], r: 0.0045 },
     ],
-    ramos: [{ m: 'cricotireoideo', obs: 'ramo externo', path: 2 }, { m: 'constritor_faringe_inf', obs: 'ramo externo', path: 2, t: [0.3, 1] }],
+    ramos: [
+      { m: 'cricotireoideo', obs: 'ramo externo', path: 2 },
+      { m: 'constritor_faringe_inf', obs: 'ramo externo', path: 2, t: [0.3, 1] },
+      { m: 'membrana_laringea_vocal', obs: 'ramo interno perfura a membrana tíreo-hióidea (sensibilidade supraglótica)', sens: true, semRamo: true },
+      { m: 'epiglote', obs: 'ramo interno (sensibilidade e paladar)', sens: true, semRamo: true },
+    ],
   }, {
     origem: 'Nervo vago (X), no gânglio inferior.',
     trajeto: 'Desce medialmente atrás da artéria carótida interna até o nível do corno maior do hioide, onde se divide. O ramo interno (sensitivo) perfura a membrana tíreo-hióidea com a artéria laríngea superior e o ramo externo (motor) desce junto à artéria tireóidea superior, sobre o constritor inferior da faringe, até o cricotireóideo.',
@@ -172,6 +178,8 @@ export const NERVES_CRANIAL = [
       { m: 'iris', obs: 'sensitivo (nervos ciliares longos)', sens: true, semRamo: true },
       { m: 'corpo_ciliar', obs: 'sensitivo (nervos ciliares longos)', sens: true, semRamo: true },
       { m: 'saco_lacrimal', obs: 'nervo infratroclear', sens: true, semRamo: true },
+      { m: 'cavidade_nasal', obs: 'nervo etmoidal anterior (parte anterossuperior da cavidade nasal)', sens: true, semRamo: true },
+      { m: 'seios_paranasais', obs: 'nervos etmoidais anterior e posterior (células etmoidais e seio esfenoidal)', sens: true, semRamo: true },
     ],
   }, {
     origem: 'Ramo do nervo oftálmico (V1). Entra na órbita pelo anel tendíneo comum, entre as duas divisões do oculomotor.',
@@ -327,5 +335,174 @@ export const NERVES_CRANIAL = [
     sensibilidade: 'Eferente (simpático): dilatador da pupila, músculos tarsais, glândulas sudoríparas e vasos da face e do pescoço, glândulas salivares e lacrimal (vasoconstrição), coração. Leva fibras de dor visceral do coração (pelos nervos cardíacos).',
     lesao: 'Síndrome de Horner: ptose leve (tarsal superior), miose (dilatador), enoftalmo aparente e anidrose da hemiface, do mesmo lado. Causas: tumor do ápice do pulmão (Pancoast), dissecção da carótida interna, cirurgia ou trauma cervical.',
     nota: 'O gânglio estrelado é alvo de bloqueios anestésicos para dor simpática da face e do membro superior. Os ramos cinzentos que ligam os gânglios aos nervos espinais (e a via de entrada, pelos ramos comunicantes brancos de T1–T4) não estão desenhados. Os músculos lisos do olho (dilatador e tarsais) estão no modelo de forma esquemática.',
+  }),
+
+  /* ═════════════════════ M22 Inervação autonômica toracoabdominal e pélvica ═════════════════════ */
+  nervo('n_troncos_vagais', 'Plexo esofágico e troncos vagais (anterior e posterior)', 'Plexus oesophageus; Trunci vagales anterior et posterior', 'tronco', {
+    paired: false,
+    paths: [
+      // Vago esquerdo → plexo esofágico anterior → tronco vagal anterior → curvatura menor do estômago (nervo de Latarjet) e ramo hepático
+      { pts: [[0.17, -2.8, 0.03], [0.1, -3.15, 0.08], [0.06, -3.55, 0.14], [0.08, -3.9, 0.25], [0.14, -4.12, 0.45], [0.22, -4.35, 0.56], [0.12, -4.58, 0.58]], r: 0.0055 },
+      { pts: [[0.14, -4.12, 0.45], [0.0, -4.08, 0.48], [-0.16, -4.15, 0.46]], r: 0.004 },
+      // Vago direito → plexo esofágico posterior → tronco vagal posterior → face posterior do estômago e ramo celíaco
+      { pts: [[-0.17, -2.8, 0.03], [-0.06, -3.15, 0.02], [0.02, -3.55, 0.04], [0.05, -3.92, 0.14], [0.1, -4.2, 0.25], [0.05, -4.52, 0.34]], r: 0.0055 },
+    ],
+    ramos: [
+      { m: 'esofago', obs: 'plexo esofágico (motilidade e secreção)', semRamo: true },
+      { m: 'estomago', obs: 'troncos vagais anterior e posterior (nervos de Latarjet: secreção ácida e motilidade)', semRamo: true },
+      { m: 'vesicula_biliar', obs: 'ramo hepático do tronco vagal anterior (contração biliar)', semRamo: true },
+      { m: 'figado_lobo_quadrado', obs: 'ramo hepático no omento menor', semRamo: true },
+      { m: 'duodeno', obs: 'ramos vagais via plexo celíaco', semRamo: true },
+      { m: 'pancreas', obs: 'secreção exócrina e endócrina vagal', semRamo: true },
+      { m: 'jejuno', obs: 'ramo celíaco do tronco vagal posterior', semRamo: true },
+      { m: 'ileo', obs: 'ramo celíaco do tronco vagal posterior', semRamo: true },
+      { m: 'ceco', obs: 'parassimpático vagal', semRamo: true },
+      { m: 'apendice_vermiforme', obs: 'parassimpático vagal', semRamo: true },
+      { m: 'colo_ascendente', obs: 'parassimpático vagal', semRamo: true },
+      { m: 'colo_transverso', obs: 'parassimpático vagal até a flexura cólica esquerda (ponto de Cannon-Böhm)', semRamo: true },
+    ],
+  }, {
+    origem: 'Continuação dos nervos vagos esquerdo e direito (X) no mediastino posterior, abaixo dos hilos pulmonares.',
+    trajeto: 'Ao redor da metade inferior do esôfago torácico, os dois vagos ramificam-se no plexo esofágico e, logo acima do hiato esofágico do diafragma (T10), reconstituem-se como dois troncos que acompanham o esôfago até o abdome: pela rotação embrionária de 90° do estômago, o **vago esquerdo passa para a frente como tronco vagal anterior** e o **vago direito passa para trás como tronco vagal posterior**.',
+    ramos: 'O tronco vagal anterior corre pela curvatura menor do estômago (nervo anterior principal da curvatura menor, de Latarjet, que termina nos ramos em "pata de corvo" no antro pilórico) e envia ramos hepáticos pelo omento menor para o fígado, as vias biliares e o piloro. O tronco vagal posterior dá o nervo posterior de Latarjet para o estômago e um volumoso **ramo celíaco** que alcança os plexos celíaco e mesentérico superior.',
+    sensibilidade: 'Eferência parassimpática secretomotora (estimula a secreção ácida das células parietais gástricas, de enzimas pancreáticas e a contração da vesícula biliar), motora visceral (peristalse e relaxamento do esfíncter pilórico) e aferência fisiológica de distensão e saciedade de todo o intestino anterior e médio até a transição próxima à flexura esquerda do colo (ponto de Cannon-Böhm).',
+    lesao: 'A vagotomia troncular (ou lesão vagal em esofagectomias/fundoplicaturas) reduz a secreção ácida, mas causa estase gástrica por espasmo pilórico (exigindo piloroplastia) e hipomotilidade biliar; a vagotomia gástrica superseletiva secciona apenas os ramos fúndicos/corpóreos preservando os nervos de Latarjet ("pata de corvo") para manter o esvaziamento pilórico.',
+    nota: 'A rotação horária do estômago no embrião explica a regra clássica de prova: o vago esquerdo vira anterior (tronco vagal anterior) e o vago direito vira posterior (tronco vagal posterior).',
+  }),
+
+  nervo('n_simpatico_toracolombar', 'Tronco simpático toracolombar e nervos esplâncnicos (maior, menor, imo e lombares)', 'Truncus sympathicus thoracicus et lumbalis; Nn. splanchnici major, minor, imus et lumbales', 'tronco', {
+    paths: [
+      // Tronco simpático torácico (sobre as cabeças das costelas, T1–T12) e lombar (anterolateral aos corpos vertebrais L1–L5)
+      { pts: [[0.27, -1.87, -0.11], [0.26, -2.35, -0.12], [0.25, -2.9, -0.08], [0.24, -3.5, 0.0], [0.23, -4.1, 0.08], [0.21, -4.7, 0.14], [0.19, -5.3, 0.22], [0.18, -5.9, 0.24], [0.17, -6.45, 0.12]], r: 0.0055 },
+      // Nervo esplâncnico maior (T5–T9 → perfura o pilar do diafragma → gânglio celíaco e medula suprarrenal)
+      { pts: [[0.24, -3.15, -0.04], [0.18, -3.65, 0.06], [0.14, -4.15, 0.18], [0.09, -4.52, 0.34]], r: 0.004 },
+      // Nervo esplâncnico menor (T10–T11 → gânglio aorticorrenal / mesentérico superior)
+      { pts: [[0.23, -3.95, 0.06], [0.17, -4.35, 0.18], [0.12, -4.78, 0.34]], r: 0.0035 },
+    ],
+    ramos: [
+      { m: 'suprarrenal_esquerda', obs: 'fibras simpáticas pré-ganglionares diretas para as células cromafins da medula suprarrenal', semRamo: true },
+      { m: 'suprarrenal_direita', obs: 'fibras simpáticas pré-ganglionares diretas para a medula suprarrenal', semRamo: true },
+      { m: 'rim_esquerdo', obs: 'nervos esplâncnicos menor e imo (via gânglio aorticorrenal)', semRamo: true },
+      { m: 'rim_direito', obs: 'nervos esplâncnicos menor e imo', semRamo: true },
+      { m: 'estomago', obs: 'nervo esplâncnico maior (T5–T9, via gânglio celíaco)', semRamo: true },
+      { m: 'pancreas', obs: 'nervo esplâncnico maior (T5–T9, via plexo celíaco)', semRamo: true },
+      { m: 'baco', obs: 'nervo esplâncnico maior (T6–T8)', semRamo: true },
+      { m: 'figado_seg_vii', obs: 'nervo esplâncnico maior (T6–T9)', semRamo: true },
+    ],
+  }, {
+    origem: 'Neurônios simpáticos pré-ganglionares da coluna intermédio-lateral da medula espinal de T1 a L2 (divisão toracolombar do sistema nervoso autônomo), que saem pelas raízes anteriores e entram no tronco simpático pelos ramos comunicantes brancos.',
+    trajeto: 'O tronco simpático torácico (11 a 12 gânglios paravertebrais) desce diante das cabeças das costelas sob a pleura costal, atravessa o diafragma atrás do ligamento arqueado medial e continua como tronco simpático lombar (4 gânglios) na margem anterolateral dos corpos vertebrais, medial ao psoas maior, até continuar no sacro como tronco sacral (que se une no gânglio ímpar de Walther à frente do cóccix). As fibras destinadas às vísceras abdominais atravessam os gânglios paravertebrais **sem fazer sinapse** e emergem como os nervos esplâncnicos torácicos e lombares.',
+    ramos: 'Ramos comunicantes cinzentos (pós-ganglionares para todos os 31 nervos espinais: vasomotricidade, sudorese e piloereção); ramos viscerais cardíacos, pulmonares e esofágicos (T1–T5); **nervo esplâncnico maior (T5–T9)** para o gânglio celíaco e diretamente para a medula suprarrenal; **nervo esplâncnico menor (T10–T11)** para o gânglio aorticorrenal e mesentérico superior; **nervo esplâncnico imo (T12)** para o plexo renal; e **nervos esplâncnicos lombares (L1–L2)** para os plexos intermesentérico e hipogástrico superior.',
+    sensibilidade: 'Conduz de volta à medula (pelos mesmos nervos esplâncnicos e raízes posteriores T5–L2) as fibras aferentes viscerais de **dor das vísceras abdominais** (isquemia, distensão ou espasmo): T5–T9 do intestino anterior (dor referida no epigástrio), T10–T11 do intestino médio e apêndice inicial (dor periumbilical em T10), T10–L1 do rim e ureter (cólica nefrética no flanco/virilha) e L1–L2 do colo distal.',
+    lesao: 'A simpatectomia torácica endoscópica (T2–T4) trata a hiperidrose palmar e axilar grave; a simpatectomia lombar (L2–L4) promove vasodilatação cutânea em isquemias periféricas selecionadas do membro inferior (mas a lesão bilateral de L1–L2 abole a ejaculação anterógrada).',
+    nota: 'A medula da glândula suprarrenal é a grande exceção autonômica: recebe diretamente os axônios simpáticos pré-ganglionares colinérgicos do nervo esplâncnico maior sem passar por gânglio, pois suas células cromafins são neurônios pós-ganglionares modificados derivados da crista neural.',
+  }),
+
+  nervo('n_plexo_cardiopulmonar', 'Plexos cardíaco e pulmonar (autonômicos)', 'Plexus cardiacus; Plexus pulmonalis', 'tronco', {
+    paired: false,
+    paths: [
+      // Plexo cardíaco superficial (sob o arco da aorta) e profundo (diante da carina) descendo para os nós SA/AV e coronárias
+      { pts: [[0.18, -2.05, 0.12], [0.06, -2.38, 0.25], [-0.08, -2.62, 0.34], [-0.22, -2.66, 0.36]], r: 0.0045 },
+      { pts: [[0.06, -2.38, 0.25], [0.02, -2.85, 0.3], [-0.01, -3.16, 0.29]], r: 0.004 },
+      // Plexos pulmonares direito e esquerdo nos hilos pulmonares
+      { pts: [[0.06, -2.38, 0.25], [0.22, -2.6, 0.02], [0.42, -2.72, -0.04]], r: 0.004 },
+      { pts: [[0.06, -2.38, 0.25], [-0.15, -2.58, 0.02], [-0.32, -2.72, -0.02]], r: 0.004 },
+    ],
+    ramos: [
+      { m: 'no_sinoatrial', obs: 'simpático (T1–T4, cronotropismo positivo) e vago (cronotropismo negativo)', semRamo: true },
+      { m: 'no_atrioventricular', obs: 'simpático e vago (velocidade de condução atrioventricular)', semRamo: true },
+      { m: 'atrio_direito', obs: 'plexo cardíaco', semRamo: true },
+      { m: 'ventriculo_esquerdo', obs: 'simpático (inotropismo positivo) e aferências de dor isquêmica (T1–T5)', semRamo: true },
+      { m: 'coronaria_direita', obs: 'plexo periarterial coronariano', semRamo: true },
+      { m: 'ramo_interventricular_anterior', obs: 'plexo periarterial coronariano', semRamo: true },
+      { m: 'traqueia', obs: 'plexo pulmonar e recorrentes', semRamo: true },
+      { m: 'bronquio_principal_d', obs: 'plexo pulmonar (simpático broncodilatador e vago broncoconstritor)', semRamo: true },
+      { m: 'bronquio_principal_e', obs: 'plexo pulmonar (simpático broncodilatador e vago broncoconstritor)', semRamo: true },
+      { m: 'pulmao_d_lobo_superior', obs: 'plexo pulmonar', semRamo: true },
+      { m: 'pulmao_e_lobo_superior', obs: 'plexo pulmonar', semRamo: true },
+    ],
+  }, {
+    origem: 'Formados pela convergência dos **ramos cardíacos e pulmonares simpáticos** (pós-ganglionares dos gânglios cervicais superior, médio e cervicotorácico/estrelado e dos gânglios torácicos T1–T4/T5) com os **ramos cardíacos e broncopulmonares parassimpáticos do nervo vago (X)** (e dos nervos laríngeos recorrentes).',
+    trajeto: 'O plexo cardíaco divide-se numa parte superficial (abaixo da concavidade do arco da aorta, à frente da artéria pulmonar direita, próximo ao ligamento arterial) e numa parte profunda (maior, entre o arco da aorta e a bifurcação da traqueia), de onde as fibras acompanham as artérias coronárias e chegam aos nós sinoatrial e atrioventricular. Os plexos pulmonares (anterior e posterior) envolvem os brônquios principais e os vasos nos hilos pulmonares.',
+    ramos: 'Plexos subepicárdicos e coronarianos para os nós SA e AV e para o miocárdio; plexos peribrônquicos para a musculatura lisa brônquica, glândulas submucosas e vasos pulmonares.',
+    sensibilidade: 'No coração: o **simpático (T1–T4/T5)** aumenta a frequência cardíaca (cronotropismo), a força de contração (inotropismo) e a velocidade de condução (dromotropismo) e dilata as coronárias; o **parassimpático (vago)** reduz a frequência sinusal e retarda a condução no nó AV. Nos pulmões: o **simpático** provoca **broncodilatação** (receptores beta-2) e vasoconstrição brônquica, enquanto o **parassimpático (vago)** provoca **broncoconstrição** (receptores muscarínicos M3) e estimula a secreção mucosa, além de conduzir a aferência do reflexo da tosse e de estiramento pulmonar (de Hering-Breuer).',
+    lesao: 'As fibras aferentes de dor da isquemia miocárdica (angina e infarto) correm junto aos nervos cardíacos simpáticos até os segmentos medulares **T1 a T4/T5** (sobretudo à esquerda), explicando a dor referida retroesternal que irradia para o ombro e a face medial do braço e antebraço esquerdos (dermátomos T1–T2, via nervo intercostobraquial e cutâneo medial do braço). Na asma e na DPOC, agonistas beta-2 adrenérgicos e anticolinérgicos (ipratrópio/tiotrópio) atuam diretamente sobre essas duas vias do plexo pulmonar.',
+    nota: 'O coração transplantado fica denervado (sem conexões com o plexo cardíaco), perdendo a resposta vagal imediata e a dor anginosa clássica, mas mantém o ritmo próprio do nó sinoatrial do doador e responde às catecolaminas circulantes da suprarrenal.',
+  }),
+
+  nervo('n_plexo_celiaco_mesenterico', 'Plexos celíaco (solar), mesentéricos (superior e inferior) e renal', 'Plexus coeliacus; Plexus mesentericus superior et inferior; Plexus renalis', 'tronco', {
+    paired: false,
+    paths: [
+      // Gânglios e plexo celíaco (ao redor da origem do tronco celíaco, T12–L1) e plexo mesentérico superior (L1)
+      { pts: [[0.09, -4.48, 0.34], [0.02, -4.55, 0.42], [-0.06, -4.5, 0.34]], r: 0.0085 },
+      { pts: [[0.02, -4.55, 0.42], [0.02, -4.85, 0.44], [0.01, -5.2, 0.44]], r: 0.0065 },
+      // Plexos renais direito e esquerdo ao longo das artérias renais
+      { pts: [[0.05, -4.88, 0.36], [0.22, -4.95, 0.18], [0.42, -5.0, 0.02]], r: 0.004 },
+      { pts: [[-0.03, -4.92, 0.36], [-0.2, -5.02, 0.2], [-0.38, -5.12, 0.08]], r: 0.004 },
+      // Plexo intermesentérico (aórtico abdominal) e plexo mesentérico inferior (em L3, na origem da AMI)
+      { pts: [[0.01, -5.2, 0.44], [0.03, -5.55, 0.42], [0.06, -5.85, 0.4], [0.14, -6.15, 0.36]], r: 0.005 },
+    ],
+    ramos: [
+      { m: 'estomago', obs: 'plexo celíaco (simpático T6–T9 e vago)', semRamo: true },
+      { m: 'duodeno', obs: 'plexos celíaco e mesentérico superior', semRamo: true },
+      { m: 'pancreas', obs: 'plexos celíaco e mesentérico superior (dor visceral retroperitoneal)', semRamo: true },
+      { m: 'baco', obs: 'plexo esplênico (do celíaco)', semRamo: true },
+      { m: 'vesicula_biliar', obs: 'plexo hepático (do celíaco)', semRamo: true },
+      { m: 'jejuno', obs: 'plexo mesentérico superior', semRamo: true },
+      { m: 'ileo', obs: 'plexo mesentérico superior', semRamo: true },
+      { m: 'colo_transverso', obs: 'plexos mesentéricos superior e inferior', semRamo: true },
+      { m: 'colo_descendente', obs: 'plexo mesentérico inferior (simpático L1–L2 e esplâncnicos pélvicos S2–S4)', semRamo: true },
+      { m: 'colo_sigmoide', obs: 'plexo mesentérico inferior', semRamo: true },
+      { m: 'rim_esquerdo', obs: 'plexo renal e gânglio aorticorrenal (T10–L1)', semRamo: true },
+      { m: 'rim_direito', obs: 'plexo renal e gânglio aorticorrenal (T10–L1)', semRamo: true },
+      { m: 'ureter_esquerdo', obs: 'plexos renal, aórtico e hipogástrico (T11–L2)', semRamo: true },
+      { m: 'ureter_direito', obs: 'plexos renal, aórtico e hipogástrico (T11–L2)', semRamo: true },
+      { m: 'testiculo', obs: 'plexo testicular (T10–T11, acompanhando a artéria testicular)', semRamo: true },
+      { m: 'ovario', obs: 'plexo ovárico (T10–T11, acompanhando a artéria ovárica)', semRamo: true },
+    ],
+  }, {
+    origem: 'O **plexo celíaco** (solar, o maior plexo autônomo do corpo, em T12–L1) recebe os nervos esplâncnicos maior e menor (simpático T5–T11) e o ramo celíaco do tronco vagal posterior (X); o **plexo mesentérico superior** (L1) continua o celíaco; o **plexo renal** recebe o esplâncnico menor e o imo (T10–T12); e o **plexo mesentérico inferior** (L3) recebe os nervos esplâncnicos lombares (simpático L1–L2) e fibras parassimpáticas ascendentes dos nervos esplâncnicos pélvicos (S2–S4).',
+    trajeto: 'Situam-se na face anterior da aorta abdominal, envolvendo a emergência das artérias viscerais correspondentes (tronco celíaco, mesentérica superior, renais, gonadais e mesentérica inferior), e distribuem suas fibras pós-ganglionares e aferentes viscerais como **plexos periarteriais** que caminham na adventícia de todos os ramos dessas artérias até os órgãos-alvo.',
+    ramos: 'Plexos secundários gástrico, hepático, esplênico, pancreático, suprarrenal, renal, testicular/ovárico, mesentérico superior e mesentérico inferior (com o plexo retal superior).',
+    sensibilidade: 'O simpático (pós-ganglionar nos gânglios celíacos, aorticorrenais e mesentéricos) inibe a peristalse, contrai os esfíncteres digestórios (pilórico e ileocecal), promove vasoconstrição esplâncnica, estimula a glicogenólise hepática e libera renina no aparelho justaglomerular renal; o parassimpático (vagal até a flexura cólica esquerda e sacral S2–S4 no colo descendente, sigmoide e reto) estimula o peristaltismo e a secreção. As aferências de dor do testículo e do ovário acompanham os vasos gonadais até T10–T11 (dor referida periumbilical/flanco).',
+    lesao: 'Na dor visceral intratável do câncer de pâncreas ou de outras vísceras do andar superior do abdome, realiza-se a **neurólise (bloqueio químico) do plexo celíaco** guiada por ultrassonografia endoscópica ou tomografia, interrompendo a condução aferente nociceptiva.',
+    nota: 'A transição da inervação parassimpática entre o território do nervo vago (intestino anterior e médio) e o dos nervos esplâncnicos pélvicos S2–S4 (intestino posterior) ocorre no terço distal do colo transverso, próximo à flexura cólica esquerda (ponto de Cannon-Böhm).',
+  }),
+
+  nervo('n_plexo_hipogastrico_pelvico', 'Plexos hipogástricos (superior e inferior), nervos esplâncnicos pélvicos (S2–S4) e nervos cavernosos', 'Plexus hypogastricus superior et inferior; Nn. splanchnici pelvici [erigentes]; Nn. cavernosi', 'tronco', {
+    paired: false,
+    paths: [
+      // Plexo hipogástrico superior (diante de L5 e do promontório sacral) dividindo-se nos nervos hipogástricos direito e esquerdo
+      { pts: [[0.04, -6.0, 0.35], [0.02, -6.28, 0.25], [0.18, -6.58, -0.05], [0.22, -6.95, -0.22]], r: 0.005 },
+      { pts: [[0.02, -6.28, 0.25], [-0.16, -6.58, -0.05], [-0.2, -6.95, -0.22]], r: 0.005 },
+      // Nervos esplâncnicos pélvicos (S2–S4) unindo-se ao plexo hipogástrico inferior (pélvico) e nervos cavernosos ao longo da próstata/uretra
+      { pts: [[0.24, -6.88, -0.45], [0.22, -7.02, -0.25], [0.16, -7.35, -0.15], [0.08, -7.6, 0.05], [0.04, -7.78, 0.28]], r: 0.0045 },
+      { pts: [[-0.24, -6.88, -0.45], [-0.22, -7.02, -0.25], [-0.16, -7.35, -0.15], [-0.08, -7.6, 0.05], [-0.04, -7.78, 0.28]], r: 0.0045 },
+    ],
+    ramos: [
+      { m: 'bexiga_urinaria', obs: 'parassimpático S2–S4 (contração do detrusor na micção) e simpático L1–L2 (trígono/colo)', semRamo: true },
+      { m: 'prostata', obs: 'plexo prostático (simpático L1–L2 para emissão seminal; feixes cavernosos posterolaterais)', semRamo: true },
+      { m: 'vesicula_seminal', obs: 'simpático L1–L2 via nervos hipogástricos (contração na emissão)', semRamo: true },
+      { m: 'ducto_deferente', obs: 'simpático L1–L2 (peristalse rápida na emissão)', semRamo: true },
+      { m: 'corpo_cavernoso_penis', obs: 'nervos cavernosos (parassimpático S2–S4: óxido nítrico e ereção)', semRamo: true },
+      { m: 'corpo_esponjoso_penis', obs: 'nervos cavernosos (ereção)', semRamo: true },
+      { m: 'utero_corpo', obs: 'plexo uterovaginal (dor do corpo uterino em T11–T12)', semRamo: true },
+      { m: 'colo_utero', obs: 'plexo uterovaginal (dor da dilatação cervical via S2–S4)', semRamo: true },
+      { m: 'vagina', obs: 'plexo uterovaginal (lubrificação parassimpática S2–S4)', semRamo: true },
+      { m: 'clitoris', obs: 'nervos cavernosos do clitóris (S2–S4)', semRamo: true },
+      { m: 'bulbos_vestibulo', obs: 'nervos cavernosos (ingurgitamento)', semRamo: true },
+      { m: 'glandulas_vestibulares_maiores', obs: 'secretomotor parassimpático S2–S4', semRamo: true },
+      { m: 'glandulas_bulbouretrais', obs: 'secretomotor parassimpático S2–S4', semRamo: true },
+      { m: 'reto', obs: 'plexo retal médio/inferior (S2–S4: evacuação e sensibilidade à distensão)', semRamo: true },
+      { m: 'canal_anal', obs: 'acima da linha pectínea (autonômico)', semRamo: true },
+      { m: 'esfincter_interno_anus', obs: 'simpático L1–L2 (tônus de repouso) e parassimpático S2–S4 (relaxamento)', semRamo: true },
+    ],
+  }, {
+    origem: 'O **plexo hipogástrico superior** (em frente à bifurcação aórtica, corpo de L5 e promontório sacral) recebe fibras simpáticas dos nervos esplâncnicos lombares (L1–L2) e do plexo intermesentérico; divide-se nos **nervos hipogástricos direito e esquerdo**, que descem para a pelve e se unem aos **nervos esplâncnicos pélvicos (ramos parassimpáticos de S2, S3 e S4, nervos eretores de Eckhardt)** e aos nervos esplâncnicos sacrais para formar, de cada lado, o **plexo hipogástrico inferior (plexo pélvico)**.',
+    trajeto: 'O plexo hipogástrico inferior forma uma lâmina reticular na fáscia endopélvica subperitoneal, lateralmente ao reto, ao fundo da bexiga, à próstata e às glândulas seminais (no homem) ou ao colo do útero e aos fórnices vaginais na base do ligamento largo/cardinal (na mulher, plexo de Frankenhauser). Da parte anterior do plexo prostático saem os **nervos cavernosos**, que correm nos feixes neurovasculares posterolaterais à cápsula prostática, perfuram a membrana perineal ao lado da uretra membranácea e penetram os corpos cavernosos.',
+    ramos: 'Subplexos retal médio/inferior, vesical, prostático (com os nervos cavernosos do pênis) e uterovaginal (com os nervos cavernosos do clitóris), além de fibras parassimpáticas ascendentes que sobem ao plexo mesentérico inferior para inervar o colo sigmoide, o colo descendente e o terço distal do colo transverso.',
+    sensibilidade: '**Mecanismo autonômico integrado pélvico (regra clássica de prova):** 1) **Micção**: o parassimpático sacral (S2–S4) contrai o músculo detrusor da bexiga e relaxa o esfíncter interno, enquanto o simpático (T11–L2) contrai o esfíncter interno da uretra no homem durante a ejaculação; 2) **Defecação**: o parassimpático (S2–S4) estimula o peristaltismo retal e relaxa o esfíncter interno do ânus; 3) **Função sexual ("Point and Shoot")**: o **parassimpático (nervos esplâncnicos pélvicos S2–S4 e nervos cavernosos)** promove vasodilatação das artérias helicinas (via óxido nítrico) e **ereção** peniana/clitoriana e lubrificação vaginal (*Point*), enquanto o **simpático (L1–L2 via nervos hipogástricos)** comanda a **emissão seminal** (contração do epidídimo, ducto deferente, glândulas seminais, próstata e fechamento do colo vesical) e o **nervo pudendo (somático S2–S4)** comanda a **ejaculação expulsiva** pela contração rítmica do bulboesponjoso (*Shoot*). **Dor pélvica (linha da dor da pelve)**: o fundo e o corpo do útero e a cúpula da bexiga ficam acima da linha da dor (aferências sobem com o simpático pelos nervos hipogástricos até **T11–L2**), enquanto o colo do útero, a vagina superior, o trígono vesical, a próstata e o reto ficam abaixo da linha da dor (aferências acompanham o parassimpático pelos nervos esplâncnicos pélvicos até **S2–S4**).',
+    lesao: 'Na prostatectomia radical, no esvaziamento pélvico ou na ressecção abdominoperineal do reto (cirurgia de Miles), a lesão dos feixes neurovasculares prostáticos/nervos cavernosos ou do plexo hipogástrico inferior causa **disfunção erétil neurogênica** e **bexiga neurogênica atônica**; a lesão do plexo hipogástrico superior ou dos nervos hipogástricos na dissecção aórtica/retroperitoneal causa **ejaculação retrógrada** (para dentro da bexiga, por falha no fechamento simpático do esfíncter interno da uretra) ou anejaculação, preservando a ereção.',
+    nota: 'Resume toda a integração neurovegetativa urogenital e anorretal cobrada na prática e na teórica de pelve e períneo.',
   }),
 ];

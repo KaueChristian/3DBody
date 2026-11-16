@@ -134,6 +134,10 @@ export function createAreas({ stage, state, dissectNames, setDissect, openSetup,
 
   // as abas do modal de estudo abrem por cima do palco: no celular, a gaveta sai da frente
   document.querySelectorAll('[data-study-tab]').forEach((b) => b.addEventListener('click', () => setList(false)));
+  document.querySelectorAll('[data-start-tour]').forEach((b) => b.addEventListener('click', () => {
+    setList(false);
+    study()?.startTour(b.dataset.startTour);
+  }));
 
   /* ───── Quiz: o modo escolhido aqui já vem marcado na configuração ───── */
   document.querySelectorAll('[data-quiz-mode]').forEach((b) => b.addEventListener('click', () => { setList(false); openSetup({ mode: b.dataset.quizMode }); }));

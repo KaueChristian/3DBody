@@ -1,6 +1,6 @@
 # Sistema genital feminino e mama (F6.5)
 
-Entregue na `dev` em 2026-11-16, para a aula de genital feminino (logo depois de 17/11) e a N2 (26/11). 28 estruturas em
+Entregue na `dev` em 2026-11-16, para a aula de genital feminino (logo depois de 17/11) e a N2 (26/11). 31 estruturas em
 `src/catalog-fem.js`, pacote `dist/anatomy-fem.js` (≈ 400 KB) e camada **“Genital feminino e mama (modelo feminino)”**.
 
 ## 1. Como aparece no atlas: o “modelo feminino”
@@ -34,9 +34,10 @@ Limitações que ficam visíveis:
 | Ovários | **HRA** `ovary-female-left/right` v1.3 (malha simples, sem folículos) | idem |
 | Mama: corpo adiposo e ligamentos suspensores; glândula (lobos, ductos e seios lactíferos); papila, aréola e tubérculos areolares | **HRA** `mammary-gland-female-left/right` v1.1 (decimada de ≈ 1 milhão para ≈ 18 mil triângulos) | escala real, papila no 4º espaço intercostal na linha medioclavicular, base no peitoral maior |
 | Pelve feminina (comparação) | **HRA** `pelvis-female` v1.3 (ossos do quadril, sacro e cóccix) | escala real, fora do corpo, à direita (x ≈ −4,9) |
-| Vagina, uretra feminina, lábios menores e vestíbulo, lábios maiores e monte do púbis, clitóris, bulbos do vestíbulo, glândulas vestibulares maiores | **código** (`proc`, tubos) | pontos medidos no modelo: colo do útero, colo da bexiga, sínfise púbica, ramos do pênis (mesmo trajeto dos ramos do clitóris), canal anal, períneo |
+| Vagina, uretra feminina, lábios menores e vestíbulo, lábios maiores e monte do púbis, clitóris, bulbos do vestíbulo, glândulas vestibulares maiores, **hímen e glândulas parauretrais (de Skene), corpo do períneo** | **código** (`proc`, tubos) | pontos medidos no modelo: colo do útero, colo da bexiga, sínfise púbica, ramos do pênis (mesmo trajeto dos ramos do clitóris), canal anal, períneo |
 | Ligamentos largo, redondo, útero-ovárico, suspensor do ovário, uterossacro e transverso do colo (cardinal) | **código** | do útero e do ovário (HRA) às paredes da pelve, ao sacro e ao canal inguinal do modelo |
 | Artéria uterina | **código** | da artéria ilíaca interna à margem lateral do útero, **por cima do ureter**, com ramos tubário-ovárico e cervicovaginal |
+| **Artéria vaginal e plexo venoso uterovaginal** | **código** | das paredes anterolateral e posterolateral da vagina à artéria e veia ilíacas internas |
 | Artéria ovárica | **código** | mesmo trajeto abdominal medido na artéria testicular do BodyParts3D, depois o ligamento suspensor até o ovário |
 | Veia ovárica | **código** | à esquerda, até a veia renal esquerda (trajeto da veia testicular); à direita, até a veia cava inferior |
 
@@ -90,9 +91,7 @@ segue os marcos clássicos (12 semanas acima da sínfise, ≈ 20 no umbigo, ≈ 
 
 ## 6. O que ficou de fora (→ M31)
 
-- Músculos do períneo feminino próprios (o bulboesponjoso e o isquiocavernoso do modelo são os masculinos); corpo do períneo como
-  peça; hímen; glândulas parauretrais e vestibulares menores (só em texto).
-- Artéria e plexo venoso vaginais, artéria do ligamento redondo, linfonodos próprios (só em texto).
+- Músculos do períneo feminino próprios (o bulboesponjoso e o isquiocavernoso do modelo são os masculinos; o corpo do períneo, o hímen e as glândulas parauretrais de Skene, e a artéria e plexo vaginal já entraram por código).
 - Vagina e vulva com malha real: não há fonte aberta compatível conferida (a da Catherine Vallance, CC BY 4.0, exige conta no
   Sketchfab; ver `fonte-hra-atlas-de-referencia.md`).
 - Bexiga feminina do HRA (`urinary-bladder-female` v1.2, 0,77 MB, mesmo referencial do útero): resolveria a sobreposição com a

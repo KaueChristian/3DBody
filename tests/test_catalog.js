@@ -278,6 +278,7 @@ function runTests() {
       'epididimo', 'testiculo', 'corpo_cavernoso_penis', 'corpo_esponjoso_penis', 'glande_penis',
       'canal_inguinal', 'funiculo_espermatico', 'cremaster',
       'arteria_testicular', 'veia_testicular', 'arteria_dorsal_penis', 'veia_dorsal_profunda_penis',
+      'pelve_calices_renais', 'fascia_renal_gerota', 'tunicas_testiculo_escroto',
     ];
     for (const id of urinCheckIds) {
       const it = itemMap.get(id);
@@ -298,8 +299,9 @@ function runTests() {
       'vagina', 'uretra_feminina', 'labios_menores', 'labios_maiores', 'clitoris', 'bulbos_vestibulo', 'glandulas_vestibulares_maiores',
       'lig_largo_utero', 'lig_redondo_utero', 'lig_utero_ovarico', 'lig_suspensor_ovario', 'lig_uterossacro', 'lig_transverso_colo',
       'arteria_uterina', 'arteria_ovarica', 'veia_ovarica', 'mama_corpo_adiposo', 'mama_glandula', 'mama_papila_areola', 'pelve_feminina',
+      'corpo_perineo', 'himen_glandulas_parauretrais', 'arteria_plexo_vaginal',
     ];
-    const endoCheckIds = ['hipotalamo', 'hipofise', 'glandula_pineal', 'tireoide', 'paratireoides', 'suprarrenal_direita', 'suprarrenal_esquerda'];
+    const endoCheckIds = ['hipotalamo', 'hipofise', 'glandula_pineal', 'tireoide', 'paratireoides', 'veias_tireoideas_ima', 'timo', 'suprarrenal_direita', 'suprarrenal_esquerda'];
     for (const [ids, layer, home, label] of [[femCheckIds, 'feminino', femPieces, 'genital feminino'], [endoCheckIds, 'endocrino', endoPieces, 'endócrino']]) {
       for (const id of ids) {
         const it = itemMap.get(id);
@@ -323,8 +325,10 @@ function runTests() {
     for (const id of ['bexiga_urinaria', 'rim_direito', 'ureter_esquerdo', 'canal_inguinal']) {
       if (itemMap.get(id)?.sexo) logFail(`"${id}" existe nos dois sexos e não deveria ter a marca "sexo".`);
     }
-    if (!itemMap.has('n_genitofemoral') || itemMap.get('n_genitofemoral')?.kind !== 'nervo') {
-      logFail('Nervo genitofemoral ("n_genitofemoral") ausente do catálogo.');
+    for (const id of ['n_genitofemoral', 'n_troncos_vagais', 'n_simpatico_toracolombar', 'n_plexo_cardiopulmonar', 'n_plexo_celiaco_mesenterico', 'n_plexo_hipogastrico_pelvico']) {
+      if (!itemMap.has(id) || itemMap.get(id)?.kind !== 'nervo') {
+        logFail(`Nervo autonômico/visceral ("${id}") ausente do catálogo.`);
+      }
     }
   }
 

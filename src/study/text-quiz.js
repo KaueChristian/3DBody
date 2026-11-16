@@ -1,22 +1,70 @@
 /**
- * Quiz teórico (F1.5): perguntas de texto geradas a partir dos campos do catálogo, sem escrever pergunta à mão.
+ * Quiz teórico (F1.5 + F6.7): perguntas de texto geradas a partir dos campos do catálogo, sem escrever pergunta à mão.
  *
  * Músculos: nervo que o inerva · artéria que o irriga · ação · origem · inserção · observação clínica/funcional.
  * Nervos:   qual músculo ele inerva · lesão · sensibilidade.
+ * Órgãos, coração, artérias, veias, linfáticos, glândulas, ossos, articulações e ligamentos:
+ *   função e clínica · localização e estrutura · relações e peritônio/pleura · território irrigado/drenado · origem/formação · trajeto · ramos.
  *
  * Cuidados com a qualidade das perguntas:
  *  - só há UMA alternativa correta: os distratores nunca são nervos/músculos que também servem como resposta;
- *  - o enunciado não pode conter o nome da resposta (`leaks`); se contiver, aquele tipo é descartado para a estrutura;
+ *  - o enunciado não pode conter o nome da resposta (`leaks`); se um parágrafo citar o nome em uma frase, aproveitam-se
+ *    as frases que não entregam a resposta (`nonLeakingText`);
  *  - alternativas com o mesmo texto de campo que a correta (ex.: duas cabeças com a mesma inserção) são evitadas.
  */
 import { shuffle, norm, esc } from './util.js';
 
-const GENERIC = new Set(['musculo', 'nervo', 'parte', 'ventre', 'cabeca', 'lateral', 'medial', 'superior', 'inferior', 'anterior', 'posterior', 'longo', 'curto', 'maior', 'menor', 'externo', 'interno', 'profundo', 'superficial']);
+const GENERIC = new Set([
+  'musculo', 'musculos', 'nervo', 'nervos', 'parte', 'partes', 'ventre', 'cabeca', 'lateral', 'medial', 'superior', 'inferior',
+  'anterior', 'posterior', 'longo', 'curto', 'maior', 'menor', 'externo', 'interno', 'profundo', 'superficial', 'direito', 'direita',
+  'esquerdo', 'esquerda', 'comum', 'proprio', 'propria', 'principal', 'principais', 'acessorio', 'acessoria', 'ramo', 'ramos',
+  'tronco', 'corpo', 'lobo', 'ducto', 'ductos', 'canal', 'valva', 'seio', 'seios', 'plexo', 'plexos', 'ligamento', 'ligamentos',
+  'articulacao', 'glandula', 'glandulas', 'linfonodos', 'arteria', 'arterias', 'veia', 'veias', 'osso', 'ossos', 'cartilagem',
+  'cartilagens', 'camara', 'tunica', 'esquema', 'sistema', 'regiao', 'parede', 'arco', 'rede', 'fossa', 'forame',
+]);
 
 const MUSCLE_TYPES = ['nervo', 'irrigacao', 'acao', 'origem', 'insercao', 'nota'];
 const NERVE_TYPES = ['musculos', 'lesao', 'sensibilidade'];
+const ARTERY_TYPES = ['territorio_art', 'trajeto_art', 'origem_art', 'ramos_art', 'clinica_art'];
+const VEIN_TYPES = ['territorio_veia', 'formacao_veia', 'trajeto_veia', 'tributarias_veia', 'clinica_veia'];
+const CARDIAC_TYPES = ['funcao_card', 'local_card', 'relacoes_card', 'nota_card'];
+const LYMPH_TYPES = ['drenagem_linf', 'local_linf', 'clinica_linf'];
+const ORGAN_TYPES = ['clinica_orgao', 'local_orgao', 'relacoes_orgao', 'vasos_orgao', 'nota_orgao'];
+const BONE_TYPES = ['estruturas_osso', 'funcao_osso', 'artic_osso', 'local_osso'];
+const OTHER_TYPES = ['clinica_outra', 'local_outra', 'relacoes_outra', 'vasos_outra'];
 
 const FIELD = { acao: 'Ação', origem: 'Origem', insercao: 'Inserção', lesao: 'Lesão', sensibilidade: 'Sensibilidade' };
+const MULTI_FIELD = {
+  territorio_art: ['Território irrigado', 'Função e clínica', 'Vascularização e inervação'],
+  trajeto_art: ['Trajeto', 'Localização e partes'],
+  origem_art: ['Origem'],
+  ramos_art: ['Ramos principais', 'Ramos', 'Relações e peritônio'],
+  clinica_art: ['Pulso e compressão', 'Relações'],
+  territorio_veia: ['Território drenado', 'Função e clínica'],
+  formacao_veia: ['Formação', 'Origem'],
+  trajeto_veia: ['Trajeto', 'Localização e partes'],
+  tributarias_veia: ['Tributárias', 'Ramos', 'Vascularização e inervação'],
+  clinica_veia: ['Relações', 'Depois do nascimento'],
+  funcao_card: ['Função', 'Funcionamento', 'Clínica'],
+  local_card: ['Localização', 'Trajeto', 'Posição na circulação', 'Na vida fetal'],
+  relacoes_card: ['Paredes e relações', 'Estruturas internas', 'Estrutura', 'Irrigação', 'Fechamento pós-natal'],
+  drenagem_linf: ['Território drenado', 'No abdome', 'No pescoço e tórax'],
+  local_linf: ['Localização', 'Drena para', 'Trajeto', 'Origem'],
+  clinica_linf: ['Clínica', 'Afluentes'],
+  clinica_orgao: ['Função e clínica', 'Aspectos clínicos', 'Importância clínica'],
+  local_orgao: ['Localização e partes', 'Localização e limites', 'Localização', 'Localização e estrutura'],
+  relacoes_orgao: ['Relações e peritônio', 'Faces e relações', 'Relações', 'Relações anatômicas', 'Estrutura'],
+  vasos_orgao: ['Vascularização e inervação', 'Segmentos broncopulmonares'],
+  estruturas_osso: ['Estruturas principais', 'Estrutura', 'Diâmetros obstétricos'],
+  funcao_osso: ['Função e inserções', 'Função e clínica', 'Clínica'],
+  artic_osso: ['Articula-se com', 'Diferenças em relação à pelve masculina'],
+  local_osso: ['Localização', 'O que é'],
+  clinica_outra: ['Hormônios e clínica', 'Função e clínica', 'Aspectos clínicos', 'Inervação e clínica', 'Função', 'Movimentos e amplitude', 'Troca e circulação'],
+  local_outra: ['Localização e partes', 'Localização', 'Origem', 'Superfícies articulares', 'Partes da pleura parietal', 'Divisões e conteúdo'],
+  relacoes_outra: ['Relações', 'Relações e peritônio', 'Relações e inervação', 'Estrutura', 'Inserção', 'Ligamentos', 'Cápsula e membrana sinovial', 'Drenagem e estrutura', 'Recessos'],
+  vasos_outra: ['Vascularização e inervação', 'Inervação', 'Irrigação', 'Inervação e receptores', 'Anexos cutâneos'],
+};
+
 const PROMPT = {
   acao: 'Qual músculo tem a seguinte ação?',
   origem: 'Qual músculo se origina em:',
@@ -24,11 +72,44 @@ const PROMPT = {
   nota: 'A qual músculo se refere esta observação?',
   lesao: 'A lesão de qual nervo causa este quadro?',
   sensibilidade: 'Qual nervo é responsável pela sensibilidade descrita?',
+  territorio_art: 'Qual artéria irriga o seguinte território?',
+  trajeto_art: 'Qual artéria apresenta o seguinte trajeto?',
+  origem_art: 'Qual artéria tem a seguinte origem?',
+  ramos_art: 'Qual artéria emite os seguintes ramos?',
+  clinica_art: 'A qual artéria se refere esta relação clínica ou ponto de pulso?',
+  territorio_veia: 'Qual veia (ou seio venoso) drena o seguinte território?',
+  formacao_veia: 'Qual veia (ou seio venoso) tem a seguinte formação ou origem?',
+  trajeto_veia: 'Qual veia (ou seio venoso) apresenta o seguinte trajeto?',
+  tributarias_veia: 'Qual veia (ou seio venoso) recebe as seguintes tributárias?',
+  clinica_veia: 'A qual veia (ou seio venoso) se refere esta observação clínica?',
+  funcao_card: 'Qual estrutura cardíaca desempenha esta função ou papel clínico?',
+  local_card: 'Qual estrutura do coração tem esta localização ou trajeto?',
+  relacoes_card: 'A qual estrutura cardíaca corresponde esta descrição anatômica?',
+  nota_card: 'A qual estrutura do coração se refere esta observação?',
+  drenagem_linf: 'Qual estrutura linfática drena o seguinte território?',
+  local_linf: 'Qual estrutura linfática apresenta esta localização ou destino?',
+  clinica_linf: 'A qual estrutura linfática se refere esta correlação clínica?',
+  clinica_orgao: 'A qual órgão se refere esta função ou correlação clínica?',
+  local_orgao: 'Qual órgão apresenta a seguinte localização e divisão?',
+  relacoes_orgao: 'Qual órgão apresenta as seguintes relações anatômicas?',
+  vasos_orgao: 'A qual órgão pertence esta vascularização, inervação ou segmentação?',
+  nota_orgao: 'A qual órgão se refere esta observação anatômica ou clínica?',
+  estruturas_osso: 'Qual osso (ou cartilagem) possui as seguintes estruturas anatômicas?',
+  funcao_osso: 'Qual osso (ou cartilagem) desempenha esta função?',
+  artic_osso: 'Qual osso (ou cartilagem) apresenta estas articulações ou características?',
+  local_osso: 'Qual osso (ou cartilagem) tem a seguinte localização?',
+  clinica_outra: 'A qual estrutura, glândula, articulação ou ligamento se refere esta função ou clínica?',
+  local_outra: 'Qual estrutura, glândula, articulação ou ligamento tem esta localização ou origem?',
+  relacoes_outra: 'A qual estrutura, glândula, articulação ou ligamento corresponde esta descrição?',
+  vasos_outra: 'A qual estrutura ou glândula se refere esta característica?',
 };
 
 /** Parte do nome que identifica a estrutura (sem prefixos genéricos e sem o que vem após "—" ou entre parênteses). */
 function stems(item) {
-  const cut = (s) => norm(s).split(/\s[—-]\s|\(|,/)[0].replace(/^(musculo|nervo|m\.|n\.)\s+/, '').trim();
+  const cut = (s) => norm(s)
+    .split(/\s[—-]\s|\(|,|;|\[/)[0]
+    .replace(/^(musculo|musculos|nervo|nervos|arteria|arterias|veia|veias|linfonodos|ducto|ductos|ligamento|ligamentos|articulacao|articulacoes|glandula|glandulas|cartilagem|cartilagens|osso|ossos|valva|seio|seios|plexo|plexos|m\.|mm\.|n\.|nn\.|a\.|aa\.|v\.|vv\.|lig\.|art\.)\s+/, '')
+    .trim();
   return [cut(item.name), cut(item.latin ?? '')].filter((s) => s.length >= 4);
 }
 
@@ -37,12 +118,33 @@ export function leaks(text, item) {
   const t = norm(text);
   for (const s of stems(item)) if (t.includes(s)) return true;
   for (const w of norm(item.name).split(/[^a-z0-9]+/)) {
-    if (w.length >= 7 && !GENERIC.has(w) && new RegExp(`\\b${w}`).test(t)) return true;
+    if (w.length >= 6 && !GENERIC.has(w) && new RegExp(`\\b${w}`).test(t)) return true;
   }
   return false;
 }
 
+/** Devolve o texto do campo se não entregar o nome, ou as frases dele que não entregam o nome. */
+function nonLeakingText(text, target, minLen = 15) {
+  const clean = String(text || '').replace(/\*\*/g, '').replace(/^ESQUEMA:\s*/i, '').trim();
+  if (clean.length < minLen) return '';
+  if (!leaks(clean, target)) return clean;
+  const kept = clean
+    .split(/(?<=[.!?;])\s+/)
+    .map((s) => s.trim())
+    .filter((s) => s.length >= 22 && !leaks(s, target) && !/^(malha|esquema|o modelo|a malha)\b/i.test(s));
+  const joined = kept.slice(0, 2).join(' ').trim();
+  return joined.length >= minLen && !leaks(joined, target) ? joined : '';
+}
+
 const field = (item, key) => item.campos?.find(([k]) => k === key)?.[1]?.trim() || '';
+const multiField = (item, keys) => {
+  for (const k of keys ?? []) {
+    const v = field(item, k);
+    if (v) return v;
+  }
+  return '';
+};
+const kindGroupOf = (i) => (['musculo', 'osso', 'nervo', 'cardiaco', 'arteria', 'veia', 'linfatico', 'orgao'].includes(i.kind) ? i.kind : 'outras');
 
 export class TextQuizGenerator {
   /**
@@ -59,6 +161,12 @@ export class TextQuizGenerator {
     this.byId = new Map(items.map((i) => [i.id, i]));
     this.muscles = items.filter((i) => i.kind === 'musculo');
     this.nerves = items.filter((i) => i.kind === 'nervo');
+    this.byKind = new Map();
+    for (const i of items) {
+      if (i.id === 'pele' || i.kind === 'fascia') continue;
+      if (!this.byKind.has(i.kind)) this.byKind.set(i.kind, []);
+      this.byKind.get(i.kind).push(i);
+    }
     // artérias que irrigam algum músculo: as alternativas de “qual artéria?” saem daqui (as coronárias não servem de distrator)
     const usadas = new Set([...irrigation.values()].flat());
     this.muscleArteries = items.filter((i) => i.kind === 'arteria' && usadas.has(i.id));
@@ -78,17 +186,31 @@ export class TextQuizGenerator {
    * Estruturas que podem virar pergunta.
    * @param {{region?: string, kinds?: string[], allow?: Set<string>|null}} opts
    */
-  pool({ region = 'todos', kinds = ['musculo', 'nervo'], allow = null } = {}) {
-    const ok = (i) => (region === 'todos' || (i.region !== 'todos' && this.inRegion(i, region))) && (!allow || allow.has(i.id));
-    const out = [];
-    if (kinds.includes('musculo')) out.push(...this.muscles.filter(ok));
-    if (kinds.includes('nervo')) out.push(...this.nerves.filter(ok));
-    return out;
+  pool({ region = 'todos', kinds = ['musculo', 'nervo', 'osso', 'cardiaco', 'arteria', 'veia', 'linfatico', 'orgao', 'outras'], allow = null } = {}) {
+    const kindSet = new Set(kinds);
+    const ok = (i) => i.id !== 'pele' && i.kind !== 'fascia'
+      && kindSet.has(kindGroupOf(i))
+      && (region === 'todos' || (i.region !== 'todos' && this.inRegion(i, region)))
+      && (!allow || allow.has(i.id));
+    return this.items.filter(ok);
+  }
+
+  /** Tipos de pergunta aplicáveis a `target`. */
+  typesFor(target) {
+    if (target.kind === 'musculo') return MUSCLE_TYPES;
+    if (target.kind === 'nervo') return NERVE_TYPES;
+    if (target.kind === 'arteria') return ARTERY_TYPES;
+    if (target.kind === 'veia') return VEIN_TYPES;
+    if (target.kind === 'cardiaco') return CARDIAC_TYPES;
+    if (target.kind === 'linfatico') return LYMPH_TYPES;
+    if (target.kind === 'orgao') return ORGAN_TYPES;
+    if (target.kind === 'osso') return BONE_TYPES;
+    return OTHER_TYPES;
   }
 
   /** Monta uma pergunta para `target`, tentando os tipos viáveis em ordem aleatória; `null` se nenhum servir. */
   question(target, region = 'todos') {
-    const types = shuffle(target.kind === 'musculo' ? MUSCLE_TYPES : NERVE_TYPES);
+    const types = shuffle(this.typesFor(target));
     for (const type of types) {
       const q = this.build(type, target, region);
       if (q) return q;
@@ -127,26 +249,37 @@ export class TextQuizGenerator {
     if (type === 'nervo') return this.buildNerveOfMuscle(t, region);
     if (type === 'irrigacao') return this.buildArteryOfMuscle(t, region);
     if (type === 'musculos') return this.buildMuscleOfNerve(t, region);
-    if (type === 'nota') {
-      const text = (t.nota || '').trim();
-      return this.buildByText(type, t, text, region, this.muscles, PROMPT.nota, (i) => i.nota || '');
+    if (type === 'nota' || type === 'nota_card' || type === 'nota_orgao') {
+      const pool = this.byKind.get(t.kind) ?? [];
+      return this.buildByText(type, t, (t.nota || '').trim(), region, pool, PROMPT[type], (i) => i.nota || '', true);
     }
-    const key = FIELD[type];
-    const text = field(t, key);
-    const pool = t.kind === 'musculo' ? this.muscles : this.nerves;
-    return this.buildByText(type, t, text, region, pool, PROMPT[type], (i) => field(i, key));
+    if (FIELD[type]) {
+      const key = FIELD[type];
+      const text = field(t, key);
+      const pool = t.kind === 'musculo' ? this.muscles : this.nerves;
+      return this.buildByText(type, t, text, region, pool, PROMPT[type], (i) => field(i, key), false);
+    }
+    const keys = MULTI_FIELD[type];
+    if (keys) {
+      const pool = this.byKind.get(t.kind) ?? [];
+      const raw = multiField(t, keys);
+      const excerpt = nonLeakingText(raw, t);
+      return this.buildByText(type, t, excerpt, region, pool, PROMPT[type], (i) => multiField(i, keys) || i.name, true);
+    }
+    return null;
   }
 
-  /** Pergunta "qual estrutura tem este texto?" (ação, origem, inserção, nota, lesão, sensibilidade). */
-  buildByText(type, target, text, region, pool, prompt, textOf) {
-    if (type === 'nota' ? text.length < 20 : !text) return null;
-    if (leaks(text, target)) return null;
+  /** Pergunta "qual estrutura tem este texto?" (ação, origem, inserção, nota, lesão, sensibilidade, órgãos, vasos…). */
+  buildByText(type, target, text, region, pool, prompt, textOf, allowExcerpt = false) {
+    const excerpt = allowExcerpt ? nonLeakingText(text, target, type.startsWith('nota') ? 20 : 15) : (type === 'nota' ? (text.length >= 20 ? text : '') : text);
+    if (!excerpt) return null;
+    if (leaks(excerpt, target)) return null;
     const wrong = this.distractors(target, pool.filter((i) => textOf(i)), region, textOf);
     if (!wrong) return null;
     return this.make(type, target, target, wrong, {
       // aspas dentro do texto citado viram simples, para não ficar “Olho “para baixo…” …”
-      prompt: `${esc(prompt)}<br><i>“${esc(text).replace(/“/g, '‘').replace(/”/g, '’')}”</i>`,
-      explanation: `${esc(target.name)} (${esc(target.latin)}): ${esc(text)}`,
+      prompt: `${esc(prompt)}<br><i>“${esc(excerpt).replace(/“/g, '‘').replace(/”/g, '’')}”</i>`,
+      explanation: `${esc(target.name)} (${esc(target.latin)}): ${esc(excerpt)}`,
       named: false,
     });
   }

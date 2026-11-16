@@ -1,7 +1,7 @@
 # Sistema endócrino (F6.6)
 
-Entregue na `dev` em 2026-11-16, para a aula de 19/11 e a N2 (26/11). 7 estruturas em `src/catalog-endo.js`, pacote
-`dist/anatomy-endo.js` (≈ 57 KB) e camada **“Sistema endócrino”** (não opcional: aparece com as vísceras no nível de dissecação 5).
+Entregue na `dev` em 2026-11-16, para a aula de 19/11 e a N2 (26/11). 9 estruturas em `src/catalog-endo.js`, pacote
+`dist/anatomy-endo.js` (≈ 72 KB) e camada **“Sistema endócrino”** (não opcional: aparece com as vísceras no nível de dissecação 5).
 
 ## 1. Origem de cada estrutura
 
@@ -11,11 +11,13 @@ Entregue na `dev` em 2026-11-16, para a aula de 19/11 e a N2 (26/11). 7 estrutur
 | Hipófise | **BodyParts3D** (`pituitary gland`, FJ1796) | Na sela turca |
 | Glândula pineal | **BodyParts3D** (`pineal body`, FJ1795) | O atlas não tem o encéfalo: fica isolada dentro do crânio |
 | Hipotálamo | **BodyParts3D** (`hypothalamus`, FJ1760 e FJ1808, as duas metades unidas) | Idem |
+| Timo (lobos direito e esquerdo) | **BodyParts3D** (`lobe of thymus`, FJ3150 e FJ3151) | No mediastino superior e anterior, atrás do manúbrio do esterno e à frente do pericárdio e dos grandes vasos |
 | Glândula tireoide (lobos e istmo) | **código** (`proc`) | Não existe no BodyParts3D nem no HRA. Lobos de cada lado da cartilagem cricóidea e da traqueia, da metade da cartilagem tireóidea ao ≈ 6º anel, atrás do esternotireóideo; istmo à frente do 2º ao 4º anel. Sem o lobo piramidal |
 | Glândulas paratireoides (4) | **código** | Na face posterior dos lobos: as superiores na altura da margem inferior da cricóidea, as inferiores perto do polo inferior |
+| Veias tireóideas (superior, média e inferior) e artéria tireóidea ima | **código** (`proc`) | Esquema venoso e arterial pré-traqueal ligando a tireoide à jugular interna, à veia braquiocefálica e ao tronco braquiocefálico |
 
 Pâncreas, ovários e testículos já existem nos seus sistemas; entram no endócrino pelos vínculos (“relacionados”) da hipófise e no
-tour. O timo existe no BodyParts3D (`lobe of thymus`) e continua pendente (P57 em `pendencias-por-sistema.md`).
+tour.
 
 Pontos de medida da tireoide (unidades do atlas, lado esquerdo, espelhado): traqueia com x ≤ 0,097 e face anterior em z ≈ 0,23
 (y −1,5 a −1,8); cartilagem cricóidea de y −1,48 a −1,30; lâmina da cartilagem tireóidea até x ≈ 0,15 em y −1,35; carótida comum
@@ -43,5 +45,5 @@ direita para a cava, a esquerda para a renal esquerda); medula suprarrenal com f
 
 ## 4. Pendente
 
-- Timo (malha do BodyParts3D, P57), lobo piramidal da tireoide, artéria tireóidea ima, veias tireóideas: só em texto.
+- Lobo piramidal da tireoide: descrito na ficha da tireoide.
 - Encéfalo (F7): o hipotálamo e a pineal ficam soltos no crânio até lá.

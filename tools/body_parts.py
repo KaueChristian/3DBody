@@ -602,6 +602,7 @@ adde("suprarrenal_esquerda", "glandula", r"left adrenal gland", 3, 1600)
 adde("hipofise", "glandula", r"pituitary gland", 3, 1000, region="cabeca")
 adde("glandula_pineal", "glandula", r"pineal body", 3, 700, region="cabeca")
 adde("hipotalamo", "orgao", r"hypothalamus", 3, 1600, region="cabeca")
+adde("timo", "glandula", r"lobe of thymus", 3, 1800, region="tronco")
 
 
 def resolve():

@@ -86,10 +86,10 @@ def draw_icon(n=768, maskable=False):
     bowls = bowl(50, 31, 17, 30) | bowl(52, 66, 18, 30)
 
     img = np.zeros((n, n, 4))
-    img[..., :3] = [11, 18, 32]
+    img[..., :3] = [14, 15, 18]
     img[..., 3] = bg * 255
-    img[bone & bg, :3] = [45, 212, 191]
-    img[bowls & bg, :3] = [242, 244, 247]
+    img[bone & bg, :3] = [235, 168, 58]
+    img[bowls & bg, :3] = [231, 233, 236]
     return img.astype(np.uint8)
 
 

@@ -33,7 +33,7 @@ const endo = (id, name, latin, region, parts, color, d, extra = {}) => ({
 /** Lobo da tireoide: a espessura (`ref`) é lateral e a largura, anteroposterior. */
 const tube = (pts, width, thick, ref, nc = 12) => ({ kind: 'tube', pts, ref, width, thick, taper: 'blunt', nf: Math.max(14, pts.length * 6), nc });
 
-const ENDOCRINAS = ['hipofise', 'hipotalamo', 'glandula_pineal', 'tireoide', 'paratireoides', 'suprarrenal_direita', 'suprarrenal_esquerda', 'pancreas', 'ovario', 'testiculo'];
+const ENDOCRINAS = ['hipofise', 'hipotalamo', 'glandula_pineal', 'tireoide', 'paratireoides', 'timo', 'suprarrenal_direita', 'suprarrenal_esquerda', 'pancreas', 'ovario', 'testiculo'];
 const outras = (id) => ENDOCRINAS.filter((x) => x !== id);
 
 export const ENDO_ITEMS = [
@@ -95,6 +95,37 @@ export const ENDO_ITEMS = [
       tube([[0.112, -1.69, 0.072], [0.11, -1.72, 0.068]], 0.055, 0.032, [1, 0, 0], 10),
     ],
     relacionados: ['tireoide', 'cartilagem_cricoidea', 'traqueia', 'esofago', 'arteria_tireoidea_inferior', 'arteria_tireoidea_superior'],
+  }),
+
+  endo('veias_tireoideas_ima', 'Plexo venoso tireóideo e artéria tireóidea ima — esquema', 'Plexus thyroideus impar; Venae thyroideae; Arteria thyroidea ima', ['cabeca', 'tronco'], null, '#6b88b8', {
+    local: 'Rede vascular pré-traqueal e peritireóidea que drena os lobos e o istmo da tireoide em três vias venosas de cada lado — veia tireóidea superior (acompanha a artéria homônima), veia tireóidea média (curta e sem artéria correspondente, saindo direto da margem lateral do lobo) e veias tireóideas inferiores (que nascem do plexo tireóideo ímpar abaixo do istmo e descem à frente da traqueia) — associada, em 3 % a 10 % das pessoas, à artéria tireóidea ima.',
+    relacoes: 'As veias tireóideas superiores e médias cruzam à frente da artéria carótida comum para desembocar na veia jugular interna; as veias tireóideas inferiores descem no espaço pré-traqueal, profundamente aos músculos esternotireóideo e esterno-hióideo, para terminar nas veias braquiocefálicas (sobretudo a esquerda). A artéria tireóidea ima, quando presente, sobe exatamente na linha mediana anterior da traqueia desde o tronco braquiocefálico (ou arco da aorta) até o istmo.',
+    vasos: 'As veias tireóideas superiores e médias tributam na veia jugular interna; as inferiores drenam para a veia braquiocefálica esquerda (e na junção com a cava superior à direita). A artéria tireóidea ima é ramo inconstante do tronco braquiocefálico, do arco da aorta ou da carótida comum direita.',
+    clinica: 'Na tireoidectomia, a ligadura precoce da veia tireóidea média é essencial para mobilizar e rebater medialmente o lobo da tireoide sem laceração e sangramento na bainha carótica. Nas traqueostomias abaixo do istmo, as veias tireóideas inferiores (plexo tireóideo ímpar) e uma eventual artéria tireóidea ima estão diretamente no caminho da incisão mediana pré-traqueal e podem causar hemorragia grave se não identificadas.',
+    nota: 'ESQUEMA: modelado por código com as veias tireóideas média e inferior drenando para a jugular interna e a veia braquiocefálica esquerda e o trajeto mediano ascendente da artéria tireóidea ima à frente da traqueia.',
+  }, {
+    kind: 'estrutura',
+    mat: 'vein',
+    paired: false,
+    proc: [
+      tube([[0.15, -1.55, 0.17], [0.22, -1.56, 0.14], [0.28, -1.56, 0.08]], 0.018, 0.018, [0, 0, 1], 8),
+      tube([[-0.15, -1.55, 0.17], [-0.22, -1.56, 0.14], [-0.28, -1.56, 0.08]], 0.018, 0.018, [0, 0, 1], 8),
+      tube([[0.04, -1.62, 0.24], [0.05, -1.82, 0.23], [0.06, -2.02, 0.27], [0.08, -2.18, 0.32]], 0.02, 0.02, [0, 0, 1], 8),
+      tube([[-0.04, -1.62, 0.24], [-0.04, -1.82, 0.23], [-0.03, -2.02, 0.27], [-0.02, -2.18, 0.32]], 0.02, 0.02, [0, 0, 1], 8),
+      tube([[0.0, -2.28, 0.28], [0.0, -2.05, 0.25], [0.0, -1.82, 0.23], [0.0, -1.62, 0.24]], 0.016, 0.016, [0, 0, 1], 8),
+    ],
+    relacionados: ['tireoide', 'paratireoides', 'traqueia', 'veia_jugular_interna', 'veia_braquiocefalica', 'tronco_braquiocefalico', 'arco_aorta', 'arteria_tireoidea_superior', 'arteria_tireoidea_inferior'],
+  }),
+
+  /* ═════════════════════ Timo (órgão linfoide primário e endócrino) ═════════════════════ */
+  endo('timo', 'Timo', 'Thymus', 'tronco', ['timo'], '#d49a6a', {
+    local: 'Órgão linfoide primário e endócrino bilobado (lobos direito e esquerdo unidos por tecido conjuntivo na linha mediana), situado no mediastino superior e na parte superior do mediastino anterior, desde a base do pescoço (às vezes alcançando os polos inferiores da tireoide) até o nível da 4ª cartilagem costal.',
+    relacoes: 'À frente, o manúbrio e a parte superior do corpo do esterno, as articulações esternoclaviculares e as inserções dos músculos esterno-hióideo e esternotireóideo; atrás, a veia braquiocefálica esquerda (que cruza obliquamente por trás dele), a veia cava superior, o arco da aorta com seus ramos (tronco braquiocefálico e carótida comum esquerda), a traqueia e a parte superior do pericárdio fibroso; dos lados, as pleuras mediastinais e os nervos frênicos.',
+    vasos: 'Irrigado por ramos tímicos das artérias torácicas internas (mamárias internas) e das artérias tireóideas inferiores. As veias tímicas desembocam diretamente na face anterior da veia braquiocefálica esquerda e nas veias torácicas internas. Drenagem linfática eferente para os linfonodos paraesternais, braquiocefálicos (mediastinais anteriores) e traqueobrônquicos (não possui vasos linfáticos aferentes).',
+    clinica: 'É o sítio central de diferenciação, seleção positiva/negativa e maturação dos linfócitos T imunocompetentes, secretando hormônios peptídicos tímicos (timulina, timopoietina, timosinas alfa e beta). É grande e ativo no recém-nascido e na infância ("sombra tímica" na radiografia de tórax pediátrica) e sofre involução lipomatosa progressiva após a puberdade. O timoma (neoplasia epitelial tímica, massa mais comum do mediastino anterior) associa-se fortemente à miastenia gravis; na síndrome de DiGeorge (deleção 22q11.2, falha da 3ª e 4ª bolsas faríngeas), há hipoplasia/aplasia tímica (imunodeficiência de células T) combinada a hipoparatireoidismo congênito.',
+    nota: 'Deriva do endoderma do par de 3ªs bolsas faríngeas, migrando caudalmente para o mediastino junto com as paratireoides inferiores (por isso tecido tímico ou paratireóideo ectópico é comum ao longo desse trajeto).',
+  }, {
+    relacionados: ['tireoide', 'paratireoides', 'pericardio', 'arco_aorta', 'tronco_braquiocefalico', 'veia_braquiocefalica', 'veia_cava_superior', 'arteria_toracica_interna', 'arteria_tireoidea_inferior', 'traqueia', 'pleura_d', 'pleura_e', 'o_esterno', 'linfonodos_mediastinais', 'linfonodos_mamarios_internos'],
   }),
 
   /* ═════════════════════ Glândulas suprarrenais ═════════════════════ */

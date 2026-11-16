@@ -2,14 +2,14 @@
 
 Registro da fase **F6.4** do roteiro (`project_context.md`): o que entrou, de onde vêm as malhas e os esquemas por código, como o canal inguinal e o funículo espermático foram ancorados às peças reais e o que fica como limitação conhecida. O catálogo está em `src/catalog-urin.js` (23 fichas novas) e em `src/catalog-nerves.js` (`n_genitofemoral` e ramos viscerais/perineais de `n_ilioinguinal`, `n_plexo_lombar` e `n_pudendo`); as malhas novas estão no pacote `dist/anatomy-urin.js` (213 KB, 157 KB em gzip).
 
-## 1. O que tem (24 estruturas novas do urinário, genital masculino, vasos e nervos)
+## 1. O que tem (27 estruturas novas do urinário, genital masculino, vasos e nervos)
 
 | Grupo | Fichas | Fonte da malha |
 | --- | --- | --- |
-| Rins e ureteres | `rim_direito`, `rim_esquerdo`, `ureter_direito`, `ureter_esquerdo` | BodyParts3D (`anatomy-urin.js`: `FJ3147`, `FJ3145`, `FJ3146`, `FJ3144`) |
+| Rins, pelve renal, fáscia renal e ureteres | `rim_direito`, `rim_esquerdo`, `ureter_direito`, `ureter_esquerdo` (BodyParts3D); `pelve_calices_renais`, `fascia_renal_gerota` (por código) | BodyParts3D (`anatomy-urin.js`: `FJ3147`, `FJ3145`, `FJ3146`, `FJ3144`) e por código |
 | Bexiga urinária e uretra | `bexiga_urinaria`, `uretra_masculina` (partes intramural, prostática, membranácea e esponjosa) | BodyParts3D (`FJ3149`, `FJ3148`) |
 | Glândulas sexuais acessórias e vias espermáticas | `prostata`, `vesicula_seminal`, `ducto_deferente`, `ducto_ejaculatorio`, `glandulas_bulbouretrais` (de Cowper) | `prostata`, `vesicula_seminal`, `ducto_deferente`: BodyParts3D (`FJ3139`, `FJ3137`, `FJ3143`, `FJ3135`, `FJ3140`); `ducto_ejaculatorio` e `glandulas_bulbouretrais`: esquema por código (`proc`, `src/catalog-urin.js`) |
-| Testículo, epidídimo e corpos eréteis do pênis | `epididimo`, `testiculo`, `corpo_cavernoso_penis`, `corpo_esponjoso_penis`, `glande_penis` | BodyParts3D (`FJ3136`, `FJ3141`, `FJ3138`, `FJ3142`, `FJ3132`, `FJ3133`, `FJ3134`) |
+| Testículo, epidídimo, túnicas escrotais e corpos eréteis do pênis | `epididimo`, `testiculo`, `corpo_cavernoso_penis`, `corpo_esponjoso_penis`, `glande_penis` (BodyParts3D); `tunicas_testiculo_escroto` (por código) | BodyParts3D (`FJ3136`, `FJ3141`, `FJ3138`, `FJ3142`, `FJ3132`, `FJ3133`, `FJ3134`) e por código |
 | Canal inguinal, funículo espermático e músculo cremaster | `canal_inguinal` (túnel e ligamento inguinal de Poupart), `funiculo_espermatico`, `cremaster` | Esquema por código (`proc`, `src/catalog-urin.js`) medido sobre o osso do quadril, o ducto deferente e os vasos testiculares |
 | Vasos gonadais e penianos | `arteria_testicular`, `veia_testicular` (plexo pampiniforme), `arteria_dorsal_penis`, `veia_dorsal_profunda_penis` | BodyParts3D (`FJ3532`, `FJ3617`, `FJ3533`, `FJ3618`, `FJ3496`, `FJ3497`, `FJ3592`, `FJ3593`, `FJ2056`) |
 | Inervação inguinogenital | `n_genitofemoral` (L1–L2, ramos genital e femoral) | Trajeto por código (`NerveBuilder`, `src/catalog-nerves.js`) sobre o psoas maior, ligamento inguinal e funículo espermático |
@@ -41,6 +41,6 @@ Todas as cinco fichas trazem `ESQUEMA` na nota e o selo **Modelada por código (
 
 | Item | Situação |
 | --- | --- |
-| Córtex renal, pirâmides renais, cálices menores/maiores e pelve renal separados do parênquima | A malha de cada rim no BodyParts3D (`FJ3145`, `FJ3147`) é inteiriça; a arquitetura interna (córtex, medula, papilas, cálices menores/maiores e pelve renal) e as fáscias perirrenais (de Gerota e de Zuckerkandl) são detalhadas nas fichas de `rim_direito` e `rim_esquerdo` |
-| Túnica vaginal do testículo, túnica dartos e pele escrotal individualizadas | A pele do escroto faz parte de `pele_inteira`; as camadas escrotais e as três túnicas do funículo espermático são descritas nas fichas de `testiculo`, `funiculo_espermatico` e `cremaster` |
-| Órgãos genitais femininos (ovário, tuba uterina, útero, vagina, vulva) | O modelo anatômico do BodyParts3D usado no atlas é masculino; as correspondências embriológicas e topográficas (como o ligamento redondo do útero no canal inguinal e os vasos ovarianos) são registradas nas fichas de `canal_inguinal`, `arteria_testicular` e `veia_testicular` |
+| Pelve renal, cálices renais e fáscia renal (de Gerota) | Entregues como esquemas por código (`pelve_calices_renais` e `fascia_renal_gerota`); o córtex e as pirâmides renais são detalhados nas fichas de `rim_direito`, `rim_esquerdo` e `pelve_calices_renais` |
+| Túnica vaginal do testículo, túnica dartos e pele escrotal | Entregues como esquema por código (`tunicas_testiculo_escroto`), com as seis camadas escrotais e a diferença de drenagem linfática (inguinais superficiais vs. lombares) |
+| Órgãos genitais femininos (ovário, tuba uterina, útero, vagina, vulva) | Entregues na camada opcional `feminino` (`src/catalog-fem.js`, F6.5) e integrados no tour `urogenital_integrado` (F6.7) |

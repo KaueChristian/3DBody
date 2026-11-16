@@ -1282,7 +1282,9 @@ function nextQuestion() {
   $('#quizOptions').innerHTML = options.map((o, idx) => `<button data-id="${o}"><span class="kbadge" aria-hidden="true">${idx + 1}</span>${esc(M.get(o).item.name)}</button>`).join('');
   $('#quizFeedback').innerHTML = '';
   $('#quizScore').textContent = `${q.score}/${q.total}`;
+  for (const l of LAYERS) if (l.optional) state.layers.delete(l.id);
   select(id, { fly: true, panel: false });
+  syncLayers();
   $('#quizOptions').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => answer(b.dataset.id)));
 }
 function answer(chosen) {
@@ -1622,10 +1624,9 @@ function renderSetup() {
   });
   $('#qsKinds').querySelectorAll('button').forEach((b) => {
     const k = b.dataset.v;
-    const usable = mode !== 'text' || k === 'musculo' || k === 'nervo'; // o quiz teórico só tem texto de músculos e nervos
-    const n = usable ? poolSize(mode, { ...setup, kinds: [k] }) : 0;
+    const n = poolSize(mode, { ...setup, kinds: [k] });
     b.disabled = !n;
-    b.querySelector('small').textContent = usable ? n : '—';
+    b.querySelector('small').textContent = n;
     b.setAttribute('aria-pressed', String(n > 0 && setup.kinds.includes(k)));
   });
   $('#qsCount').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.v) === setup.count)));

@@ -260,14 +260,15 @@ export class StudyController {
     const container = document.getElementById('toursList');
     if (!container) return;
     container.innerHTML = TOURS.map((tour) => `
-      <div class="tour-card">
+      <div class="tour-card${tour.featured ? ' featured' : ''}">
+        ${tour.badge ? `<span class="tour-featured-badge">${esc(tour.badge)}</span>` : ''}
         <div class="tour-card-head">
           <h4>${esc(tour.title)}</h4>
           <span class="tour-steps-count">${tour.steps.length} passos</span>
         </div>
         <p class="tour-sub">${esc(tour.subtitle)}</p>
         <p class="tour-desc">${esc(tour.description)}</p>
-        <button type="button" class="primary btn-start-tour" data-tour="${esc(tour.id)}">Iniciar tour</button>
+        <button type="button" class="primary btn-start-tour" data-tour="${esc(tour.id)}">${tour.featured ? 'Iniciar roteiro completo da prova' : 'Iniciar tour'}</button>
       </div>`).join('');
     container.querySelectorAll('.btn-start-tour').forEach((btn) => {
       btn.addEventListener('click', () => { this.closeModal(); this.startTour(btn.dataset.tour); });
@@ -279,6 +280,8 @@ export class StudyController {
     if (!tour || this.app.state.quiz) return;
     this.activeTour = tour;
     this.tourStepIndex = 0;
+    this.tourSavedClip = this.clipping.serialize();
+    this.tourUsedClip = false;
     this.app.select(null, { fly: false });
     this.renderTourStep();
   }
@@ -292,6 +295,14 @@ export class StudyController {
     this.renderTourStep();
   }
 
+  jumpToTourStep(index) {
+    if (!this.activeTour) return;
+    const idx = Number(index);
+    if (!Number.isInteger(idx) || idx < 0 || idx >= this.activeTour.steps.length) return;
+    this.tourStepIndex = idx;
+    this.renderTourStep();
+  }
+
   renderTourStep() {
     const tour = this.activeTour;
     const step = tour?.steps[this.tourStepIndex];
@@ -300,6 +311,16 @@ export class StudyController {
 
     if (step.region && step.region !== app.state.region) app.setRegion(step.region, { fly: false });
     if (typeof step.dissect === 'number') app.setDissect(step.dissect);
+    if (step.clip !== undefined) {
+      this.tourUsedClip = true;
+      this.clipping.restore(step.clip || '');
+      this.syncClipUi();
+      this.afterClipChange();
+    } else if (this.tourUsedClip) {
+      this.clipping.restore(this.tourSavedClip || '');
+      this.syncClipUi();
+      this.afterClipChange();
+    }
     clearTimeout(this.tourTimer);
     if (step.highlight && app.M.has(step.highlight)) {
       // aponta a câmera para o lado pedido e deixa o enquadramento da estrutura (o mesmo das dicas do quiz) fazer o resto
@@ -315,19 +336,35 @@ export class StudyController {
 
     const total = tour.steps.length;
     const last = this.tourStepIndex === total - 1;
+    const stepOptions = tour.steps.map((st, idx) => `<option value="${idx}" ${idx === this.tourStepIndex ? 'selected' : ''}>${idx + 1}/${total} · ${esc(st.title)}</option>`).join('');
     this.tourBox.hidden = false;
     this.tourBox.innerHTML = `
       <div class="tour-head">
         <span class="tour-badge">${esc(tour.title)} · ${this.tourStepIndex + 1}/${total}</span>
         <button type="button" class="close" id="tourClose" aria-label="Sair do tour">×</button>
       </div>
+      <select id="tourStepSel" class="tour-step-select" aria-label="Ir para o passo do tour">${stepOptions}</select>
       <h3 class="tour-title">${esc(step.title)}</h3>
       <p class="tour-text">${esc(step.text)}</p>
       <div class="tour-actions">
+        ${step.highlight ? '<button type="button" class="btn" id="tourCardBtn" title="Abrir ou fechar a ficha completa da estrutura">Ver ficha</button>' : ''}
         <button type="button" class="btn" id="tourPrev" ${this.tourStepIndex === 0 ? 'disabled' : ''}>← Anterior</button>
         <button type="button" class="primary" id="tourNext">${last ? 'Concluir' : 'Próximo →'}</button>
       </div>`;
     this.tourBox.querySelector('#tourClose').onclick = () => this.stopTour();
+    this.tourBox.querySelector('#tourStepSel').onchange = (e) => this.jumpToTourStep(e.target.value);
+    const cardBtn = this.tourBox.querySelector('#tourCardBtn');
+    if (cardBtn && step.highlight) {
+      cardBtn.onclick = () => {
+        const info = document.getElementById('info');
+        if (info?.classList.contains('open')) {
+          info.classList.remove('open');
+          document.body.classList.remove('info-open');
+        } else {
+          app.select(step.highlight, { fly: false, panel: true });
+        }
+      };
+    }
     this.tourBox.querySelector('#tourPrev').onclick = () => this.tourStep(-1);
     const nextBtn = this.tourBox.querySelector('#tourNext');
     nextBtn.onclick = () => this.tourStep(1);
@@ -336,6 +373,12 @@ export class StudyController {
 
   stopTour() {
     clearTimeout(this.tourTimer);
+    if (this.tourUsedClip) {
+      this.clipping.restore(this.tourSavedClip || '');
+      this.syncClipUi();
+      this.afterClipChange();
+      this.tourUsedClip = false;
+    }
     this.activeTour = null;
     this.tourBox.hidden = true;
     this.app.select(null, { fly: false });

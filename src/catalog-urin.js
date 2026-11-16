@@ -308,11 +308,66 @@ export const URIN_ITEMS = [
     nota: 'ESQUEMA: músculo estriado esquelético (mas de controle reflexo involuntário) derivado do oblíquo interno durante a descida testicular; modelado por código em alça ao longo do funículo espermático. **Reflexo cremastérico**: o estímulo tátil leve na pele superomedial da coxa (via aferente: ramo femoral do genitofemoral e nervo ilioinguinal, L1–L2) provoca a contração rápida do cremaster e a elevação ipsilateral do testículo (via eferente: ramo genital do genitofemoral, L1–L2); sua abolição é sinal clínico clássico na torção testicular. Atua em sinergia térmica com o músculo dartos (liso, da tela subcutânea do escroto, simpático).',
     relacionados: ['funiculo_espermatico', 'canal_inguinal', 'testiculo', 'epididimo', 'ducto_deferente', 'obliquo_interno', 'transverso_abdome', 'arteria_epigastrica_inferior', 'arteria_testicular'],
   },
+
+  /* ═════════════════════ Sistema coletor intrarrenal, fáscia renal e túnicas escrotais (esquemas) ═════════════════════ */
+  urin('pelve_calices_renais', 'Pelve renal, cálices (menores e maiores) e pirâmides renais — esquema', 'Pelvis renalis; Calices renales majores et minores; Pyramides renales', null, '#dfb06a', {
+    local: 'Sistema coletor excretor situado no seio renal e continuado no hilo de cada rim: o parênquima renal divide-se em córtex renal externo (com colunas renais de Bertin) e medula renal interna (formada por 8 a 18 pirâmides renais de Malpighi, cujo ápice — a papila renal — goteja a urina pela área crivosa). Cada papila é abraçada em taça por um cálice renal menor (7 a 14); os cálices menores confluem em 2 a 3 cálices renais maiores (superior, médio e inferior), que se unem para formar a pelve renal (bacinete), dilatação afunilada que sai pelo hilo e se estreita na junção pieloureteral (JUP) para continuar como ureter.',
+    relacoes: 'No hilo renal (ao nível de L1–L2, plano transpilórico), a pelve renal ocupa a posição mais posterior do pedículo renal, atrás da artéria renal (intermediária) e da veia renal (anterior) — de frente para trás: Veia — Artéria — Pelve (VAP). A junção pieloureteral (JUP) é o primeiro dos três estreitamentos anatômicos onde cálculos renais costumam impactar.',
+    vasos: 'Irrigados pelos ramos das artérias segmentares renais (superior, anterossuperior, anteroinferior, inferior e posterior) que penetram o seio renal entre os cálices como artérias interlobares. Inervação autonômica e aferente visceral da dor pelo plexo renal (T10–L1).',
+    clinica: 'Cálculos formados nos cálices ou na pelve renal (nefrolitíase, inclusive cálculos coraliformes que moldam toda a pelve e os cálices maiores) obstruem o fluxo urinário na junção pieloureteral, causando hidronefrose (dilatação pielocalicial) e cólica nefrética intensa irradiada do ângulo costovertebral (sinal de Giordano) para o flanco e a região inguinal. Na pielolitotomia cirúrgica, aborda-se o hilo renal pela face posterior, pois a pelve renal é a estrutura mais posterior.',
+    nota: 'ESQUEMA: como as malhas dos rins no BodyParts3D são maciças externas, os cálices maiores (superior, médio e inferior) e a pelve renal de cada rim foram modelados por código no seio e no hilo renal.',
+  }, {
+    paired: false,
+    proc: [
+      // Pelve renal e cálices maiores esquerdos (no seio e hilo do rim esquerdo)
+      { kind: 'tube', pts: [[0.58, -4.72, -0.05], [0.5, -4.92, -0.04], [0.42, -5.05, -0.02]], ref: [0, 0, 1], width: 0.045, thick: 0.032, taper: 'blunt', nf: 12, nc: 8 },
+      { kind: 'tube', pts: [[0.64, -4.98, -0.06], [0.5, -4.98, -0.04], [0.42, -5.05, -0.02]], ref: [0, 0, 1], width: 0.042, thick: 0.03, taper: 'blunt', nf: 12, nc: 8 },
+      { kind: 'tube', pts: [[0.58, -5.22, -0.05], [0.48, -5.12, -0.03], [0.42, -5.05, -0.02], [0.36, -5.2, 0.02]], ref: [0, 0, 1], width: 0.052, thick: 0.038, taper: 'blunt', nf: 14, nc: 8 },
+      // Pelve renal e cálices maiores direitos (no seio e hilo do rim direito)
+      { kind: 'tube', pts: [[-0.54, -4.88, 0.05], [-0.46, -5.08, 0.05], [-0.38, -5.2, 0.06]], ref: [0, 0, 1], width: 0.045, thick: 0.032, taper: 'blunt', nf: 12, nc: 8 },
+      { kind: 'tube', pts: [[-0.6, -5.14, 0.04], [-0.46, -5.14, 0.05], [-0.38, -5.2, 0.06]], ref: [0, 0, 1], width: 0.042, thick: 0.03, taper: 'blunt', nf: 12, nc: 8 },
+      { kind: 'tube', pts: [[-0.54, -5.38, 0.05], [-0.44, -5.26, 0.05], [-0.38, -5.2, 0.06], [-0.32, -5.35, 0.08]], ref: [0, 0, 1], width: 0.052, thick: 0.038, taper: 'blunt', nf: 14, nc: 8 },
+    ],
+    relacionados: ['rim_direito', 'rim_esquerdo', 'ureter_direito', 'ureter_esquerdo', 'arteria_renal', 'veia_renal', 'fascia_renal_gerota'],
+  }),
+
+  urin('fascia_renal_gerota', 'Fáscia renal (de Gerota e de Zuckerkandl) e cápsula adiposa — esquema', 'Fascia renalis; Capsula adiposa perirenalis; Corpus adiposum pararenale', null, '#d9be8a', {
+    local: 'Invólucro conjuntivo-membranáceo retroperitoneal que envolve cada rim, sua cápsula adiposa perirrenal (gordura perinéfrica) e a glândula suprarrenal correspondente, separando o espaço perirrenal do corpo adiposo pararrenal (gordura paranéfrica externa). Divide-se em uma lâmina anterior (fáscia pré-renal de Gerota, mais fina) e uma lâmina posterior (fáscia retrorrenal de Zuckerkandl, mais espessa).',
+    relacoes: 'Superiormente, as duas lâminas fundem-se acima da glândula suprarrenal com a fáscia diafragmática inferior, mas enviam um septo inter-reno-suprarrenal que separa o rim da suprarrenal; lateralmente fundem-se atrás do colo ascendente/descendente; medialmente misturam-se à adventícia dos vasos renais, da aorta e da cava inferior; inferiormente permanecem abertas em cone acompanhando o ureter.',
+    vasos: 'Atravessada no hilo pelo pedículo vascular renal (veia renal, artéria renal e pelve renal) e por pequenos vasos capsulares.',
+    clinica: 'Junto com o tônus da parede abdominal e o coxim da cápsula adiposa perirrenal, é o principal meio de fixação do rim na loja renal: no emagrecimento rápido acentuado, a perda da gordura perirrenal permite que o rim desça em posição ortostática (nefroptose ou "rim flutuante", que pode acotovelar o ureter, diferente do rim ectópico pélvico congênito, cujo ureter é curto). A fáscia renal também contém hematomas retroperitoneais do trauma renal e abscessos perinefríticos, e o septo fibroso entre rim e suprarrenal permite que a nefrectomia seja feita sem remover a glândula suprarrenal.',
+    nota: 'ESQUEMA: envoltório membranáceo modelado por código ao redor das lojas renais direita e esquerda e das glândulas suprarrenais.',
+  }, {
+    kind: 'estrutura',
+    mat: 'peritonio',
+    paired: false,
+    proc: [
+      { kind: 'hull', pad: 0.04, of: [['rim_esquerdo']] },
+      { kind: 'hull', pad: 0.04, of: [['rim_direito']] },
+    ],
+    relacionados: ['rim_direito', 'rim_esquerdo', 'suprarrenal_direita', 'suprarrenal_esquerda', 'pelve_calices_renais', 'ureter_direito', 'ureter_esquerdo', 'psoas_maior', 'quadrado_lombo', 'diafragma'],
+  }),
+
+  urin('tunicas_testiculo_escroto', 'Escroto, túnica dartos e túnica vaginal do testículo — esquema', 'Scrotum; Tunica dartos; Tunica vaginalis testis', null, '#c9947c', {
+    local: 'Invólucros parietais e serosos que alojam o testículo, o epidídimo e a parte inferior do funículo espermático na bolsa escrotal. De fora para dentro compreendem seis camadas homólogas às da parede abdominal: 1) pele pigmentada com a rafe do escroto; 2) túnica dartos (tela subcutânea desprovida de gordura e rica em músculo liso dartos, que envia o septo do escroto dividindo a bolsa em dois compartimentos); 3) fáscia espermática externa; 4) fáscia cremastérica com o músculo cremaster; 5) fáscia espermática interna; e 6) túnica vaginal do testículo.',
+    relacoes: 'A túnica vaginal é um saco seroso fechado derivado da obliteração do processo vaginal embrionário do peritônio: sua lâmina visceral reveste diretamente a túnica albugínea nas faces anterior, medial e lateral do testículo e parte do epidídimo (formando lateralmente o seio do epidídimo), refletindo-se na borda posterior (mediastino do testículo, onde entram vasos e ductos) como lâmina parietal.',
+    vasos: 'As camadas superficiais (pele e dartos) são irrigadas pelos ramos escrotais anteriores (das pudendas externas) e posteriores (da pudenda interna) e drenam a linfa para os **linfonodos inguinais superficiais**; a túnica vaginal visceral, o testículo e o epidídimo são irrigados pela artéria testicular e drenam a linfa diretamente para os **linfonodos lombares (pré-aórticos e cavais)** ao longo dos vasos gonadais. Inervação sensitiva anterior (L1: ilioinguinal e genitofemoral) e posterior (S2–S4: ramos escrotais posteriores do pudendo e ramo perineal do cutâneo femoral posterior); o músculo liso dartos recebe fibras simpáticas.',
+    clinica: 'O acúmulo de líquido seroso entre as lâminas parietal e visceral da túnica vaginal constitui a **hidrocele testicular** (positiva à transiluminação), enquanto o acúmulo de sangue após trauma ou tumor é a **hematocele** (negativa à transiluminação). Por causa da drenagem linfática distinta, uma biópsia de massa testicular suspeita de câncer **nunca deve ser feita por via transescrotal** (sempre por inguinotomia com clampeamento alto do funículo espermático), para não contaminar a pele escrotal e desviar metástases para os linfonodos inguinais.',
+    nota: 'ESQUEMA: cápsula serosa e envoltório dartos modelados por código ao redor do testículo e do epidídimo.',
+  }, {
+    kind: 'estrutura',
+    mat: 'peritonio',
+    paired: true,
+    proc: [
+      { kind: 'tube', pts: [[0.175, -8.14, 0.67], [0.175, -8.3, 0.67], [0.175, -8.46, 0.67]], ref: [0, 0, 1], width: 0.14, thick: 0.13, taper: 'blunt', nf: 14, nc: 12 },
+    ],
+    relacionados: ['testiculo', 'epididimo', 'funiculo_espermatico', 'cremaster', 'canal_inguinal', 'arteria_testicular', 'veia_testicular', 'arteria_pudenda_interna', 'linfonodos_inguinais', 'linfonodos_lombares'],
+  }),
 ];
 
 /**
  * Órgãos só do homem: saem de cena quando a camada `feminino` (o modelo feminino, F6.5) está ligada, porque o útero, a vagina e a
  * vulva ocupam o mesmo lugar na pelve e no períneo (ver `itemVisible` em main.js). Bexiga, ureteres, rins e canal inguinal ficam.
  */
-const MASCULINOS = new Set(['uretra_masculina', 'testiculo', 'epididimo', 'ducto_deferente', 'vesicula_seminal', 'ducto_ejaculatorio', 'prostata', 'glandulas_bulbouretrais', 'corpo_cavernoso_penis', 'corpo_esponjoso_penis', 'glande_penis', 'arteria_testicular', 'veia_testicular', 'arteria_dorsal_penis', 'veia_dorsal_profunda_penis', 'funiculo_espermatico', 'cremaster']);
+const MASCULINOS = new Set(['uretra_masculina', 'testiculo', 'epididimo', 'ducto_deferente', 'vesicula_seminal', 'ducto_ejaculatorio', 'prostata', 'glandulas_bulbouretrais', 'corpo_cavernoso_penis', 'corpo_esponjoso_penis', 'glande_penis', 'arteria_testicular', 'veia_testicular', 'arteria_dorsal_penis', 'veia_dorsal_profunda_penis', 'funiculo_espermatico', 'cremaster', 'tunicas_testiculo_escroto']);
 for (const i of URIN_ITEMS) if (MASCULINOS.has(i.id)) i.sexo = 'm';

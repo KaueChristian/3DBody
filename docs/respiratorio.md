@@ -4,15 +4,16 @@ Registro da fase **F6.1** do roteiro (`project_context.md`): o que entrou, de on
 catálogo está em `src/catalog-resp.js` (pulmões) e `src/catalog-resp-airways.js` (vias aéreas, pleuras e cartilagens da laringe); as malhas, no pacote
 `dist/anatomy-resp.js` (598 KB).
 
-## 1. O que tem (36 fichas)
+## 1. O que tem (41 fichas)
 
 | Grupo | Fichas | Fonte da malha |
 | --- | --- | --- |
 | Pulmões | lobos superior, médio e inferior do pulmão direito; superior e inferior do esquerdo | Atlas de Referência Humano (HRA), CC BY 4.0 |
-| Traqueia e brônquios principais | traqueia (com os anéis cartilagíneos), brônquio principal direito e esquerdo | BodyParts3D |
+| Cavidade nasal e seios paranasais | cavidade nasal, conchas e meatos nasais (`cavidade_nasal`), seios paranasais frontal, maxilar, esfenoidal e células etmoidais (`seios_paranasais`) | por código (`proc`, esquema) |
+| Traqueia, brônquios principais e lobares | traqueia (com os anéis cartilagíneos), brônquio principal direito e esquerdo (BodyParts3D) e brônquios lobares (secundários) superiores, médio e inferiores (`bronquios_lobares`, por código) | BodyParts3D e por código |
 | Brônquios segmentares | 20: B1 a B10 de cada lado (a língula tem B4 e B5 no lado esquerdo) | BodyParts3D |
-| Cartilagens da laringe | tireóidea, cricóidea, aritenóideas, epiglote, corniculadas e cuneiformes | BodyParts3D |
-| Pleuras | pleura e cavidade pleural direita e esquerda, **esquema** (contorno de cada pulmão, inflado) | por código (`src/hull-geo.js`) |
+| Cartilagens e membranas da laringe | tireóidea, cricóidea, aritenóideas, epiglote, corniculadas e cuneiformes (BodyParts3D); membrana tireo-hióidea, cone elástico e ligamento vocal (`membrana_laringea_vocal`, por código) | BodyParts3D e por código |
+| Pleuras e mediastino | pleura e cavidade pleural direita e esquerda (`src/hull-geo.js`), mediastino superior e inferior (`mediastino`, por código) | por código (esquemas) |
 
 Cada ficha cita as vizinhas (chips): cada lobo lista os seus brônquios segmentares e as artérias e veias pulmonares; cada brônquio segmentar leva ao lobo e ao brônquio
 principal. O tour **“Sistema respiratório: da laringe aos pulmões”** (7 passos) vai da cartilagem cricóidea às pleuras. Os brônquios segmentares seguem a numeração de Boyden
@@ -59,9 +60,9 @@ que no cadáver) é a diferença entre os dois corpos; cada ficha diz que o enca
 
 | Item | Situação |
 | --- | --- |
-| Brônquios lobares | Não existem no BodyParts3D; estão no GLB do HRA e poderiam entrar no pacote (≈ 6 peças pequenas) se a prática cobrar |
-| Pleuras e mediastino de verdade | Esquema (M26): só o contorno de cada pulmão; sem lâminas, recessos nem cúpula |
-| Quiz “localizar” dos brônquios | Os tipos “Órgãos” e “Ossos” já entram no quiz de localizar e no de escolher o nome |
-| Nariz, cavidade nasal e seios paranasais | Verificar o que o plano de ensino cobra (ossos e cartilagens nasais existem no atlas) |
+| Brônquios lobares | Entregue por código (`bronquios_lobares`), com os 3 direitos (superior/eparterial, tronco intermediário, médio e inferior) e os 2 esquerdos |
+| Pleuras e mediastino | Entregues como esquemas por código (`pleura_direita`, `pleura_esquerda` e `mediastino`), declarados na ficha |
+| Quiz “localizar” e “teórico” dos brônquios e vias aéreas | Os tipos “Órgãos”, “Ossos” e “Outras estruturas” entram nos 3 modos de quiz (localizar, escolher o nome e teórico) |
+| Nariz, cavidade nasal e seios paranasais | Entregues (`cavidade_nasal` e `seios_paranasais`, esquemas por código) somados aos ossos e às 3 cartilagens nasais |
 | Diafragma, intercostais e músculos acessórios | Já existem no catálogo (músculos do tórax) |
-| Fissuras (oblíqua e horizontal) como estruturas separadas | Aparecem como o limite entre os lobos; sem ficha própria |
+| Fissuras (oblíqua e horizontal) como estruturas separadas | Aparecem como o limite entre os lobos; descritas nas fichas dos lobos |

@@ -398,4 +398,53 @@ export const FEM_ITEMS = [
     mat: 'bone',
     relacionados: ['o_osso_quadril', 'o_sacro', 'utero_corpo', 'vagina'],
   }),
+
+  /* ═════════════════════ Períneo feminino, hímen/glândulas parauretrais e vasos vaginais (esquemas) ═════════════════════ */
+  fem('corpo_perineo', 'Corpo do períneo (centro tendíneo do períneo) — esquema', 'Corpus perineale; Centrum perinei', null, '#c9886a', {
+    local: 'Massa fibromuscular cuneiforme (piramidal) situada no plano mediano do períneo, exatamente no ponto central entre o triângulo urogenital (à frente) e o triângulo anal (atrás) — na mulher, entre a parede posterior da parte inferior da vagina e a parede anterior do canal anal (e no homem, entre o bulbo do pênis e o canal anal).',
+    relacoes: 'É o nó central de convergência e ancoragem das fáscias e músculos do assoalho pélvico e do períneo: nele se entrelaçam as fibras dos músculos bulboesponjosos, transversos superficiais e profundos do períneo, esfíncter externo do ânus, esfíncter externo da uretra / uretrovaginal, membrana perineal e feixes mediais do músculo levantador do ânus (puboperineal/pubovaginal), além da musculatura lisa longitudinal da parede retovaginal.',
+    vasos: 'Suprido por ramos das artérias perineal e retal inferior (ramos da artéria pudenda interna); inervação dos músculos convergentes pelos ramos perineal e retal inferior do nervo pudendo (S2–S4).',
+    clinica: 'É a chave de sustentação final das vísceras pélvicas (vagina, útero, bexiga e reto) sobre o hiato urogenital do levantador do ânus. Durante o período expulsivo do parto vaginal, sofre intenso estiramento; sua ruptura não reparada (ou laceração obstétrica de 3º e 4º graus, que atinge os esfíncteres anais e a mucosa retal) enfraquece o assoalho pélvico e predispõe ao prolapso de parede vaginal posterior (retocele), prolapso uterino e incontinência fecal. Na episiotomia, prefere-se a incisão mediolateral à mediana para proteger o corpo do períneo e o esfíncter do ânus.',
+    nota: 'ESQUEMA: massa fibromuscular mediana modelada por código no espaço retovaginal inferior, entre o vestíbulo/vagina, o bulboesponjoso, os transversos do períneo e o esfíncter externo do ânus.',
+  }, {
+    kind: 'estrutura',
+    mat: 'ligament',
+    paired: false,
+    proc: [
+      tube([[0.0, -7.62, -0.26], [0.0, -7.74, -0.29], [0.0, -7.85, -0.32]], 0.095, 0.08, [1, 0, 0], { nc: 10 }),
+    ],
+    relacionados: ['vagina', 'canal_anal', 'reto', 'bulboesponjoso', 'transverso_superficial_perineo', 'transverso_profundo_perineo', 'esfincter_anal_ext', 'esfincter_interno_anus', 'esfincter_uretra', 'pubococcigeo', 'puborretal', 'bulbos_vestibulo', 'glandulas_vestibulares_maiores'],
+  }),
+
+  fem('himen_glandulas_parauretrais', 'Óstio da vagina, hímen e glândulas parauretrais (de Skene) — esquema', 'Ostium vaginae; Hymen; Glandulae paraurethrales [Skenei]', null, '#d47e8c', {
+    local: 'Estruturas do vestíbulo da vagina (espaço entre os lábios menores): 1) o óstio da vagina abre-se na parte posterior do vestíbulo, abaixo e atrás do óstio externo da uretra feminina, sendo circundado nas mulheres jovens pela prega mucosa do hímen (anular, semilunar, septado ou cribriforme; após o parto vaginal restam apenas pequenos mamilos mucosos chamados carúnculas himenais); e 2) as glândulas parauretrais (de Skene) situam-se de cada lado da parte distal da uretra feminina, abrindo seus ductos parauretrais nas margens posterolaterais do óstio externo da uretra.',
+    relacoes: 'O hímen marca o limite anatômico e embriológico entre o lúmen da vagina (acima) e o vestíbulo da vagina derivado do seio urogenital (abaixo; nos sulcos entre o hímen e os lábios menores abrem-se os ductos das glândulas vestibulares maiores de Bartholin). As glândulas parauretrais de Skene são as **homólogas embrionárias femininas da glândula próstata** masculina.',
+    vasos: 'Ramos das artérias pudenda interna (artéria do bulbo do vestíbulo) e vaginal inferior. Drenagem linfática para os linfonodos inguinais superficiais e ilíacos internos; inervação sensitiva pelo nervo pudendo (nervos labiais posteriores e ramo perineal).',
+    clinica: 'O **hímen imperfurado** (anomalia congênita de canalização do extremo inferior da vagina) impede a exteriorização do fluxo menstrual na menarca, causando amenorreia primária aparente com dor pélvica cíclica mensal e retenção de sangue na vagina (**hematocolpo**) e no útero (**hematométrio**), resolvida por himenotomia em cruz. A obstrução ou infecção das glândulas de Skene forma cistos ou abscessos parauretrais junto ao meato uretral externo.',
+    nota: 'ESQUEMA: anel mucoso no óstio da vagina e glândulas parauretrais ao lado do meato uretral modelados por código no vestíbulo da vagina.',
+  }, {
+    kind: 'estrutura',
+    proc: [
+      // Glândulas parauretrais (de Skene) ao lado da terminação da uretra feminina
+      tube([[0.032, -7.76, 0.02], [0.03, -7.81, 0.04]], 0.028, 0.024, [1, 0, 0], { nc: 8 }),
+      // Borda do óstio da vagina e hímen
+      tube([[0.01, -7.88, -0.02], [0.055, -7.89, -0.08], [0.01, -7.9, -0.15]], 0.03, 0.016, [1, 0, 0], { nc: 8 }),
+    ],
+    relacionados: ['vagina', 'uretra_feminina', 'labios_menores', 'bulbos_vestibulo', 'glandulas_vestibulares_maiores', 'prostata', 'corpo_perineo'],
+  }),
+
+  fem('arteria_plexo_vaginal', 'Artéria vaginal e plexo venoso uterovaginal — esquema', 'Arteria vaginalis; Plexus venosus uterovaginalis', null, C_ART, {
+    local: 'A artéria vaginal nasce da divisão anterior da artéria ilíaca interna (ou como ramo cervical/vaginal da artéria uterina) e desce na pelve menor para suprir as paredes anterior e posterior da vagina; o plexo venoso uterovaginal forma uma rica malha venosa avalvular nas paredes laterais da vagina e na base do ligamento largo (paramétrio).',
+    relacoes: 'A artéria vaginal é a **homóloga feminina da artéria vesical inferior do homem**: desce medialmente ao ureter pélvico terminal e envia ramos que se anastomosam na linha mediana das faces anterior e posterior da vagina com o ramo vaginal da artéria uterina e da pudenda interna, formando as artérias ázigos da vagina. O plexo venoso uterovaginal envolve o cruzamento da artéria uterina com o ureter no ligamento transverso do colo.',
+    vasos: 'Além da vagina, a artéria vaginal envia ramos para o fundo (base) da bexiga urinária, o bulbo do vestíbulo e a parte adjacente do reto. O plexo venoso uterovaginal comunica-se amplamente com os plexos venosos vesical e retal, drena pelas veias uterinas para a veia ilíaca interna e comunica-se também com o plexo venoso vertebral interno (de Batson).',
+    clinica: 'Durante o parto vaginal ou em cirurgias ginecológicas (colporrafia e histerectomia vaginal), lacerações das paredes laterais da vagina e dos fórnices podem causar sangramento volumoso pela riqueza da arcada arterial das artérias uterina/vaginal e do plexo venoso uterovaginal.',
+    nota: 'ESQUEMA: trajeto da artéria vaginal e do plexo uterovaginal modelado por código da artéria ilíaca interna até a parede lateral da vagina e o fundo da bexiga.',
+  }, {
+    kind: 'arteria',
+    mat: 'artery',
+    proc: [
+      tube([[0.28, -6.78, -0.32], [0.25, -7.1, -0.22], [0.16, -7.38, -0.15], [0.11, -7.65, -0.12]], 0.02, 0.02, [0, 0, 1], { nf: 20, nc: 8 }),
+    ],
+    relacionados: ['arteria_iliaca_interna', 'arteria_uterina', 'vagina', 'colo_utero', 'bexiga_urinaria', 'uretra_feminina', 'ureter_direito', 'ureter_esquerdo', 'lig_transverso_colo', 'veia_iliaca_interna'],
+  }),
 ];
