@@ -634,7 +634,7 @@ async function runSmokeTest() {
       const geo = app.M.get('pele').meshes[0].geometry;
       geo.computeBoundingBox();
       t(geo.boundingBox.min.y < -15, 'a pele não tem as pernas (y mínimo ' + geo.boundingBox.min.y.toFixed(2) + ')');
-      const btn = document.querySelector('.toolbar button[data-region="membro_inf"]');
+      const btn = document.querySelector('#regionSeg button[data-region="membro_inf"]');
       t(btn && getComputedStyle(btn).pointerEvents !== 'none', 'o botão “Perna” continua desativado');
       app.setRegion('membro_inf', { fly: false });
       app.setDissect(6);
@@ -1513,12 +1513,16 @@ async function runSmokeTest() {
       // a maior parte da altura: o gesto não fazia nada)
       await send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });
       const pt = await evaluate(`(async () => {
-        document.getElementById('openList').click(); await new Promise((r) => setTimeout(r, 800));
-        document.querySelector('#sidebar .side-scroll').scrollTop = 0; // a seleção anterior rolou a lista até o item
+        // os chips das camadas ficam na área Camadas do trilho
+        document.querySelector('#rail [data-area="camadas"]').click(); await new Promise((r) => setTimeout(r, 800));
+        document.querySelector('#sidebar .side-scroll').scrollTop = 0;
         await new Promise((r) => setTimeout(r, 100));
         const r = document.getElementById('chips').getBoundingClientRect();
-        const y = Math.round(Math.min(r.top + r.height / 2, innerHeight - 30));
-        return { x: Math.round(r.left + r.width / 2), y, dy: Math.min(300, y - 20) };
+        // a gaveta termina acima da barra do trilho (celular em pé): o dedo começa dentro dela
+        const fundo = Math.min(innerHeight, document.getElementById('sidebar').getBoundingClientRect().bottom);
+        const y = Math.round(Math.min(r.top + r.height / 2, fundo - 30));
+        const sc = document.querySelector('#sidebar .side-scroll');
+        return { x: Math.round(r.left + r.width / 2), y, dy: Math.min(300, y - 20), sobra: sc.scrollHeight - sc.clientHeight };
       })()`);
       await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: pt.x, y: pt.y }] });
       for (let i = 1; i <= 12; i++) {
@@ -1534,9 +1538,10 @@ async function runSmokeTest() {
         return { v, open };
       })()`);
       await send('Emulation.setTouchEmulationEnabled', { enabled: false });
-      if (!(scrolled.v > 40)) throw new Error(`${name}: arrastar o dedo sobre os chips não rolou a gaveta (scrollTop ${scrolled.v})`);
+      // a área Camadas pode caber inteira na gaveta (celular em pé): aí não há o que rolar
+      if (pt.sobra > 60 && !(scrolled.v > 40)) throw new Error(`${name}: arrastar o dedo sobre os chips não rolou a gaveta (scrollTop ${scrolled.v}, sobra ${pt.sobra})`);
       if (!scrolled.open) throw new Error(`${name}: rolar a gaveta na vertical a fechou`);
-      console.log(`  ✔ ${name}: a gaveta rola arrastando o dedo sobre os chips`);
+      console.log(`  ✔ ${name}: ${pt.sobra > 60 ? 'a gaveta rola arrastando o dedo sobre os chips' : 'a área Camadas cabe na gaveta sem rolar'}`);
     }
 
     // 5c. Nada do palco se sobrepõe nem sai da tela em celular e tablet, em pé e deitado, com e sem a ficha aberta
@@ -1556,7 +1561,7 @@ async function runSmokeTest() {
         const f = [];
         const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
         const A = window.__app;
-        const sels = ['#openList', '.toolbar', '#bodyStatus', '#controls', '.hint', '#info.open', '.color-legend', '.floating-chip'];
+        const sels = ['#rail', '.toolbar', '#bodyStatus', '.stage-context', '.hint', '#info.open', '.color-legend', '.floating-chip'];
         const check = (estado) => {
           const W = innerWidth, H = innerHeight;
           const boxes = [];
@@ -1620,12 +1625,31 @@ async function runSmokeTest() {
     await evaluate("document.getElementById('testNoAnim')?.remove()");
     await run(async () => {
       const f = [];
-      const side = document.getElementById('sidebar').getBoundingClientRect();
-      if (!(side.width > 250 && side.left >= 0)) f.push('no desktop a lista lateral deveria ficar fixa e visível');
-      if (getComputedStyle(document.getElementById('closeList')).display !== 'none') f.push('o X da gaveta apareceu no desktop');
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      const sideBox = () => document.getElementById('sidebar').getBoundingClientRect();
+      const rail = document.getElementById('rail').getBoundingClientRect();
+      const stageW = () => document.getElementById('stage').getBoundingClientRect().width;
+      document.querySelector('#rail [data-area="explorar"]').click(); await sleep(100);
+      if (document.body.classList.contains('panel-closed')) { document.querySelector('#rail [data-area="explorar"]').click(); await sleep(100); }
+      const side = sideBox();
+      if (!(side.width > 250 && side.left >= rail.right - 1)) f.push('no desktop o painel deveria ficar fixo ao lado do trilho');
+      if (!(rail.width >= 60 && rail.left >= 0)) f.push('o trilho de áreas não aparece no desktop');
+      // trocar de área troca o conteúdo do painel; clicar na área aberta recolhe e o palco ganha a largura
+      document.querySelector('#rail [data-area="camadas"]').click(); await sleep(100);
+      if (document.querySelector('[data-pane-area="camadas"]').hidden || !document.querySelector('[data-pane-area="explorar"]').hidden) f.push('a área Camadas não substituiu Explorar no painel');
+      const w0 = stageW();
+      document.querySelector('#rail [data-area="camadas"]').click(); await sleep(250);
+      if (sideBox().width > 0 || !(stageW() > w0 + 200)) f.push('clicar na área aberta não recolheu o painel');
+      if (document.querySelector('#rail [data-area="camadas"]').getAttribute('aria-expanded') !== 'false') f.push('aria-expanded não acompanhou o recolhimento');
+      document.querySelector('#rail [data-area="explorar"]').click(); await sleep(250);
+      if (!(sideBox().width > 250)) f.push('o painel não voltou ao abrir Explorar');
+      document.getElementById('closeList').click(); await sleep(100);
+      if (!document.body.classList.contains('panel-closed')) f.push('o botão de recolher não recolheu o painel');
+      document.querySelector('#rail [data-area="explorar"]').click(); await sleep(100);
+      if (document.body.classList.contains('list-open')) f.push('a classe da gaveta apareceu no desktop');
       if (!document.getElementById('getApp').hidden) f.push('o botão do .exe apareceu fora do site publicado (http local)');
       return f;
-    }, 'desktop: lista fixa, sem X e sem botão do .exe fora do https');
+    }, 'desktop: trilho e painel fixo que recolhe, sem gaveta e sem botão do .exe fora do https');
 
     // 6. Verificar ausência de erros no console
     if (consoleErrors.length > 0) {

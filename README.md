@@ -1,7 +1,7 @@
 # Body3D
 
 > **Identidade (2026-10-07):** nome provisório **Body3D** e logo novo: um “B” formado por um osso minimalista e duas curvas que também
-> desenham um “3”, em azul-marinho (`#0B1220`), branco (`#F2F4F7`) e verde-água (`#2DD4BF`). A interface usa o mesmo verde-água como acento sobre azul-marinho (variáveis em `:root` de `styles.css`). Arquivos em `assets/` (`favicon.svg`,
+> desenham um “3”, em azul-marinho (`#0B1220`), branco (`#F2F4F7`) e verde-água (`#2DD4BF`). Desde 2026-11-16 a interface usa grafite com acento âmbar (`#EBA83A`; variáveis em `:root` de `styles.css`); os ícones e o logo em `assets/` ainda estão nas cores antigas. Arquivos em `assets/` (`favicon.svg`,
 > `logo-mark.svg`, `icon-*.png`); `python tools/gen_pwa_icons.py` regenera os PNG e o mesmo desenho gera o ícone do `.exe`
 > (`draw_icon` em `tools/build_exe.py`). O executável, o repositório e a pasta de instalação **ainda se chamam** `Anatomia3D`/`3DBody`:
 > renomear o lançador faz o `.exe` se trocar sozinho, então fica para uma release própria.
@@ -152,9 +152,25 @@ Ainda não há: articulações da coluna, do tórax e da cabeça; página e quiz
 animação. Esses itens foram **adiados** para dar prioridade ao corpo inteiro e aos sistemas da disciplina (as da pelve e do membro
 inferior entram na F4.6) e estão listados em [`docs/pontos-de-melhoria.md`](docs/pontos-de-melhoria.md).
 
+## Interface: trilho de áreas
+
+A tela tem um **trilho** de ícones à esquerda (no celular em pé, uma barra na base) com cinco áreas, e **um painel por vez** ao lado
+do modelo, para não espalhar controles pela tela durante o estudo:
+
+- **Explorar** — busca, região (corpo, cabeça, tronco, braço, perna) e a lista de estruturas por camada.
+- **Camadas** — os 7 níveis de dissecação (setas ↑ ↓ trocam o nível), a opacidade da pele e os chips de cada camada.
+- **Corte** — plano sagital, coronal ou axial, posição e lado.
+- **Estudo** — revisões vencidas e pontos fracos (abrem o quiz já filtrado) e atalhos para as abas de tours, progresso, listas,
+  cores e backup.
+- **Quiz** — os três modos; o escolhido já vem marcado na configuração.
+
+Clicar no ícone da área aberta (ou em ‹) **recolhe o painel** e o palco fica só com o modelo, a linha de contexto (região e nível
+de dissecação), as vistas e o rodapé. No pé do trilho ficam rótulos, exportar imagem e copiar o link da vista. No celular e no
+tablet em pé o painel vira gaveta: tocar fora, o X, Esc ou arrastar para a esquerda fecham. O código está em `src/areas.js`.
+
 ## Modo quiz
 
-O botão **Modo quiz** abre uma janela para escolher o tipo de treino. Em todos os tipos há o filtro **Quais estruturas**
+A área **Quiz** do trilho (botão **Modo quiz**) abre uma janela para escolher o tipo de treino. Em todos os tipos há o filtro **Quais estruturas**
 (*Todas*, *⭐ Favoritas*, *🔁 Revisão de hoje*, *🎯 Pontos fracos*, *🆕 Ainda não estudadas* ou uma de *Minhas listas*), com a
 quantidade de estruturas de cada opção; opções sem nada ficam desabilitadas.
 
@@ -184,7 +200,7 @@ A última configuração é lembrada no navegador. **Toda resposta** (nos três 
 
 ## Ferramentas de estudo (versão 2.1)
 
-O botão **📚 Estudo** abre um painel com abas. Tudo funciona offline e os dados do estudante ficam só no navegador
+A área **Estudo** do trilho abre um painel com abas (o plano de corte saiu dele e virou a área **Corte**). Tudo funciona offline e os dados do estudante ficam só no navegador
 (`localStorage`), com exportação e importação em JSON.
 
 - **Tours** — 20 roteiros com 133 passos (manguito rotador, plexo braquial, nervo radial, mastigação e V3, nervo facial e
@@ -314,6 +330,7 @@ id2`); as peças dele (`pack="leg"` em `addl(...)`) e o que o banco não tem est
 | `src/surfaces.js` | Projeção de pontos sobre a pele e o esqueleto (BVH) |
 | `src/anatomy.js` | Carrega e descompacta as malhas reais |
 | `src/main.js` | Cena, interface, rótulos e quizzes de localizar e de escolher o nome |
+| `src/areas.js` | Trilho de áreas e painel lateral (fixo no computador, gaveta no celular), níveis de dissecação e atalhos de estudo e quiz |
 | `src/study/` | Ferramentas de estudo: `ui.js` (controlador e modal), `storage.js`, `sm2.js`, `views.js`, `clipping.js`, `coloring.js` + `groups.js`, `dermatomes.js`, `tours.js`, `text-quiz.js` + `text-quiz-ui.js`, `lists-ui.js`, `progress-ui.js`, `export.js` |
 | `tools/` | Pipeline de dados (Python) e do executável (`build_exe.py`, `launcher/Launcher.cs`) |
 | `.github/workflows/release.yml` | Gera e publica a release a cada push na `main` |

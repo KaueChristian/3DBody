@@ -17,6 +17,7 @@ import { showDesktopDownload } from './get-app.js';
 import { functionLinksHtml, jointRelatedIds, shownFields } from './joint-links.js';
 import { vascularLinksHtml, bundleMembers } from './vascular-links.js';
 import { jointContext } from './joint-geo.js';
+import { createAreas } from './areas.js';
 
 let studyController = null;
 
@@ -603,7 +604,8 @@ function regionReady(r) {
 function setRegion(r, { fly = true } = {}) {
   if (!regionReady(r)) return;
   state.region = r;
-  document.querySelectorAll('.toolbar button[data-region]').forEach((b) => b.classList.toggle('on', b.dataset.region === r));
+  document.querySelectorAll('#regionSeg button[data-region]').forEach((b) => b.classList.toggle('on', b.dataset.region === r));
+  areas.syncContext();
   const sel = state.selected && M.get(state.selected);
   if (sel && !regionOk(sel.item)) select(null, { fly: false });
   applyVisibility();
@@ -938,8 +940,7 @@ function setDissect(v) {
   state.layers = new Set(layersForDissect(v));
   if (v === 0) setSkin(1);
   else if (v === 1) setSkin(0.14);
-  $('#dissect').value = v;
-  $('#dissectVal').textContent = DISSECT_NAMES[v] ?? '';
+  areas.syncDissect(v);
   const sel = state.selected && M.get(state.selected);
   if (sel && !state.layers.has(sel.item.layer)) select(null, { fly: false });
   syncLayers();
@@ -948,26 +949,9 @@ function setDissect(v) {
 $('#search').addEventListener('input', (e) => { state.search = e.target.value; syncList(); });
 $('#showAll').onclick = () => { state.hidden.clear(); state.layers = new Set(LAYERS.map((l) => l.id)); syncLayers(); };
 $('#hideAll').onclick = () => { state.layers.clear(); select(null, { fly: false }); syncLayers(); };
-/** Abre/fecha a gaveta lateral (celular e tablet em pé). */
-function setList(open) {
-  document.body.classList.toggle('list-open', open);
-  $('#openList').setAttribute('aria-expanded', String(open));
-}
-$('#openList').onclick = () => setList(!document.body.classList.contains('list-open'));
-$('#closeList').onclick = () => setList(false);
-// tocar no fundo escurecido (que é o próprio palco) ou arrastar a gaveta para a esquerda também fecha
-stage.addEventListener('click', (e) => { if (e.target === stage && document.body.classList.contains('list-open')) setList(false); });
-{
-  let x0 = null, y0 = 0;
-  const side = $('#sidebar');
-  side.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
-  side.addEventListener('touchend', (e) => {
-    // só um arrasto francamente horizontal fecha: rolar a lista na diagonal não pode fechar a gaveta
-    const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
-    if (x0 !== null && dx < -70 && Math.abs(dx) > 1.5 * Math.abs(dy)) setList(false);
-    x0 = null;
-  }, { passive: true });
-}
+// trilho de áreas e painel lateral (gaveta no celular): ver areas.js
+const areas = createAreas({ stage, state, dissectNames: DISSECT_NAMES, setDissect, openSetup: (p) => openSetup(p), study: () => studyController });
+const setList = areas.setList;
 
 /* ───────────────────────── Controles do palco ───────────────────────── */
 $('#optLabels').addEventListener('change', (e) => { state.labels = e.target.checked; invalidate(); });
@@ -975,10 +959,9 @@ $('#optSkin').addEventListener('input', (e) => {
   setSkin(e.target.value / 100);
   applyVisibility();
 });
-$('#dissect').addEventListener('input', (e) => setDissect(Number(e.target.value)));
 document.querySelectorAll('.toolbar button[data-view]').forEach((b) => b.addEventListener('click', () => viewPreset(b.dataset.view)));
 // no quiz de localizar a região fica fixa (a lista de perguntas foi sorteada nela)
-document.querySelectorAll('.toolbar button[data-region]').forEach((b) => b.addEventListener('click', () => {
+document.querySelectorAll('#regionSeg button[data-region]').forEach((b) => b.addEventListener('click', () => {
   if (state.quiz?.mode !== 'locate') setRegion(b.dataset.region);
 }));
 window.addEventListener('keydown', (e) => {
@@ -1238,8 +1221,7 @@ function stopQuiz() {
     const b = baseline;
     baseline = null;
     state.dissect = b.dissect;
-    $('#dissect').value = b.dissect;
-    $('#dissectVal').textContent = DISSECT_NAMES[b.dissect] ?? '';
+    areas.syncDissect(b.dissect);
     setSkin(b.skin);
     state.layers = b.layers;
     state.hidden = b.hidden;
@@ -1672,6 +1654,7 @@ function renderSetup() {
 /** @param {{ smart?: string }} [preset] filtro já escolhido (vem dos painéis de progresso e de listas) */
 function openSetup(preset) {
   setup.region = state.region;
+  if (preset?.mode) setup.mode = preset.mode;
   if (preset?.smart) {
     setup.smart = preset.smart;
     // se nada da região em foco entra no filtro (ex.: ponto fraco no tronco), amplia para o corpo todo
@@ -1725,7 +1708,7 @@ $('#qsStart').onclick = () => {
     startLocate({ region: setup.region, kinds: [...setup.kinds], count: setup.count, latin: setup.latin, smart: setup.smart });
   }
 };
-btnQuiz.onclick = () => (state.quiz ? stopQuiz() : openSetup());
+btnQuiz.onclick = () => { setList(false); if (state.quiz) stopQuiz(); else openSetup(); };
 
 /* ───────────────────────── Loop ───────────────────────── */
 let viewShift = 0;

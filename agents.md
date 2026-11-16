@@ -66,6 +66,7 @@ Dados (raramente necessário; baixa ~60 MB e regenera arquivos grandes — só c
 | `src/anatomy.js` | Descompacta as malhas de `dist/anatomy-*.js` | |
 | `src/main.js` | Cena, interface, rótulos, quizzes de localizar e de escolher o nome (≈ 1 740 linhas) | **Não aumente**: extraia módulos novos |
 | `src/framing.js` | Enquadramento de estruturas pares (esfera só do lado escolhido) | |
+| `src/areas.js` | Trilho de áreas (Explorar, Camadas, Corte, Estudo, Quiz) e painel lateral: fixo e recolhível no computador, gaveta no celular | Controle novo entra numa área, não solto no palco; a condição da gaveta (`DRAWER_MQ`) é a mesma do `styles.css` |
 | `src/study/*.js` | Ferramentas de estudo (modal, progresso, listas, tours, corte, cores, quiz teórico, backup); `groups.js` mapeia cada músculo a um grupo | O `main.js` só expõe uma interface (`api`) ao `StudyController`; veja §8 |
 | `index.html`, `styles.css` | Página e estilos | A ordem dos `<script>` importa |
 | `dist/` | **Versionado.** `app.js` (build) e pacotes de dados `anatomy-*.js` | Ver §9 |

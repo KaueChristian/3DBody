@@ -201,7 +201,8 @@ export class StudyController {
   /* ───────────── Modal ───────────── */
   initModal() {
     this.studyModal = document.getElementById('studyModal');
-    document.getElementById('btnStudy')?.addEventListener('click', () => this.openModal());
+    // os atalhos da área Estudo (trilho lateral) abrem o modal já na aba certa
+    document.querySelectorAll('[data-study-tab]').forEach((b) => b.addEventListener('click', () => { this.opener = b; this.openModal(b.dataset.studyTab); }));
     document.getElementById('studyClose')?.addEventListener('click', () => this.closeModal());
     this.studyModal?.addEventListener('click', (e) => { if (e.target === this.studyModal) this.closeModal(); });
 
@@ -251,7 +252,7 @@ export class StudyController {
   closeModal() {
     if (!this.studyModal || this.studyModal.hidden) return;
     this.studyModal.hidden = true;
-    document.getElementById('btnStudy')?.focus();
+    (this.opener?.isConnected && this.opener.offsetParent ? this.opener : document.getElementById('btnStudy'))?.focus();
   }
 
   /* ───────────── Tours guiados (F1.8) ───────────── */
