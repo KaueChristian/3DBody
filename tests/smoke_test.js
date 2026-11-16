@@ -1579,7 +1579,7 @@ async function runSmokeTest() {
         const f = [];
         const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
         const A = window.__app;
-        const sels = ['#rail', '.toolbar', '#bodyStatus', '.stage-context', '.hint', '#info.open', '.color-legend', '.floating-chip'];
+        const sels = ['#rail', '.toolbar', '#bodyStatus', '.stage-context', '.hint', '#info.open', '.color-legend', '.floating-chip', '.tour-box'];
         const check = (estado) => {
           const W = innerWidth, H = innerHeight;
           const boxes = [];
@@ -1635,6 +1635,13 @@ async function runSmokeTest() {
         document.getElementById('studyClose').click(); await sleep(200);
         await sc.setDermatomes(false);
         sc.coloring.setMode('camada'); sc.syncColorUi(); sc.updateLegend();
+        sc.startTour('revisao_n2_completa'); await sleep(200);
+        check('com tour da prova aberto');
+        const selFs = parseFloat(getComputedStyle(document.getElementById('tourStepSel')).fontSize);
+        if (selFs < 16 && matchMedia('(pointer: coarse)').matches) f.push(`tourStepSel com ${selFs} px: provoca zoom no iPhone`);
+        document.getElementById('tourCardBtn')?.click(); await sleep(200);
+        check('com tour da prova e ficha abertos');
+        sc.stopTour(); await sleep(150);
         return f;
       }, `layout sem sobreposição: ${name} (${vp.width}×${vp.height})`);
     }

@@ -762,9 +762,18 @@ function showInfo(id) {
   infoEl.classList.add('open');
   document.body.classList.add('info-open');
   infoEl.scrollTop = 0;
+  infoOpen = true;
+  infoW = infoEl.offsetWidth;
+  infoH = infoEl.offsetHeight;
+  invalidate();
 }
-function hideInfo() { infoEl.classList.remove('open'); document.body.classList.remove('info-open'); }
-$('#infoClose').onclick = () => { if (state.quiz) hideInfo(); else select(null, { fly: false }); };
+function hideInfo() {
+  infoEl.classList.remove('open');
+  document.body.classList.remove('info-open');
+  infoOpen = false;
+  invalidate();
+}
+$('#infoClose').onclick = () => { if (state.quiz || studyController?.activeTour) hideInfo(); else select(null, { fly: false }); };
 
 /* ───────────────────────── Lista lateral e camadas ───────────────────────── */
 const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -1714,16 +1723,26 @@ btnQuiz.onclick = () => { setList(false); if (state.quiz) stopQuiz(); else openS
 /* ───────────────────────── Loop ───────────────────────── */
 let viewShift = 0;
 let viewShiftY = 0;
+let stageW = 0;
+let stageH = 0;
+let infoW = 0;
+let infoH = 0;
+let infoOpen = false;
 function applyView() {
-  const w = stage.clientWidth;
-  const h = stage.clientHeight;
+  if (!stageW || !stageH) return;
   if (Math.abs(viewShift) < 0.5 && Math.abs(viewShiftY) < 0.5) camera.clearViewOffset();
-  else camera.setViewOffset(w, h, viewShift, viewShiftY, w, h);
+  else camera.setViewOffset(stageW, stageH, viewShift, viewShiftY, stageW, stageH);
 }
 function resize() {
   const w = stage.clientWidth;
   const h = stage.clientHeight;
   if (!w || !h) return;
+  stageW = w;
+  stageH = h;
+  if (infoOpen) {
+    infoW = infoEl.offsetWidth;
+    infoH = infoEl.offsetHeight;
+  }
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
   camera.fov = w / h < 0.9 ? 40 : 30;
@@ -1745,10 +1764,9 @@ function frame() {
     if (camera.position.distanceTo(goal.pos) < 0.005 && controls.target.distanceTo(goal.target) < 0.005) goal = null;
   }
   let moving = !!goal;
-  const open = infoEl.classList.contains('open');
-  const wide = stage.clientWidth > 860;
-  const wantShift = open && wide ? (infoEl.offsetWidth + 28) / 2 : 0;
-  const wantShiftY = open && !wide ? Math.min(infoEl.offsetHeight, stage.clientHeight * 0.52) / 2 : 0;
+  const wide = stageW > 860;
+  const wantShift = infoOpen && wide ? (infoW + 28) / 2 : 0;
+  const wantShiftY = infoOpen && !wide ? Math.min(infoH, stageH * 0.52) / 2 : 0;
   if (Math.abs(wantShift - viewShift) > 0.3 || Math.abs(wantShiftY - viewShiftY) > 0.3) {
     const k = 1 - Math.exp(-dt * 8);
     viewShift += (wantShift - viewShift) * k;
@@ -1774,7 +1792,7 @@ function frame() {
     headlight.position.copy(camera.position);
     headlight.target.position.copy(controls.target);
     renderer.render(scene, camera);
-    updateLabels(stage.clientWidth, stage.clientHeight);
+    updateLabels(stageW, stageH);
   }
   requestAnimationFrame(frame);
 }
@@ -1811,8 +1829,10 @@ async function warmShaders() {
   });
   const saved = [...mats].map((m) => [m, m.transparent, m.depthWrite]);
   try {
-    // variante translúcida do PBR (músculos de um nervo selecionado) e o material dos fantasmas (Lambert)
+    // 1) variante translúcida do PBR (músculos de um nervo selecionado)
     for (const m of mats) { m.transparent = true; m.depthWrite = false; m.needsUpdate = true; }
+    await renderer.compileAsync(scene, camera);
+    // 2) material dos fantasmas (Lambert)
     for (const o of meshes) o.material = ghostFor(o.userData.orig);
     await renderer.compileAsync(scene, camera);
   } finally {

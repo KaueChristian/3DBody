@@ -358,8 +358,7 @@ export class StudyController {
       cardBtn.onclick = () => {
         const info = document.getElementById('info');
         if (info?.classList.contains('open')) {
-          info.classList.remove('open');
-          document.body.classList.remove('info-open');
+          document.getElementById('infoClose')?.click();
         } else {
           app.select(step.highlight, { fly: false, panel: true });
         }

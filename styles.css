@@ -774,7 +774,7 @@ body.quiz-text .region-seg button { pointer-events: none; }
 .skin-slider input[type='range'], #clipSlider { touch-action: pan-y; }
 @media (pointer: coarse) {
   /* abaixo de 16 px o Safari do iPhone dá zoom ao focar um campo e desalinha a tela */
-  input, select, textarea { font-size: 16px; }
+  input, select, textarea, .tour-step-select, .list-select { font-size: 16px; }
   .item { min-height: 48px; }
   .sec-head { min-height: 44px; }
   .sec-head .eye, .item .eye { width: 40px; height: 40px; }
@@ -803,6 +803,7 @@ body.info-open .get-app, body.quiz-on .get-app { display: none; }
 @media (min-width: 861px) and (min-height: 521px) {
   .dock > .floating-chip, .dock-side > .color-legend { position: static; transform: none; pointer-events: auto; }
   .dock-side > .color-legend { width: min(300px, 100%); max-height: 40vh; }
+  body.info-open .tour-box { max-width: calc(100% - var(--info-w) - 48px - var(--safe-left) - var(--safe-right)); }
 }
 /* gaveta: a base do palco fica com a ficha, o quiz e os avisos; o tour fica logo abaixo das vistas */
 @media (max-width: 860px), (max-height: 520px) {
@@ -816,6 +817,8 @@ body.info-open .get-app, body.quiz-on .get-app { display: none; }
   body.info-open .color-legend, body.info-open .floating-chip { display: none; }
   .tour-box { left: calc(10px + var(--safe-left)); right: calc(10px + var(--safe-right)); top: calc(66px + var(--safe-top)); width: auto; max-width: 520px;
     max-height: calc(100% - 76px - var(--safe-top)); overflow-y: auto; }
+  body.info-open .tour-box { max-height: calc(44% - 62px - var(--safe-top)); padding: 10px 12px; }
+  body.info-open .tour-box .tour-text { display: none; }
 }
 /* celular e tablet em pé: o trilho vira a barra da base e a gaveta termina em cima dela */
 @media (max-width: 860px) and (min-height: 521px) {
@@ -846,7 +849,10 @@ body.info-open .get-app, body.quiz-on .get-app { display: none; }
   .rail-tool { width: 44px; height: 40px; }
   #sidebar { left: calc(60px + var(--safe-left)); width: min(80vw, 360px); }
   .toolbar { top: calc(10px + var(--safe-top)); }
-  .tour-box { top: calc(62px + var(--safe-top)); }
+  .tour-box { top: calc(62px + var(--safe-top)); padding: 10px 12px; }
+  .tour-box .tour-title { font-size: 14px; margin-bottom: 4px; }
+  .tour-box .tour-text { font-size: 12px; line-height: 1.35; margin-bottom: 8px; }
+  .tour-step-select { padding: 4px 8px; margin-bottom: 6px; }
   .quiz, .locate, .tour-box { max-height: calc(100% - 72px - var(--safe-top) - var(--safe-bottom)); }
 }
 @media (max-height: 520px) and (min-width: 600px) {
@@ -855,7 +861,8 @@ body.info-open .get-app, body.quiz-on .get-app { display: none; }
     width: min(360px, 46%); max-height: none; transform: translateX(calc(100% + 24px + var(--safe-right)));
   }
   .info.open { transform: none; }
-  .tour-box { right: auto; width: min(380px, calc(52% - 30px)); }
+  .tour-box, body.info-open .tour-box { right: auto; width: min(380px, calc(52% - 30px)); max-height: calc(100% - 72px - var(--safe-top) - var(--safe-bottom)); }
+  body.info-open .tour-box .tour-text { display: block; }
   .quiz, .locate { right: auto; width: min(420px, calc(54% - 20px)); }
   .quiz { left: calc(10px + var(--safe-left)); transform: none; }
   body.info-open .locate:not([hidden]) { display: block; }
