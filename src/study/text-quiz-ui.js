@@ -20,6 +20,16 @@ export class TextQuizRunner {
     this.feedbackEl = document.getElementById('tqFeedback');
     const exit = document.getElementById('tqExit');
     if (exit) exit.onclick = () => this.app.stopQuiz();
+    const speakBtn = document.getElementById('tqSpeak');
+    if (speakBtn) {
+      if (!this.app.a11y?.speechSupported) speakBtn.hidden = true;
+      else speakBtn.addEventListener('click', () => {
+        const promptTxt = this.promptEl?.textContent?.trim() || '';
+        const opts = [...(this.optionsEl?.querySelectorAll('button') ?? [])].map((b, i) => `Opção ${i + 1}: ${b.textContent.replace(/^\d+\s*/, '').trim()}.`);
+        const full = [promptTxt, ...opts].filter(Boolean).join(' ');
+        if (full) this.app.a11y.speak(full, speakBtn);
+      });
+    }
   }
 
   /** Estruturas que o quiz teórico consegue usar com as opções escolhidas. */
@@ -63,6 +73,7 @@ export class TextQuizRunner {
   }
 
   next() {
+    this.app.a11y?.stopSpeech();
     const q = this.q;
     if (!q) return;
     if (q.total >= q.limit) { this.finish(); return; }
@@ -127,6 +138,7 @@ export class TextQuizRunner {
   }
 
   finish() {
+    this.app.a11y?.stopSpeech();
     const q = this.q;
     if (!q) return;
     q.finished = true;
@@ -152,6 +164,7 @@ export class TextQuizRunner {
 
   /** Chamado pelo main.js ao encerrar qualquer quiz. */
   onQuizStopped() {
+    this.app.a11y?.stopSpeech();
     if (this.el) this.el.hidden = true;
   }
 }

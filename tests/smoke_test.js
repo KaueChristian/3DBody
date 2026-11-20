@@ -1335,6 +1335,8 @@ async function runSmokeTest() {
         'dermátomos ligados': () => sc.setDermatomes(true),
         'dermátomos desligados': () => sc.setDermatomes(false),
         'rótulos': () => { const b = document.getElementById('optLabels'); b.checked = true; b.dispatchEvent(new Event('change')); },
+        'reduzir brilho 3D (acessibilidade)': () => app.a11y.update({ dimGlare: true }),
+        'voltar brilho 3D': () => app.a11y.update({ dimGlare: false }),
         'voo da câmera': () => app.flyTo([0.5, 0.1, 1], 6, new app.THREE.Vector3(0, -3, 0)),
         'pular a câmera': () => { app.flyTo([1, 0.1, 0], 9, new app.THREE.Vector3(0, -4, 0)); app.jump(); },
       };
@@ -1675,6 +1677,108 @@ async function runSmokeTest() {
       if (!document.getElementById('getApp').hidden) f.push('o botão do .exe apareceu fora do site publicado (http local)');
       return f;
     }, 'desktop: trilho e painel fixo que recolhe, sem gaveta e sem botão do .exe fora do https');
+
+    // 5d. Acessibilidade de leitura e conforto visual (pupila dilatada / fotofobia, alto contraste, escala, daltonismo e animações)
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      const root = document.documentElement;
+
+      // abrir a área pelo botão do trilho
+      app.select('masseter', { fly: false });
+      await sleep(150);
+      const baseFs = parseFloat(getComputedStyle(document.querySelector('#infoBody .field p')).fontSize);
+      const baseInfoW = document.getElementById('info').getBoundingClientRect().width;
+      const a11yBtn = document.getElementById('btnA11y');
+      t(Boolean(a11yBtn), 'botão de acessibilidade (#btnA11y) ausente no trilho');
+      a11yBtn.click();
+      await sleep(150);
+      t(!document.getElementById('a11yPane').hidden, 'área de acessibilidade não abriu');
+      t(a11yBtn.getAttribute('aria-expanded') === 'true', 'aria-expanded do #btnA11y não atualizou');
+
+      // perfil rápido: conforto ocular (pupila dilatada / fotofobia)
+      document.querySelector('#a11yPane [data-preset="midriase"]')?.click();
+      await sleep(200);
+      t(root.dataset.theme === 'sepia', 'perfil midríase não aplicou tema sépia');
+      t(root.dataset.textScale === '1.3', 'perfil midríase não aplicou escala 130%');
+      t(root.dataset.spacing === 'wide', 'perfil midríase não ativou espaçamento amplo');
+      t(root.dataset.strongText === 'true', 'perfil midríase não ativou traço reforçado');
+      t(root.dataset.solidPanels === 'true', 'perfil midríase não ativou painéis opacos');
+      t(root.dataset.wideCard === 'true', 'perfil midríase não ativou ficha ampla');
+      t(root.dataset.readingGuide === 'true', 'perfil midríase não ativou guia de leitura');
+      t(a11yBtn.classList.contains('has-prefs'), 'indicador de preferências ativas ausente no botão');
+      t(app.renderer.toneMappingExposure < 0.9, 'redução de brilho 3D não reduziu exposure');
+
+      const scaledFs = parseFloat(getComputedStyle(document.querySelector('#infoBody .field p')).fontSize);
+      t(scaledFs >= baseFs * 1.24, `texto da ficha não ampliou com 130% (${baseFs} -> ${scaledFs})`);
+      const latinStyle = getComputedStyle(document.querySelector('#infoBody .latin')).fontStyle;
+      t(latinStyle === 'normal', `traço reforçado deveria remover itálico do latim (veio ${latinStyle})`);
+      const infoBg = getComputedStyle(document.getElementById('info')).backgroundColor;
+      t(/^rgb\(/.test(infoBg), `painel opaco ainda está translúcido (${infoBg})`);
+      const wideInfoW = document.getElementById('info').getBoundingClientRect().width;
+      t(wideInfoW > baseInfoW + 60, `ficha ampla não alargou o painel (${Math.round(baseInfoW)} -> ${Math.round(wideInfoW)})`);
+      t(document.documentElement.scrollWidth <= window.innerWidth, 'página rolou na horizontal com perfil midríase no desktop');
+
+      // controles rápidos no topo da ficha (A+, A−, Ampliar)
+      document.getElementById('infoFontUp').click();
+      await sleep(100);
+      t(root.dataset.textScale === '1.5', 'botão A+ da ficha não subiu para 150%');
+      document.getElementById('infoFontDown').click();
+      await sleep(100);
+      t(root.dataset.textScale === '1.3', 'botão A− da ficha não voltou para 130%');
+      document.getElementById('infoWide').click();
+      await sleep(100);
+      t(!root.hasAttribute('data-wide-card'), 'botão Ampliar da ficha não desligou ficha ampla');
+
+      // alto contraste, daltonismo e reduzir animações
+      document.querySelector('#a11yPane [data-preset="alto_contraste"]')?.click();
+      await sleep(100);
+      t(root.dataset.theme === 'hc-dark', 'perfil alto contraste não aplicou hc-dark');
+      for (const th of ['light', 'hc-light', 'dark']) {
+        document.querySelector(`#a11yPane [data-theme-opt="${th}"]`)?.click();
+        t(root.dataset.theme === th, `tema ${th} não foi aplicado`);
+      }
+      app.a11y.update({ colorblind: true, reduceMotion: true });
+      t(root.dataset.colorblind === 'true' && root.dataset.reduceMotion === 'true', 'daltonismo e reduzir animações não foram aplicados');
+      app.flyTo([0, 0.02, 1], 8, new app.THREE.Vector3(0, -0.4, 0));
+      t(app.cameraGoal() === null, 'com reduzir animações, flyTo deveria pular sem animação longa');
+
+      // restaurar padrão
+      document.getElementById('a11yReset').click();
+      await sleep(150);
+      t(root.dataset.theme === 'dark' && root.dataset.textScale === '1' && !a11yBtn.classList.contains('has-prefs'), 'restaurar padrão não limpou as preferências');
+      t(app.renderer.toneMappingExposure === 1, 'restaurar padrão não devolveu exposure = 1');
+      app.select(null, { fly: false });
+      document.querySelector('#rail [data-area="explorar"]').click();
+      return f;
+    }, 'acessibilidade: perfil midríase/fotofobia, escala real, sem itálico, opaco, ficha ampla, temas e reset');
+
+    // 5e. Celular com perfil de conforto ocular (130%, sépia, ficha ampla) sem quebra nem sobreposição
+    await send('Emulation.setDeviceMetricsOverride', { width: 414, height: 896, mobile: true, deviceScaleFactor: 2 });
+    await send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });
+    await new Promise((r) => setTimeout(r, 400));
+    await run(async () => {
+      const f = [];
+      const t = (c, m) => { if (!c) f.push(m); };
+      const app = window.__app;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      app.a11y.applyPreset('midriase');
+      app.select('masseter', { fly: false });
+      await sleep(300);
+      t(document.documentElement.scrollWidth <= window.innerWidth, 'iPhone 11 com perfil midríase gerou rolagem horizontal');
+      const ir = document.getElementById('info').getBoundingClientRect();
+      const rr = document.getElementById('rail').getBoundingClientRect();
+      t(ir.right <= window.innerWidth + 1 && ir.left >= -1, 'ficha saiu da largura no iPhone 11 com perfil midríase');
+      t(ir.bottom <= rr.top + 2, `ficha sobrepôs o trilho no iPhone 11 (${Math.round(ir.bottom)} > ${Math.round(rr.top)})`);
+      t(rr.right <= window.innerWidth + 1, 'trilho inferior saiu da largura no iPhone 11');
+      app.a11y.reset();
+      app.select(null, { fly: false });
+      return f;
+    }, 'iPhone 11 (414×896) com perfil de pupila dilatada ativo: sem sobreposição nem rolagem horizontal');
+    await send('Emulation.setTouchEmulationEnabled', { enabled: false });
+    await send('Emulation.clearDeviceMetricsOverride');
 
     // 6. Verificar ausência de erros no console
     if (consoleErrors.length > 0) {

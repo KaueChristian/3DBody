@@ -337,11 +337,16 @@ export class StudyController {
     const total = tour.steps.length;
     const last = this.tourStepIndex === total - 1;
     const stepOptions = tour.steps.map((st, idx) => `<option value="${idx}" ${idx === this.tourStepIndex ? 'selected' : ''}>${idx + 1}/${total} · ${esc(st.title)}</option>`).join('');
+    const canSpeak = Boolean(app.a11y?.speechSupported);
+    app.a11y?.stopSpeech();
     this.tourBox.hidden = false;
     this.tourBox.innerHTML = `
       <div class="tour-head">
         <span class="tour-badge">${esc(tour.title)} · ${this.tourStepIndex + 1}/${total}</span>
-        <button type="button" class="close" id="tourClose" aria-label="Sair do tour">×</button>
+        <span class="tour-head-actions">
+          ${canSpeak ? '<button type="button" class="icon-speak" id="tourSpeak" aria-pressed="false" data-idle-title="Ouvir este passo" title="Ouvir este passo" aria-label="Ouvir este passo">🔊</button>' : ''}
+          <button type="button" class="close" id="tourClose" aria-label="Sair do tour">×</button>
+        </span>
       </div>
       <select id="tourStepSel" class="tour-step-select" aria-label="Ir para o passo do tour">${stepOptions}</select>
       <h3 class="tour-title">${esc(step.title)}</h3>
@@ -352,6 +357,8 @@ export class StudyController {
         <button type="button" class="primary" id="tourNext">${last ? 'Concluir' : 'Próximo →'}</button>
       </div>`;
     this.tourBox.querySelector('#tourClose').onclick = () => this.stopTour();
+    const speakBtn = this.tourBox.querySelector('#tourSpeak');
+    if (speakBtn) speakBtn.onclick = () => app.a11y.speak(`${step.title}. ${step.text}`, speakBtn);
     this.tourBox.querySelector('#tourStepSel').onchange = (e) => this.jumpToTourStep(e.target.value);
     const cardBtn = this.tourBox.querySelector('#tourCardBtn');
     if (cardBtn && step.highlight) {
@@ -371,6 +378,7 @@ export class StudyController {
   }
 
   stopTour() {
+    this.app.a11y?.stopSpeech();
     clearTimeout(this.tourTimer);
     if (this.tourUsedClip) {
       this.clipping.restore(this.tourSavedClip || '');

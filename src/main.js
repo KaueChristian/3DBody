@@ -18,8 +18,13 @@ import { functionLinksHtml, jointRelatedIds, shownFields } from './joint-links.j
 import { vascularLinksHtml, bundleMembers } from './vascular-links.js';
 import { jointContext } from './joint-geo.js';
 import { createAreas } from './areas.js';
+import { createAccessibility, applyRootAttributes, loadA11y, buildCardSpeechText } from './a11y.js';
+
+// aplica tema e tamanho de texto salvos antes mesmo de o palco 3D inicializar (evita clarão na carga)
+applyRootAttributes(loadA11y());
 
 let studyController = null;
+let a11y = null;
 
 const $ = (s) => document.querySelector(s);
 const stage = $('#stage');
@@ -464,7 +469,9 @@ function setColorOverrides(map) {
   applyHighlight();
 }
 
-const FLASH = { ok: new THREE.Color('#86D36B'), bad: new THREE.Color('#ff4a5c') };
+const FLASH_DEFAULT = { ok: new THREE.Color('#86D36B'), bad: new THREE.Color('#ff4a5c') };
+const FLASH_CB = { ok: new THREE.Color('#56B4E9'), bad: new THREE.Color('#FF8C42') };
+let FLASH = FLASH_DEFAULT;
 
 /**
  * Fantasmas. Com uma estrutura selecionada, todo o resto fica esmaecido. Antes cada uma dessas estruturas era um material PBR
@@ -563,6 +570,7 @@ function applyHighlight() {
 
 /* ───────────────────────── Câmera ───────────────────────── */
 let goal = null;
+let reduceMotion = false;
 const VIEWS = {
   front: [0, 0.02, 1],
   three: [0.78, 0.14, 0.62],
@@ -573,7 +581,16 @@ const VIEWS = {
 
 function flyTo(dir, dist, target) {
   const d = new THREE.Vector3(...dir).normalize();
-  goal = { target: target.clone(), pos: target.clone().add(d.multiplyScalar(dist)) };
+  const pos = target.clone().add(d.multiplyScalar(dist));
+  if (reduceMotion) {
+    goal = null;
+    controls.target.copy(target);
+    camera.position.copy(pos);
+    controls.update();
+    invalidate();
+    return;
+  }
+  goal = { target: target.clone(), pos };
 }
 /** Enquadramento de cada região (alvo e distância da câmera). */
 const REGION_VIEW = {
@@ -639,6 +656,7 @@ function focusItem(id, wide = false, side = 0) {
 
 /* ───────────────────────── Seleção ───────────────────────── */
 function select(id, { fly = true, panel = true } = {}) {
+  a11y?.stopSpeech();
   state.selected = id;
   if (id) {
     const m = M.get(id);
@@ -768,6 +786,7 @@ function showInfo(id) {
   invalidate();
 }
 function hideInfo() {
+  a11y?.stopSpeech();
   infoEl.classList.remove('open');
   document.body.classList.remove('info-open');
   infoOpen = false;
@@ -1107,6 +1126,7 @@ function labelIds() {
 }
 
 const MAX_LABELS = 34;
+let labelScale = 1;
 
 function updateLabels(W, H) {
   const items = [];
@@ -1136,14 +1156,17 @@ function updateLabels(W, H) {
     half = Math.max(half, Math.abs((_v.x * 0.5 + 0.5) * W - cx));
   }
   const gap = Math.max(half * 1.18, 90);
+  const rightEdge = infoOpen && W > 860 ? Math.max(220, W - infoW - 28) : W - 8;
   const colL = Math.max(cx - gap, 150);
-  const colR = Math.min(cx + gap, W - 160);
+  const colR = Math.min(cx + gap, Math.max(colL + 40, rightEdge - 150));
   const left = items.filter((i) => i.x < cx).sort((a, b) => a.y - b.y);
   const right = items.filter((i) => i.x >= cx).sort((a, b) => a.y - b.y);
+  const step = Math.round(25 * labelScale);
+  const halfH = Math.round(11 * labelScale);
   const place = (arr) => {
     let prev = 24;
-    for (const it of arr) { it.ly = Math.max(it.y, prev); prev = it.ly + 25; }
-    const over = prev - 25 - (H - 24);
+    for (const it of arr) { it.ly = Math.max(it.y, prev); prev = it.ly + step; }
+    const over = prev - step - (H - 24);
     if (over > 0) for (const it of arr) it.ly -= over;
   };
   place(left); place(right);
@@ -1156,9 +1179,9 @@ function updateLabels(W, H) {
       el.style.display = '';
       el.classList.toggle('sel', it.id === state.selected);
       const w = el.offsetWidth;
-      const x = isLeft ? colL - w : colR;
-      el.style.transform = `translate(${x}px, ${it.ly - 11}px)`;
-      const ex = isLeft ? colL + 4 : colR - 4;
+      const x = Math.max(8, Math.min(rightEdge - w, isLeft ? colL - w : colR));
+      el.style.transform = `translate(${x}px, ${it.ly - halfH}px)`;
+      const ex = isLeft ? x + w + 4 : x - 4;
       const mid = isLeft ? ex + 18 : ex - 18;
       const cls = it.id === state.selected ? 'sel' : '';
       svg += `<path class="${cls}" d="M${it.x.toFixed(1)} ${it.y.toFixed(1)} L${mid.toFixed(1)} ${it.ly.toFixed(1)} L${ex.toFixed(1)} ${it.ly.toFixed(1)}"/><circle class="${cls}" cx="${it.x.toFixed(1)}" cy="${it.y.toFixed(1)}" r="3"/>`;
@@ -1214,6 +1237,7 @@ function recordSession() {
 }
 
 function stopQuiz() {
+  a11y?.stopSpeech();
   recordSession();
   clearInterval(tick);
   tick = null;
@@ -1350,6 +1374,7 @@ function startLocate(opts, only = null) {
 }
 
 function nextLocate() {
+  a11y?.stopSpeech();
   const q = state.quiz;
   if (q.idx + 1 >= q.ids.length) { finishLocate(); return; }
   q.idx++;
@@ -1410,6 +1435,7 @@ function renderLocStats() {
 
 const setFeedback = (html) => { $('#locFeedback').innerHTML = html; };
 function shake() {
+  if (reduceMotion) return;
   locEl.classList.remove('shake');
   void locEl.offsetWidth;
   locEl.classList.add('shake');
@@ -1753,6 +1779,48 @@ function resize() {
 new ResizeObserver(resize).observe(stage);
 document.addEventListener('visibilitychange', invalidate);
 
+// acessibilidade de leitura e visualização (ver src/a11y.js)
+a11y = createAccessibility({
+  openArea: (a) => areas.openArea(a),
+  toggleArea: (a) => areas.toggleArea(a),
+  getCardText: () => {
+    const m = state.selected && M.get(state.selected);
+    return m ? buildCardSpeechText(m.item, shownFields, KIND_LABEL[m.item.kind]) : '';
+  },
+  toast: (msg) => studyController?.toast(msg),
+  onApply: (p) => {
+    renderer.toneMappingExposure = p.dimGlare ? 0.76 : 1.0;
+    scene.environmentIntensity = p.dimGlare ? 0.36 : 0.55;
+    FLASH = p.colorblind ? FLASH_CB : FLASH_DEFAULT;
+    reduceMotion = p.reduceMotion;
+    labelScale = Math.min(1.45, p.textScale);
+    if (infoOpen) {
+      requestAnimationFrame(() => {
+        if (!infoOpen) return;
+        infoW = infoEl.offsetWidth;
+        infoH = infoEl.offsetHeight;
+        invalidate();
+      });
+    }
+    if (M.size) applyHighlight();
+    else invalidate();
+  },
+});
+{
+  const locSpeak = $('#locSpeak');
+  if (locSpeak) {
+    if (!a11y.speechSupported) locSpeak.hidden = true;
+    else locSpeak.addEventListener('click', () => {
+      const id = state.quiz?.cur?.id;
+      const item = id && M.get(id)?.item;
+      if (!item) return;
+      const parts = [`Clique em: ${item.name}.`, KIND_LABEL[item.kind] ? `${KIND_LABEL[item.kind]}.` : ''];
+      if (state.quiz?.opts?.latin && item.latin) parts.push(item.latin);
+      a11y.speak(parts.filter(Boolean).join(' '), locSpeak);
+    });
+  }
+}
+
 const clock = new THREE.Clock();
 function frame() {
   // dt até 0,25 s: com quadros lentos (celular) a animação converge em poucos quadros em vez de arrastar dezenas de quadros caros
@@ -1768,11 +1836,16 @@ function frame() {
   const wantShift = infoOpen && wide ? (infoW + 28) / 2 : 0;
   const wantShiftY = infoOpen && !wide ? Math.min(infoH, stageH * 0.52) / 2 : 0;
   if (Math.abs(wantShift - viewShift) > 0.3 || Math.abs(wantShiftY - viewShiftY) > 0.3) {
-    const k = 1 - Math.exp(-dt * 8);
-    viewShift += (wantShift - viewShift) * k;
-    viewShiftY += (wantShiftY - viewShiftY) * k;
+    if (reduceMotion) {
+      viewShift = wantShift;
+      viewShiftY = wantShiftY;
+    } else {
+      const k = 1 - Math.exp(-dt * 8);
+      viewShift += (wantShift - viewShift) * k;
+      viewShiftY += (wantShiftY - viewShiftY) * k;
+      moving = true;
+    }
     applyView();
-    moving = true;
   }
   const camChanged = controls.update(); // dispara `change` (→ invalidate) quando a câmera se mexeu, inclusive o amortecimento depois do arrasto
   const now = performance.now();
@@ -2075,15 +2148,17 @@ async function init() {
     resize();
     setRegion('cabeca', { fly: false });
     viewPreset('three');
-    camera.position.copy(goal.pos);
-    controls.target.copy(goal.target);
-    goal = null;
+    if (goal) {
+      camera.position.copy(goal.pos);
+      controls.target.copy(goal.target);
+      goal = null;
+    }
     frame();
     perf.ttfiMs = Math.round(performance.now() - perf.start);
     $('#loading').classList.add('done');
     const jump = () => { if (goal) { camera.position.copy(goal.pos); controls.target.copy(goal.target); goal = null; controls.update(); } };
     const api = {
-      state, M, ITEMS, INNERVATION, IRRIGATION, LAYERS, inRegion, perf, setup, S, THREE,
+      state, M, ITEMS, INNERVATION, IRRIGATION, LAYERS, inRegion, perf, setup, S, THREE, a11y,
       catalogItems: ALL_ITEMS,
       invalidate,
       renderStats: { frames: () => renderer.info.render.frame, keepAlive: (ms) => { if (ms != null) keepAliveMs = ms; return keepAliveMs; } },

@@ -15,11 +15,12 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <a class="skip-link" href="#stage">Ir para o modelo 3D</a>
   <div id="app">
     <!-- ───── Trilho: uma área por ícone. O painel ao lado mostra só a área escolhida; clicar na área aberta o recolhe ───── -->
     <nav id="rail" class="rail" aria-label="Áreas">
       <div class="rail-brand" aria-hidden="true">
-        <svg viewBox="0 0 96 96" width="30" height="30"><g transform="translate(7 -1)"><g fill="#EBA83A"><rect x="12" y="11" width="8" height="76"/><circle cx="12" cy="11" r="5.5"/><circle cx="20" cy="11" r="5.5"/><circle cx="12" cy="87" r="5.5"/><circle cx="20" cy="87" r="5.5"/></g><path d="M30 14H50A17 17 0 0 1 50 48H30" fill="none" stroke="#E7E9EC" stroke-width="12"/><path d="M30 48H52A18 18 0 0 1 52 84H30" fill="none" stroke="#E7E9EC" stroke-width="12"/></g></svg>
+        <svg viewBox="0 0 96 96" width="30" height="30"><g transform="translate(7 -1)"><g fill="var(--accent)"><rect x="12" y="11" width="8" height="76"/><circle cx="12" cy="11" r="5.5"/><circle cx="20" cy="11" r="5.5"/><circle cx="12" cy="87" r="5.5"/><circle cx="20" cy="87" r="5.5"/></g><path d="M30 14H50A17 17 0 0 1 50 48H30" fill="none" stroke="currentColor" stroke-width="12"/><path d="M30 48H52A18 18 0 0 1 52 84H30" fill="none" stroke="currentColor" stroke-width="12"/></g></svg>
       </div>
       <h1 class="sr-only">Body3D — Atlas interativo do corpo humano</h1>
       <div class="rail-areas">
@@ -45,6 +46,9 @@
         </button>
       </div>
       <div class="rail-tools">
+        <button id="btnA11y" class="rail-tool" type="button" data-area="acessibilidade" aria-controls="sidebar" aria-expanded="false" title="Acessibilidade, leitura e conforto visual (Alt+A)" aria-label="Acessibilidade e leitura">
+          <svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="2"/><path d="M5 8.5h14M12 8.5v5.5m0 0-3.5 6m3.5-6 3.5 6"/></svg>
+        </button>
         <label class="rail-tool" title="Mostrar os rótulos no modelo">
           <input type="checkbox" id="optLabels" />
           <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8L3 12Z"/><circle cx="7.5" cy="8.5" r="1.3"/></svg>
@@ -156,11 +160,13 @@
           </div>
           <button id="btnQuiz" class="primary wide" type="button">Modo quiz</button>
         </section>
+
+        <section id="a11yPane" class="area" data-pane-area="acessibilidade" hidden></section>
       </div>
     </aside>
 
     <!-- ───── Palco 3D ───── -->
-    <main id="stage">
+    <main id="stage" tabindex="-1">
       <canvas id="gl"></canvas>
       <div id="labels"><svg id="lines"></svg></div>
 
@@ -211,6 +217,7 @@
             <span id="locCount" title="Pergunta">1/10</span>
             <span id="locScore" title="Pontos">0 pts</span>
             <span id="locTime" title="Tempo">0:00</span>
+            <button id="locSpeak" type="button" class="icon-speak" aria-pressed="false" data-idle-title="Ouvir o nome da estrutura" title="Ouvir o nome da estrutura" aria-label="Ouvir o nome da estrutura">🔊</button>
             <button id="locExit" class="link">sair</button>
           </div>
           <p class="loc-eyebrow">Clique em</p>
@@ -304,6 +311,7 @@
         <div class="quiz-head">
           <strong id="tqPrompt">Pergunta teórica</strong>
           <span id="tqScore">0/0</span>
+          <button id="tqSpeak" type="button" class="icon-speak" aria-pressed="false" data-idle-title="Ouvir a pergunta e as alternativas" title="Ouvir a pergunta e as alternativas" aria-label="Ouvir a pergunta e as alternativas">🔊</button>
           <button id="tqExit" class="link">sair</button>
         </div>
         <div id="tqOptions" class="quiz-options"></div>
@@ -388,10 +396,20 @@
       <!-- Painel de informações -->
       <aside id="info" class="info" aria-live="polite" aria-label="Detalhes da estrutura">
         <button id="infoClose" class="close" aria-label="Fechar">×</button>
+        <div class="info-readbar" role="toolbar" aria-label="Controles de leitura da ficha">
+          <button type="button" id="infoFontDown" class="rbtn" title="Diminuir tamanho do texto" aria-label="Diminuir tamanho do texto">A−</button>
+          <button type="button" id="infoFontUp" class="rbtn" title="Aumentar tamanho do texto" aria-label="Aumentar tamanho do texto">A+</button>
+          <button type="button" id="infoWide" class="rbtn" aria-pressed="false" title="Alternar ficha ampla para leitura">↔ <span>Ampliar</span></button>
+          <button type="button" id="infoSpeak" class="rbtn" aria-pressed="false" data-idle-label="Ouvir" data-idle-title="Ouvir a ficha em voz alta" title="Ouvir a ficha em voz alta" aria-label="Ouvir a ficha em voz alta">🔊 <span class="speak-label">Ouvir</span></button>
+          <button type="button" id="infoOpenA11y" class="rbtn" title="Abrir opções de acessibilidade e conforto visual (Alt+A)" aria-label="Opções de leitura e acessibilidade">Visual</button>
+        </div>
         <div id="infoBody"></div>
       </aside>
     </main>
   </div>
+
+  <div id="readingGuide" class="reading-guide" hidden aria-hidden="true"></div>
+  <div id="a11yLive" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
   <script src="dist/version.js"></script>
   <script src="dist/anatomy-data.js"></script>

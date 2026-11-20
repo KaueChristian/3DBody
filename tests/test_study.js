@@ -28,7 +28,8 @@ function load() {
         import * as catalog from './src/catalog.js';
         import * as segs from './src/segments.js';
         import * as derm from './src/study/dermatomes.js';
-        export { sm2, storage, views, textQuiz, clipping, util, catalog, segs, derm };`,
+        import * as a11y from './src/a11y.js';
+        export { sm2, storage, views, textQuiz, clipping, util, catalog, segs, derm, a11y };`,
       resolveDir: root,
     },
     bundle: true, format: 'cjs', platform: 'node', write: false, logLevel: 'error',
@@ -38,7 +39,7 @@ function load() {
   return mod.exports;
 }
 
-const { sm2, storage, views, textQuiz, clipping, util, catalog, segs, derm } = load();
+const { sm2, storage, views, textQuiz, clipping, util, catalog, segs, derm, a11y } = load();
 const DAY = 24 * 60 * 60 * 1000;
 
 /* ───────────── util ───────────── */
@@ -327,6 +328,49 @@ console.log('• segmentos medulares e dermátomos');
   eq(d(2.7, -6.0, 0.2), 'C6', 'face radial do antebraço: C6');
   eq(d(2.76, -8.5, 1.0), 'C7', 'dedo médio: C7');
   eq(d(2.25, -8.4, 0.9), 'C8', 'dedo mínimo: C8');
+}
+
+/* ───────────── acessibilidade de leitura e visualização ───────────── */
+console.log('• acessibilidade de leitura e visualização');
+{
+  ok(a11y.isDefaultA11y(a11y.A11Y_DEFAULTS), 'padrões reconhecidos como padrão');
+  eq(a11y.activePresetId(a11y.A11Y_DEFAULTS), null, 'padrão não ativa nenhum perfil');
+  const midriase = a11y.A11Y_PRESETS.find((p) => p.id === 'midriase');
+  ok(Boolean(midriase), 'perfil de conforto ocular (midríase) existe');
+  const pMid = a11y.sanitizeA11y({ ...a11y.A11Y_DEFAULTS, ...midriase.values });
+  eq(a11y.activePresetId(pMid), 'midriase', 'perfil de midríase é reconhecido');
+  ok(pMid.theme === 'sepia' && pMid.textScale === 1.3 && pMid.strongText && pMid.solidPanels && pMid.dimGlare && pMid.spacing, 'perfil de midríase ativa sépia, 130%, traço forte, opaco, brilho reduzido e espaçamento');
+  ok(!a11y.isDefaultA11y(pMid), 'perfil de midríase não é o padrão');
+
+  // normalização de dados inválidos ou hostis
+  const bad = a11y.sanitizeA11y({ theme: 'neon', textScale: 99, font: 'comic', speechRate: -5, strongText: 'yes', dimGlare: 1 });
+  eq(bad.theme, 'dark', 'tema inválido cai no padrão');
+  eq(bad.textScale, 1.75, 'escala acima do limite ajusta para 1,75');
+  eq(bad.font, 'default', 'fonte inválida cai no padrão');
+  eq(bad.speechRate, 0.85, 'velocidade abaixo do mínimo ajusta para 0,85');
+  ok(bad.strongText === true && bad.dimGlare === true, 'booleanos são normalizados');
+  eq(a11y.sanitizeA11y(null), a11y.A11Y_DEFAULTS, 'null volta ao padrão');
+
+  // degraus da escala de texto
+  eq(a11y.stepTextScale(1, -1), 1, 'não desce abaixo de 100%');
+  eq(a11y.stepTextScale(1, 1), 1.15, 'sobe de 100% para 115%');
+  eq(a11y.stepTextScale(1.15, 1), 1.3, 'sobe de 115% para 130%');
+  eq(a11y.stepTextScale(1.75, 1), 1.75, 'não passa de 175%');
+
+  // armazenamento com e sem localStorage
+  const mem = () => { const m = new Map(); return { getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, String(v)) }; };
+  const store = mem();
+  a11y.saveA11y(pMid, store);
+  eq(a11y.loadA11y(store), pMid, 'preferências sobrevivem no armazenamento');
+  eq(a11y.loadA11y(null), a11y.A11Y_DEFAULTS, 'funciona sem localStorage');
+
+  // texto de leitura em voz alta e fatiamento em trechos
+  const masseter = catalog.ITEMS.find((i) => i.id === 'masseter');
+  const spoken = a11y.buildCardSpeechText(masseter, null, 'Músculo');
+  ok(/Masseter/.test(spoken) && /Ação:/.test(spoken) && /Origem:/.test(spoken), 'texto da ficha para voz contém nome e campos');
+  const chunks = a11y.splitSpeechChunks('Primeira frase bem clara. Segunda frase para testar o limite de tamanho na leitura em voz alta. Terceira frase curta!', 60);
+  ok(chunks.length >= 2 && chunks.every((c) => c.length <= 65), `trechos de fala respeitam o limite (${chunks.length} trechos)`);
+  eq(a11y.splitSpeechChunks('   '), [], 'texto vazio gera lista vazia de trechos');
 }
 
 console.log(`\n${checks} verificações.`);

@@ -165,8 +165,17 @@ do modelo, para não espalhar controles pela tela durante o estudo:
 - **Quiz** — os três modos; o escolhido já vem marcado na configuração.
 
 Clicar no ícone da área aberta (ou em ‹) **recolhe o painel** e o palco fica só com o modelo, a linha de contexto (região e nível
-de dissecação), as vistas e o rodapé. No pé do trilho ficam rótulos, exportar imagem e copiar o link da vista. No celular e no
-tablet em pé o painel vira gaveta: tocar fora, o X, Esc ou arrastar para a esquerda fecham. O código está em `src/areas.js`.
+de dissecação), as vistas e o rodapé. No pé do trilho ficam **Leitura e visual / Acessibilidade** (`Alt+A`), rótulos, exportar imagem e copiar o link da vista. No celular e no
+tablet em pé o painel vira gaveta: tocar fora, o X, Esc ou arrastar para a esquerda fecham. O código está em `src/areas.js` e `src/a11y.js`.
+
+### Acessibilidade e conforto de leitura
+
+O botão de acessibilidade no pé do trilho (ou `Alt+A`) e a barra rápida no topo de cada ficha (`A−`, `A+`, `Ampliar`, `Ouvir`, `Visual`) oferecem recursos 100% offline para leitura confortável em diferentes condições visuais:
+
+- **Perfis rápidos de 1 clique:** *Conforto ocular (pupila dilatada / fotofobia)* (papel sépia sem ofuscamento nem halação de texto claro no escuro, texto a 130%, traço encorpado, sem itálico, painéis opacos, ficha ampla, guia de leitura e brilho 3D reduzido), *Alto contraste (baixa visão)* e *Leitura focada (dislexia / fadiga)*.
+- **Temas e contraste:** Escuro, Sépia (papel quente), Claro, Alto contraste escuro e Alto contraste claro (contraste AA/AAA).
+- **Tipografia e layout:** escala de texto de **100% a 175%** (inclusive rótulos 3D), fonte sem serifa limpa ou voltada para dislexia, traço reforçado sem itálico, espaçamento amplo (WCAG 1.4.12, sem cortar nomes na lista), painéis 100% opacos e ficha ampla.
+- **Conforto visual, daltonismo e áudio:** atenuação de brilho/reflexo no modelo 3D, guia de leitura, paleta para daltonismo (azul/laranja com símbolos ✔/✘ nos quizzes e realces 3D), redução de animações e **leitura em voz alta em PT-BR** (via voz nativa do sistema) nas fichas, nos tours guiados e nos quizzes.
 
 ## Modo quiz
 
@@ -331,6 +340,7 @@ id2`); as peças dele (`pack="leg"` em `addl(...)`) e o que o banco não tem est
 | `src/anatomy.js` | Carrega e descompacta as malhas reais |
 | `src/main.js` | Cena, interface, rótulos e quizzes de localizar e de escolher o nome |
 | `src/areas.js` | Trilho de áreas e painel lateral (fixo no computador, gaveta no celular), níveis de dissecação e atalhos de estudo e quiz |
+| `src/a11y.js` | Acessibilidade de leitura e conforto visual: perfis rápidos (midríase/fotofobia, alto contraste, dislexia), 5 temas, escala de texto 100–175%, guia de leitura, daltonismo, redução de brilho/animações e leitura em voz alta (PT-BR) |
 | `src/study/` | Ferramentas de estudo: `ui.js` (controlador e modal), `storage.js`, `sm2.js`, `views.js`, `clipping.js`, `coloring.js` + `groups.js`, `dermatomes.js`, `tours.js`, `text-quiz.js` + `text-quiz-ui.js`, `lists-ui.js`, `progress-ui.js`, `export.js` |
 | `tools/` | Pipeline de dados (Python) e do executável (`build_exe.py`, `launcher/Launcher.cs`) |
 | `.github/workflows/release.yml` | Gera e publica a release a cada push na `main` |

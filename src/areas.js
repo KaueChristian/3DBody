@@ -9,7 +9,7 @@
 import { esc } from './study/util.js';
 
 export const DRAWER_MQ = '(max-width: 860px), (max-height: 520px)';
-const TITLES = { explorar: 'Explorar', camadas: 'Camadas', corte: 'Plano de corte', estudo: 'Estudo', quiz: 'Quiz' };
+const TITLES = { explorar: 'Explorar', camadas: 'Camadas', corte: 'Plano de corte', estudo: 'Estudo', quiz: 'Quiz', acessibilidade: 'Leitura e visual' };
 
 /**
  * @param {object} o
@@ -53,11 +53,16 @@ export function createAreas({ stage, state, dissectNames, setDissect, openSetup,
     syncButtons();
   }
 
+  /** Abre a área sem recolher caso já esteja aberta. */
+  function openArea(a) {
+    show(a);
+    setOpen(true);
+  }
+
   /** Abre a área; se ela já está aberta, recolhe o painel (no celular, fecha a gaveta). */
   function toggleArea(a) {
     if (isOpen() && area === a) { setOpen(false); return; }
-    show(a);
-    setOpen(true);
+    openArea(a);
   }
 
   for (const b of buttons) b.addEventListener('click', () => toggleArea(b.dataset.area));
@@ -144,5 +149,5 @@ export function createAreas({ stage, state, dissectNames, setDissect, openSetup,
 
   show(area);
   syncButtons();
-  return { setList, syncDissect, syncContext, toggleArea, get area() { return area; }, isOpen };
+  return { setList, syncDissect, syncContext, openArea, toggleArea, get area() { return area; }, isOpen };
 }
